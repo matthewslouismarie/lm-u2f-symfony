@@ -25,12 +25,10 @@ $server->disableCAVerification()
 
 $request = json_encode($server->generateRegisterRequest()->jsonSerialize());
 
-$db_credentials = array(
-    'host' => 'mysql-shift-two.alwaysdata.net',
-    'db' => 'shift-two_hp',
-    'username' => '',
-    'password' => 'Utilisateurs MySQL'
-);
+$db_credentials = json_decode(file_get_contents('private/db.json'), true);
+
+
+
 DatabaseConnection::getInstance($db_credentials);
 
 require_once 'html.php';

@@ -1,0 +1,8 @@
+# Todo: NF
+
+CREATE TABLE member
+(
+    id SMALLINT(4) UNSIGNED AUTO_INCREMENT KEY,
+    counter INT UNSIGNED NOT NULL
+)
+ENGINE=InnoDB CHARSET=utf8 COLLATE utf8_general_ci;

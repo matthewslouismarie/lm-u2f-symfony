@@ -2,3 +2,4 @@
 /examples/vendor/
 /vendor/
 /.vscode/
+/private/db.json

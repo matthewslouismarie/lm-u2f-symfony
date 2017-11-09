@@ -22,12 +22,12 @@ class DatabaseConnection
                                  string $username, string $password)
     {
         $hostLine = 'mysql:host='.$host.';';
-        $databaseNameLine = 'dbname='.$databaseName.';';
+        $db_line = 'dbname='.$databaseName.';';
         $charsetLine = 'charset=utf8';
         $userLine = $username;
         $passwordLine = $password;
         $additionalParameters = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
-        $this->pdo = new \PDO($hostLine.$databaseNameline.$charsetLine,
+        $this->pdo = new \PDO($hostLine.$db_line.$charsetLine,
                              $userLine,
                              $passwordLine,
                              $additionalParameters);

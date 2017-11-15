@@ -14,3 +14,17 @@ spl_autoload_register(function ($class_name) {
         include 'src/'.str_replace('\\', '/', $class_name).'.php';
     }
 });
+
+function get_registrations_for_user(int $user_id, \PDO $pdo): array
+{
+    $stmt = $pdo->prepare('SELECT counter FROM member WHERE id = ?;');
+    $stmt->execute(array($user_id));
+    $results = $stmt->fetchAll();
+    $registrations = array();
+    foreach ($results as $counter) {
+        $registration = new Registration();
+        $registration->setCounter($counter);
+        $registrations[] = $registration;
+    }
+    return $registrations;
+}

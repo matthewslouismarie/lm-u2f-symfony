@@ -15,10 +15,10 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-function get_registrations_for_user(int $user_id, \PDO $pdo): array
+function get_registrations_for_user(int $member_id, \PDO $pdo): array
 {
-    $stmt = $pdo->prepare('SELECT counter FROM member WHERE id = ?;');
-    $stmt->execute(array($user_id));
+    $stmt = $pdo->prepare('SELECT counter FROM u2f_authenticators WHERE member_id = ?;');
+    $stmt->execute(array($member_id));
     $results = $stmt->fetchAll();
     $registrations = array();
     foreach ($results as $counter) {

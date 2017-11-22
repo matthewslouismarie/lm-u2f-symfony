@@ -1,41 +1,11 @@
 {
-    "name": "firehed/u2f",
-    "description": "A library providing U2F authentication",
-    "license": "MIT",
-    "keywords": [
-        "auth",
-        "authentication",
-        "mfa",
-        "security",
-        "u2f",
-        "yubico",
-        "yubikey"
-    ],
-    "homepage": "https://github.com/Firehed/u2f-php",
-    "require": {
-        "php": ">=7.0"
-    },
-    "require-dev": {
-        "firehed/arctools": "^1",
-        "phpunit/phpunit": "^5.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "Firehed\\U2F\\": "src/"
-        },
-        "files": [
-            "src/functions.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Firehed\\U2F\\": "tests/"
-        }
-    },
-    "authors": [
+    "repositories": [
         {
-            "name": "Eric Stern",
-            "email": "eric@ericstern.com"
+            "type": "vcs",
+            "url": "https://github.com/matthewslouismarie/lm-web-framework"
         }
-    ]
+    ],
+    "require": {
+        "matthewslouismarie/lm-web-framework": "dev-master"
+    }
 }

@@ -15,18 +15,18 @@ $server->disableCAVerification()
 if ('GET' === $_SERVER['REQUEST_METHOD']) {
     $request = $server->generateRegisterRequest();
     $reg_id = generate_reg_id();
-    $_SESSION[$reg_id] = serialize($request);
+    $_SESSION[$reg_id]['register_request'] = serialize($request);
     $request_json = json_encode($request); // ->jsonSerialize()?
 
     $db_credentials = json_decode(file_get_contents('private/db.json'), true);
 
     $pdo = DatabaseConnection::getInstance($db_credentials)->getPdo();
 
-    $registrations = get_registrations_for_user(0, $pdo);
-    $sign_requests = json_encode($server->generateSignRequests($registrations));
+    $registrations = get_registrations_for_user(0, $pdo); // @todo why do we need sign_requests for registration?
+    $sign_requests = json_encode($server->generateSignRequests($registrations, $reg_id));
     require_once 'register.html.php';
 } elseif ('POST' === $_SERVER['REQUEST_METHOD']) {
-    $request = unserialize($_SESSION[$_POST['reg-id']]);
+    $request = unserialize($_SESSION[$_POST['reg-id']]['register_request']);
     unset($_SESSION[$_POST['reg-id']]);
     $username = $_POST['username'];
     $server->setRegisterRequest($request);
@@ -52,7 +52,7 @@ if ('GET' === $_SERVER['REQUEST_METHOD']) {
 ?>
 Last insert id: <?= $pdo->lastInsertId() ?><br>
 Attestation: <?= base64_encode($registration->getAttestationCertificateBinary()) ?><br>
-Counter: <?= $registration->getCounter() ?><br>
+Counter:  <?= $registration->getCounter() ?><br>
 Public key: <?= base64_encode($registration->getPublicKey()) ?><br>
 Key handle: <?= base64_encode($registration->getKeyHandleBinary()) ?><br>
 <?php

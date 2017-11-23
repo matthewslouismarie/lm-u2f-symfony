@@ -322,8 +322,15 @@ class Server
      * @param array<Registration>
      * @return array<SignRequest>
      */
-    public function generateSignRequests(array $registrations): array {
-        return array_values(array_map([$this, 'generateSignRequest'], $registrations));
+    public function generateSignRequests(array $registrations, string $auth_id): array {
+        $sign_requests = array();
+        $_SESSION[$auth_id]['u2f_authenticators'] = array();
+        foreach ($registrations as $current_registration) {
+            $current_sign_request = $this->generateSignRequest($current_registration);
+            $sign_requests[] = $current_sign_request;
+            $_SESSION[$auth_id]['u2f_authenticators'][$current_sign_request->getChallenge()] = $current_registration->getDbId();
+        }
+        return array_values($sign_requests);
     }
 
     /**

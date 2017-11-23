@@ -41,13 +41,17 @@ if ('GET' === $_SERVER['REQUEST_METHOD']) {
     $success = $members_insert->execute();
     $u2f_authenticators_insert = $pdo->prepare('INSERT INTO u2f_authenticators VALUES (NULL, :member_id, :counter, :attestation, :public_key, :key_handle)');
     $u2f_authenticators_insert->bindParam(':member_id', $pdo->lastInsertId());
-    $u2f_authenticators_insert->bindParam(':attestation', $registration->getAttestationCertificateBinary());
+    $u2f_authenticators_insert->bindParam(':attestation', base64_encode($registration->getAttestationCertificateBinary()));
     $u2f_authenticators_insert->bindParam(':counter', $registration->getCounter());
-    $u2f_authenticators_insert->bindParam(':public_key', $registration->getPublicKey());
-    $u2f_authenticators_insert->bindParam(':key_handle', $registration->getKeyHandleBinary());
+    $u2f_authenticators_insert->bindParam(':public_key', base64_encode($registration->getPublicKey()));
+    $u2f_authenticators_insert->bindParam(':key_handle', base64_encode($registration->getKeyHandleBinary()));
     $u2f_authenticators_insert->execute();
     $pdo->commit();
-    echo '<pre>';
-    var_dump($registration);
-    echo '</pre>';
+?>
+Last insert id: <?= $pdo->lastInsertId() ?><br>
+Attestation: <?= base64_encode($registration->getAttestationCertificateBinary()) ?><br>
+Counter: <?= $registration->getCounter() ?><br>
+Public key: <?= base64_encode($registration->getPublicKey()) ?><br>
+Key handle: <?= base64_encode($registration->getKeyHandleBinary()) ?><br>
+<?php
 }

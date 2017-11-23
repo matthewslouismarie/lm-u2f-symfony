@@ -19,9 +19,6 @@ if ('GET' === $_SERVER['REQUEST_METHOD']) {
 
     $registrations = get_registrations_for_user(2, $pdo);
     $sign_requests = $server->generateSignRequests($registrations);
-    echo '<pre>';
-    var_dump($sign_requests);
-    echo '</pre>';
 
     $_SESSION['registrations'] = serialize($registrations);
     $_SESSION['sign_requests'] = serialize($sign_requests);

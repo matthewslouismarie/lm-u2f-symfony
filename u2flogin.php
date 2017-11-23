@@ -17,11 +17,14 @@ $db_credentials = json_decode(file_get_contents('private/db.json'), true);
 $pdo = DatabaseConnection::getInstance($db_credentials)->getPdo();
 
 if ('POST' === $_SERVER['REQUEST_METHOD']) {
-    $registrations = get_registrations_for_user($_POST['username'], $pdo);
-    $sign_requests = $server->generateSignRequests($registrations);
-    
     $auth_id = generate_auth_id();
 
-    $_SESSION[$auth_id] = serialize($sign_requests);
+    $registrations = get_registrations_for_user($_POST['username'], $pdo);
+    $sign_requests = $server->generateSignRequests($registrations, $auth_id);
+
+    var_dump($sign_requests[0]->getChallenge());
+    
+
+    $_SESSION[$auth_id]['sign_requests'] = serialize($sign_requests);
     require_once 'u2flogin.html.php';
 }

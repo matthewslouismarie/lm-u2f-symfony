@@ -26,7 +26,8 @@ if ('GET' === $_SERVER['REQUEST_METHOD']) {
     $sign_requests = json_encode($server->generateSignRequests($registrations));
     require_once 'register.html.php';
 } elseif ('POST' === $_SERVER['REQUEST_METHOD']) {
-    $request = unserialize($_SESSION[$_POST['reg_id']]);
+    $request = unserialize($_SESSION[$_POST['reg-id']]);
+    unset($_SESSION[$_POST['reg-id']]);
     $username = $_POST['username'];
     $server->setRegisterRequest($request);
     $response = RegisterResponse::fromJson($_POST['challenge']);

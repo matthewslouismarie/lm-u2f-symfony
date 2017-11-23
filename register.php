@@ -23,7 +23,7 @@ if ('GET' === $_SERVER['REQUEST_METHOD']) {
 
     $registrations = get_registrations_for_user(0, $pdo);
     $sign_requests = json_encode($server->generateSignRequests($registrations));
-    require_once 'html.php';
+    require_once 'register.html.php';
 } elseif ('POST' === $_SERVER['REQUEST_METHOD']) {
     $request = unserialize($_SESSION['request']);
     $username = $_POST['username'];

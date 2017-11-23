@@ -8,11 +8,16 @@
       const completeAuth = function fCompleteAuth(authResponse)
       {
         console.log(authResponse);
+        $('#response').val(JSON.stringify(authResponse));
       }
       var sign_requests = <?= json_encode($sign_requests) ?>;
       u2f.sign(sign_requests, completeAuth);
     </script>
   </head>
   <body>
+    <form action="#" method="post">
+      <input id="response" name="response" type="text">
+      <button type="submit">Submit</button>
+    </form>
   </body>
 </html>

@@ -33,3 +33,29 @@ function get_registrations_for_user(int $member_id, \PDO $pdo): array
     }
     return $registrations;
 }
+
+/**
+ * @todo make secure
+ */
+function generate_reg_id(): string
+{
+    $n = 0;
+    do {
+        $id = $n.'-reg-request';
+        $n++;
+    } while (isset($_SESSION[$id]));
+    return $id;
+}
+
+/**
+ * @todo make secure
+ */
+function generate_auth_id(): string
+{
+    $n = 0;
+    do {
+        $id = $n.'-auth-request';
+        $n++;
+    } while (isset($_SESSION[$id]));
+    return $id;
+}

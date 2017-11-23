@@ -14,7 +14,8 @@ $server->disableCAVerification()
 
 if ('GET' === $_SERVER['REQUEST_METHOD']) {
     $request = $server->generateRegisterRequest();
-    $_SESSION['request'] = serialize($request); // TODO
+    $reg_id = generate_reg_id();
+    $_SESSION[$reg_id] = serialize($request);
     $request_json = json_encode($request); // ->jsonSerialize()?
 
     $db_credentials = json_decode(file_get_contents('private/db.json'), true);
@@ -25,7 +26,7 @@ if ('GET' === $_SERVER['REQUEST_METHOD']) {
     $sign_requests = json_encode($server->generateSignRequests($registrations));
     require_once 'register.html.php';
 } elseif ('POST' === $_SERVER['REQUEST_METHOD']) {
-    $request = unserialize($_SESSION['request']);
+    $request = unserialize($_SESSION[$_POST['reg_id']]);
     $username = $_POST['username'];
     $server->setRegisterRequest($request);
     $response = RegisterResponse::fromJson($_POST['challenge']);

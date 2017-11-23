@@ -17,6 +17,7 @@
   <body>
     <form action="#" method="post">
       <input id="response" name="response" type="text">
+      <input id="auth-id" name="auth-id" type="text" value="<?= $auth_id ?>">
       <button type="submit">Submit</button>
     </form>
   </body>

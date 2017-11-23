@@ -20,6 +20,7 @@
         <input id="username" name="username" type="text" required>
         <input id="request" name="request" readonly type="text" value="<?= htmlspecialchars($request_json, ENT_COMPAT, 'UTF-8', false) ?>">
         <input id="challenge" name="challenge" readonly type="text">
+        <input id="reg_id" name="reg_id" type="text" value="<?= htmlspecialchars($reg_id) ?>">
         <button type="submit">Register</button>
       </form>
   </body>

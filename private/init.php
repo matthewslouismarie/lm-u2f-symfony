@@ -17,10 +17,13 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-function get_registrations_for_user(int $member_id, \PDO $pdo): array
+/**
+ * @todo replace user by member
+ */
+function get_registrations_for_user(string $username, \PDO $pdo): array
 {
-    $stmt = $pdo->prepare('SELECT counter, attestation, public_key, key_handle FROM u2f_authenticators WHERE member_id = ?;');
-    $stmt->execute(array($member_id));
+    $stmt = $pdo->prepare('SELECT counter, attestation, public_key, key_handle FROM u2f_authenticators WHERE member_id IN (SELECT id FROM members WHERE username = ?);');
+    $stmt->execute(array($username));
     $results = $stmt->fetchAll();
     $registrations = array();
     foreach ($results as $counter) {

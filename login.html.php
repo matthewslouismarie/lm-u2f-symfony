@@ -5,13 +5,12 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="assets/u2f-api.js"></script>
     <script>
-      const completeAuth = function fCompleteRegistration(registerResponse)
+      const completeAuth = function fCompleteAuth(authResponse)
       {
-        console.log(registerResponse);
-        $('#challenge').val(JSON.stringify(registerResponse));
+        console.log(authResponse);
       }
       var sign_requests = <?= json_encode($sign_requests) ?>;
-      u2f.sign([sign_requests], completeAuth);
+      u2f.sign(sign_requests, completeAuth);
     </script>
   </head>
   <body>

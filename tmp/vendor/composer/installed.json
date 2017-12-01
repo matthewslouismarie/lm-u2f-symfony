@@ -1,0 +1,25 @@
+[
+    {
+        "name": "matthewslouismarie/lm-web-framework",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/matthewslouismarie/lm-web-framework.git",
+            "reference": "3a2501a44aa23eb1ced609d78e73c7ded28d0357"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/matthewslouismarie/lm-web-framework/zipball/3a2501a44aa23eb1ced609d78e73c7ded28d0357",
+            "reference": "3a2501a44aa23eb1ced609d78e73c7ded28d0357",
+            "shasum": ""
+        },
+        "time": "2017-11-16T20:02:18+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "support": {
+            "source": "https://github.com/matthewslouismarie/lm-web-framework/tree/master",
+            "issues": "https://github.com/matthewslouismarie/lm-web-framework/issues"
+        }
+    }
+]

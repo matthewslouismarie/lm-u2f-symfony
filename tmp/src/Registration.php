@@ -1,0 +1,38 @@
+<?php
+declare(strict_types=1);
+
+namespace Firehed\U2F;
+use OutOfBoundsException;
+
+class Registration
+{
+    use AttestationCertificateTrait;
+    use ECPublicKeyTrait;
+    use KeyHandleTrait;
+
+    private $counter = -1;
+    private $db_id;
+
+    public function __construct(int $db_id = null)
+    {
+        $this->db_id = $db_id;
+    }
+
+    public function getCounter(): int {
+        return $this->counter;
+    }
+
+    public function getDbId(): int
+    {
+        return $this->db_id;
+    }
+
+    public function setCounter(int $counter): self {
+        if ($counter < 0) {
+            throw new OutOfBoundsException('Counter may not be negative');
+        }
+        $this->counter = $counter;
+        return $this;
+    }
+
+}

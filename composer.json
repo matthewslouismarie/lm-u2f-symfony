@@ -58,6 +58,11 @@
         {
             "type": "git",
             "url": "C:\\Users\\louis_000\\fichiers_pas_a_garder\\lm-u2f"
+        },
+        {
+            "type": "git",
+            "url": "C:\\Users\\louis_000\\fichiers_pas_a_garder\\lm-web-framework"
         }
-    ]
+    ],
+    "minimum-stability": "dev"
 }

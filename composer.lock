@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "56a6f33c13544a474634bdb6a455e20b",
+    "content-hash": "e6694b1368767e1863a179e834dde881",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -68,7 +68,7 @@
             "source": {
                 "type": "git",
                 "url": "C:\\Users\\louis_000\\fichiers_pas_a_garder\\lm-u2f",
-                "reference": "a8c0ddad859e2ce0913f6e85b2c47fddb6c055cf"
+                "reference": "291ff5dfa9d100999a1f1d54ee664985202688db"
             },
             "type": "library",
             "autoload": {
@@ -76,7 +76,7 @@
                     "LM\\U2F\\": ""
                 }
             },
-            "time": "2017-12-08 14:46:19"
+            "time": "2017-12-08 14:55:14"
         },
         {
             "name": "psr/cache",

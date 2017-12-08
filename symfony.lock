@@ -133,5 +133,8 @@
     },
     "symfony/profiler-pack": {
         "version": "v1.0.2"
+    },
+    "matthewslouismarie/lm-u2f": {
+        "version": "dev-master"
     }
 }

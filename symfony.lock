@@ -5,6 +5,9 @@
     "matthewslouismarie/lm-u2f": {
         "version": "dev-master"
     },
+    "matthewslouismarie/lm-web-framework": {
+        "version": "dev-master"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },

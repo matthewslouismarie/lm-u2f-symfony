@@ -30,6 +30,10 @@ class RegisterController extends AbstractController
 
         $registrations = \firehed\u2f\get_registrations_for_user(0, $this->pdo->getPdo()); // @todo why do we need sign_requests for registration?
         $sign_requests = json_encode($server->generateSignRequests($registrations, $reg_id));
-        return $this->render('template.twig');
+        return $this->render('register.html.twig', array(
+            'request_json' => $request_json,
+            'sign_requests' => $sign_requests,
+            'reg_id' => $reg_id,
+        ));
     }
 }

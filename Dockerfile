@@ -2,6 +2,7 @@ FROM php:7.2-apache
 COPY config/php.ini /usr/local/etc/php/
 COPY symfony/ /var/www/html/
 RUN a2enmod rewrite
+RUN service apache2 restart
 RUN cd /var/www/html/
 RUN chmod 777 -R .
 RUN apt-get update

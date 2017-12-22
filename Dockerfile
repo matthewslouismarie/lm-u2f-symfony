@@ -1,4 +1,10 @@
+# Parent
 FROM php:7.2-apache
+
+# PHP configuration
+COPY config/php.ini /usr/local/etc/php/
+
+# Enable HTTPS
 COPY tls/apache-selfsigned.key /etc/ssl/private/apache-selfsigned.key
 COPY tls/apache-selfsigned.crt /etc/ssl/certs/apache-selfsigned.crt
 COPY tls/dhparam.pem /etc/ssl/certs/dhparam.pem

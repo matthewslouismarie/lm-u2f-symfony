@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "abb9a4f3cc426730d91b94a14f6b0280",
+    "content-hash": "c34cf564c3f67dfe7e748225cbaa7c33",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -61,6 +61,42 @@
                 "tls"
             ],
             "time": "2017-11-29T09:37:33+00:00"
+        },
+        {
+            "name": "matthewslouismarie/lm-u2f",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matthewslouismarie/lm-u2f.git",
+                "reference": "da3948ea28b3f72fee633df9ae9e5b37d1a99b4d"
+            },
+            "require": {
+                "matthewslouismarie/lm-web-framework": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "LM\\U2F\\": "",
+                    "Firehed\\U2F\\": "src/"
+                }
+            },
+            "time": "2017-12-08T15:44:18+00:00"
+        },
+        {
+            "name": "matthewslouismarie/lm-web-framework",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matthewslouismarie/lm-web-framework",
+                "reference": "54b925828652df9c8783c9d46d9c12eaa348a830"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "LM\\": "classes/LM/"
+                }
+            },
+            "time": "2017-12-08T16:15:44+00:00"
         },
         {
             "name": "psr/cache",
@@ -1949,7 +1985,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "symfony/lts": 20
+        "symfony/lts": 20,
+        "matthewslouismarie/lm-u2f": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

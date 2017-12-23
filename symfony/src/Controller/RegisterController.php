@@ -19,7 +19,7 @@ class RegisterController extends AbstractController
     }
 
     /**
-     * @Route("/register", name="register", methods={"GET"})
+     * @Route("register", name="register", methods={"GET"})
      */
     public function doGet(): Response
     {

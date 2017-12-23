@@ -2,11 +2,12 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use App\Service\PDOService;
 use Firehed\U2F\Server;
 use LM\Database\DatabaseConnection;
-use App\Service\PDOService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends AbstractController
 {
@@ -17,6 +18,9 @@ class RegisterController extends AbstractController
         $this->pdo = $pdo;
     }
 
+    /**
+     * @Route("/register", name="register", methods={"GET"})
+     */
     public function doGet(): Response
     {
         $server = new Server();

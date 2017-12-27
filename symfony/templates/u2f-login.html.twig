@@ -19,7 +19,7 @@
   </head>
   <body>
   Hello {{ username }}
-    <form action="process-u2f-auth-response.php" method="post">
+    <form action="{{ path('process_u2f_login') }}" method="post">
       <input id="username" name="username" type="text" value="{{ username }}">
       <input id="response" name="response" type="text">
       <input id="auth-id" name="auth-id" type="text" value="{{ auth_id }}">

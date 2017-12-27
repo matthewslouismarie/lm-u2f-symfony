@@ -13,11 +13,11 @@ class RegisterRequestService
     private $server;
     private $session;
 
-    public function __construct(U2FService $u2f, SecureSessionService $session, PDOService $pdo_service)
+    public function __construct(U2FService $u2f, SecureSessionService $session, PDOService $pdo)
     {
         $this->server = $u2f->getServer();
         $this->session = $session;
-        $this->pdo = $pdo_service->getPdo();
+        $this->pdo = $pdo;
     }
 
     public function generate(): array
@@ -25,7 +25,7 @@ class RegisterRequestService
         $request = $this->server->generateRegisterRequest();
         $request_id = $this->session->store(serialize($request));
         $request_json = json_encode($request);
-        $registrations = \firehed\u2f\get_registrations_for_user(0, $this->pdo);
+        $registrations = \firehed\u2f\get_registrations_for_user(0, $this->pdo->getPdo());
         $sign_requests = json_encode($this->server->generateSignRequests($registrations, $request_id));
         return array(
             'request_id' => $request_id,
@@ -40,12 +40,12 @@ class RegisterRequestService
         $this->server->setRegisterRequest($request);
         $response = RegisterResponse::fromJson($challenge);
         $registration = $this->server->register($response);
-        $this->pdo->beginTransaction();
-        $members_insert = $this->pdo->prepare('INSERT INTO members VALUES (NULL, :username)');
+        $this->pdo->getPdo()->beginTransaction();
+        $members_insert = $this->pdo->getPdo()->prepare('INSERT INTO members VALUES (NULL, :username)');
         $members_insert->bindParam(':username', $username);
         $success = $members_insert->execute();
-        $u2f_authenticators_insert = $this->pdo->prepare('INSERT INTO u2f_authenticators VALUES (NULL, :member_id, :counter, :attestation, :public_key, :key_handle)');
-        $member_id = $this->pdo->lastInsertId();
+        $u2f_authenticators_insert = $this->pdo->getPdo()->prepare('INSERT INTO u2f_authenticators VALUES (NULL, :member_id, :counter, :attestation, :public_key, :key_handle)');
+        $member_id = $this->pdo->getPdo()->lastInsertId();
         $u2f_authenticators_insert->bindParam(':member_id', $member_id);
         $attestation = base64_encode($registration->getAttestationCertificateBinary());
         $u2f_authenticators_insert->bindParam(':attestation', $attestation);
@@ -56,6 +56,6 @@ class RegisterRequestService
         $key_handle = base64_encode($registration->getKeyHandleBinary());
         $u2f_authenticators_insert->bindParam(':key_handle', $key_handle);
         $u2f_authenticators_insert->execute();
-        $this->pdo->commit();
+        $this->pdo->getPdo()->commit();
     }
 }

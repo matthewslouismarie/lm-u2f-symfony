@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use Firehed\U2F\Registration;
+
 class PDOService
 {
     private $pdo;
@@ -27,8 +29,32 @@ class PDOService
 			                 $additionalParameters);
     }
 
+    /**
+     * @todo Pdo or PDO?
+     */
     public function getPdo()
     {
         return $this->pdo;
+    }
+
+    /**
+     * @todo replace user by member
+     * @todo temp location
+     */
+    public function getRegistrationsForUser(string $username): array
+    {
+        $stmt = $this->pdo->prepare('SELECT id, counter, attestation, public_key, key_handle FROM u2f_authenticators WHERE member_id IN (SELECT id FROM members WHERE username = ?);');
+        $stmt->execute(array($username));
+        $results = $stmt->fetchAll();
+        $registrations = array();
+        foreach ($results as $row) {
+            $registration = new Registration($row['id']);
+            $registration->setCounter($row['counter']);
+            $registration->setAttestationCertificate($row['attestation']);
+            $registration->setPublicKey(base64_decode($row['public_key']));
+            $registration->setKeyHandle(base64_decode($row['key_handle']));
+            $registrations[$row['id']] = $registration;
+        }
+        return $registrations;
     }
 }

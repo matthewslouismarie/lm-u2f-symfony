@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use Firehed\U2F\Server;
 use Firehed\U2F\RegisterResponse;
 
 /**
@@ -14,11 +13,9 @@ class RegisterRequestService
     private $server;
     private $session;
 
-    public function __construct(SecureSessionService $session, PDOService $pdo_service)
+    public function __construct(U2FService $u2f, SecureSessionService $session, PDOService $pdo_service)
     {
-        $this->server = new Server();
-        $this->server->disableCAVerification()
-             ->setAppId('https://'.$_SERVER['SERVER_NAME']);
+        $this->server = $u2f->getServer();
         $this->session = $session;
         $this->pdo = $pdo_service->getPdo();
     }

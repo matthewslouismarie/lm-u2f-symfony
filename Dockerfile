@@ -1,6 +1,10 @@
 # Parent
 FROM php:7.2-apache
 
+# Packages
+RUN apt-get update
+RUN apt install -y wget git
+
 # PHP configuration
 RUN docker-php-ext-install pdo pdo_mysql
 
@@ -16,3 +20,12 @@ RUN a2enmod headers
 RUN a2ensite default-ssl
 RUN a2enconf ssl-params
 RUN apache2ctl configtest
+
+# Install Composer and the dependencies
+WORKDIR /usr/local/bin
+COPY install-composer.sh .
+RUN chmod 755 install-composer.sh
+RUN ./install-composer.sh
+
+# Set working directory
+WORKDIR /var/www/html

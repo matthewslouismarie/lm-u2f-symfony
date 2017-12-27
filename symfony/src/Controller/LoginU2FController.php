@@ -9,13 +9,34 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class LoginU2FController extends AbstractController
 {
-    /**
-     * @Route("u2f-login", name="u2f_login", methods={"POST"})
-     */
-    public function displayPage(AuthRequestService $auth)
+    private $auth;
+    private $request;
+
+    public function __construct(AuthRequestService $auth)
     {
-        $request = Request::createFromGlobals();
-        $auth_data = $auth->generate($request->get('username'));
+        $this->auth = $auth;
+        $this->request = Request::createFromGlobals();        
+    }
+
+    /**
+     * @Route("u2f-login", name="display_u2f_login", methods={"POST"})
+     */
+    public function displayPage()
+    {
+        $auth_data = $this->auth->generate($this->request->get('username'));
         return $this->render('u2f-login.html.twig', $auth_data);
+    }
+
+    /**
+     * @Route("process-u2f-login", name="process_u2f_login", methods={"POST"})
+     */
+    public function processU2FLogin()
+    {
+        $this->auth->processResponse(
+            $this->request->get('auth-id'),
+            $this->request->get('username'),
+            $this->request->get('response')
+        );
+        return $this->render('successful-u2f-login.html.twig');
     }
 }

@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+  apache:
+    build: docker-apache
+    links:
+      - mariadb
+    ports:
+      - 443:443
+    restart: always
+    volumes:
+      - ./symfony/:/var/www/html/ 
+  mariadb:
+    environment:
+      - MYSQL_DATABASE=lm-u2f-symfony
+      - MYSQL_ROOT_PASSWORD=Je suis un boulet !
+    image: mariadb:10.2.11
+    ports:
+      - 3306:3306
+    restart: always

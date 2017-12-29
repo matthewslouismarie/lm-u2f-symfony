@@ -1,6 +1,6 @@
 {
-    "host": "mysql-shift-two.alwaysdata.net",
-    "db": "shift-two_hp",
-    "username": "shift-two_hp",
+    "host": "172.17.0.1",
+    "db": "lm-u2f-symfony",
+    "username": "root",
     "password": "Je suis un boulet !"
 }

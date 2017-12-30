@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Member;
+use App\Entity\U2FToken;
+use Doctrine\ORM\EntityManagerInterface;
 use Firehed\U2F\RegisterResponse;
 
 /**
@@ -9,23 +12,27 @@ use Firehed\U2F\RegisterResponse;
  */
 class RegisterRequestService
 {
-    private $pdo;
     private $server;
     private $session;
-
-    public function __construct(U2FService $u2f, SecureSessionService $session, PDOService $pdo)
+    private $em;
+    
+    public function __construct(EntityManagerInterface $em, U2FService $u2f,
+                                SecureSessionService $session)
     {
         $this->server = $u2f->getServer();
         $this->session = $session;
-        $this->pdo = $pdo;
+        $this->em = $em;
     }
 
+    /**
+     * @todo $registrations
+     */
     public function generate(): array
     {
         $request = $this->server->generateRegisterRequest();
         $request_id = $this->session->store(serialize($request));
         $request_json = json_encode($request);
-        $registrations = \firehed\u2f\get_registrations_for_user(0, $this->pdo->getPdo());
+        $registrations = array();
         $sign_requests = json_encode($this->server->generateSignRequests($registrations, $request_id));
         return array(
             'request_id' => $request_id,
@@ -40,22 +47,17 @@ class RegisterRequestService
         $this->server->setRegisterRequest($request);
         $response = RegisterResponse::fromJson($challenge);
         $registration = $this->server->register($response);
-        $this->pdo->getPdo()->beginTransaction();
-        $members_insert = $this->pdo->getPdo()->prepare('INSERT INTO members VALUES (NULL, :username)');
-        $members_insert->bindParam(':username', $username);
-        $success = $members_insert->execute();
-        $u2f_authenticators_insert = $this->pdo->getPdo()->prepare('INSERT INTO u2f_authenticators VALUES (NULL, :member_id, :counter, :attestation, :public_key, :key_handle)');
-        $member_id = $this->pdo->getPdo()->lastInsertId();
-        $u2f_authenticators_insert->bindParam(':member_id', $member_id);
-        $attestation = base64_encode($registration->getAttestationCertificateBinary());
-        $u2f_authenticators_insert->bindParam(':attestation', $attestation);
+
+        $member = new Member($username);
+        $this->em->persist($member);
+
         $counter = $registration->getCounter();
-        $u2f_authenticators_insert->bindParam(':counter', $counter);
+        $attestation = base64_encode($registration->getAttestationCertificateBinary());
         $public_key = base64_encode($registration->getPublicKey());
-        $u2f_authenticators_insert->bindParam(':public_key', $public_key);
         $key_handle = base64_encode($registration->getKeyHandleBinary());
-        $u2f_authenticators_insert->bindParam(':key_handle', $key_handle);
-        $u2f_authenticators_insert->execute();
-        $this->pdo->getPdo()->commit();
+        $u2f_token = new U2FToken($member, $counter, $attestation, $public_key, $key_handle);
+        $this->em->persist($u2f_token);
+
+        $this->em->flush();
     }
 }

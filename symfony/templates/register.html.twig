@@ -1,30 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <script
+{% extends "base.html.twig" %}
+
+{% block title "Register" %}
+
+{% block scripts %}
+<script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
-    <script src="u2f-api.js"></script>
-    <script>
-      const completeRegistration = function fCompleteRegistration(registerResponse)
-      {
-        console.log(registerResponse);
-        $('#challenge').val(JSON.stringify(registerResponse));
-      }
-      var request = {{ request_json | raw }};
-      var sign_requests = {{ sign_requests }};
-      u2f.register([request], sign_requests, completeRegistration);
-    </script>
-  </head>
-  <body>
-      <form action="{{ path('post_register') }}" method="post">
-        <input id="username" name="username" type="text" required>
-        <input id="request" name="request" readonly type="text" value="{{ request_json }}">
-        <input id="challenge" name="challenge" readonly type="text" value="">
-        <input id="reg-id" name="reg-id" type="text" value="{{ request_id }}">
-        <button type="submit">Register</button>
-      </form>
-  </body>
-</html>
+<script src="u2f-api.js"></script>
+<script>
+  const completeRegistration = function fCompleteRegistration(registerResponse)
+  {
+    console.log(registerResponse);
+    $('#challenge').val(JSON.stringify(registerResponse));
+  }
+  var request = {{ request_json | raw }};
+  var sign_requests = {{ sign_requests }};
+  u2f.register([request], sign_requests, completeRegistration);
+</script>
+{% endblock %}
+
+{% block body %}
+<form action="{{ path('post_register') }}" method="post">
+  <input id="username" name="username" type="text" required>
+  <input id="request" name="request" readonly type="text" value="{{ request_json }}">
+  <input id="challenge" name="challenge" readonly type="text" value="">
+  <input id="reg-id" name="reg-id" type="text" value="{{ request_id }}">
+  <button type="submit">Register</button>
+</form>
+{% endblock %}

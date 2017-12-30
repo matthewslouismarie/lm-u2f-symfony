@@ -41,6 +41,6 @@ class RegisterController extends AbstractController
             $post->get('username'),
             $post->get('challenge')
         );
-        return $this->display('Everything should be fine…');
+        return new Response('went okay');
     }
 }

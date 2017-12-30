@@ -11,7 +11,6 @@ services:
       - ./symfony/:/var/www/html/ 
   mariadb:
     environment:
-      - MYSQL_DATABASE=lm-u2f-symfony
       - MYSQL_ROOT_PASSWORD=Je suis un boulet !
     image: mariadb:10.2.11
     ports:

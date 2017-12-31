@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\DependencyInjection\Security\Factory\WsseFactory;
+use App\DependencyInjection\Security\Factory\UPFormAuthFactory;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -18,7 +18,7 @@ class Kernel extends BaseKernel
     public function build(ContainerBuilder $container)
     {
         $extension = $container->getExtension('security');
-        $extension->addSecurityListenerFactory(new WsseFactory());
+        $extension->addSecurityListenerFactory(new UPFormAuthFactory());
     }
 
     public function getCacheDir()

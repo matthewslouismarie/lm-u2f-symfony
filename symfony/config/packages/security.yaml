@@ -14,10 +14,9 @@ security:
             security: false
         main:
             anonymous: ~
-            http_basic: ~
             provider: our_db_provider
+            wsse:      true
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: ROLE_USER }
 
             # activate different ways to authenticate

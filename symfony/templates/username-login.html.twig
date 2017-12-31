@@ -1,0 +1,10 @@
+{% extends "base.html.twig" %}
+
+{% block title "Login" %}
+
+{% block body %}
+<form action="{{ path('display_u2f_login') }}" method="post">
+  <input id="username" name="username" type="text">
+  <button type="submit">Valider</button>
+</form>
+{% endblock %}

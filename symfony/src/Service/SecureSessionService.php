@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @todo interface for session ids?
@@ -13,10 +13,9 @@ class SecureSessionService
     private const KEY_LENGTH = 32;
     private $session;
 
-    public function __construct()
+    public function __construct(SessionInterface $session)
     {
-        $this->session = new Session();
-        $this->session->start();
+        $this->session = $session;
     }
 
     public function store($value): string

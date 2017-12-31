@@ -8,10 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class LoginController extends AbstractController
 {
     /**
-     * @Route("login", name="login", methods={"GET"})
+     * @Route("/username-login", name="username_login", methods={"GET"})
      */
     public function getLoginFirstPage()
     {
-        return $this->render('login.html.twig');
+        return $this->render('username-login.html.twig');
     }
 }

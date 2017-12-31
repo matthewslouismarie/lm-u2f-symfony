@@ -24,6 +24,10 @@ class WsseProvider implements AuthenticationProviderInterface
         $this->provider = $provider;
     }
 
+    /**
+     * @todo Find an elegant and robust way to detect if the request comes from
+     * the login page.
+     */
     public function authenticate(TokenInterface $token)
     {
         try {
@@ -31,9 +35,12 @@ class WsseProvider implements AuthenticationProviderInterface
         } catch (UsernameNotFoundException $e) {
             // CAUTION: this message will be returned to the client
             // (so don't put any un-trusted messages / error strings here)
-            throw new CustomUserMessageAuthenticationException('Invalid username or password');
+            throw new CustomUserMessageAuthenticationException('Invalid username.');
         }
-
+        
+        if (null === $token->getCredentials()) {
+            return $token;
+        }
         $passwordValid = $this->encoder->isPasswordValid($user, $token->getCredentials());
 
         if ($passwordValid) {
@@ -42,7 +49,7 @@ class WsseProvider implements AuthenticationProviderInterface
 
         // CAUTION: this message will be returned to the client
         // (so don't put any un-trusted messages / error strings here)
-        throw new CustomUserMessageAuthenticationException('Invalid username or password');
+        throw new CustomUserMessageAuthenticationException('Auth problem.');
     }
 
     public function supports(TokenInterface $token)

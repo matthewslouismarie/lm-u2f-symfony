@@ -17,13 +17,20 @@ class WsseListener implements ListenerInterface
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
-        AuthenticationManagerInterface $authenticationManager
-    )
+        AuthenticationManagerInterface $authenticationManager)
     {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
     }
 
+    /**
+     * Sets the $tokenStorage variable, on which authentication and
+     * authorization decisions are based.
+     * @todo Remove hard-coded references: _username, _password,
+     * our_db_provider, and roles.
+     * @todo Find an elegant and robust way to detect if the request comes from
+     * the login page.
+     */
     public function handle(GetResponseEvent $event)
     {
         $request = $event->getRequest();
@@ -39,7 +46,8 @@ class WsseListener implements ListenerInterface
             $token = new UsernamePasswordToken(
                 $post_username,
                 $post_password,
-                'our_db_provider');
+                'our_db_provider',
+                array('ROLE_USER'));
             try {
                 $authToken = $this->authenticationManager->authenticate($token);
                 $this->tokenStorage->setToken($authToken);
@@ -57,7 +65,6 @@ class WsseListener implements ListenerInterface
                 // return;
             }
         }
-
 
         // // By default deny authorization
         // $response = new Response();

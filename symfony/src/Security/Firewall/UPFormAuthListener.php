@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
-class WsseListener implements ListenerInterface
+class UPFormAuthListener implements ListenerInterface
 {
     protected $tokenStorage;
     protected $authenticationManager;
@@ -59,7 +59,7 @@ class WsseListener implements ListenerInterface
                 // To deny the authentication clear the token. This will redirect to the login page.
                 // Make sure to only clear your token, not those of other authentication listeners.
                 // $token = $this->tokenStorage->getToken();
-                // if ($token instanceof WsseUserToken && $this->providerKey === $token->getProviderKey()) {
+                // if ($token instanceof UPFormAuthUserToken && $this->providerKey === $token->getProviderKey()) {
                 //     $this->tokenStorage->setToken(null);
                 // }
                 // return;

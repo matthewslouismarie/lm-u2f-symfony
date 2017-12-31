@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 
-class WsseProvider implements AuthenticationProviderInterface
+class UPFormAuthProvider implements AuthenticationProviderInterface
 {
     private $provider;
     private $encoder;

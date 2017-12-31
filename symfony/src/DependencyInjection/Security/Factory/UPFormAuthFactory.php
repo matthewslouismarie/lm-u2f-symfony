@@ -7,10 +7,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
-use App\Security\Authentication\Provider\WsseProvider;
-use App\Security\Firewall\WsseListener;
+use App\Security\Authentication\Provider\UPFormAuthProvider;
+use App\Security\Firewall\UPFormAuthListener;
 
-class WsseFactory implements SecurityFactoryInterface
+class UPFormAuthFactory implements SecurityFactoryInterface
 {
     public function create(
         ContainerBuilder $container,
@@ -19,14 +19,14 @@ class WsseFactory implements SecurityFactoryInterface
         $userProvider,
         $defaultEntryPoint)
     {
-        $providerId = 'security.authentication.provider.wsse.'.$id;
+        $providerId = 'security.authentication.provider.up_form_auth.'.$id;
         $container
-            ->setDefinition($providerId, new ChildDefinition(WsseProvider::class))
+            ->setDefinition($providerId, new ChildDefinition(UPFormAuthProvider::class))
             ->setArgument(0, new Reference($userProvider))
         ;
 
-        $listenerId = 'security.authentication.listener.wsse.'.$id;
-        $listener = $container->setDefinition($listenerId, new ChildDefinition(WsseListener::class));
+        $listenerId = 'security.authentication.listener.up_form_auth.'.$id;
+        $listener = $container->setDefinition($listenerId, new ChildDefinition(UPFormAuthListener::class));
 
         return array($providerId, $listenerId, $defaultEntryPoint);
     }
@@ -38,7 +38,7 @@ class WsseFactory implements SecurityFactoryInterface
 
     public function getKey()
     {
-        return 'wsse';
+        return 'up_form_auth';
     }
 
     public function addConfiguration(NodeDefinition $node)

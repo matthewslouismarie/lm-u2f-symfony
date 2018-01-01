@@ -21,11 +21,13 @@ RUN a2ensite default-ssl
 RUN a2enconf ssl-params
 RUN apache2ctl configtest
 
-# Install Composer and the dependencies
+# Install Composer
 WORKDIR /usr/local/bin
-COPY install-composer.sh .
-RUN chmod 755 install-composer.sh
-RUN ./install-composer.sh
+COPY scripts/install-composer .
+COPY scripts/composer .
+RUN chmod 755 install-composer composer
+RUN ./install-composer
+RUN rm install-composer
 
 # Set working directory
 WORKDIR /var/www/html

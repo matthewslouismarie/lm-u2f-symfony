@@ -10,7 +10,7 @@ before_install:
   - docker-compose up --build -d
 
 script:
-  - docker exec -it php bin/phpunit
+  - docker exec lmu2fsymfony_apache bin/phpunit
 
 after_script:
   - docker-compose down

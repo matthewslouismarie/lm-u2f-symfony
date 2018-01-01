@@ -8,10 +8,9 @@ services:
 before_install:
   - sudo service mysql stop
   - docker-compose up --build -d
-  - docker exec -it lmu2fsymfony_apache bash
 
 script:
-  - php bin/phpunit
+  - docker exec -it php bin/phpunit
 
 after_script:
   - docker-compose down

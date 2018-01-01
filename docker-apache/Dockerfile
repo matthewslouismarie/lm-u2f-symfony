@@ -29,9 +29,10 @@ RUN chmod 755 install-composer composer
 RUN ./install-composer
 RUN rm install-composer
 
-# Install NPM
+# Install NPM and Grunt
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get install -y nodejs
+RUN npm install -g grunt-cli
 
 # Set working directory
 WORKDIR /var/www/html

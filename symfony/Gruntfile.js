@@ -11,7 +11,7 @@ module.exports = function(grunt) {
               'jquery.min.js',
               'jquery.min.map'
             ],
-            dest: 'public'
+            dest: 'assets'
           },
           {
             cwd: 'node_modules/google-u2f-api.js',
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
             src: [
               'u2f-api.js'
             ],
-            dest: 'public'
+            dest: 'assets'
           }
         ]
       }

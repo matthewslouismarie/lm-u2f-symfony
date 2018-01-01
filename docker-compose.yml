@@ -8,7 +8,6 @@ services:
       - mariadb
     ports:
       - 443:443
-    restart: always
     volumes:
       - ./symfony/:/var/www/html/
     networks:
@@ -21,7 +20,6 @@ services:
     image: mariadb:10.2.11
     ports:
       - 3306:3306
-    restart: always
     networks:
       app_net:
         ipv4_address: 172.16.238.9

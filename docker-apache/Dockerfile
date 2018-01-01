@@ -8,6 +8,9 @@ RUN apt-get install -y wget git zlib1g-dev gnupg2
 # PHP configuration
 RUN docker-php-ext-install pdo_mysql zip
 
+# Fix Apache warning
+RUN echo "ServerName 172.16.238.10" | tee /etc/apache2/conf-available/servername.conf
+
 # Enable HTTPS
 COPY tls/apache-selfsigned.key /etc/ssl/private/apache-selfsigned.key
 COPY tls/apache-selfsigned.crt /etc/ssl/certs/apache-selfsigned.crt
@@ -19,6 +22,7 @@ RUN a2enmod ssl
 RUN a2enmod headers
 RUN a2ensite default-ssl
 RUN a2enconf ssl-params
+RUN a2enconf servername
 RUN apache2ctl configtest
 
 # Install Composer

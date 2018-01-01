@@ -10,7 +10,10 @@ services:
       - 443:443
     restart: always
     volumes:
-      - ./symfony/:/var/www/html/ 
+      - ./symfony/:/var/www/html/
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.10
   mariadb:
     container_name: lmu2fsymfony_mariadb
     environment:
@@ -19,3 +22,13 @@ services:
     ports:
       - 3306:3306
     restart: always
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.9
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24

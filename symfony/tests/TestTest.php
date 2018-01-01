@@ -8,6 +8,6 @@ class TestTest extends TestCase
 {
     public function testSomething()
     {
-        $this->assertTrue(true);
+        $this->assertTrue(false);
     }
 }

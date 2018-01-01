@@ -1,1 +1,4 @@
 /.vscode/
+/symfony/public/u2f-api.js
+/symfony/public/jquery.min.js
+/symfony/public/jquery.min.map

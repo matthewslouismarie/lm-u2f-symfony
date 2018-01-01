@@ -3,10 +3,10 @@ FROM php:7.2-apache
 
 # Packages
 RUN apt-get update
-RUN apt install -y wget git
+RUN apt-get install -y wget git zlib1g-dev
 
 # PHP configuration
-RUN docker-php-ext-install pdo pdo_mysql
+RUN docker-php-ext-install pdo_mysql zip
 
 # Enable HTTPS
 COPY tls/apache-selfsigned.key /etc/ssl/private/apache-selfsigned.key

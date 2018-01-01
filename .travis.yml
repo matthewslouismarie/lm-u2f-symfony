@@ -1,0 +1,16 @@
+sudo: required
+
+language: php
+
+services:
+  - docker
+
+before_install:
+  - docker-compose up --build -d
+  - docker exec -it lmu2fsymfony_apache bash
+
+script:
+  - php bin/phpunit
+
+after_script:
+  - docker-compose down

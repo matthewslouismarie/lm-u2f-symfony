@@ -23,7 +23,6 @@ RUN a2enmod headers
 RUN a2ensite default-ssl
 RUN a2enconf ssl-params
 RUN a2enconf servername
-RUN apache2ctl configtest
 
 # Install Composer
 WORKDIR /usr/local/bin

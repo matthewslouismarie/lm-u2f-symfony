@@ -2,6 +2,8 @@ version: '3.1'
 services:
   apache:
     build: docker-apache
+    container_name: lmu2fsymfony_apache
+    image: lmu2fsymfony_apache
     links:
       - mariadb
     ports:
@@ -10,6 +12,7 @@ services:
     volumes:
       - ./symfony/:/var/www/html/ 
   mariadb:
+    container_name: lmu2fsymfony_mariadb
     environment:
       - MYSQL_ROOT_PASSWORD=Je suis un boulet !
     image: mariadb:10.2.11

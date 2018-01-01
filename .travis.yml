@@ -9,6 +9,7 @@ before_install:
   - sudo service mysql stop
   - docker-compose up --build -d
   - docker exec lmu2fsymfony_apache php /usr/local/bin/composer.phar install
+  - docker exec lmu2fsymfony_apache npm install
 
 script:
   - docker exec lmu2fsymfony_apache bin/phpunit

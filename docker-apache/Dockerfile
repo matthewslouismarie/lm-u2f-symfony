@@ -3,7 +3,7 @@ FROM php:7.2-apache
 
 # Packages
 RUN apt-get update
-RUN apt-get install -y wget git zlib1g-dev
+RUN apt-get install -y wget git zlib1g-dev gnupg2
 
 # PHP configuration
 RUN docker-php-ext-install pdo_mysql zip
@@ -28,6 +28,10 @@ COPY scripts/composer .
 RUN chmod 755 install-composer composer
 RUN ./install-composer
 RUN rm install-composer
+
+# Install NPM
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN apt-get install -y nodejs
 
 # Set working directory
 WORKDIR /var/www/html

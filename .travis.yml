@@ -6,6 +6,7 @@ services:
   - docker
 
 before_install:
+  - sudo service mysql stop
   - docker-compose up --build -d
   - docker exec -it lmu2fsymfony_apache bash
 

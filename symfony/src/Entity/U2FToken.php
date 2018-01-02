@@ -17,9 +17,15 @@ class U2FToken
     private $id;
 
     /**
+     * @todo rename to owner
      * @ORM\ManyToOne(targetEntity="Member")
      */
     private $member;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $name;
 
     /**
      * @ORM\Column(type="integer")
@@ -41,30 +47,27 @@ class U2FToken
      */
     private $key_handle;
 
-    public function __construct(Member $member, int $counter,
-                                string $attestation, string $public_key,
-                                string $key_handle)
+    public function __construct(
+        ?int $id,
+        string $attestation,
+        int $counter,
+        string $key_handle,
+        Member $member,
+        string $name,
+        string $public_key)
     {
-        $this->member = $member;
-        $this->counter = $counter;
+        $this->id = $id;
         $this->attestation = $attestation;
-        $this->public_key = $public_key;
+        $this->counter = $counter;
         $this->key_handle = $key_handle;
+        $this->member = $member;
+        $this->name = $name;
+        $this->public_key = $public_key;
     }
 
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getMember(): Member
-    {
-        return $this->member;
-    }
-
-    public function getCounter(): int
-    {
-        return $this->counter;
     }
     
     public function getAttestation(): string
@@ -72,14 +75,29 @@ class U2FToken
         return $this->attestation;
     }
     
-    public function getPublicKey(): string
+    public function getCounter(): int
     {
-        return $this->public_key;
+        return $this->counter;
     }
     
     public function getKeyHandle(): string
     {
         return $this->key_handle;
+    }
+
+    public function getMember(): Member
+    {
+        return $this->member;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    
+    public function getPublicKey(): string
+    {
+        return $this->public_key;
     }
     
     /**

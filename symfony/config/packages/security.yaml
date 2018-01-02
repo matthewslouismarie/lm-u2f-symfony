@@ -1,28 +1,19 @@
 security:
-    # https://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
-    encoders:
-        App\Entity\Member:
-            algorithm: bcrypt
+    # encoders:
+    #     App\Entity\Member:
+    #         algorithm: bcrypt
     providers:
         our_db_provider:
             entity:
                 class: App\Entity\Member
                 property: username
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+        # dev:
+        #     pattern: ^/(_(profiler|wdt)|css|images|js)/
+        #     security: false
         main:
             anonymous: ~
-            provider: our_db_provider
-            http_basic: ~
-    access_control:
-        - { path: ^/, roles: ROLE_USER }
-
-            # activate different ways to authenticate
-
-            # http_basic: ~
-            # https://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: ~
-            # https://symfony.com/doc/current/cookbook/security/form_login_setup.html
+            # provider: our_db_provider
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator

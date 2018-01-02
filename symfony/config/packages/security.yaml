@@ -15,7 +15,7 @@ security:
         main:
             anonymous: ~
             provider: our_db_provider
-            up_form_auth:      true
+            http_basic: ~
     access_control:
         - { path: ^/register, roles: ROLE_USER }
 

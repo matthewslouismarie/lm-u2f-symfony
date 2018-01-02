@@ -10,7 +10,7 @@ use Firehed\U2F\RegisterResponse;
 /**
  * @todo interface for request ids?
  */
-class RegisterRequestService
+class AddU2FTokenService
 {
     private $server;
     private $session;
@@ -41,21 +41,29 @@ class RegisterRequestService
         );
     }
 
-    public function processResponse(string $request_id, string $username, string $challenge): void
+    public function processResponse(
+        string $challenge,
+        string $name,
+        Member $owner,
+        string $request_id): void
     {
         $request = unserialize($this->session->getAndRemove($request_id));
         $this->server->setRegisterRequest($request);
         $response = RegisterResponse::fromJson($challenge);
         $registration = $this->server->register($response);
 
-        $member = new Member($username);
-        $this->em->persist($member);
-
         $counter = $registration->getCounter();
         $attestation = base64_encode($registration->getAttestationCertificateBinary());
         $public_key = base64_encode($registration->getPublicKey());
         $key_handle = base64_encode($registration->getKeyHandleBinary());
-        $u2f_token = new U2FToken($member, $counter, $attestation, $public_key, $key_handle);
+        $u2f_token = new U2FToken(
+            null,
+            $attestation,
+            $counter,
+            $key_handle,
+            $owner,
+            $name,
+            $public_key);
         $this->em->persist($u2f_token);
 
         $this->em->flush();

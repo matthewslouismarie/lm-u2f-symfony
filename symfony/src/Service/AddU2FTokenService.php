@@ -44,7 +44,8 @@ class AddU2FTokenService
     public function processResponse(
         string $challenge,
         string $name,
-        Member $owner,
+        Member $member,
+        \DateTimeImmutable $registration_date_time,
         string $request_id): void
     {
         $request = unserialize($this->session->getAndRemove($request_id));
@@ -61,8 +62,9 @@ class AddU2FTokenService
             $attestation,
             $counter,
             $key_handle,
-            $owner,
+            $member,
             $name,
+            $registration_date_time,
             $public_key);
         $this->em->persist($u2f_token);
 

@@ -24,6 +24,7 @@ class ManageU2FTokensController extends AbstractController
     }
 
     /**
+     * @todo set timezone
      * @Route("/add-u2f-token", name="add-u2f-token", methods={"GET", "POST"})
      */
     public function addU2FToken(AddU2FTokenService $service): Response
@@ -38,6 +39,7 @@ class ManageU2FTokensController extends AbstractController
                 $post->get('challenge'),
                 $post->get('name'),
                 $this->getUser(),
+                new \DateTimeImmutable(),
                 $post->get('reg-id'));
             return new Response('went okay');
         }

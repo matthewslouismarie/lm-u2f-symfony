@@ -17,7 +17,7 @@ security:
             provider: our_db_provider
             http_basic: ~
     access_control:
-        - { path: ^/register, roles: ROLE_USER }
+        - { path: ^/, roles: ROLE_USER }
 
             # activate different ways to authenticate
 

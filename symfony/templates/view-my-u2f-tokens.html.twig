@@ -4,5 +4,6 @@
 {% for token in tokens %}
 {{ token.name }}
 {{ token.id }}
+{{ token.registrationdatetime | date('Y-m-d H:i:s') }}
 {% endfor %}
 {% endblock %}

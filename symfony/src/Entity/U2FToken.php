@@ -18,6 +18,20 @@ class U2FToken
     private $id;
 
     /**
+     * @ORM\Column(type="string", length=788)
+     */
+    private $attestation;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $counter;
+
+    /**
+     * @ORM\Column(type="string", length=88)
+     */
+    private $keyHandle;
+    /**
      * @todo rename to owner
      * @ORM\ManyToOne(targetEntity="Member")
      */
@@ -29,41 +43,33 @@ class U2FToken
     private $name;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="datetimetz_immutable")
      */
-    private $counter;
-
-    /**
-     * @ORM\Column(type="string", length=788)
-     */
-    private $attestation;
+    private $registrationDateTime;
 
     /**
      * @ORM\Column(type="string", length=88)
      */
-    private $public_key;
-
-    /**
-     * @ORM\Column(type="string", length=88)
-     */
-    private $key_handle;
+    private $publicKey;
 
     public function __construct(
         ?int $id,
         string $attestation,
         int $counter,
-        string $key_handle,
+        string $keyHandle,
         Member $member,
         string $name,
-        string $public_key)
+        \DateTimeImmutable $registrationDateTime,
+        string $publicKey)
     {
         $this->id = $id;
         $this->attestation = $attestation;
         $this->counter = $counter;
-        $this->key_handle = $key_handle;
+        $this->keyHandle = $keyHandle;
         $this->member = $member;
         $this->name = $name;
-        $this->public_key = $public_key;
+        $this->registrationDateTime = $registrationDateTime;
+        $this->publicKey = $publicKey;
     }
 
     public function getId(): int
@@ -83,7 +89,12 @@ class U2FToken
     
     public function getKeyHandle(): string
     {
-        return $this->key_handle;
+        return $this->keyHandle;
+    }
+
+    public function getRegistrationDateTime(): \DateTimeImmutable
+    {
+        return $this->registrationDateTime;
     }
 
     public function getMember(): Member
@@ -98,7 +109,7 @@ class U2FToken
     
     public function getPublicKey(): string
     {
-        return $this->public_key;
+        return $this->publicKey;
     }
     
     /**

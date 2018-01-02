@@ -47,6 +47,7 @@ class ManageU2FTokensController extends AbstractController
 
     /**
      * @todo CSRF
+     * @todo refactor and finish $token check
      * @Route(
      *  "/delete-u2f-token/{id}",
      *  name="delete-u2f-token",
@@ -72,6 +73,35 @@ class ManageU2FTokensController extends AbstractController
             $em->remove($token);
             $em->flush();
             return $this->render('post_u2f_token_deletion.html.twig');
+        }
+    }
+
+    /**
+     * @Route(
+     *  "/edit-u2f-token/{id}",
+     *  name="edit_u2f_token",
+     *  methods={"GET", "POST"},
+     *  requirements={"id"="\d+"})
+     */
+    public function editU2FToken(int $id)
+    {
+        $request = Request::createFromGlobals();
+        $repo = $this->getDoctrine()->getRepository(U2FToken::class);
+        $token = $repo->find($id);
+        if (null === $token || $this->getUser() !== $token->getMember()) {
+            echo 'outch';
+        }
+        if ('GET' === $request->getMethod()) {
+            return $this->render('u2f_token.html.twig', array(
+                'id' => $id,
+                'token' => $token,
+            ));
+        } elseif ('POST' === $request->getMethod()) {
+            $newToken = $repo->setName($token, $request->request->get('name'));
+            return $this->render('u2f_token.html.twig', array(
+                'id' => $id,
+                'token' => $newToken,
+            ));
         }
     }
 }

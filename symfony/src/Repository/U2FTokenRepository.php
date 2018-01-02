@@ -47,4 +47,25 @@ class U2FTokenRepository extends ServiceEntityRepository
             }
         return $registrations;
     }
+
+    /**
+     * @todo The method to change the name should be in U2FTokenBuilder.
+     */
+    public function setName(U2FToken $token, string $newName): U2FToken
+    {
+        $newU2FToken = new U2FToken(
+            $token->getId(),
+            $token->getAttestation(),
+            $token->getCounter(),
+            $token->getKeyHandle(),
+            $token->getMember(),
+            $newName,
+            $token->getRegistrationDateTime(),
+            $token->getPublicKey());
+        $em = $this->getEntityManager();
+        $em->persist($newU2FToken);
+        $em->flush();
+        
+        return $newU2FToken;
+    }
 }

@@ -42,4 +42,34 @@ class ManageU2FTokensController extends AbstractController
             return new Response('went okay');
         }
     }
+
+    /**
+     * @todo CSRF
+     * @Route(
+     *  "/delete-u2f-token/{id}",
+     *  name="delete-u2f-token",
+     *  methods={"GET", "POST"},
+     *  requirements={"id"="\d+"})
+     */
+    public function deleteU2FToken(int $id)
+    {
+        $request = Request::createFromGlobals();
+        $repo = $this->getDoctrine()->getRepository(U2FToken::class);
+        $token = $repo->find($id);
+
+        if (null === $token || $this->getUser() !== $token->getMember()) {
+            echo 'outch';
+        }
+        if ('GET' === $request->getMethod()) {
+            return $this->render('delete-u2f-token.html.twig', array(
+                'token' => $token,
+                'id' => $id
+            ));
+        } elseif ('POST' === $request->getMethod()) {
+            $em = $this->getDoctrine()->getEntityManager();
+            $em->remove($token);
+            $em->flush();
+            return $this->render('post_u2f_token_deletion.html.twig');
+        }
+    }
 }

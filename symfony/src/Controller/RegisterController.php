@@ -38,7 +38,7 @@ class RegisterController extends AbstractController
         $post = Request::createFromGlobals()->request;
         $this->register->processResponse(
             $post->get('reg-id'),
-            $post->get('username'),
+            $this->getUser()->getUsername(),
             $post->get('challenge')
         );
         return new Response('went okay');

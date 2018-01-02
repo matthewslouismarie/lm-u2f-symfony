@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\DependencyInjection\Security\Factory\UPFormAuthFactory;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -14,12 +13,6 @@ class Kernel extends BaseKernel
     use MicroKernelTrait;
 
     const CONFIG_EXTS = '.{php,xml,yaml,yml}';
-
-    public function build(ContainerBuilder $container)
-    {
-        $extension = $container->getExtension('security');
-        $extension->addSecurityListenerFactory(new UPFormAuthFactory());
-    }
 
     public function getCacheDir()
     {

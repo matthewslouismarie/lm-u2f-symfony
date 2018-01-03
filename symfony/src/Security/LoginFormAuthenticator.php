@@ -12,6 +12,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $formFactory;
+    private $encoder;
     private $om;
     private $router;
     private $session;
@@ -27,9 +29,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         FormFactoryInterface $formFactory,
         ObjectManager $om,
         RouterInterface $router,
-        SessionInterface $session)
+        SessionInterface $session,
+        UserPasswordEncoderInterface $encoder)
     {
         $this->formFactory = $formFactory;
+        $this->encoder = $encoder;
         $this->om = $om;
         $this->router = $router;
         $this->session = $session;
@@ -42,7 +46,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $form->handleRequest($request);
         $data = $form->getData();
 
-        return $data ?? array();
+        return $data;
     }
 
     /**
@@ -51,7 +55,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $username = $credentials['_username'];
-        $this->session->set('lm_u2f_symfony:username', $username);
         $user = $this
             ->om
             ->getRepository(Member::class)->findOneBy(array(
@@ -62,7 +65,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return true;
+        $isPasswordValid = $this->encoder->isPasswordValid($user, $credentials['_password']);
+        if ($isPasswordValid) {
+            $this->session->set('lm_u2f_symfony:username', $user->getUsername());
+        }
+        return $isPasswordValid;
     }
 
     protected function getLoginUrl()

@@ -67,9 +67,12 @@ class MemoryAuthenticator extends AbstractFormLoginAuthenticator
         return true;
     }
 
+    /**
+     * Normally, this function should never be called.
+     */
     protected function getLoginUrl()
     {
-        return 'public/login';
+        return $this->router->generate('security_login');
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)

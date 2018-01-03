@@ -79,7 +79,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return 'public/login';
+        return $this->router->generate('security_login');
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
@@ -89,6 +89,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         );
     }
 
+    /**
+     * @todo Redirect to previously visited page.
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         return new RedirectResponse(

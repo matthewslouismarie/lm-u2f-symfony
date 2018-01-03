@@ -2,6 +2,9 @@
 
 namespace App\FormModel;
 
+/**
+ * @todo Maybe methods shouldn't be type-hinted?
+ */
 class RegistrationSubmission
 {
     /**

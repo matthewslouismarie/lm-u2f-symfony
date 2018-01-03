@@ -1,19 +1,19 @@
 security:
-    # encoders:
-    #     App\Entity\Member:
-    #         algorithm: bcrypt
+    encoders:
+        App\Entity\Member:
+            algorithm: bcrypt
     providers:
         our_db_provider:
             entity:
                 class: App\Entity\Member
                 property: username
     firewalls:
-        # dev:
-        #     pattern: ^/(_(profiler|wdt)|css|images|js)/
-        #     security: false
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
         main:
             anonymous: ~
-            # provider: our_db_provider
+            provider: our_db_provider
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator

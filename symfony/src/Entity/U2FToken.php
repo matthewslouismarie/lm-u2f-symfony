@@ -99,12 +99,4 @@ class U2FToken
     {
         return $this->publicKey;
     }
-    
-    /**
-     * @todo to replace with a builder class
-     */
-    public function setCounter(int $counter): void
-    {
-        $this->counter = $counter;
-    }
 }

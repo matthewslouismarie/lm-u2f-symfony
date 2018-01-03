@@ -35,6 +35,6 @@ class LoginU2FController extends Controller
             $request->get('username'),
             $request->get('response')
         );
-        return $this->render('successful-u2f-login.html.twig');
+        return $this->render('successful_u2f_login.html.twig');
     }
 }

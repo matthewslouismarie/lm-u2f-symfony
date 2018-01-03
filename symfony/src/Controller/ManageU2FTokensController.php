@@ -22,7 +22,7 @@ class ManageU2FTokensController extends AbstractController
     {
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
         $tokens = $repo->findBy(array('member' => $this->getUser()));
-        return $this->render('view-my-u2f-tokens.html.twig', array(
+        return $this->render('u2f_token_list.html.twig', array(
             'tokens' => $tokens
         ));
     }
@@ -54,7 +54,7 @@ class ManageU2FTokensController extends AbstractController
             $em->flush();
             return $this->render('post_u2f_token_deletion.html.twig');
         } else {
-            return $this->render('delete-u2f-token.html.twig', array(
+            return $this->render('delete_u2f_token.html.twig', array(
                 'form' => $form->createView(),
                 'id' => $id,
                 'token' => $token,

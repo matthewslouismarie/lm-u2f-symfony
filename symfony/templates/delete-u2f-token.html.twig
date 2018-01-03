@@ -2,7 +2,5 @@
 
 {% block body %}
 <p>Are you sure you want to delete {{ token.name }}?</p>
-<form action="{{ path('delete-u2f-token', {'id': id}) }}" method="POST">
-  <button type="submit">Yes</button>
-</form>
+{{ form(form) }}
 {% endblock %}

@@ -29,7 +29,7 @@ class SecurityController extends Controller
             new LoginSubmission($lastUsername, '')
         );
         return $this->render(
-            'security/login.html.twig',
+            'login.html.twig',
             array(
                 'form' => $form->createView(),
                 'error' => $error,

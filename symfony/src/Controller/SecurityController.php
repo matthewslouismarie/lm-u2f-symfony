@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Member;
 use App\Form\LoginForm;
-use App\Form\RegistrationForm;
+use App\Form\RegistrationType;
 use App\Form\UserConfirmationType;
 use App\FormModel\LoginSubmission;
 use App\FormModel\RegistrationSubmission;
@@ -66,7 +66,7 @@ class SecurityController extends Controller
     {
         $submission = new RegistrationSubmission();
         $form = $this->createForm(
-            RegistrationForm::class,
+            RegistrationType::class,
             $submission
         );
         $form->handleRequest($request);

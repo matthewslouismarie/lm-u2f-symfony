@@ -2,7 +2,5 @@
 
 {% block body %}
 <p>Are you sure you want to log out?</p>
-<form action="{{ path('logout') }}" method="post">
-  <button type="submit">Yes</button>
-</form>
+{{ form(form) }}
 {% endblock %}

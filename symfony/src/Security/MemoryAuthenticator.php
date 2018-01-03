@@ -16,7 +16,7 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
+class MemoryAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $formFactory;
     private $om;
@@ -38,11 +38,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        $form = $this->formFactory->create(LoginForm::class);
-        $form->handleRequest($request);
-        $data = $form->getData();
-
-        return $data ?? array();
+        return array(
+            '_username' => $this->session->get('lm_u2f_symfony:username'),
+        );
     }
 
     /**
@@ -51,13 +49,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $username = $credentials['_username'];
-        $this->session->set('lm_u2f_symfony:username', $username);
-        $user = $this
-            ->om
-            ->getRepository(Member::class)->findOneBy(array(
-                'username' => $username,
-        ));
-        return $user;
+        
+        if (null === $username) {
+            return null;
+        } else {
+            $user = $this
+                ->om
+                ->getRepository(Member::class)->findOneBy(array(
+                    'username' => $username,
+            ));
+            return $user;
+        }
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -80,12 +82,15 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return;
     }
 
+    /**
+     * @todo Make LoginFormAuthenticator and this class share the same function?
+     */
     public function supports(Request $request): bool
     {
         $isRouteCorrect = $request
             ->attributes
             ->get('_route') === 'security_login';
         $isMethodCorrect = $request->isMethod('POST');
-        return $isRouteCorrect && $isMethodCorrect;
+        return !($isRouteCorrect && $isMethodCorrect);
     }
 }

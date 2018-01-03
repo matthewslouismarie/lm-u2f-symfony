@@ -44,6 +44,14 @@ class SecurityController extends Controller
     }
 
     /**
+     * @Route("/not-logged-out", name="not_logged_out", methods={"GET"})
+     */
+    public function notLoggedOut()
+    {
+        return $this->render('not_logged_out_error.html.twig');
+    }
+
+    /**
      * @Route("/", name="homepage")
      */
     public function home()

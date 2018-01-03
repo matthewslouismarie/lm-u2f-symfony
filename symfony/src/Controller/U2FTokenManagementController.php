@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\U2FToken;
-use App\Service\AddU2FTokenService;
+use App\Service\U2FTokenRegistrationService;
 use App\Form\U2fTokenUpdateType;
 use App\Form\UserConfirmationType;
 use App\FormModel\U2FTokenRegistration;
@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-class ManageU2FTokensController extends AbstractController
+class U2FTokenManagementController extends AbstractController
 {
     /**
      * @Route("/view-my-u2f-tokens", name="view-my-u2f-tokens", methods={"GET"})

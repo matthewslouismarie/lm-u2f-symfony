@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Form\U2FTokenRegistrationType;
 use App\FormModel\U2FTokenRegistration;
-use App\Service\AddU2FTokenService;
+use App\Service\U2FTokenRegistrationService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +15,7 @@ class U2fTokenRegistrationController extends AbstractController
     /**
      * @Route("/add-u2f-token", name="get_add_u2f_token", methods={"GET"})
      */
-    public function doGet(Request $request, AddU2FTokenService $service)
+    public function doGet(Request $request, U2FTokenRegistrationService $service)
     {
         $rp_request = $service->generate();
 
@@ -35,7 +35,7 @@ class U2fTokenRegistrationController extends AbstractController
      * @todo set timezone
      * @Route("/add-u2f-token", name="post_add_u2f_token", methods={"POST"})
      */
-    public function doPost(Request $request, AddU2FTokenService $service)
+    public function doPost(Request $request, U2FTokenRegistrationService $service)
     {
         $submission = new U2FTokenRegistration();
         $form = $this->createForm(U2FTokenRegistrationType::class, $submission);

@@ -4,13 +4,14 @@ namespace App\Controller;
 
 use App\Entity\U2FToken;
 use App\Service\AddU2FTokenService;
+use App\Form\U2fTokenUpdateType;
 use App\FormModel\U2FTokenRegistration;
+use App\FormModel\U2fTokenUpdate;
 use App\Form\U2FTokenRegistrationType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 class ManageU2FTokensController extends AbstractController
 {
     /**
@@ -57,31 +58,39 @@ class ManageU2FTokensController extends AbstractController
     }
 
     /**
+     * @todo Use a custom exception.
+     * 
      * @Route(
-     *  "/edit-u2f-token/{id}",
+     *  "/edit-u2f-token/{u2fTokenId}",
      *  name="edit_u2f_token",
      *  methods={"GET", "POST"},
-     *  requirements={"id"="\d+"})
+     *  requirements={"u2fTokenId"="\d+"})
      */
-    public function editU2FToken(int $id)
+    public function editU2fToken(int $u2fTokenId)
     {
         $request = Request::createFromGlobals();
+
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
-        $token = $repo->find($id);
+        $token = $repo->find($u2fTokenId);
         if (null === $token || $this->getUser() !== $token->getMember()) {
-            echo 'outch';
+            throw new \Exception();
         }
-        if ('GET' === $request->getMethod()) {
+        $u2fTokenUpdate = new U2fTokenUpdate();
+        $u2fTokenUpdate->setName($token->getName());
+
+        $form = $this->createForm(U2fTokenUpdateType::class, $u2fTokenUpdate);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newToken = $repo->setName($token, $u2fTokenUpdate->getName());
             return $this->render('u2f_token.html.twig', array(
-                'id' => $id,
-                'token' => $token,
+                'form' => $form->createView(),
             ));
-        } elseif ('POST' === $request->getMethod()) {
-            $newToken = $repo->setName($token, $request->request->get('name'));
+        } else {
             return $this->render('u2f_token.html.twig', array(
-                'id' => $id,
-                'token' => $newToken,
-            ));
+                'form' => $form->createView(),
+            )); 
         }
     }
 }

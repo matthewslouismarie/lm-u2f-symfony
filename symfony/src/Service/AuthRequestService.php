@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Service\U2FTokenBuilderService;
 use App\Entity\Member;
 use App\Entity\U2FToken;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,6 +13,7 @@ use Firehed\U2F\SignResponse;
  */
 class AuthRequestService
 {
+    private $builder;
     private $em;
     private $server;
     private $session;
@@ -19,6 +21,7 @@ class AuthRequestService
     public function __construct(
         EntityManagerInterface $em,
         U2FService $u2f,
+        U2FTokenBuilderService $builder,
         SecureSessionService $session)
     {
         $this->em = $em;
@@ -69,10 +72,13 @@ class AuthRequestService
         $challenge = $response->getClientData()->getChallenge();
         $u2f_authenticator_id = $this->getAuthenticatorId($sign_requests, $challenge);
         
-        $u2f_token = $this->em
+        $oldU2fToken = $this->em
                           ->getRepository(U2FToken::class)
                           ->find($u2f_authenticator_id);
-        $u2f_token->setCounter($response->getCounter());
+        $builder = $this->builder->createBuilder($oldU2fToken);
+        $u2fToken = $builder->setCounter($response->getCounter());
+        $this->em->remove($oldU2fToken);
+        $this->em->persist($u2fToken);
         $this->em->flush();
     }
 

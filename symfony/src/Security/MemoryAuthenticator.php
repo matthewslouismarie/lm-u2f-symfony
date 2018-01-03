@@ -85,9 +85,6 @@ class MemoryAuthenticator extends AbstractFormLoginAuthenticator
         return;
     }
 
-    /**
-     * @todo Make LoginFormAuthenticator and this class share the same function?
-     */
     public function supports(Request $request): bool
     {
         $isLoginRoute = $request

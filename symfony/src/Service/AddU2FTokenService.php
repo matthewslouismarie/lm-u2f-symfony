@@ -26,7 +26,6 @@ class AddU2FTokenService
 
     /**
      * @todo $registrations
-     * @todo Delete.
      * @todo Should return an object, e.g. RpRequest, or even IRPRequest.
      */
     public function generate(): array

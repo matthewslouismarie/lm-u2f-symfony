@@ -2,6 +2,8 @@
 
 namespace App\Security;
 
+use App\Form\UserConfirmationType;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -11,23 +13,41 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 class LogoutFormAuthenticator extends AbstractFormLoginAuthenticator
 {
+    private $csrfTokenManager;
+    private $formFactory;
     private $router;
     private $session;
 
     public function __construct(
+        CsrfTokenManagerInterface $csrfTokenManager,
+        FormFactoryInterface $formFactory,
         RouterInterface $router,
         SessionInterface $session)
     {
+        $this->csrfTokenManager = $csrfTokenManager;
+        $this->formFactory = $formFactory;
         $this->router = $router;
         $this->session = $session;
         $this->session->start();
     }
 
+    /**
+     * @todo Fix hard-coded _csrf_token.
+     */
     public function getCredentials(Request $request)
     {
+        $form = $this->formFactory->create(UserConfirmationType::class);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            throw new InvalidCsrfTokenException('Invalid CSRF token.');
+        }
         return array();
     }
 

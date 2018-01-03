@@ -37,9 +37,6 @@ class LogoutFormAuthenticator extends AbstractFormLoginAuthenticator
         $this->session->start();
     }
 
-    /**
-     * @todo Fix hard-coded _csrf_token.
-     */
     public function getCredentials(Request $request)
     {
         $form = $this->formFactory->create(UserConfirmationType::class);

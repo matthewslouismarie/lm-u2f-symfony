@@ -7,14 +7,19 @@ use App\Entity\U2FToken;
 use Doctrine\ORM\EntityManagerInterface;
 use Firehed\U2F\SignResponse;
 
+/**
+ * @todo Rename to U2FAuthService
+ */
 class AuthRequestService
 {
     private $em;
     private $server;
     private $session;
 
-    public function __construct(EntityManagerInterface $em,
-                                U2FService $u2f, SecureSessionService $session)
+    public function __construct(
+        EntityManagerInterface $em,
+        U2FService $u2f,
+        SecureSessionService $session)
     {
         $this->em = $em;
         $this->server = $u2f->getServer();

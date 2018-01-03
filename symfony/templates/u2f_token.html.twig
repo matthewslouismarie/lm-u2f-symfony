@@ -1,8 +1,5 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-<form action="{{path('edit_u2f_token', {'id': id})}}" method="post">
-  <input id="name" name="name" type="text" value="{{token.name}}">
-  <button type="submit">Change name</button>
-</form>
+{{ form(form) }}
 {% endblock %}

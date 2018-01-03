@@ -26,34 +26,6 @@ class ManageU2FTokensController extends AbstractController
     }
 
     /**
-     * @todo set timezone
-     * @Route("/add-u2f-token", name="add-u2f-token", methods={"GET", "POST"})
-     */
-    public function addU2FToken(AddU2FTokenService $service): Response
-    {
-        $rp_request = $service->generate();
-        $submission = new U2FTokenRegistration();
-        $submission->setRequestId($rp_request['request_id']);
-        $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
-        // $form->handleRequest();
-        return $this->render('add-u2f-token.html.twig', array(
-            'request_json' => $rp_request['request_json'],
-            'sign_requests' => $rp_request['sign_requests'],
-            'form' => $form->createView(),
-        ));
-        // } elseif ('POST' === $request->getMethod()) {
-        //     $post = $request->request;
-        //     $service->processResponse(
-        //         $post->get('challenge'),
-        //         $post->get('name'),
-        //         $this->getUser(),
-        //         new \DateTimeImmutable(),
-        //         $post->get('reg-id'));
-        //     return new Response('went okay');
-        // }
-    }
-
-    /**
      * @todo CSRF
      * @todo refactor and finish $token check
      * @Route(

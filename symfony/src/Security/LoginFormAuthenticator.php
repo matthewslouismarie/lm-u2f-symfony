@@ -14,48 +14,52 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $formFactory;
     private $om;
     private $router;
+    private $session;
 
     public function __construct(
         FormFactoryInterface $formFactory,
         ObjectManager $om,
-        RouterInterface $router)
+        RouterInterface $router,
+        SessionInterface $session)
     {
         $this->formFactory = $formFactory;
         $this->om = $om;
         $this->router = $router;
+        $this->session = $session;
+        $this->session->start();
     }
 
     public function getCredentials(Request $request)
     {
-        $isRouteCorrect = $request->attributes->get('_route') === 'security_login';
-        $isMethodCorrect = $request->isMethod('POST');
         $form = $this->formFactory->create(LoginForm::class);
         $form->handleRequest($request);
         $data = $form->getData();
-        $data['valid_request'] = $isRouteCorrect && $isMethodCorrect;
-        return $data;
+        return $data ?? array();
     }
 
+    /**
+     * @todo Use constants or service to access session variables.
+     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        if ($credentials['valid_request']) {
+        if (isset($credentials['_username'])) {
             $username = $credentials['_username'];
-            file_put_contents('tmp.txt', $username);
+            $this->session->set('lm_u2f_symfony:username', $username);
         } else {
-            $username = file_get_contents('tmp.txt');
+            $username = $this->session->get('lm_u2f_symfony:username');
         }
         $user = $this
         ->om
         ->getRepository(Member::class)->findOneBy(array(
             'username' => $username,
-            ))
-            ;
+        ));
         return $user;
     }
 

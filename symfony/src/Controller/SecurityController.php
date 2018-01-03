@@ -2,11 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Member;
 use App\Form\LoginForm;
+use App\Form\RegistrationForm;
 use App\FormModel\LoginSubmission;
+use App\FormModel\RegistrationSubmission;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends Controller
@@ -51,6 +56,33 @@ class SecurityController extends Controller
     public function notLoggedOut()
     {
         return $this->render('not_logged_out_error.html.twig');
+    }
+
+    /**
+     * @Route("/register", name="register", methods={"GET", "POST"})
+     */
+    public function register(
+        ObjectManager $manager,
+        Request $request,
+        UserPasswordEncoderInterface $encoder)
+    {
+        $submission = new RegistrationSubmission();
+        $form = $this->createForm(
+            RegistrationForm::class,
+            $submission
+        );
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $member = new Member($submission->getUsername());
+            $encoded = $encoder->encodePassword($member, $submission->getPassword());
+            $member->setPassword($encoded);
+            $manager->persist($member);
+            $manager->flush();
+            return $this->render('successful_registration.html.twig');
+        }
+        return $this->render('registration.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
 
     /**

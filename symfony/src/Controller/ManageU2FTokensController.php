@@ -36,9 +36,8 @@ class ManageU2FTokensController extends AbstractController
      *  methods={"GET", "POST"},
      *  requirements={"id"="\d+"})
      */
-    public function deleteU2FToken(int $id)
+    public function deleteU2FToken(Request $request, int $id)
     {
-        $request = Request::createFromGlobals();
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
 
         $token = $repo->find($id);
@@ -72,10 +71,8 @@ class ManageU2FTokensController extends AbstractController
      *  methods={"GET", "POST"},
      *  requirements={"u2fTokenId"="\d+"})
      */
-    public function editU2fToken(int $u2fTokenId)
+    public function editU2fToken(Request $request, int $u2fTokenId)
     {
-        $request = Request::createFromGlobals();
-
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
         $token = $repo->find($u2fTokenId);
         if (null === $token || $this->getUser() !== $token->getMember()) {

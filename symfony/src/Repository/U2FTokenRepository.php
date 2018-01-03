@@ -10,9 +10,24 @@ use Firehed\U2F\Registration;
 
 class U2FTokenRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(
+        RegistryInterface $registry)
     {
         parent::__construct($registry, U2FToken::class);
+    }
+
+    /**
+     * @todo Use a custom exception.
+     */
+    public function findMemberU2fToken(int $id, Member $user)
+    {
+        $u2fToken = $this->find($id);
+
+        if (null === $u2fToken || $u2fToken->getMember() !== $user) {
+            throw new \Exception();
+        } else {
+            return $u2fToken;
+        }
     }
 
     public function getMemberRegistrations(int $member_id): array

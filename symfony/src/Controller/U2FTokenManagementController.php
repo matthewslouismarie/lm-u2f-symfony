@@ -29,7 +29,6 @@ class U2FTokenManagementController extends AbstractController
 
     /**
      * @todo CSRF
-     * @todo refactor and finish $token check
      * @Route(
      *  "/delete-u2f-token/{id}",
      *  name="delete-u2f-token",
@@ -40,10 +39,7 @@ class U2FTokenManagementController extends AbstractController
     {
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
 
-        $token = $repo->find($id);
-        if (null === $token || $this->getUser() !== $token->getMember()) {
-            echo 'outch';
-        }
+        $token = $repo->findMemberU2fToken($id, $this->getUser());
 
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($request);
@@ -74,10 +70,7 @@ class U2FTokenManagementController extends AbstractController
     public function editU2fToken(Request $request, int $u2fTokenId)
     {
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
-        $token = $repo->find($u2fTokenId);
-        if (null === $token || $this->getUser() !== $token->getMember()) {
-            throw new \Exception();
-        }
+        $token = $repo->findMemberU2fToken($u2fTokenId, $this->getUser());
         $u2fTokenUpdate = new U2fTokenUpdate();
         $u2fTokenUpdate->setName($token->getName());
 

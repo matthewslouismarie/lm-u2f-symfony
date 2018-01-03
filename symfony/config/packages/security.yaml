@@ -19,3 +19,10 @@ security:
                     - App\Security\LoginFormAuthenticator
                     - App\Security\MemoryAuthenticator
                 entry_point: App\Security\LoginFormAuthenticator
+    access_control:
+        -
+            path: ^/(view-my-u2f-tokens|add-u2f-token|delete-u2f-token/[0-9]+|edit-u2f-token/[0-9]+)
+            roles: ROLE_USER
+        -
+            path: ^/login
+            allow_if: "not has_role('ROLE_USER')"

@@ -39,7 +39,7 @@ class MemoryAuthenticator extends AbstractFormLoginAuthenticator
     public function getCredentials(Request $request)
     {
         return array(
-            '_username' => $this->session->get('lm_u2f_symfony:username'),
+            'username' => $this->session->get('lm_u2f_symfony:username'),
         );
     }
 
@@ -48,7 +48,7 @@ class MemoryAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $username = $credentials['_username'];
+        $username = $credentials['username'];
         
         if (null === $username) {
             return null;

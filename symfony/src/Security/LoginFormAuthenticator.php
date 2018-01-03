@@ -5,6 +5,7 @@ namespace App\Security;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use App\Entity\Member;
 use App\Form\LoginForm;
+use App\FormModel\LoginSubmission;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,7 +56,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $username = $credentials['_username'];
+        $username = $credentials->getUsername();
         $user = $this
             ->om
             ->getRepository(Member::class)->findOneBy(array(
@@ -66,7 +67,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        $isPasswordValid = $this->encoder->isPasswordValid($user, $credentials['_password']);
+        $isPasswordValid = $this
+            ->encoder
+            ->isPasswordValid($user, $credentials->getPassword())
+        ;
         if ($isPasswordValid) {
             $this->session->set('lm_u2f_symfony:username', $user->getUsername());
             return true;

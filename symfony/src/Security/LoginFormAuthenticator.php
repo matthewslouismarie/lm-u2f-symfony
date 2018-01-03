@@ -41,6 +41,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $form = $this->formFactory->create(LoginForm::class);
         $form->handleRequest($request);
         $data = $form->getData();
+
+        $isRouteCorrect = $request->attributes->get('_route') === 'security_login';
+        $isMethodCorrect = $request->isMethod('POST');
+        $data['is_login_request'] = $isRouteCorrect && $isMethodCorrect;
+
         return $data ?? array();
     }
 
@@ -49,16 +54,16 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        if (isset($credentials['_username'])) {
+        if ($credentials['is_login_request']) {
             $username = $credentials['_username'];
             $this->session->set('lm_u2f_symfony:username', $username);
         } else {
             $username = $this->session->get('lm_u2f_symfony:username');
         }
         $user = $this
-        ->om
-        ->getRepository(Member::class)->findOneBy(array(
-            'username' => $username,
+            ->om
+            ->getRepository(Member::class)->findOneBy(array(
+                'username' => $username,
         ));
         return $user;
     }

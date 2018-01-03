@@ -3,10 +3,6 @@
 namespace App\Security;
 
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use App\Entity\Member;
-use App\Form\LoginForm;
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -16,21 +12,15 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class MemoryAuthenticator extends AbstractFormLoginAuthenticator
+class LogoutFormAuthenticator extends AbstractFormLoginAuthenticator
 {
-    private $formFactory;
-    private $om;
     private $router;
     private $session;
 
     public function __construct(
-        FormFactoryInterface $formFactory,
-        ObjectManager $om,
         RouterInterface $router,
         SessionInterface $session)
     {
-        $this->formFactory = $formFactory;
-        $this->om = $om;
         $this->router = $router;
         $this->session = $session;
         $this->session->start();
@@ -38,9 +28,7 @@ class MemoryAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        return array(
-            '_username' => $this->session->get('lm_u2f_symfony:username'),
-        );
+        return array();
     }
 
     /**
@@ -48,18 +36,8 @@ class MemoryAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $username = $credentials['_username'];
-        
-        if (null === $username) {
-            return null;
-        } else {
-            $user = $this
-                ->om
-                ->getRepository(Member::class)->findOneBy(array(
-                    'username' => $username,
-            ));
-            return $user;
-        }
+        $this->session->set('lm_u2f_symfony:username', null);
+        return null;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -67,9 +45,6 @@ class MemoryAuthenticator extends AbstractFormLoginAuthenticator
         return true;
     }
 
-    /**
-     * Normally, this function should never be called.
-     */
     protected function getLoginUrl()
     {
         return $this->router->generate('security_login');
@@ -77,26 +52,27 @@ class MemoryAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        return;
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
-    {
-        return;
+        return new RedirectResponse(
+            $this->router->generate('logout')            
+        );
     }
 
     /**
-     * @todo Make LoginFormAuthenticator and this class share the same function?
+     * @todo Redirect to previously visited page.
      */
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    {
+        return new RedirectResponse(
+            $this->router->generate('homepage')
+        );
+    }
+
     public function supports(Request $request): bool
     {
-        $isLoginRoute = $request
-            ->attributes
-            ->get('_route') === 'security_login';
-        $isLogoutRoute = $request
+        $isRouteCorrect = $request
             ->attributes
             ->get('_route') === 'logout';
-        $isPost = $request->isMethod('POST');
-        return !($isPost && ($isLoginRoute || $isLogoutRoute));
+        $isMethodCorrect = $request->isMethod('POST');
+        return $isRouteCorrect && $isMethodCorrect;
     }
 }

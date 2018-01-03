@@ -18,10 +18,11 @@ security:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
                     - App\Security\MemoryAuthenticator
+                    - App\Security\LogoutFormAuthenticator
                 entry_point: App\Security\LoginFormAuthenticator
     access_control:
         -
-            path: ^/(view-my-u2f-tokens|add-u2f-token|delete-u2f-token/[0-9]+|edit-u2f-token/[0-9]+)
+            path: ^/(logout|view-my-u2f-tokens|add-u2f-token|delete-u2f-token/[0-9]+|edit-u2f-token/[0-9]+)
             roles: ROLE_USER
         -
             path: ^/login

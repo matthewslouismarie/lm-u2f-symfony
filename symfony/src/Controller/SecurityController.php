@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Member;
 use App\Form\LoginForm;
 use App\Form\RegistrationForm;
+use App\Form\UserConfirmationType;
 use App\FormModel\LoginSubmission;
 use App\FormModel\RegistrationSubmission;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -37,11 +38,14 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/logout", name="logout", methods={"GET"})
+     * @Route("/logout", name="logout", methods={"GET", "POST"})
      */
     public function logout(Request $request)
     {
-        return $this->render('logout.html.twig');
+        $form = $this->createForm(UserConfirmationType::class);
+        return $this->render('logout.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**

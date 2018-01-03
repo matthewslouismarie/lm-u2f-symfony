@@ -19,9 +19,9 @@ class U2FTokenRepository extends ServiceEntityRepository
     /**
      * @todo Use a custom exception.
      */
-    public function findMemberU2fToken(int $id, Member $user)
+    public function findMemberU2fToken(string $name, Member $user)
     {
-        $u2fToken = $this->find($id);
+        $u2fToken = $this->find(array('name' => $name, 'member' => $user));
 
         if (null === $u2fToken || $u2fToken->getMember() !== $user) {
             throw new \Exception();
@@ -56,7 +56,6 @@ class U2FTokenRepository extends ServiceEntityRepository
     public function setName(U2FToken $token, string $newName): U2FToken
     {
         $newU2FToken = new U2FToken(
-            $token->getId(),
             $token->getAttestation(),
             $token->getCounter(),
             $token->getKeyHandle(),
@@ -66,6 +65,7 @@ class U2FTokenRepository extends ServiceEntityRepository
             $token->getPublicKey());
         $em = $this->getEntityManager();
         $em->persist($newU2FToken);
+        $em->remove($token);
         $em->flush();
         
         return $newU2FToken;

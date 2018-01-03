@@ -59,7 +59,6 @@ class U2FTokenRegistrationService
         $public_key = base64_encode($registration->getPublicKey());
         $key_handle = base64_encode($registration->getKeyHandleBinary());
         $u2f_token = new U2FToken(
-            null,
             $attestation,
             $counter,
             $key_handle,

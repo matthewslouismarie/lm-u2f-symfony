@@ -37,15 +37,11 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/logout", name="logout", methods={"GET", "POST"})
+     * @Route("/logout", name="logout", methods={"GET"})
      */
     public function logout(Request $request)
     {
-        if ('POST' === $request->getMethod()) {
-            
-        } elseif ('GET' === $request->getMethod()) {
-            return $this->render('logout.html.twig');
-        }
+        return $this->render('logout.html.twig');
     }
 
     /**

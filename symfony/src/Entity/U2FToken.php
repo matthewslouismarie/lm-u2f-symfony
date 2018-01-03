@@ -5,17 +5,22 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @todo composite key with name + member?
  * @ORM\Entity(repositoryClass="App\Repository\U2FTokenRepository")
  */
 class U2FToken
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
-    private $id;
+    private $name;
+
+    /**
+     * @todo rename to owner
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="Member")
+     */
+    private $member;
 
     /**
      * @ORM\Column(type="string", length=788)
@@ -31,16 +36,6 @@ class U2FToken
      * @ORM\Column(type="string", length=88)
      */
     private $keyHandle;
-    /**
-     * @todo rename to owner
-     * @ORM\ManyToOne(targetEntity="Member")
-     */
-    private $member;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $name;
 
     /**
      * @ORM\Column(type="datetimetz_immutable")
@@ -53,7 +48,6 @@ class U2FToken
     private $publicKey;
 
     public function __construct(
-        ?int $id,
         string $attestation,
         int $counter,
         string $keyHandle,
@@ -62,7 +56,6 @@ class U2FToken
         \DateTimeImmutable $registrationDateTime,
         string $publicKey)
     {
-        $this->id = $id;
         $this->attestation = $attestation;
         $this->counter = $counter;
         $this->keyHandle = $keyHandle;
@@ -70,11 +63,6 @@ class U2FToken
         $this->name = $name;
         $this->registrationDateTime = $registrationDateTime;
         $this->publicKey = $publicKey;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
     }
     
     public function getAttestation(): string

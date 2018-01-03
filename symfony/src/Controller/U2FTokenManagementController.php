@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;  
 class U2FTokenManagementController extends AbstractController
 {
     /**
@@ -30,16 +31,15 @@ class U2FTokenManagementController extends AbstractController
     /**
      * @todo CSRF
      * @Route(
-     *  "/delete-u2f-token/{id}",
+     *  "/delete-u2f-token/{u2fTokenName}",
      *  name="delete-u2f-token",
-     *  methods={"GET", "POST"},
-     *  requirements={"id"="\d+"})
+     *  methods={"GET", "POST"})
      */
-    public function deleteU2FToken(Request $request, int $id)
+    public function deleteU2FToken(Request $request, string $u2fTokenName)
     {
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
 
-        $token = $repo->findMemberU2fToken($id, $this->getUser());
+        $token = $repo->findMemberU2fToken($u2fTokenName, $this->getUser());
 
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($request);
@@ -52,7 +52,6 @@ class U2FTokenManagementController extends AbstractController
         } else {
             return $this->render('delete_u2f_token.html.twig', array(
                 'form' => $form->createView(),
-                'id' => $id,
                 'token' => $token,
             ));
         }
@@ -62,15 +61,14 @@ class U2FTokenManagementController extends AbstractController
      * @todo Use a custom exception.
      * 
      * @Route(
-     *  "/edit-u2f-token/{u2fTokenId}",
+     *  "/edit-u2f-token/{u2fTokenName}",
      *  name="edit_u2f_token",
-     *  methods={"GET", "POST"},
-     *  requirements={"u2fTokenId"="\d+"})
+     *  methods={"GET", "POST"})
      */
-    public function editU2fToken(Request $request, int $u2fTokenId)
+    public function editU2fToken(Request $request, string $u2fTokenName)
     {
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
-        $token = $repo->findMemberU2fToken($u2fTokenId, $this->getUser());
+        $token = $repo->findMemberU2fToken($u2fTokenName, $this->getUser());
         $u2fTokenUpdate = new U2fTokenUpdate();
         $u2fTokenUpdate->setName($token->getName());
 
@@ -80,9 +78,10 @@ class U2FTokenManagementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $newToken = $repo->setName($token, $u2fTokenUpdate->getName());
-            return $this->render('u2f_token.html.twig', array(
-                'form' => $form->createView(),
-            ));
+            return new RedirectResponse(
+                $this->generateUrl('edit_u2f_token', array(
+                    'u2fTokenName' => $u2fTokenUpdate->getName(),
+            )));
         } else {
             return $this->render('u2f_token.html.twig', array(
                 'form' => $form->createView(),

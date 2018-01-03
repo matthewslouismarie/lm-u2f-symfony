@@ -10,7 +10,7 @@ use Firehed\U2F\RegisterResponse;
 /**
  * @todo interface for request ids?
  */
-class AddU2FTokenService
+class U2FTokenRegistrationService
 {
     private $server;
     private $session;

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\U2FToken;
 use App\Service\AddU2FTokenService;
 use App\Form\U2fTokenUpdateType;
+use App\Form\UserConfirmationType;
 use App\FormModel\U2FTokenRegistration;
 use App\FormModel\U2fTokenUpdate;
 use App\Form\U2FTokenRegistrationType;
@@ -39,21 +40,26 @@ class ManageU2FTokensController extends AbstractController
     {
         $request = Request::createFromGlobals();
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
-        $token = $repo->find($id);
 
+        $token = $repo->find($id);
         if (null === $token || $this->getUser() !== $token->getMember()) {
             echo 'outch';
         }
-        if ('GET' === $request->getMethod()) {
-            return $this->render('delete-u2f-token.html.twig', array(
-                'token' => $token,
-                'id' => $id
-            ));
-        } elseif ('POST' === $request->getMethod()) {
+
+        $form = $this->createForm(UserConfirmationType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
             $em->remove($token);
             $em->flush();
             return $this->render('post_u2f_token_deletion.html.twig');
+        } else {
+            return $this->render('delete-u2f-token.html.twig', array(
+                'form' => $form->createView(),
+                'id' => $id,
+                'token' => $token,
+            ));
         }
     }
 

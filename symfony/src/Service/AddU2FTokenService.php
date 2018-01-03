@@ -26,6 +26,7 @@ class AddU2FTokenService
 
     /**
      * @todo $registrations
+     * @todo Delete.
      */
     public function generate(): array
     {

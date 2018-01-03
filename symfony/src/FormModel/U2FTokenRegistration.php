@@ -36,9 +36,9 @@ class U2FTokenRegistration
         return $this->requestId;
     }
 
-    public function setU2fTokenResponse($challenge)
+    public function setU2fTokenResponse($u2fTokenResponse)
     {
-        $this->challenge = $challenge;
+        $this->u2fTokenResponse = $u2fTokenResponse;
     }
 
     public function setName($name)

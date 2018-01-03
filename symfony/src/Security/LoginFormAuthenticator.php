@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -68,8 +69,12 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $isPasswordValid = $this->encoder->isPasswordValid($user, $credentials['_password']);
         if ($isPasswordValid) {
             $this->session->set('lm_u2f_symfony:username', $user->getUsername());
+            return true;
+        } else {
+            $exception = new AuthenticationException("Invalid username or password.");
+            $this->session->set(Security::AUTHENTICATION_ERROR, $exception);
+            return false;
         }
-        return $isPasswordValid;
     }
 
     protected function getLoginUrl()

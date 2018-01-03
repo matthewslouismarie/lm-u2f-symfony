@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\LoginForm;
+use App\FormModel\LoginSubmission;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,9 +20,10 @@ class SecurityController extends Controller
         $error = $authUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authUtils->getLastUsername();
-        $form = $this->createForm(LoginForm::class, [
-            '_username' => $lastUsername,
-        ]);
+        $form = $this->createForm(
+            LoginForm::class,
+            new LoginSubmission($lastUsername, '')
+        );
         return $this->render(
             'security/login.html.twig',
             array(

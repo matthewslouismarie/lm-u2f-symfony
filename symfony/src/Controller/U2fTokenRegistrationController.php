@@ -24,7 +24,7 @@ class U2fTokenRegistrationController extends AbstractController
 
         $form = $this->createForm(U2FTokenRegistrationType::class, $submission);       
 
-        return $this->render('add-u2f-token.html.twig', array(
+        return $this->render('add_u2f_token.html.twig', array(
             'request_json' => $rp_request['request_json'],
             'sign_requests' => $rp_request['sign_requests'],
             'form' => $form->createView(),

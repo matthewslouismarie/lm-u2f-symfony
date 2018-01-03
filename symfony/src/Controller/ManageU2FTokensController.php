@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\U2FToken;
 use App\Service\AddU2FTokenService;
+use App\FormModel\U2FTokenRegistration;
+use App\Form\U2FTokenRegistrationType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,20 +31,26 @@ class ManageU2FTokensController extends AbstractController
      */
     public function addU2FToken(AddU2FTokenService $service): Response
     {
-        $request = Request::createFromGlobals();
-        if ('GET' === $request->getMethod()) {
-            $challenge_data = $service->generate();
-            return $this->render('add-u2f-token.html.twig', $challenge_data);
-        } elseif ('POST' === $request->getMethod()) {
-            $post = $request->request;
-            $service->processResponse(
-                $post->get('challenge'),
-                $post->get('name'),
-                $this->getUser(),
-                new \DateTimeImmutable(),
-                $post->get('reg-id'));
-            return new Response('went okay');
-        }
+        $rp_request = $service->generate();
+        $submission = new U2FTokenRegistration();
+        $submission->setRequestId($rp_request['request_id']);
+        $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
+        // $form->handleRequest();
+        return $this->render('add-u2f-token.html.twig', array(
+            'request_json' => $rp_request['request_json'],
+            'sign_requests' => $rp_request['sign_requests'],
+            'form' => $form->createView(),
+        ));
+        // } elseif ('POST' === $request->getMethod()) {
+        //     $post = $request->request;
+        //     $service->processResponse(
+        //         $post->get('challenge'),
+        //         $post->get('name'),
+        //         $this->getUser(),
+        //         new \DateTimeImmutable(),
+        //         $post->get('reg-id'));
+        //     return new Response('went okay');
+        // }
     }
 
     /**

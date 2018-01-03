@@ -2,6 +2,8 @@
 
 namespace App\FormModel;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @todo Maybe methods shouldn't be type-hinted?
  */

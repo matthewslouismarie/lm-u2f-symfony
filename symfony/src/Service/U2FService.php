@@ -3,16 +3,17 @@
 namespace App\Service;
 
 use Firehed\U2F\Server;
+use Symfony\Component\Routing\RequestContext;
 
 class U2FService
 {
     private $server;
 
-    public function __construct()
+    public function __construct(RequestContext $context)
     {
         $this->server = new Server();
         $this->server->disableCAVerification()
-             ->setAppId('https://'.$_SERVER['SERVER_NAME']);
+             ->setAppId($context->getBaseUrl());
     }
 
     public function getServer()

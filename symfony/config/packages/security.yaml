@@ -23,7 +23,7 @@ security:
             access_denied_handler: App\Security\AccessDeniedHandler
     access_control:
         -
-            path: ^/(logout|view-my-u2f-tokens|add-u2f-token|delete-u2f-token/[0-9]+|edit-u2f-token/[0-9]+)$
+            path: ^/(logout|view-my-u2f-tokens|add-u2f-token|delete-u2f-token/.+|edit-u2f-token/.+)$
             roles: ROLE_USER
         -
             path: ^/(login|register)$

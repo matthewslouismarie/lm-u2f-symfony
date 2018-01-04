@@ -19,8 +19,10 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
 
     public function handle(Request $request, AccessDeniedException $exception)
     {
-        return new RedirectResponse(
+        $response = new RedirectResponse(
             $this->router->generate('not_logged_out')
         );
+        $response->setStatusCode(403);
+        return $response;
     }
 }

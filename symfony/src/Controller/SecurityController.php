@@ -25,7 +25,10 @@ class SecurityController extends Controller
     public function login(Request $request, AuthenticationUtils $authUtils)
     {
         $member = $this->getDoctrine()->getRepository(Member::class)->find(1);
-        $this->getDoctrine()->getRepository(U2FToken::class)->find(array('name' => 'token', 'member' => $member));
+        $this->getDoctrine()->getRepository(U2FToken::class)->find(array(
+            'name' => 'token',
+            'member' => $member,
+        ));
         $error = $authUtils->getLastAuthenticationError();
         $lastUsername = $authUtils->getLastUsername();
         $form = $this->createForm(

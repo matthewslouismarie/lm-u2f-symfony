@@ -51,7 +51,7 @@ class U2FToken
         string $attestation,
         int $counter,
         string $keyHandle,
-        Member $member,
+        ?Member $member,
         string $name,
         \DateTimeImmutable $registrationDateTime,
         string $publicKey)
@@ -85,7 +85,7 @@ class U2FToken
         return $this->registrationDateTime;
     }
 
-    public function getMember(): Member
+    public function getMember(): ?Member
     {
         return $this->member;
     }

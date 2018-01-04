@@ -61,4 +61,9 @@ abstract class DbWebTestCase extends WebTestCase
     {
         return $this->client;
     }
+
+    public function getContainer()
+    {
+        return self::$kernel->getContainer();
+    }
 }

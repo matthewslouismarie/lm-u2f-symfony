@@ -4,6 +4,9 @@ namespace App\FormModel;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @todo Add validation for key certificate.
+ */
 class U2FTokenRegistration
 {
     /**

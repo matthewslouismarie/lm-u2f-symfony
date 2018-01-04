@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * @todo Force members to have 3 U2F tokens?
  * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
  */
 class Member implements UserInterface, \Serializable

@@ -3,17 +3,17 @@
 namespace App\Service;
 
 use Firehed\U2F\Server;
-use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class U2FService
 {
     private $server;
 
-    public function __construct(RequestContext $context)
+    public function __construct(ContainerInterface $container)
     {
         $this->server = new Server();
         $this->server->disableCAVerification()
-             ->setAppId($context->getBaseUrl());
+             ->setAppId($container->getParameter('u2f.app_id'));
     }
 
     public function getServer()

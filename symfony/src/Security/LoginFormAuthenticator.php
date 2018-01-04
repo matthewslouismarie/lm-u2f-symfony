@@ -2,58 +2,46 @@
 
 namespace App\Security;
 
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use App\Entity\Member;
 use App\Form\LoginForm;
-use App\FormModel\LoginSubmission;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $formFactory;
-    private $encoder;
     private $om;
     private $router;
-    private $session;
 
     public function __construct(
         FormFactoryInterface $formFactory,
         ObjectManager $om,
-        RouterInterface $router,
-        SessionInterface $session,
-        UserPasswordEncoderInterface $encoder)
+        RouterInterface $router)
     {
         $this->formFactory = $formFactory;
-        $this->encoder = $encoder;
         $this->om = $om;
         $this->router = $router;
-        $this->session = $session;
-        $this->session->start();
     }
 
     public function getCredentials(Request $request)
     {
         $form = $this->formFactory->create(LoginForm::class);
         $form->handleRequest($request);
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            throw new AuthenticationException();
+        }
         $data = $form->getData();
-
         return $data;
     }
 
-    /**
-     * @todo Use constants or service to access session variables.
-     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $username = $credentials->getUsername();
@@ -61,22 +49,16 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
             ->om
             ->getRepository(Member::class)->findOneBy(array(
                 'username' => $username,
-        ));
+            ));
         return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        $isPasswordValid = $this
-            ->encoder
-            ->isPasswordValid($user, $credentials->getPassword())
-        ;
-        if ($isPasswordValid) {
-            $this->session->set('lm_u2f_symfony:username', $user->getUsername());
+        $password = $credentials->getPassword();
+        if ('hello' === $password) {
             return true;
         } else {
-            $exception = new AuthenticationException("Invalid username or password.");
-            $this->session->set(Security::AUTHENTICATION_ERROR, $exception);
             return false;
         }
     }
@@ -86,28 +68,14 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $this->router->generate('security_login');
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
-    {
-        return new RedirectResponse(
-            $this->router->generate('security_login')            
-        );
-    }
-
-    /**
-     * @todo Redirect to previously visited page.
-     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        return new RedirectResponse(
-            $this->router->generate('homepage')
-        );
+        return new RedirectResponse('/public');
     }
 
     public function supports(Request $request): bool
     {
-        $isRouteCorrect = $request
-            ->attributes
-            ->get('_route') === 'security_login';
+        $isRouteCorrect = $request->attributes->get('_route') === 'security_login';
         $isMethodCorrect = $request->isMethod('POST');
         return $isRouteCorrect && $isMethodCorrect;
     }

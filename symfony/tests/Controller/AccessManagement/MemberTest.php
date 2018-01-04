@@ -25,6 +25,7 @@ class MemberTest extends DbWebTestCase
     {
         $this->checkUrlStatusCode('/', 200);
         $this->checkUrlStatusCode('/login', 403);
+        $this->checkUrlStatusCode('/mkps/registration', 403);
         
     }
 

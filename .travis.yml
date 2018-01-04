@@ -10,6 +10,9 @@ before_install:
   - docker-compose up --build -d
   - docker exec lmu2fsymfony_apache composer install
   - docker exec lmu2fsymfony_apache npm install
+  - docker exec lmu2fsymfony_apache bin/console doctrine:database:create
+  - docker exec lmu2fsymfony_apache bin/console doctrine:schema:create
+  - docker exec lmu2fsymfony_apache bin/console doctrine:fixtures:load
 
 script:
   - docker exec lmu2fsymfony_apache bin/phpunit

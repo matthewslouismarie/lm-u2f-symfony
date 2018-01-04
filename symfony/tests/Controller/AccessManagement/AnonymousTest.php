@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller\AccessManagement;
 
-use App\Testing\DbWebTestCase;
+use App\Tests\DbWebTestCase;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;

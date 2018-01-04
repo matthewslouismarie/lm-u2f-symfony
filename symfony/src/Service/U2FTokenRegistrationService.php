@@ -42,23 +42,23 @@ class U2FTokenRegistrationService
         );
     }
 
-    public function processResponse(
-        string $challenge,
+    public function getU2fTokenFromResponse(
+        string $u2fKeyResponse,
         string $name,
         Member $member,
         \DateTimeImmutable $registration_date_time,
-        string $request_id): void
+        string $request_id): U2FToken
     {
         $request = unserialize($this->session->getAndRemove($request_id));
         $this->server->setRegisterRequest($request);
-        $response = RegisterResponse::fromJson($challenge);
+        $response = RegisterResponse::fromJson($u2fKeyResponse);
         $registration = $this->server->register($response);
 
         $counter = $registration->getCounter();
         $attestation = base64_encode($registration->getAttestationCertificateBinary());
         $public_key = base64_encode($registration->getPublicKey());
         $key_handle = base64_encode($registration->getKeyHandleBinary());
-        $u2f_token = new U2FToken(
+        $u2fToken = new U2FToken(
             $attestation,
             $counter,
             $key_handle,
@@ -66,7 +66,26 @@ class U2FTokenRegistrationService
             $name,
             $registration_date_time,
             $public_key);
-        $this->em->persist($u2f_token);
+        return $u2fToken;
+    }
+
+    /**
+     * @todo Change challenge for u2fKeyResponse.
+     */
+    public function processResponse(
+        string $challenge,
+        string $name,
+        Member $member,
+        \DateTimeImmutable $registration_date_time,
+        string $request_id): void
+    {
+        $this->em->persist($this->getU2fTokenFromResponse(
+            $challenge,
+            $name,
+            $member,
+            $registration_date_time,
+            $request_id
+        ));
 
         $this->em->flush();
     }

@@ -2,25 +2,25 @@
 
 namespace tests\Controller\AccessManagement;
 
+use App\Testing\DbWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
-class MemberTest extends WebTestCase
+class MemberTest extends DbWebTestCase
 {
-    private $client;
-
     public function setUp()
     {
-        $this->client = static::createClient();
-        
-        $crawler = $this->client->request('GET', '/login');
+        parent::setUp();
+        $crawler = $this->getClient()->request('GET', '/login');
         $button = $crawler->selectButton('login_form_log in');
         $form = $button->form(array(
             'login_form[username]' => 'louis',
             'login_form[password]' => 'hello',
         ));
-        $this->client->submit($form);
+        $this->getClient()->submit($form);
     }
-
     public function testPublicRoutes()
     {
         $this->checkUrlStatusCode('/', 200);
@@ -33,17 +33,5 @@ class MemberTest extends WebTestCase
         $this->checkUrlStatusCode('/add-u2f-token', 200);
         $this->checkUrlStatusCode('/logout', 200);
         $this->checkUrlStatusCode('/view-my-u2f-tokens', 200);
-    }
-
-    /**
-     * @todo Move in abstract class.
-     */
-    private function checkUrlStatusCode($url, $expectedStatusCode)
-    {
-        $crawler = $this->client->request('GET', $url);
-        $this->assertEquals(
-            $expectedStatusCode,
-            $this->client->getResponse()->getStatusCode()
-        );
     }
 }

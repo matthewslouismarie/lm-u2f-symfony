@@ -2,7 +2,7 @@
 
 namespace tests\Controller\AccessManagement;
 
-use App\Testing\DbWebTestCase;
+use App\Tests\DbWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;

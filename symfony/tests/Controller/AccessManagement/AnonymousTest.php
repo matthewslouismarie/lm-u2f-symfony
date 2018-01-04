@@ -20,6 +20,7 @@ class Anonymous extends DbWebTestCase
     {
         $this->checkUrlStatusCode('/', 200);
         $this->checkUrlStatusCode('/login', 200);
+        $this->checkUrlStatusCode('/mkps/registration', 200);
     }
 
     public function testProtectedRoutes()

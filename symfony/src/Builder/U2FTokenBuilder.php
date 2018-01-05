@@ -17,11 +17,12 @@ class U2FTokenBuilder
     public function setCounter(int $counter): U2FToken
     {
         return new U2FToken(
+            $this->base->getId(),
             $this->base->getAttestation(),
             $counter,
             $this->base->getKeyHandle(),
             $this->base->getMember(),
-            $this->base->getRegistrationDateTime,
+            $this->base->getRegistrationDateTime()  ,
             $this->base->getPublicKey());
     }
 }

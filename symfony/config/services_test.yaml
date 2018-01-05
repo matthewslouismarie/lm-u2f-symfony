@@ -14,7 +14,7 @@ services:
     Doctrine\Bundle\FixturesBundle\Loader\:
         resource: '../vendor/doctrine/doctrine-fixtures-bundle/Loader/*'
     App\:
-        resource: '../src/{DataFixtures,Factory}'
+        resource: '../src/{DataFixtures,Factory,Service}'
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']

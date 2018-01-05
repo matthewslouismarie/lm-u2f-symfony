@@ -20,26 +20,6 @@ use App\Entity\U2FToken;
 class SecurityController extends Controller
 {
     /**
-     * @Route("/login", name="security_login")
-     */
-    public function login(Request $request, AuthenticationUtils $authUtils)
-    {
-        $error = $authUtils->getLastAuthenticationError();
-        $lastUsername = $authUtils->getLastUsername();
-        $form = $this->createForm(
-            LoginForm::class,
-            new LoginSubmission($lastUsername, '')
-        );
-        return $this->render(
-            'login.html.twig',
-            array(
-                'form' => $form->createView(),
-                'error' => $error,
-            )
-        );
-    }
-
-    /**
      * @Route("/logout", name="logout", methods={"GET", "POST"})
      */
     public function logout(Request $request)

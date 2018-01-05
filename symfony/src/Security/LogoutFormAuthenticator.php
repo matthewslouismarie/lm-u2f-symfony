@@ -64,7 +64,7 @@ class LogoutFormAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('security_login');
+        return $this->router->generate('tks_login_username_and_password');
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)

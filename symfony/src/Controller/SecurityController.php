@@ -73,7 +73,7 @@ class SecurityController extends Controller
         );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $member = new Member($submission->getUsername());
+            $member = new Member(null, $submission->getUsername());
             $encoded = $encoder->encodePassword($member, $submission->getPassword());
             $member->setPassword($encoded);
             $manager->persist($member);

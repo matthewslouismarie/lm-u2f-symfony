@@ -14,11 +14,18 @@ class MemberFactory
         $this->hasher = $hasher;
     }
 
-    public function create(string $username, string $password)
+    public function create(?int $id, string $username, string $password)
     {
-        $member = new Member($username);
+        $member = new Member($id, $username);
         $hashed = $this->hasher->encodePassword($member, $password);
         $member->setPassword($hashed);
         return $member;
+    }
+
+    public function setId(Member $member, int $id): Member
+    {
+        $modifiedMember = new Member($id, $member->getUsername());
+        $modifiedMember->setPassword($member->getPassword());
+        return $modifiedMember;
     }
 }

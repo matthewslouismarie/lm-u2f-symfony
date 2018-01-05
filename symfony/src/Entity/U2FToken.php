@@ -11,14 +11,13 @@ class U2FToken
 {
     /**
      * @ORM\Id
-     * @Column(type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
     private $id;
 
     /**
      * @todo rename to owner
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Member")
      */
     private $member;

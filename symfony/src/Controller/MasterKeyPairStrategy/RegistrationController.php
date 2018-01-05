@@ -14,9 +14,21 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
+/**
+ * @todo Add route prefix here.
+ */
 class RegistrationController extends AbstractController
 {
+    private $session;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->session->start();
+    }
+
     /**
      * @Route("/mkps/registration", name="mkps_registration", methods={"GET"})
      */
@@ -33,12 +45,11 @@ class RegistrationController extends AbstractController
      */
     public function usernameAndPassword(
         MemberFactory $mf,
-        SessionInterface $session,
         Request $request)
     {
-        $session->start();
+        $this->session->start();
         ob_start();
-        var_dump($session->get('tks_member'));
+        var_dump($this->session->get('tks_member'));
         $m = ob_get_clean();
         $submission = new RegistrationSubmission();
         $form = $this->createForm(RegistrationType::class, $submission);
@@ -50,31 +61,38 @@ class RegistrationController extends AbstractController
                 $submission->getUsername(),
                 $submission->getPassword()
             );
-            $session->set('tks_member', $member);
-            return $this->render('tks/tmp.html.twig', array('m' => $m));
+            $this->session->set('tks_member', $member);
+            return $this->render('tks/tmp.html.twig');
         }
 
         return $this->render('tks/username_and_password.html.twig', array(
-            'form' => $form->createView(),
-            'm' => $m,
+            'form' => $form->createView()
         ));
     }
 
     /**
      * @Route(
-     *  "/mkps/master-pair-first-key",
-     *  name="mkps_master_pair_first_key",
+     *  "/tks/first-key",
+     *  name="mkps_first_key",
      *  methods={"GET", "POST"})
      */
-    public function fetchPairFirstKey(
+    public function firstKey(
         Request $request,
         U2FTokenRegistrationService $service)
     {
+        if (null === $this->session->get('tks_member')) {
+            return new RedirectResponse(
+                $this->generateUrl('tks_username_and_password')
+            );
+        }
 
         $rp_request = $service->generate();
 
         $submission = new U2FTokenRegistration();
-        $submission->setRequestId($rp_request['request_id']);
+
+        if ('GET' === $request->getMethod()) {
+            $submission->setRequestId($rp_request['request_id']);
+        }
 
         $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
 
@@ -84,12 +102,11 @@ class RegistrationController extends AbstractController
             try {
                 $u2fToken = $service->getU2fTokenFromResponse(
                     $submission->getU2fTokenResponse(),
-                    $submission->getName(),
-                    null,
+                    $this->session->get('tks_member'),
                     new \DateTimeImmutable(),
                     $submission->getRequestId()
                 );
-                $this->session->save('tksFirstU2fToken', $u2fToken);
+                $this->session->set('tks_first_u2f_token', $u2fToken);
                 return new Response('Ça marche.');
             }
             catch (\TypeError $e) {
@@ -97,7 +114,7 @@ class RegistrationController extends AbstractController
             }
         }
 
-        return $this->render('mkps/master_pair_first_key.html.twig', array(
+        return $this->render('tks/first_key.html.twig', array(
             'request_json' => $rp_request['request_json'],
             'sign_requests' => $rp_request['sign_requests'],
             'form' => $form->createView(),

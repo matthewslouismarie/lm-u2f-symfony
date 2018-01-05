@@ -16,20 +16,6 @@ class U2FTokenRepository extends ServiceEntityRepository
         parent::__construct($registry, U2FToken::class);
     }
 
-    /**
-     * @todo Use a custom exception.
-     */
-    public function findMemberU2fToken(string $name, Member $user)
-    {
-        $u2fToken = $this->find(array('name' => $name, 'member' => $user));
-
-        if (null === $u2fToken || $u2fToken->getMember() !== $user) {
-            throw new \Exception();
-        } else {
-            return $u2fToken;
-        }
-    }
-
     public function getMemberRegistrations(int $member_id): array
     {
         $qb = $this->createQueryBuilder('u2ftoken');

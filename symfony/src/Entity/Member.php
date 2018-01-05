@@ -22,6 +22,7 @@ class Member implements UserInterface, \Serializable
 
     /**
      * @todo hash password
+     * @todo Make password not nullable.
      * @ORM\Column(type="string")
      */
     private $password;
@@ -31,8 +32,9 @@ class Member implements UserInterface, \Serializable
      */
     private $username;
 
-    public function __construct(string $username)
+    public function __construct(?int $id, string $username)
     {
+        $this->id = $id;
         $this->username = $username;
     }
 
@@ -40,7 +42,7 @@ class Member implements UserInterface, \Serializable
     {
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

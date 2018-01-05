@@ -39,17 +39,21 @@ class U2fTokenRegistrationController extends AbstractController
     {
         $submission = new U2FTokenRegistration();
         $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
-        
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $service->processResponse(
+            $u2fToken = $service->processResponse(
                 $submission->getU2fTokenResponse(),
                 $this->getUser(),
                 new \DateTimeImmutable(),
                 $submission->getRequestId()
             );
-            return new Response('went okay');
+            ob_start();
+            echo '<pre>';
+            var_dump($u2fToken);
+            echo '</pre>';
+            return new Response(ob_get_clean());
         } else {
             return new RedirectResponse($this->generateUrl('get_add_u2f_token'));
         }

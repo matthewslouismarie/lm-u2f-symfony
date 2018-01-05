@@ -49,7 +49,7 @@ class RegistrationTest extends DbWebTestCase
         );
     }
 
-    public function testSteps()
+    private function enterDetails()
     {
         $session = $this->getContainer()->get('session');
         $mf = $this->getContainer()->get('App\Factory\MemberFactory');
@@ -58,7 +58,8 @@ class RegistrationTest extends DbWebTestCase
         $this->checkUrlStatusCode('/tks/key-1', 302);
         $this->checkUrlStatusCode('/tks/key-2', 302);
         $this->checkUrlStatusCode('/tks/key-3', 302);     
-        $this->checkUrlStatusCode('/tks/finish-registration', 302);   
+        $this->checkUrlStatusCode('/tks/finish-registration', 302);
+        $this->checkUrlStatusCode('/tks/reset-registration', 302);
 
         $member = $mf->create(2, 'johndoe2', 'password');
         $session->set('tks_member', $member);
@@ -68,6 +69,7 @@ class RegistrationTest extends DbWebTestCase
         $this->checkUrlStatusCode('/tks/key-2', 302);
         $this->checkUrlStatusCode('/tks/key-3', 302);     
         $this->checkUrlStatusCode('/tks/finish-registration', 302);
+        $this->checkUrlStatusCode('/tks/reset-registration', 200);
 
         $firstU2fToken = new U2FToken(
             1,
@@ -85,6 +87,7 @@ class RegistrationTest extends DbWebTestCase
         $this->checkUrlStatusCode('/tks/key-2', 200);
         $this->checkUrlStatusCode('/tks/key-3', 302);     
         $this->checkUrlStatusCode('/tks/finish-registration', 302);
+        $this->checkUrlStatusCode('/tks/reset-registration', 200);
 
         $secondU2fToken = new U2FToken(
             2,
@@ -102,6 +105,7 @@ class RegistrationTest extends DbWebTestCase
         $this->checkUrlStatusCode('/tks/key-2', 200);
         $this->checkUrlStatusCode('/tks/key-3', 200);     
         $this->checkUrlStatusCode('/tks/finish-registration', 302);
+        $this->checkUrlStatusCode('/tks/reset-registration', 200);
 
         $thirdU2fToken = new U2FToken(
             3,
@@ -119,14 +123,32 @@ class RegistrationTest extends DbWebTestCase
         $this->checkUrlStatusCode('/tks/key-2', 200);
         $this->checkUrlStatusCode('/tks/key-3', 200);     
         $this->checkUrlStatusCode('/tks/finish-registration', 200);
+        $this->checkUrlStatusCode('/tks/reset-registration', 200);
 
+        return array(
+            'tks_member' => $member,
+            'tks_u2f_token_1' => $firstU2fToken,
+            'tks_u2f_token_2' => $secondU2fToken,
+            'tks_u2f_token_3' => $thirdU2fToken,
+        );
+    }
+
+    public function testSteps()
+    {
+        $variables = $this->enterDetails();
+
+        $firstU2fToken = $variables['tks_u2f_token_1'];
+        $secondU2fToken = $variables['tks_u2f_token_2'];
+        $thirdU2fToken = $variables['tks_u2f_token_3'];
+        
         $firstCrawler = $this
-            ->getClient()
-            ->request('GET', '/tks/finish-registration');
+        ->getClient()
+        ->request('GET', '/tks/finish-registration');
         $button = $firstCrawler->selectButton('user_confirmation[confirmation]');
         $form = $button->form();
         $secondCrawler = $this->getClient()->submit($form);
-        $session->start();
+        $session = $this->getContainer()->get('session');
+
         $this->assertNull($session->get('tks_member'));
         $this->assertNull($session->get('tks_u2f_token_1'));
         $this->assertNull($session->get('tks_u2f_token_2'));
@@ -145,5 +167,42 @@ class RegistrationTest extends DbWebTestCase
         $this->assertEquals($firstU2fToken, $dbU2fTokens[0]);
         $this->assertEquals($secondU2fToken, $dbU2fTokens[1]);
         $this->assertEquals($thirdU2fToken, $dbU2fTokens[2]);
+        
+        $this->checkUrlStatusCode('/tks/username-and-password', 200);
+        $this->checkUrlStatusCode('/tks/key-1', 302);
+        $this->checkUrlStatusCode('/tks/key-2', 302);
+        $this->checkUrlStatusCode('/tks/key-3', 302);     
+        $this->checkUrlStatusCode('/tks/finish-registration', 302);
+        $this->checkUrlStatusCode('/tks/reset-registration', 302);
+    }
+
+    public function testResetButton()
+    {
+        $variables = $this->enterDetails();
+
+        $firstU2fToken = $variables['tks_u2f_token_1'];
+        $secondU2fToken = $variables['tks_u2f_token_2'];
+        $thirdU2fToken = $variables['tks_u2f_token_3'];
+
+        $firstCrawler = $this
+            ->getClient()
+            ->request('GET', '/tks/reset-registration');
+        $button = $firstCrawler->selectButton('user_confirmation[confirmation]');
+        $form = $button->form();
+        $secondCrawler = $this->getClient()->submit($form);
+
+        $session = $this->getContainer()->get('session');
+
+        $this->assertNull($session->get('tks_member'));
+        $this->assertNull($session->get('tks_u2f_token_1'));
+        $this->assertNull($session->get('tks_u2f_token_2'));
+        $this->assertNull($session->get('tks_u2f_token_3'));
+        
+        $this->checkUrlStatusCode('/tks/username-and-password', 200);
+        $this->checkUrlStatusCode('/tks/key-1', 302);
+        $this->checkUrlStatusCode('/tks/key-2', 302);
+        $this->checkUrlStatusCode('/tks/key-3', 302);     
+        $this->checkUrlStatusCode('/tks/finish-registration', 302);
+        $this->checkUrlStatusCode('/tks/reset-registration', 302);
     }
 }

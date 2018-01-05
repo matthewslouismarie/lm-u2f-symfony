@@ -33,10 +33,9 @@ class RegistrationTest extends DbWebTestCase
     {
         $firstCrawler = $this
             ->getClient()
-            ->request('GET', '/mkps/master-pair-first-key');
+            ->request('GET', '/tks/first-key');
         $button = $firstCrawler->selectButton('u2_f_token_registration[submit]');
         $form = $button->form(array(
-            'u2_f_token_registration[name]' => 'My First Key!!',
             'u2_f_token_registration[u2fTokenResponse]' => 'invalid response'
         ));
         $secondCrawler = $this->getClient()->submit($form);

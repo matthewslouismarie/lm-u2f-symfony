@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @todo Make not nullable.
  * @ORM\Entity(repositoryClass="App\Repository\U2FTokenRepository")
  */
 class U2FToken

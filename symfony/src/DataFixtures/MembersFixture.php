@@ -18,7 +18,7 @@ class MembersFixture extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $member = new Member('louis');
+        $member = new Member(null, 'louis');
         $encoded = $this->encoder->encodePassword($member, 'hello');
         $member->setPassword($encoded);
         $manager->persist($member);

@@ -75,15 +75,18 @@ class U2FTokenRegistrationService
         string $challenge,
         Member $member,
         \DateTimeImmutable $registration_date_time,
-        string $request_id): void
+        string $request_id)
     {
-        $this->em->persist($this->getU2fTokenFromResponse(
+        $u2fToken = $this->getU2fTokenFromResponse(
             $challenge,
             $member,
             $registration_date_time,
             $request_id
-        ));
+        );
+        $this->em->persist($u2fToken);
 
         $this->em->flush();
+
+        return $u2fToken;
     }
 }

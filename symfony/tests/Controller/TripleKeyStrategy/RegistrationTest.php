@@ -9,8 +9,29 @@ class RegistrationTest extends DbWebTestCase
 {
     public function testUsernameAndPassword()
     {
+        $this->checkUrlStatusCode('/tks/username-and-password', 200);
+        $this->checkUrlStatusCode('/tks/key-1', 302);
+        $this->checkUrlStatusCode('/tks/key-2', 302);
+        $this->checkUrlStatusCode('/tks/key-3', 302);        
         $this->usernameAndPassword();
-        $this->firstKey();
+
+        $this->checkUrlStatusCode('/tks/username-and-password', 200);
+        $this->checkUrlStatusCode('/tks/key-1', 200);
+        $this->checkUrlStatusCode('/tks/key-2', 302);
+        $this->checkUrlStatusCode('/tks/key-3', 302);     
+        $this->key(1);
+
+        // $this->checkUrlStatusCode('/tks/username-and-password', 200);
+        // $this->checkUrlStatusCode('/tks/key-1', 200);
+        // $this->checkUrlStatusCode('/tks/key-2', 200);
+        // $this->checkUrlStatusCode('/tks/key-3', 302);     
+        // $this->key(2);
+
+        // $this->checkUrlStatusCode('/tks/username-and-password', 200);
+        // $this->checkUrlStatusCode('/tks/key-1', 200);
+        // $this->checkUrlStatusCode('/tks/key-2', 200);
+        // $this->checkUrlStatusCode('/tks/key-3', 200);
+        // $this->key(3);
     }
 
     private function usernameAndPassword()
@@ -33,14 +54,14 @@ class RegistrationTest extends DbWebTestCase
         );
         $this->assertTrue($hasher->isPasswordValid($sessionMember, 'password'));
         $this->assertFalse($hasher->isPasswordValid($sessionMember, 'pssword'));
-        $this->checkUrlStatusCode('/tks/first-key', 200);
+        $this->checkUrlStatusCode('/tks/key-1', 200);
     }
 
-    private function firstKey()
+    private function key(int $keyNo)
     {
         $firstCrawler = $this
             ->getClient()
-            ->request('GET', '/tks/first-key');
+            ->request('GET', '/tks/key-'.$keyNo);
         $button = $firstCrawler->selectButton('u2_f_token_registration[submit]');
         $form = $button->form(array(
             'u2_f_token_registration[u2fTokenResponse]' => 'invalid response'

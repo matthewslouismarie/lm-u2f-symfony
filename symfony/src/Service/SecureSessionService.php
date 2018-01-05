@@ -22,6 +22,7 @@ class SecureSessionService
     {
         $key = $this->generateNewKey();
         $this->session->set($key, $value);
+        $this->session->save();
         return $key;
     }
 

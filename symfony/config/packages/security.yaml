@@ -24,3 +24,6 @@ security:
         -
             path: ^/(tks/reset-registration|login|register|mkps/registration|tks/username-and-password|tks/key-[0-9]+|tks/finish-registration)$
             allow_if: "not has_role('ROLE_USER')"
+        -
+            path: ^/tks/login
+            allow_if: "not has_role('ROLE_USER')"

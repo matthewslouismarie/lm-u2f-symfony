@@ -45,7 +45,6 @@ class U2fTokenRegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $service->processResponse(
                 $submission->getU2fTokenResponse(),
-                $submission->getName(),
                 $this->getUser(),
                 new \DateTimeImmutable(),
                 $submission->getRequestId()

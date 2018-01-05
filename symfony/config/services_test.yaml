@@ -1,5 +1,7 @@
 services:
     _defaults:
+        autowire: true
+        autoconfigure: true
         public: true
 
     # If you need to access services in a test, create an alias
@@ -7,3 +9,12 @@ services:
     # aliases are prefixed with test. For example:
     #
     # test.App\Service\MyService: '@App\Service\MyService'
+    # test.Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader: '@Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader'
+
+    Doctrine\Bundle\FixturesBundle\Loader\:
+        resource: '../vendor/doctrine/doctrine-fixtures-bundle/Loader/*'
+    App\:
+        resource: '../src/{DataFixtures,Factory}'
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']

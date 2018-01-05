@@ -70,8 +70,8 @@ class Member implements UserInterface, \Serializable
     {
         return serialize(array(
             $this->id,
-            $this->password,
             $this->username,
+            $this->password,
         ));
     }
 

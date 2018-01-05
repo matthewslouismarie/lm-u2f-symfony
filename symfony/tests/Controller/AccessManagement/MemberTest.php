@@ -31,6 +31,7 @@ class MemberTest extends DbWebTestCase
         $this->checkUrlStatusCode('/tks/key-2', 403);
         $this->checkUrlStatusCode('/tks/key-3', 403);
         $this->checkUrlStatusCode('/tks/finish-registration', 403);
+        $this->checkUrlStatusCode('/tks/reset-registration', 403);
         
     }
 

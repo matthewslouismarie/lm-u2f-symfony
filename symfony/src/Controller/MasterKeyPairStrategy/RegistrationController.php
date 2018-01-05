@@ -157,7 +157,6 @@ class RegistrationController extends AbstractController
             $session->remove('tks_member');
             $session->save();
 
-            var_dump($member);
             $om->persist($member);
             for ($i = 0; $i < U2FService::N_U2F_TOKENS_PER_MEMBER; $i++) {
                 $om->persist($u2fTokens[$i]);
@@ -167,6 +166,39 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('tks/finish_registration.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Route(
+     *  "/tks/reset-registration",
+     *  name="tks_reset_registration",
+     *  methods={"GET", "POST"})
+     */
+    public function reset(Request $request, SessionInterface $session)
+    {
+        if (null === $session->get('tks_member')) {
+            $url = $this->generateUrl('mkps_registration');
+            return new RedirectResponse($url);
+        }
+
+        $form = $this->createForm(UserConfirmationType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; $i++) {
+                $session->remove('tks_u2f_token_'.$i);
+            }
+            $session->remove('tks_member');
+            $session->save();
+
+            $url = $this->generateUrl('mkps_registration');
+            return new RedirectResponse($url);
+        }
+
+        return $this->render('tks/reset.html.twig', array(
             'form' => $form->createView(),
         ));
     }

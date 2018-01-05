@@ -56,36 +56,4 @@ class U2FTokenManagementController extends AbstractController
             ));
         }
     }
-
-    /**
-     * @todo Use a custom exception.
-     * 
-     * @Route(
-     *  "/edit-u2f-token/{u2fTokenName}",
-     *  name="edit_u2f_token",
-     *  methods={"GET", "POST"})
-     */
-    public function editU2fToken(Request $request, string $u2fTokenName)
-    {
-        $repo = $this->getDoctrine()->getRepository(U2FToken::class);
-        $token = $repo->findMemberU2fToken($u2fTokenName, $this->getUser());
-        $u2fTokenUpdate = new U2fTokenUpdate();
-        $u2fTokenUpdate->setName($token->getName());
-
-        $form = $this->createForm(U2fTokenUpdateType::class, $u2fTokenUpdate);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $newToken = $repo->setName($token, $u2fTokenUpdate->getName());
-            return new RedirectResponse(
-                $this->generateUrl('edit_u2f_token', array(
-                    'u2fTokenName' => $u2fTokenUpdate->getName(),
-            )));
-        } else {
-            return $this->render('u2f_token.html.twig', array(
-                'form' => $form->createView(),
-            )); 
-        }
-    }
 }

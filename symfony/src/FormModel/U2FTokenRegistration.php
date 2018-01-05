@@ -17,21 +17,11 @@ class U2FTokenRegistration
     /**
      * @Assert\NotBlank()
      */
-    private $name;
-
-    /**
-     * @Assert\NotBlank()
-     */
     private $requestId;
     
     public function getU2fTokenResponse()
     {
         return $this->u2fTokenResponse;
-    }
-    
-    public function getName()
-    {
-        return $this->name;
     }
     
     public function getRequestId()
@@ -42,11 +32,6 @@ class U2FTokenRegistration
     public function setU2fTokenResponse($u2fTokenResponse)
     {
         $this->u2fTokenResponse = $u2fTokenResponse;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
     }
 
     public function setRequestId($requestId)

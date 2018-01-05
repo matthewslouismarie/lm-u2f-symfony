@@ -11,9 +11,10 @@ class U2FToken
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="string")
+     * @Column(type="integer")
+     * @ORM\GeneratedValue
      */
-    private $name;
+    private $id;
 
     /**
      * @todo rename to owner
@@ -48,14 +49,15 @@ class U2FToken
     private $publicKey;
 
     public function __construct(
+        ?int $id,
         string $attestation,
         int $counter,
         string $keyHandle,
-        ?Member $member,
-        string $name,
+        Member $member,
         \DateTimeImmutable $registrationDateTime,
         string $publicKey)
     {
+        $this->id = $id;
         $this->attestation = $attestation;
         $this->counter = $counter;
         $this->keyHandle = $keyHandle;
@@ -74,6 +76,11 @@ class U2FToken
     {
         return $this->counter;
     }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
     
     public function getKeyHandle(): string
     {
@@ -85,14 +92,9 @@ class U2FToken
         return $this->registrationDateTime;
     }
 
-    public function getMember(): ?Member
+    public function getMember(): Member
     {
         return $this->member;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
     }
     
     public function getPublicKey(): string

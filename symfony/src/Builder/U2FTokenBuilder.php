@@ -21,7 +21,6 @@ class U2FTokenBuilder
             $counter,
             $this->base->getKeyHandle(),
             $this->base->getMember(),
-            $this->base->getName(),
             $this->base->getRegistrationDateTime,
             $this->base->getPublicKey());
     }

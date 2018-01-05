@@ -19,8 +19,8 @@ security:
                     - App\Security\LoginFormAuthenticator
     access_control:
         -
-            path: ^/(logout|view-my-u2f-tokens|add-u2f-token|delete-u2f-token/.+|edit-u2f-token/.+)$
+            path: ^/(logout|view-my-u2f-tokens|add-u2f-token|delete-u2f-token/.+)$
             roles: ROLE_USER
         -
-            path: ^/(login|register|mkps/registration|mkps/master-pair-first-key|tks/username-and-password)$
+            path: ^/(login|register|mkps/registration|mkps/master-pair-first-key|tks/username-and-password|tks/first-key)$
             allow_if: "not has_role('ROLE_USER')"

@@ -44,7 +44,6 @@ class U2FTokenRegistrationService
 
     public function getU2fTokenFromResponse(
         string $u2fKeyResponse,
-        string $name,
         Member $member,
         \DateTimeImmutable $registration_date_time,
         string $request_id): U2FToken
@@ -59,11 +58,11 @@ class U2FTokenRegistrationService
         $public_key = base64_encode($registration->getPublicKey());
         $key_handle = base64_encode($registration->getKeyHandleBinary());
         $u2fToken = new U2FToken(
+            null,
             $attestation,
             $counter,
             $key_handle,
             $member,
-            $name,
             $registration_date_time,
             $public_key);
         return $u2fToken;
@@ -74,14 +73,12 @@ class U2FTokenRegistrationService
      */
     public function processResponse(
         string $challenge,
-        string $name,
         Member $member,
         \DateTimeImmutable $registration_date_time,
         string $request_id): void
     {
         $this->em->persist($this->getU2fTokenFromResponse(
             $challenge,
-            $name,
             $member,
             $registration_date_time,
             $request_id

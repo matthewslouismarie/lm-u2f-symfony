@@ -26,5 +26,5 @@ security:
             path: ^/(logout|view-my-u2f-tokens|add-u2f-token|delete-u2f-token/.+)$
             roles: ROLE_USER
         -
-            path: ^/(login|register|mkps/registration|mkps/master-pair-first-key|tks/username-and-password|tks/first-key)$
+            path: ^/(login|register|mkps/registration|tks/username-and-password|tks/key-[0-9]+)$
             allow_if: "not has_role('ROLE_USER')"

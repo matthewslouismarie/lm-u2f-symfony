@@ -61,7 +61,6 @@ class U2FToken
         $this->counter = $counter;
         $this->keyHandle = $keyHandle;
         $this->member = $member;
-        $this->name = $name;
         $this->registrationDateTime = $registrationDateTime;
         $this->publicKey = $publicKey;
     }

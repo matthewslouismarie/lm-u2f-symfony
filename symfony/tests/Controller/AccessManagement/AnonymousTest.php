@@ -21,7 +21,6 @@ class Anonymous extends DbWebTestCase
         $this->checkUrlStatusCode('/', 200);
         $this->checkUrlStatusCode('/login', 200);
         $this->checkUrlStatusCode('/mkps/registration', 200);
-        $this->checkUrlStatusCode('/tks/first-key', 302);
         $this->checkUrlStatusCode('/tks/username-and-password', 200);
     }
 

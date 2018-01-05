@@ -9,6 +9,12 @@ class RegistrationTest extends DbWebTestCase
 {
     public function testUsernameAndPassword()
     {
+        $this->usernameAndPassword();
+        $this->firstKey();
+    }
+
+    private function usernameAndPassword()
+    {
         $session = $this->getContainer()->get('session');
         $hasher = $this->getContainer()->get('security.password_encoder');
         $firstCrawler = $this
@@ -27,9 +33,10 @@ class RegistrationTest extends DbWebTestCase
         );
         $this->assertTrue($hasher->isPasswordValid($sessionMember, 'password'));
         $this->assertFalse($hasher->isPasswordValid($sessionMember, 'pssword'));
+        $this->checkUrlStatusCode('/tks/first-key', 200);
     }
 
-    public function testFirstKeyRegistration()
+    private function firstKey()
     {
         $firstCrawler = $this
             ->getClient()

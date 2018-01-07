@@ -6,6 +6,7 @@ services:
 before_install:
   - sudo service mysql stop
   - docker-compose up --build -d
+  - docker exec lmu2fsymfony_apache sudo chmod 777 -R .
   - docker exec lmu2fsymfony_apache composer install
   - docker exec lmu2fsymfony_apache npm install
   - docker exec lmu2fsymfony_apache bin/console doctrine:database:create

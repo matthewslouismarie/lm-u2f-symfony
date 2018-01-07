@@ -17,6 +17,7 @@ security:
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
+            access_denied_handler: App\Security\AccessDeniedHandler
     access_control:
         -
             path: ^/(logout|view-my-u2f-tokens|add-u2f-token|delete-u2f-token/.+)$

@@ -17,6 +17,9 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
         $this->router = $router;
     }
 
+    /**
+     * @todo Redirect to page the user tried to visit?
+     */
     public function handle(Request $request, AccessDeniedException $exception)
     {
         $response = new RedirectResponse(

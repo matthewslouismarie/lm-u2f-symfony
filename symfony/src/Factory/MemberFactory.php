@@ -28,4 +28,10 @@ class MemberFactory
         $modifiedMember->setPassword($member->getPassword());
         return $modifiedMember;
     }
+
+    public function setPassword(Member &$member, string $password): void
+    {
+        $hashed = $this->hasher->encodePassword($member, $password);
+        $member->setPassword($hashed);
+    }
 }

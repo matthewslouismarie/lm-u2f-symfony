@@ -48,12 +48,8 @@ class LogoutFormAuthenticator extends AbstractFormLoginAuthenticator
         return array();
     }
 
-    /**
-     * @todo Use constants or service to access session variables.
-     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $this->session->set('lm_u2f_symfony:username', null);
         return null;
     }
 

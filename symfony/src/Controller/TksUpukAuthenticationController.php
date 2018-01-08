@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\U2fLoginType;
+use App\Form\UserConfirmationType;
 use App\Form\UsernameAndPasswordType;
 use App\FormModel\U2fLoginSubmission;
 use App\FormModel\UsernameAndPasswordSubmission;
@@ -77,6 +78,21 @@ class TksUpukAuthenticationController extends AbstractController
         return $this->render('tks/upuk/upuk_uk_authenticate.html.twig', array(
             'form' => $form->createView(),
             'sign_requests_json' => $authData['sign_requests_json'],
+        ));
+    }
+
+    /**
+     * @Route(
+     *  "/tks-upuk/authenticated/log-out",
+     *  name="tks_upuk_logout",
+     *  methods={"GET", "POST"})
+     */
+    public function logout(Request $request)
+    {
+        $form = $this->createForm(UserConfirmationType::class);
+        $form->handleRequest($request);
+        return $this->render('tks/upuk/logout.html.twig', array(
+            'form' => $form->createView(),
         ));
     }
 }

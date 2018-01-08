@@ -11,6 +11,7 @@ class UpukTest extends DbWebTestCase
     {
         $this->runLoggedOutTests();
         $this->logIn();
+        $this->runLoggedInTests();
     }
 
     public function runLoggedOutTests()
@@ -33,7 +34,7 @@ class UpukTest extends DbWebTestCase
     {
         $this->checkUrlStatusCode(
             '/tks-upuk/not-authenticated/authenticate/username-and-password',
-            403)
+            302)
         ;
         $this->checkUrlStatusCode(
             '/tks-upuk/authenticated/change-password',
@@ -85,6 +86,5 @@ class UpukTest extends DbWebTestCase
             ->getClient()
             ->submit($form)
         ;
-
     }
 }

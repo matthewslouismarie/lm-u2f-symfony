@@ -19,6 +19,7 @@ security:
             pattern: ^/tks-0/.*$
             provider: our_db_provider
         tks_upuk:
+            access_denied_handler: App\AccessDeniedHandler\UpukAccessDeniedHandler
             anonymous: true
             guard:
                 authenticators:

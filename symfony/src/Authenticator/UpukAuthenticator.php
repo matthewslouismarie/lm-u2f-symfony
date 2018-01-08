@@ -94,6 +94,9 @@ class UpukAuthenticator extends AbstractFormLoginAuthenticator
         return $this->router->generate('tks_upuk_up_authenticate');
     }
 
+    /**
+     * @todo Redirect to previously visited page.
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         return new RedirectResponse('/public');
@@ -101,7 +104,10 @@ class UpukAuthenticator extends AbstractFormLoginAuthenticator
 
     public function supports(Request $request): bool
     {
-        $isRouteCorrect = $request->attributes->get('_route') === 'tks_upuk_authenticate';
+        $route = $request
+            ->attributes
+            ->get('_route');
+        $isRouteCorrect = $route === 'tks_upuk_uk_authenticate';
         $isMethodCorrect = $request->isMethod('POST');
         return $isRouteCorrect && $isMethodCorrect;
     }

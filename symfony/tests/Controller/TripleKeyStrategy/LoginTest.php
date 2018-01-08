@@ -7,19 +7,24 @@ use Firehed\U2F\SignRequest;
 
 class LoginTest extends DbWebTestCase
 {
-    public function testLogin()
+    public function setUp()
     {
+        parent::setUp();
         $this->checkUrlStatusCode('/tks/login', 200);
         
         $upLoginGet = $this
-        ->getClient()
-        ->request('GET', '/tks/login');
+            ->getClient()
+            ->request('GET', '/tks/login')
+        ;
         $upButton = $upLoginGet->selectButton('username_and_password[submit]');
         $form = $upButton->form(array(
             'username_and_password[username]' => 'louis',
             'username_and_password[password]' => 'hello',
         ));
-        $postUpLogin = $this->getClient()->submit($form);
+        $postUpLogin = $this
+            ->getClient()
+            ->submit($form)
+        ;
         $session = $this->getContainer()->get('App\Service\SecureSessionService');
 
         $signRequests = array();
@@ -37,6 +42,11 @@ class LoginTest extends DbWebTestCase
 
         $this->getClient()->followRedirects(false);
         $validateLogin = $this->getClient()->submit($form);
+    }
+
+    public function testLogin()
+    {
+        
 
         $this->assertEquals('/public', $this->getClient()->getResponse()->getTargetUrl());
 
@@ -52,5 +62,30 @@ class LoginTest extends DbWebTestCase
 
         $this->checkUrlStatusCode('/add-u2f-token', 200);
         $this->checkUrlStatusCode('/logout', 200);
+    }
+
+    public function testLogout()
+    {
+        $firstCrawler = $this
+            ->getClient()
+            ->request('GET', '/logout')
+        ;
+        $button = $firstCrawler
+            ->selectButton('user_confirmation[confirmation]')
+        ;
+        $form = $button->form();
+        $secondCrawler = $this->getClient()->submit($form);
+        $this->checkUrlStatusCode('/', 200);
+        $this->checkUrlStatusCode('/mkps/registration', 200);
+        $this->checkUrlStatusCode('/tks/username-and-password', 200);
+        $this->checkUrlStatusCode('/tks/key-1', 302);
+        $this->checkUrlStatusCode('/tks/key-2', 302);
+        $this->checkUrlStatusCode('/tks/key-3', 302);
+        $this->checkUrlStatusCode('/tks/finish-registration', 302);
+        $this->checkUrlStatusCode('/tks/reset-registration', 302);
+        $this->checkUrlStatusCode('/tks/login', 200);
+
+        $this->checkUrlStatusCode('/add-u2f-token', 302);
+        $this->checkUrlStatusCode('/logout', 302);
     }
 }

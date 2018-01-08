@@ -19,6 +19,7 @@
         "symfony/security-bundle": "^4.0",
         "symfony/security-csrf": "^4.0",
         "symfony/translation": "^4.0",
+        "symfony/validator": "^4.0",
         "symfony/yaml": "^4.0"
     },
     "require-dev": {

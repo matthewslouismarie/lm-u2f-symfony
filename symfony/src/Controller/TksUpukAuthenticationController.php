@@ -46,7 +46,7 @@ class TksUpukAuthenticationController extends AbstractController
      * @Route(
      *  "/tks-upuk/not-authenticated/authenticate/u2f-key",
      *  name="tks_upuk_uk_authenticate",
-     *  methods={"GET"})
+     *  methods={"GET", "POST"})
      */
     public function ukAuthenticate(
         AuthRequestService $auth,
@@ -55,9 +55,13 @@ class TksUpukAuthenticationController extends AbstractController
     {
         $upSubmissionId = $request
             ->query
-            ->get('up-submission-id')
-        ;
+            ->get('up-submission-id');
         $upSubmission = $secureSession->getAndRemove($upSubmissionId);
+
+        if (!is_a($upSubmission, UsernameAndPasswordSubmission::class)) {
+            $url = $this->generateUrl('tks_upuk_up_authenticate');
+            return new RedirectResponse($url);
+        }
         $authData = $auth->generate($upSubmission->getUsername());
         $submission = new U2fLoginSubmission(
             $upSubmission->getUsername(),

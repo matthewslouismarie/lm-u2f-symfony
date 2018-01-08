@@ -26,12 +26,12 @@ class SecureSessionService
         return $key;
     }
 
-    public function get(string $key)
+    public function get(?string $key)
     {
         return $this->session->get($key);
     }
 
-    public function getAndRemove(string $key)
+    public function getAndRemove(?string $key)
     {
         $value = $this->session->get($key);
         $this->session->remove($key);

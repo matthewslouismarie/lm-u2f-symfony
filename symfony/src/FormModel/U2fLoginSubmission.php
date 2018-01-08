@@ -26,6 +26,18 @@ class U2fLoginSubmission
      */
     public $requestId;
 
+    public function __construct(
+        ?string $username,
+        ?string $password,
+        ?string $u2fTokenResponse,
+        ?string $requestId)
+    {
+        $this->username = $username;
+        $this->password = $password;
+        $this->u2fTokenResponse = $u2fTokenResponse;
+        $this->requestId = $requestId;
+    }
+
     public function getPassword(): ?string
     {
         return $this->password;

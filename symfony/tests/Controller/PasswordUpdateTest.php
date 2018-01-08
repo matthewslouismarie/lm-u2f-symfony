@@ -27,14 +27,23 @@ class PasswordUpdateTest extends AbstractUpukTestCase
 
     public function changePassword()
     {
-        $getRequest = $this
+        $firstCrawler = $this
             ->getClient()
             ->request('GET', '/tks-upuk/authenticated/change-password')
         ;
-        $button = $getRequest->selectButton('password_update[submit]');
-        $form = $button->form(array(
+        $button = $firstCrawler->selectButton('password_update[submit]');
+        $wrongForm = $button->form(array(
             'password_update[password]' => 'meow',
+            'password_update[passwordConfirmation]' => 'something else',
         ));
-        $postRequest = $this->getClient()->submit($form);
+        $secondCrawler = $this->getClient()->submit($wrongForm);
+        
+        $this->assertEquals(200, $this->getClient()->getResponse()->getStatusCode());
+        
+        $validForm = $button->form(array(
+            'password_update[password]' => 'meow',
+            'password_update[passwordConfirmation]' => 'meow',
+        ));
+        $postRequest = $this->getClient()->submit($validForm);
     }
 }

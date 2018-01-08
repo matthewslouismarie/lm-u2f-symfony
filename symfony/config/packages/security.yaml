@@ -24,6 +24,8 @@ security:
             guard:
                 authenticators:
                     - App\Authenticator\UpukAuthenticator
+                    - App\Authenticator\UpukLogout
+                entry_point: App\Authenticator\UpukAuthenticator
             pattern: ^/tks-upuk/.*$
             provider: our_db_provider
         main:

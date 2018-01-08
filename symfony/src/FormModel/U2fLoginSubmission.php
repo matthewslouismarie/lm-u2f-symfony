@@ -27,10 +27,10 @@ class U2fLoginSubmission
     public $requestId;
 
     public function __construct(
-        ?string $username,
-        ?string $password,
-        ?string $u2fTokenResponse,
-        ?string $requestId)
+        ?string $username = null,
+        ?string $password = null,
+        ?string $u2fTokenResponse = null,
+        ?string $requestId = null)
     {
         $this->username = $username;
         $this->password = $password;

@@ -20,7 +20,11 @@ security:
             provider: our_db_provider
         tks_upuk:
             anonymous: true
+            guard:
+                authenticators:
+                    - App\Authenticator\UpukAuthenticator
             pattern: ^/tks-upuk/.*$
+            provider: our_db_provider
         main:
             anonymous: ~
             provider: our_db_provider
@@ -47,5 +51,8 @@ security:
             path: ^/tks-0/not-authenticated/.+$
             allow_if: "not has_role('ROLE_USER')"
         -
-            path: ^/tks-upuk/not/authenticated/.+$
+            path: ^/tks-upuk/not-authenticated/.+$
             allow_if: "not has_role('ROLE_USER')"
+        -
+            path: ^/tks-upuk/authenticated/.+$
+            roles: ROLE_USER

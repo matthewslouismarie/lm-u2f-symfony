@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Clearance0;
+namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,7 +10,7 @@ class PasswordUpdateController extends AbstractController
 {
     /**
      * @Route(
-     *  "/tks-0/authenticated/change-password",
+     *  "/tks-upuk/authenticated/change-password",
      *  name="tks_change_password",
      *  methods={"GET"})
      */

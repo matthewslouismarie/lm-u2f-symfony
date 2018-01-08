@@ -15,6 +15,7 @@ class PasswordUpdateType extends AbstractType
     {
         $builder
             ->add('password', PasswordType::class)
+            ->add('passwordConfirmation', PasswordType::class)
             ->add('submit', SubmitType::class)
         ;
     }

@@ -26,4 +26,15 @@ class TksUpSecurityController extends AbstractController
             'form' => $form->createView(),
         ));
     }
+
+    /**
+     * @Route(
+     *  "/tks-0/authenticated/change-password",
+     *  name="tks_up_change_password",
+     *  methods={"GET"})
+     */
+    public function changePassword()
+    {
+        return new Response();
+    }
 }

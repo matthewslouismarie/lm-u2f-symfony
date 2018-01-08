@@ -18,6 +18,9 @@ security:
                     - App\Tks\UpClearance\Authenticator\TksUpAuthenticator
             pattern: ^/tks-0/.*$
             provider: our_db_provider
+        tks_upuk:
+            anonymous: true
+            pattern: ^/tks-upuk/.*$
         main:
             anonymous: ~
             provider: our_db_provider
@@ -42,4 +45,7 @@ security:
             roles: ROLE_USER
         -
             path: ^/tks-0/not-authenticated/.+$
+            allow_if: "not has_role('ROLE_USER')"
+        -
+            path: ^/tks-upuk/not/authenticated/.+$
             allow_if: "not has_role('ROLE_USER')"

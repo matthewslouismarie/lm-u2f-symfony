@@ -91,7 +91,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('tks_login_username_and_password');
+        return $this->router->generate('homepage');
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)

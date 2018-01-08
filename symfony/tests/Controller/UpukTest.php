@@ -20,6 +20,10 @@ class UpukTest extends DbWebTestCase
             200)
         ;
         $this->checkUrlStatusCode(
+            '/tks-upuk/not-authenticated/authenticate/u2f-key',
+            302)
+        ;
+        $this->checkUrlStatusCode(
             '/tks-upuk/authenticated/change-password',
             302)
         ;
@@ -60,7 +64,6 @@ class UpukTest extends DbWebTestCase
             ->getContainer()
             ->get('App\Service\SecureSessionService')
         ;
-        echo $this->getClient()->getRequest()->getUri();
         $signRequests = array();
         $signRequest = new SignRequest();
         $signRequest->setAppId('https://172.16.238.10');

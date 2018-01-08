@@ -62,6 +62,7 @@ class LoginTest extends DbWebTestCase
 
         $this->checkUrlStatusCode('/add-u2f-token', 200);
         $this->checkUrlStatusCode('/logout', 200);
+
     }
 
     public function testLogout()

@@ -11,6 +11,13 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        tks_0:
+            anonymous: true
+            guard:
+                authenticators:
+                    - App\Tks\UpClearance\Authenticator\TksUpAuthenticator
+            pattern: ^/tks-0/.*$
+            provider: our_db_provider
         main:
             anonymous: ~
             provider: our_db_provider
@@ -29,4 +36,10 @@ security:
             allow_if: "not has_role('ROLE_USER')"
         -
             path: ^/tks/login
+            allow_if: "not has_role('ROLE_USER')"
+        -
+            path: ^/tks-0/authenticated/.+$
+            roles: ROLE_USER
+        -
+            path: ^/tks-0/not-authenticated/.+$
             allow_if: "not has_role('ROLE_USER')"

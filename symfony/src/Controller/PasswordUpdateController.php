@@ -15,7 +15,7 @@ class PasswordUpdateController extends AbstractController
 {
     /**
      * @Route(
-     *  "/tks-upuk/authenticated/change-password",
+     *  "/authenticated/change-password",
      *  name="tks_change_password",
      *  methods={"GET", "POST"})
      */

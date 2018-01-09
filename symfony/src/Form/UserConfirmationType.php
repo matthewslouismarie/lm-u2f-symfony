@@ -11,7 +11,7 @@ class UserConfirmationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('confirmation', SubmitType::class, array(
+            ->add('submit', SubmitType::class, array(
                 'label' => 'Yes',
             ))
         ;

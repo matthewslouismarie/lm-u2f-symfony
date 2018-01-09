@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 
-class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
+class LoginAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $auth;
     private $formFactory;
@@ -40,9 +40,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $this->encoder = $encoder;
     }
 
-    /**
-     * @todo Why is $u2fForm->isValid() not working?
-     */
     public function getCredentials(Request $request)
     {
         $u2fSubmission = new U2fLoginSubmission();
@@ -67,6 +64,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $user;
     }
 
+    /**
+     * @todo Check if the try catch block is of any use.
+     */
     public function checkCredentials($credentials, UserInterface $user)
     {
         if (null === $credentials->u2fTokenResponse) {
@@ -91,17 +91,23 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('homepage');
+        return $this->router->generate('up_authenticate');
     }
 
+    /**
+     * @todo Redirect to previously visited page.
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        return new RedirectResponse('/public');
+        return new RedirectResponse($this->router->generate('homepage'));
     }
 
     public function supports(Request $request): bool
     {
-        $isRouteCorrect = $request->attributes->get('_route') === 'tks_login_validate';
+        $route = $request
+            ->attributes
+            ->get('_route');
+        $isRouteCorrect = $route === 'uk_authenticate';
         $isMethodCorrect = $request->isMethod('POST');
         return $isRouteCorrect && $isMethodCorrect;
     }

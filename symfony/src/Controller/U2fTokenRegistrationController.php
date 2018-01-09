@@ -10,10 +10,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @todo Delete this class.
+ */
 class U2fTokenRegistrationController extends AbstractController
 {
     /**
-     * @Route("/add-u2f-token", name="get_add_u2f_token", methods={"GET"})
+     * @Route(
+     *  "/authenticated/add-u2f-token",
+     *  name="get_add_u2f_token",
+     *  methods={"GET"})
      */
     public function doGet(Request $request, U2FTokenRegistrationService $service)
     {
@@ -33,7 +39,10 @@ class U2fTokenRegistrationController extends AbstractController
 
     /**
      * @todo set timezone
-     * @Route("/add-u2f-token", name="post_add_u2f_token", methods={"POST"})
+     * @Route(
+     *  "/authenticated/add-u2f-token",
+     *  name="post_add_u2f_token",
+     *  methods={"POST"})
      */
     public function doPost(Request $request, U2FTokenRegistrationService $service)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\MasterKeyPairStrategy;
+namespace App\Controller;
 
 use App\Factory\MemberFactory;
 use App\Form\U2FTokenRegistrationType;

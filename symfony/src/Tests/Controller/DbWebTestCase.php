@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;

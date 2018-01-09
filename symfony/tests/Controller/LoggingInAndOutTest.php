@@ -2,9 +2,9 @@
 
 namespace App\Tests\Controller;
 
-class UpukTest extends AbstractUpukTestCase
+class LoggingInAndOutTest extends AbstractAccessManagementTestCase
 {
-    public function testUpukFirewall()
+    public function testLoggingInAndOut()
     {
         $this->runLoggedOutTests();
         $this->logIn('louis', 'hello');
@@ -16,19 +16,19 @@ class UpukTest extends AbstractUpukTestCase
     public function runLoggedOutTests()
     {
         $this->checkUrlStatusCode(
-            '/tks-upuk/not-authenticated/authenticate/username-and-password',
+            '/not-authenticated/authenticate/username-and-password',
             200)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/not-authenticated/authenticate/u2f-key',
+            '/not-authenticated/authenticate/u2f-key',
             302)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/authenticated/change-password',
+            '/authenticated/change-password',
             302)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/authenticated/log-out',
+            '/authenticated/log-out',
             302)
         ;
     }
@@ -36,15 +36,15 @@ class UpukTest extends AbstractUpukTestCase
     public function runLoggedInTests()
     {
         $this->checkUrlStatusCode(
-            '/tks-upuk/not-authenticated/authenticate/username-and-password',
+            '/not-authenticated/authenticate/username-and-password',
             302)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/authenticated/change-password',
+            '/authenticated/change-password',
             200)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/authenticated/log-out',
+            '/authenticated/log-out',
             200)
         ;
     }

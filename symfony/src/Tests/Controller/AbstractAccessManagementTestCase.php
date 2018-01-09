@@ -3,29 +3,28 @@
 namespace App\Tests\Controller;
 
 use App\Entity\U2FToken;
-use App\Tests\DbWebTestCase;
 use Firehed\U2F\SignRequest;
 
-abstract class AbstractUpukTestCase extends DbWebTestCase
+abstract class AbstractAccessManagementTestCase extends DbWebTestCase
 {
     private $u2fCount = 0;
 
     public function runLoggedOutTests()
     {
         $this->checkUrlStatusCode(
-            '/tks-upuk/not-authenticated/authenticate/username-and-password',
+            '/not-authenticated/authenticate/username-and-password',
             200)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/not-authenticated/authenticate/u2f-key',
+            '/not-authenticated/authenticate/u2f-key',
             302)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/authenticated/change-password',
+            '/authenticated/change-password',
             302)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/authenticated/log-out',
+            '/authenticated/log-out',
             302)
         ;
     }
@@ -33,15 +32,15 @@ abstract class AbstractUpukTestCase extends DbWebTestCase
     public function runLoggedInTests()
     {
         $this->checkUrlStatusCode(
-            '/tks-upuk/not-authenticated/authenticate/username-and-password',
+            '/not-authenticated/authenticate/username-and-password',
             302)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/authenticated/change-password',
+            '/authenticated/change-password',
             200)
         ;
         $this->checkUrlStatusCode(
-            '/tks-upuk/authenticated/log-out',
+            '/authenticated/log-out',
             200)
         ;
     }
@@ -50,7 +49,7 @@ abstract class AbstractUpukTestCase extends DbWebTestCase
     {
         $upLoginGet = $this
             ->getClient()
-            ->request('GET', '/tks-upuk/not-authenticated/authenticate/username-and-password')
+            ->request('GET', '/not-authenticated/authenticate/username-and-password')
         ;
         $upButton = $upLoginGet->selectButton('username_and_password[submit]');
         $form = $upButton->form(array(
@@ -90,14 +89,15 @@ abstract class AbstractUpukTestCase extends DbWebTestCase
             ->getClient()
             ->submit($form)
         ;
+        $this->getClient()->followRedirect();
     }
 
     public function logOut()
     {
         $logout = $this
             ->getClient()
-            ->request('GET', '/tks-upuk/authenticated/log-out');
-        $button = $logout->selectButton('user_confirmation[confirmation]');
+            ->request('GET', '/authenticated/log-out');
+        $button = $logout->selectButton('user_confirmation[submit]');
         $form = $button->form();
         $this->getClient()->submit($form);
     }

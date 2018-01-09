@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller;
 
-class PasswordUpdateTest extends AbstractUpukTestCase
+class PasswordUpdateTest extends AbstractAccessManagementTestCase
 {
     /**
      * @todo Add password confirmation.
@@ -29,7 +29,7 @@ class PasswordUpdateTest extends AbstractUpukTestCase
     {
         $firstCrawler = $this
             ->getClient()
-            ->request('GET', '/tks-upuk/authenticated/change-password')
+            ->request('GET', '/authenticated/change-password')
         ;
         $button = $firstCrawler->selectButton('password_update[submit]');
         $wrongForm = $button->form(array(

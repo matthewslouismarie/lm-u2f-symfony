@@ -11,51 +11,19 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        tks_0:
-            anonymous: true
-            guard:
-                authenticators:
-                    - App\Tks\UpClearance\Authenticator\TksUpAuthenticator
-            pattern: ^/tks-0/.*$
-            provider: our_db_provider
-        tks_upuk:
-            access_denied_handler: App\AccessDeniedHandler\UpukAccessDeniedHandler
-            anonymous: true
-            guard:
-                authenticators:
-                    - App\Authenticator\UpukAuthenticator
-                    - App\Authenticator\UpukLogout
-                entry_point: App\Authenticator\UpukAuthenticator
-            pattern: ^/tks-upuk/.*$
-            provider: our_db_provider
         main:
             anonymous: ~
             provider: our_db_provider
             guard:
                 authenticators:
-                    - App\Security\LoginFormAuthenticator
-                    - App\Security\LogoutFormAuthenticator
-                entry_point: App\Security\LoginFormAuthenticator
+                    - App\Security\LoginAuthenticator
+                    - App\Security\LogoutAuthenticator
+                entry_point: App\Security\LoginAuthenticator
             access_denied_handler: App\Security\AccessDeniedHandler
     access_control:
         -
-            path: ^/(logout|view-my-u2f-tokens|add-u2f-token|delete-u2f-token/.+)$
+            path: ^/authenticated/.*$
             roles: ROLE_USER
         -
-            path: ^/(tks/reset-registration|login|register|mkps/registration|tks/username-and-password|tks/key-[0-9]+|tks/finish-registration)$
+            path: ^/not-authenticated/.*$
             allow_if: "not has_role('ROLE_USER')"
-        -
-            path: ^/tks/login
-            allow_if: "not has_role('ROLE_USER')"
-        -
-            path: ^/tks-0/authenticated/.+$
-            roles: ROLE_USER
-        -
-            path: ^/tks-0/not-authenticated/.+$
-            allow_if: "not has_role('ROLE_USER')"
-        -
-            path: ^/tks-upuk/not-authenticated/.+$
-            allow_if: "not has_role('ROLE_USER')"
-        -
-            path: ^/tks-upuk/authenticated/.+$
-            roles: ROLE_USER

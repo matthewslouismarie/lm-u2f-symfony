@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Tests\Controller\TripleKeyStrategy;
+namespace App\Tests\Controller;
 
 use App\Entity\U2FToken;
 use App\Entity\Member;
 use App\Factory\MemberFactory;
-use App\Tests\DbWebTestCase;
 
 class RegistrationTest extends DbWebTestCase
 {
@@ -144,7 +143,7 @@ class RegistrationTest extends DbWebTestCase
         $firstCrawler = $this
         ->getClient()
         ->request('GET', '/tks/finish-registration');
-        $button = $firstCrawler->selectButton('user_confirmation[confirmation]');
+        $button = $firstCrawler->selectButton('user_confirmation[submit]');
         $form = $button->form();
         $secondCrawler = $this->getClient()->submit($form);
         $session = $this->getContainer()->get('session');
@@ -187,7 +186,7 @@ class RegistrationTest extends DbWebTestCase
         $firstCrawler = $this
             ->getClient()
             ->request('GET', '/tks/reset-registration');
-        $button = $firstCrawler->selectButton('user_confirmation[confirmation]');
+        $button = $firstCrawler->selectButton('user_confirmation[submit]');
         $form = $button->form();
         $secondCrawler = $this->getClient()->submit($form);
 

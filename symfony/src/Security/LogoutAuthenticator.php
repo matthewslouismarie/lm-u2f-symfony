@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Authenticator;
+namespace App\Security;
 
 use App\Form\UserConfirmationType;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 
-class UpukLogout extends AbstractFormLoginAuthenticator
+class LogoutAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $formFactory;
     private $router;
@@ -50,12 +50,12 @@ class UpukLogout extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('tks_upuk_up_authenticate');
+        return $this->router->generate('up_authenticate');
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $url = $this->router->generate('tks_upuk_up_authenticate');
+        $url = $this->router->generate('up_authenticate');
         return new RedirectResponse($url);
     }
 
@@ -64,7 +64,7 @@ class UpukLogout extends AbstractFormLoginAuthenticator
         $route = $request
             ->attributes
             ->get('_route');
-        $isRouteCorrect = $route === 'tks_upuk_logout';
+        $isRouteCorrect = $route === 'logout';
         $isMethodCorrect = $request->isMethod('POST');
         return $isRouteCorrect && $isMethodCorrect;
     }

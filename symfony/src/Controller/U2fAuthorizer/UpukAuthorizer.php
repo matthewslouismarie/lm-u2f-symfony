@@ -16,9 +16,10 @@ class UpukAuthorizer extends AbstractController
      * @todo Is all the good prefix for the route?
      * 
      * @Route(
-     *  "/all/u2f-authorization/upuk",
+     *  "/all/u2f-authorization/upuk/{session_id}",
      *  name="u2f_authorization_upuk",
-     *  methods={"GET", "POST"})
+     *  methods={"GET", "POST"},
+     *  requirements={"session_id"=".+"})
      */
     public function upuk()
     {

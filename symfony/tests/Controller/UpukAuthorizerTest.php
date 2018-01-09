@@ -26,7 +26,7 @@ class UpukAuthorizerTest extends DbWebTestCase
         ;
         $crawler = $this
             ->getClient()
-            ->request('GET', '/all/u2f-authorization/upuk')
+            ->request('GET', '/all/u2f-authorization/upuk/'.$sessionId)
         ;
         $statusCode = $this
             ->getClient()

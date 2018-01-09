@@ -26,7 +26,7 @@ class UpukAuthorizerTest extends DbWebTestCase
         ;
         $crawler = $this
             ->getClient()
-            ->request('GET', '/all/u2f-authorization/upuk/'.$sessionId)
+            ->request('GET', '/all/u2f-authorization/upuk/up/'.$sessionId)
         ;
         $statusCode = $this
             ->getClient()
@@ -34,5 +34,16 @@ class UpukAuthorizerTest extends DbWebTestCase
             ->getStatusCode()
         ;
         $this->assertEquals(200, $statusCode);
+
+        $button = $crawler->selectButton('username_and_password[submit]')
+        ;
+        $form = $button->form(array(
+            'username_and_password[username]' => 'louis',
+            'username_and_password[password]' => 'hello',
+        ));
+        $secondCrawler = $this->getClient()->submit($form);
+        $this->getClient()->followRedirect();
+        $content = $this->getClient()->getResponse()->getContent();
+        $this->assertContains('Please activate your U2F key.', $content);
     }
 }

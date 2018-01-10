@@ -16,12 +16,8 @@ class LoggingInAndOutTest extends AbstractAccessManagementTestCase
     public function runLoggedOutTests()
     {
         $this->checkUrlStatusCode(
-            '/not-authenticated/authenticate/username-and-password',
+            '/not-authenticated/login',
             200)
-        ;
-        $this->checkUrlStatusCode(
-            '/not-authenticated/authenticate/u2f-key',
-            302)
         ;
         $this->checkUrlStatusCode(
             '/authenticated/change-password',
@@ -36,7 +32,7 @@ class LoggingInAndOutTest extends AbstractAccessManagementTestCase
     public function runLoggedInTests()
     {
         $this->checkUrlStatusCode(
-            '/not-authenticated/authenticate/username-and-password',
+            '/not-authenticated/login',
             302)
         ;
         $this->checkUrlStatusCode(

@@ -12,12 +12,8 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
     public function runLoggedOutTests()
     {
         $this->checkUrlStatusCode(
-            '/not-authenticated/authenticate/username-and-password',
+            '/not-authenticated/authenticate/login',
             200)
-        ;
-        $this->checkUrlStatusCode(
-            '/not-authenticated/authenticate/u2f-key',
-            302)
         ;
         $this->checkUrlStatusCode(
             '/authenticated/change-password',
@@ -32,7 +28,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
     public function runLoggedInTests()
     {
         $this->checkUrlStatusCode(
-            '/not-authenticated/authenticate/username-and-password',
+            '/not-authenticated/login',
             302)
         ;
         $this->checkUrlStatusCode(
@@ -49,47 +45,21 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
     {
         $upLoginGet = $this
             ->getClient()
-            ->request('GET', '/not-authenticated/authenticate/username-and-password')
+            ->request('GET', '/not-authenticated/login')
         ;
-        $upButton = $upLoginGet->selectButton('username_and_password[submit]');
-        $form = $upButton->form(array(
-            'username_and_password[username]' => $username,
-            'username_and_password[password]' => $password,
-        ));
-        $this
-            ->getClient()
-            ->submit($form)
-        ;
-        $this
-            ->getClient()
-            ->followRedirect()
-        ;
-        $session = $this
-            ->getContainer()
-            ->get('App\Service\SecureSessionService')
-        ;
-        $signRequests = array();
-        $signRequest = new SignRequest();
-        $signRequest->setAppId('https://172.16.238.10');
-        $signRequest->setChallenge('lXaq82clJBmXNnNWL1W6GA');
-        $signRequest->setKeyHandle(base64_decode('v8IplXz0zSQUXVYjvSWNcP/70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg=='));
-        $signRequests[1] = $signRequest;
-        $requestId = $session->store(serialize($signRequests));
-        $postUpLoginButton = $this
-            ->getClient()
-            ->getCrawler()
-            ->selectButton('u2f_login[submit]')
-        ;
-        $form = $postUpLoginButton->form(array(
-            'u2f_login[u2fAuthenticationRequestId]' => $requestId,
-            'u2f_login[u2fTokenResponse]' => '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoibFhhcTgyY2xKQm1YTm5OV0wxVzZHQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAIkwRgIhAN1YRiOqMs1fOCOm7MuOxfYJ6qN7A8PdXrhEzejtw3gNAiEAgi0JJmODYRTN8qflhBNsAjuDkJz06hTUZi2LNbaU4gk"}',
-        ));
 
-        $validateLogin = $this
-            ->getClient()
-            ->submit($form)
-        ;
         $this->getClient()->followRedirect();
+
+        $this->upLogInFromUpPage('louis', 'hello');
+        
+        $requestId = $this->storeInSessionU2fToken(true);
+
+        $this->ukLogIn($requestId);
+        
+        $this->getClient()->followRedirect();
+        $this->assertRegExp(
+            '/^http:\/\/localhost\/not-authenticated\/login\/[a-z0-9]+$/',
+            $this->getClient()->getRequest()->getUri());
     }
 
     public function logOut()
@@ -115,5 +85,63 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $om->flush();
         $om->persist($newU2fToken);
         $om->flush();
+    }
+
+    public function upLogInFromUpPage(
+        string $username,
+        string $password)
+    {
+        $button = $this
+            ->getClient()
+            ->getCrawler()
+            ->selectButton('username_and_password[submit]')
+        ;
+        $form = $button->form(array(
+            'username_and_password[username]' => $username,
+            'username_and_password[password]' => $password,
+        ));
+        $secondCrawler = $this->getClient()->submit($form);
+    }
+
+    public function ukLogInFromUkPage(string $requestId)
+    {
+        $content = $this
+            ->getClient()
+            ->getResponse()
+            ->getContent()
+        ;
+        $postUpLoginButton = $this
+            ->getClient()
+            ->getCrawler()
+            ->selectButton('u2f_login[submit]')
+        ;
+        $form = $postUpLoginButton->form(array(
+            'u2f_login[u2fAuthenticationRequestId]' => $requestId,
+            'u2f_login[u2fTokenResponse]' => '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoibFhhcTgyY2xKQm1YTm5OV0wxVzZHQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAIkwRgIhAN1YRiOqMs1fOCOm7MuOxfYJ6qN7A8PdXrhEzejtw3gNAiEAgi0JJmODYRTN8qflhBNsAjuDkJz06hTUZi2LNbaU4gk"}',
+        ));
+
+        $validateLogin = $this
+            ->getClient()
+            ->submit($form)
+        ;
+    }
+
+    public function storeInSessionU2fToken(bool $isValid): string
+    {
+        $sSession = $this
+            ->getContainer()
+            ->get('App\Service\SecureSessionService')
+        ;
+        $signRequests = array();
+        $signRequest = new SignRequest();
+        if ($isValid) {
+            $signRequest->setAppId('https://172.16.238.10');
+        } else {
+            $signRequest->setAppId('https://172.15.238.10');
+        }
+        $signRequest->setChallenge('lXaq82clJBmXNnNWL1W6GA');
+        $signRequest->setKeyHandle(base64_decode('v8IplXz0zSQUXVYjvSWNcP/70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg=='));
+        $signRequests[1] = $signRequest;
+        return $sSession->store(serialize($signRequests));
     }
 }

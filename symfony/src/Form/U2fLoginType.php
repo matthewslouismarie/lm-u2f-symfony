@@ -17,7 +17,7 @@ class U2fLoginType extends AbstractType
             ->add('username', HiddenType::class)
             ->add('password', HiddenType::class)
             ->add('u2fTokenResponse', HiddenType::class)
-            ->add('requestId', HiddenType::class)
+            ->add('u2fAuthenticationRequestId', HiddenType::class)
             ->add('submit', SubmitType::class)
         ;
     }

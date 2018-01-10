@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller;
 
-use App\Model\UserRequestedAction;
+use App\Model\AuthorizationRequest;
 use Firehed\U2F\SignRequest;
 
 class UpukAuthorizerTest extends DbWebTestCase
@@ -20,10 +20,10 @@ class UpukAuthorizerTest extends DbWebTestCase
 
     public function testUpukAuthorizer()
     {
-        $userRequestedAction = new UserRequestedAction(false, '/');
+        $authorizationRequest = new AuthorizationRequest(false, 'login_success_route');
         $sessionId = $this
             ->session
-            ->store($userRequestedAction)
+            ->store($authorizationRequest)
         ;
         $crawler = $this
             ->getClient()
@@ -64,7 +64,7 @@ class UpukAuthorizerTest extends DbWebTestCase
             ->selectButton('u2f_login[submit]')
         ;
         $form = $postUpLoginButton->form(array(
-            'u2f_login[requestId]' => $requestId,
+            'u2f_login[u2fAuthenticationRequestId]' => $requestId,
             'u2f_login[u2fTokenResponse]' => '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoibFhhcTgyY2xKQm1YTm5OV0wxVzZHQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAIkwRgIhAN1YRiOqMs1fOCOm7MuOxfYJ6qN7A8PdXrhEzejtw3gNAiEAgi0JJmODYRTN8qflhBNsAjuDkJz06hTUZi2LNbaU4gk"}',
         ));
 
@@ -73,5 +73,6 @@ class UpukAuthorizerTest extends DbWebTestCase
             ->submit($form)
         ;
         $this->getClient()->followRedirect();
+        $this->assertRegExp('/^http:\/\/localhost\/not-authenticated\/login\/[a-z0-9]+$/', $this->getClient()->getRequest()->getUri());
     }
 }

@@ -45,4 +45,9 @@ class SecureSessionService
         } while ($this->session->has($random_key));
         return $random_key;
     }
+
+    public function remove(?string $key): void
+    {
+        $this->session->remove($key);
+    }
 }

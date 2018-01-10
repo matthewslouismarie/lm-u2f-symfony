@@ -3,8 +3,8 @@
 namespace App\Security;
 
 use App\Entity\Member;
-use App\Form\U2fLoginType;
-use App\FormModel\U2fLoginSubmission;
+use App\Form\LoginRequestType;
+use App\FormModel\LoginRequest;
 use App\Service\AuthRequestService;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -42,20 +42,19 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        $u2fSubmission = new U2fLoginSubmission();
-        $u2fForm = $this
+        $loginRequest = new LoginRequest();
+        $form = $this
             ->formFactory
-            ->create(U2fLoginType::class, $u2fSubmission);
-        $u2fForm->handleRequest($request);
-        if ($u2fForm->isSubmitted() && $u2fForm->isValid()) {
-            return $u2fSubmission;
+            ->create(LoginRequestType::class, $loginRequest);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $loginRequest->getUsername();
         }
         throw new AuthenticationException();
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($username, UserProviderInterface $userProvider)
     {
-        $username = $credentials->getUsername();
         $user = $this
             ->om
             ->getRepository(Member::class)->findOneBy(array(
@@ -69,29 +68,12 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if (null === $credentials->getU2fTokenResponse()) {
-            return false;
-        }
-        try {
-            $this->auth->processResponse(
-                $credentials->getU2fAuthenticationRequestId(),
-                $credentials->getUsername(),
-                $credentials->getU2fTokenResponse());
-        } catch (\Exception $e) {
-            throw $e;
-        }
-        
-        $password = $credentials->getPassword();
-        $isPasswordValid = $this
-            ->encoder
-            ->isPasswordValid($user, $credentials->getPassword())
-        ;
-        return $isPasswordValid;
+        return true;
     }
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('up_authenticate');
+        return $this->router->generate('start_login');
     }
 
     /**
@@ -107,7 +89,7 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
         $route = $request
             ->attributes
             ->get('_route');
-        $isRouteCorrect = $route === 'uk_authenticate';
+        $isRouteCorrect = $route === 'finish_login';
         $isMethodCorrect = $request->isMethod('POST');
         return $isRouteCorrect && $isMethodCorrect;
     }

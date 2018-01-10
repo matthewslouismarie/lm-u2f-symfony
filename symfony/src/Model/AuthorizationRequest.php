@@ -6,22 +6,30 @@ class AuthorizationRequest implements IAuthorizationRequest
 {
     private $isAccepted;
     private $successRoute;
+    private $username;
 
     public function __construct(
         bool $isAccepted,
-        string $successRoute)
+        string $successRoute,
+        ?string $username)
     {
         $this->isAccepted = $isAccepted;
         $this->successRoute = $successRoute;
+        $this->username = $username;
     }
 
     public function isAccepted(): bool
     {
-        return $this->isAuthorised;
+        return $this->isAccepted;
     }
 
     public function getSuccessRoute(): string
     {
         return $this->successRoute;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
     }
 }

@@ -50,12 +50,12 @@ class LogoutAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('up_authenticate');
+        return $this->router->generate('start_login');
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $url = $this->router->generate('up_authenticate');
+        $url = $this->router->generate('homepage');
         return new RedirectResponse($url);
     }
 

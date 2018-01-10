@@ -6,4 +6,5 @@ interface IAuthorizationRequest
 {
     public function isAccepted(): bool;
     public function getSuccessRoute(): string;
+    public function getUsername(): ?string;
 }

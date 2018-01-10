@@ -2,17 +2,18 @@
 
 namespace App\Controller;
 
-use App\Form\U2fLoginType;
+use App\Model\IAuthorizationRequest;
+use App\Form\LoginRequestType;
+use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
-use App\Form\UsernameAndPasswordType;
-use App\FormModel\U2fLoginSubmission;
-use App\FormModel\UsernameAndPasswordSubmission;
+use App\FormModel\UserConfirmationSubmission;
 use App\Model\AuthorizationRequest;
 use App\Service\AuthRequestService;
 use App\Service\SecureSessionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 class AuthenticationController extends AbstractController
@@ -27,7 +28,7 @@ class AuthenticationController extends AbstractController
         Request $request,
         SecureSessionService $sSession)
     {
-        $request = new AuthorizationRequest(false, 'finish_login');
+        $request = new AuthorizationRequest(false, 'finish_login', null);
         $sessionId = $sSession->store($request);
         $url = $this->generateUrl('u2f_authorization_upuk_up', array(
             'sessionId' => $sessionId,
@@ -36,14 +37,32 @@ class AuthenticationController extends AbstractController
     }
 
     /**
+     * @todo Have a better error handling.
+     * 
      * @Route(
-     *  "/not-authenticated/finish-login",
+     *  "/not-authenticated/finish-login/{authorizationRequestSid}",
      *  name="finish_login",
-     *  methods={"GET"})
+     *  methods={"GET", "POST"})
      */
-    public function finishLogin()
+    public function finishLogin(
+        Request $request,
+        SecureSessionService $sSession,
+        string $authorizationRequestSid)
     {
+        $authorizationRequest = $sSession->getAndRemove($authorizationRequestSid);
+        if (!$authorizationRequest instanceof IAuthorizationRequest) {
+            return new Response('error');
+        } elseif (!$authorizationRequest->isAccepted()) {
+            return new Response('error');
+        }
 
+        $loginRequest = new LoginRequest($authorizationRequest->getUsername());
+        $form = $this->createForm(LoginRequestType::class, $loginRequest);
+        $form->handleRequest($request);
+
+        return $this->render('finish_login.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**

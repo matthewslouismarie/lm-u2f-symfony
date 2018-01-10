@@ -7,8 +7,10 @@ use Firehed\U2F\SignRequest;
 
 class UpukAuthorizerTest extends DbWebTestCase
 {
-    private const UP_ROUTE_REGEX
-     = '/^http:\/\/localhost\/all\/u2f-authorization\/upuk\/up\/[a-z0-9]+$/';
+    private const UP_ROUTE_REGEX =
+    '/^http:\/\/localhost\/all\/u2f-authorization\/upuk\/up\/[a-z0-9]+$/';
+    private const UK_ROUTE_REGEX =
+    '/^http:\/\/localhost\/all\/u2f-authorization\/upuk\/uk\/[a-z0-9]+\/[a-z0-9]+$/';
     private $session;
 
     public function setUp()
@@ -30,17 +32,8 @@ class UpukAuthorizerTest extends DbWebTestCase
 
         $this->upLogIn('louis', 'hello', $sessionId);
         
-        $session = $this
-            ->getContainer()
-            ->get('App\Service\SecureSessionService')
-        ;
-        $signRequests = array();
-        $signRequest = new SignRequest();
-        $signRequest->setAppId('https://172.16.238.10');
-        $signRequest->setChallenge('lXaq82clJBmXNnNWL1W6GA');
-        $signRequest->setKeyHandle(base64_decode('v8IplXz0zSQUXVYjvSWNcP/70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg=='));
-        $signRequests[1] = $signRequest;
-        $requestId = $session->store(serialize($signRequests));
+        $requestId = $this->storeInSessionU2fToken(true);
+
         
         $this->ukLogIn($requestId);
         
@@ -75,13 +68,12 @@ class UpukAuthorizerTest extends DbWebTestCase
 
         $this->upLogIn('louis', 'hello', $sessionId);
         
-        $requestId = $this->storeInSessionCorrectU2fToken();
+        $requestId = $this->storeInSessionU2fToken(false);
         
         $this->ukLogIn($requestId);
         
-        $this->getClient()->followRedirect();
         $this->assertRegExp(
-            '/^http:\/\/localhost\/not-authenticated\/login\/[a-z0-9]+$/',
+            self::UK_ROUTE_REGEX,
             $this->getClient()->getRequest()->getUri());
     }
 
@@ -133,7 +125,7 @@ class UpukAuthorizerTest extends DbWebTestCase
         ;
     }
 
-    public function storeInSessionCorrectU2fToken(): string
+    public function storeInSessionU2fToken(bool $isValid): string
     {
         $sSession = $this
             ->getContainer()
@@ -141,7 +133,11 @@ class UpukAuthorizerTest extends DbWebTestCase
         ;
         $signRequests = array();
         $signRequest = new SignRequest();
-        $signRequest->setAppId('https://172.16.238.10');
+        if ($isValid) {
+            $signRequest->setAppId('https://172.16.238.10');
+        } else {
+            $signRequest->setAppId('https://172.15.238.10');
+        }
         $signRequest->setChallenge('lXaq82clJBmXNnNWL1W6GA');
         $signRequest->setKeyHandle(base64_decode('v8IplXz0zSQUXVYjvSWNcP/70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg=='));
         $signRequests[1] = $signRequest;

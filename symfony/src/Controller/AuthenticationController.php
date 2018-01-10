@@ -7,6 +7,7 @@ use App\Form\UserConfirmationType;
 use App\Form\UsernameAndPasswordType;
 use App\FormModel\U2fLoginSubmission;
 use App\FormModel\UsernameAndPasswordSubmission;
+use App\Model\AuthorizationRequest;
 use App\Service\AuthRequestService;
 use App\Service\SecureSessionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,67 +19,31 @@ class AuthenticationController extends AbstractController
 {
     /**
      * @Route(
-     *  "/not-authenticated/authenticate/username-and-password",
-     *  name="up_authenticate",
-     *  methods={"GET", "POST"})
+     *  "/not-authenticated/login",
+     *  name="start_login",
+     *  methods={"GET"})
      */
-    public function upAuthenticate(
+    public function startLogin(
         Request $request,
-        SecureSessionService $secureSession)
+        SecureSessionService $sSession)
     {
-        $submission = new UsernameAndPasswordSubmission();
-        $form = $this->createForm(UsernameAndPasswordType::class, $submission);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $upSubmissionId = $secureSession->store($submission);
-            $url = $this->generateUrl('uk_authenticate', array(
-                'up-submission-id' => $upSubmissionId,
-            ));
-            return new RedirectResponse($url);
-        }
-        return $this->render('tks/upuk_up_authenticate.html.twig', array(
-            'form' => $form->createView(),
+        $request = new AuthorizationRequest(false, 'finish_login');
+        $sessionId = $sSession->store($request);
+        $url = $this->generateUrl('u2f_authorization_upuk_up', array(
+            'sessionId' => $sessionId,
         ));
+        return new RedirectResponse($url);
     }
 
     /**
-     * @todo Check session variable.
-     * 
      * @Route(
-     *  "/not-authenticated/authenticate/u2f-key",
-     *  name="uk_authenticate",
-     *  methods={"GET", "POST"})
+     *  "/not-authenticated/finish-login",
+     *  name="finish_login",
+     *  methods={"GET"})
      */
-    public function ukAuthenticate(
-        AuthRequestService $auth,
-        Request $request,
-        SecureSessionService $secureSession)
+    public function finishLogin()
     {
-        $upSubmissionId = $request
-            ->query
-            ->get('up-submission-id');
-        $upSubmission = $secureSession->getAndRemove($upSubmissionId);
 
-        if (!is_a($upSubmission, UsernameAndPasswordSubmission::class)) {
-            $url = $this->generateUrl('up_authenticate');
-            return new RedirectResponse($url);
-        }
-        $authData = $auth->generate($upSubmission->getUsername());
-        $submission = new U2fLoginSubmission(
-            $upSubmission->getUsername(),
-            $upSubmission->getPassword(),
-            null,
-            $authData['auth_id']
-        );
-        $form = $this->createForm(U2fLoginType::class, $submission);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-        }
-        return $this->render('tks/upuk_uk_authenticate.html.twig', array(
-            'form' => $form->createView(),
-            'sign_requests_json' => $authData['sign_requests_json'],
-        ));
     }
 
     /**

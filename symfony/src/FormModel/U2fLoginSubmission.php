@@ -6,40 +6,63 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class U2fLoginSubmission
 {
-    /**
-     * @Assert\NotBlank()
-     */
-    public $username;
+    private $username;
 
-    /**
-     * @Assert\NotBlank()
-     */
-    public $password;
+    private $password;
 
-    /**
-     * @Assert\NotBlank()
-     */
-    public $u2fTokenResponse;
+    private $u2fAuthenticationRequestId;
 
-    /**
-     * @Assert\NotBlank()
-     */
-    public $requestId;
+    private $u2fTokenResponse;
 
     public function __construct(
         ?string $username = null,
         ?string $password = null,
         ?string $u2fTokenResponse = null,
-        ?string $requestId = null)
+        ?string $u2fAuthenticationRequestId = null)
     {
         $this->username = $username;
         $this->password = $password;
         $this->u2fTokenResponse = $u2fTokenResponse;
-        $this->requestId = $requestId;
+        $this->u2fAuthenticationRequestId = $u2fAuthenticationRequestId;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
     }
 
     public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    public function getU2fAuthenticationRequestId(): ?string
+    {
+        return $this->u2fAuthenticationRequestId;
+    }
+
+    public function getU2fTokenResponse(): ?string
+    {
+        return $this->u2fTokenResponse;
+    }
+
+    public function setUsername(?string $username): void
+    {
+        $this->username = $username;
+    }
+
+    public function setPassword(?string $password): void
+    {
+        $this->password = $password;
+    }
+
+    public function setU2fAuthenticationRequestId(?string $u2fAuthenticationRequestId): void
+    {
+        $this->u2fAuthenticationRequestId = $u2fAuthenticationRequestId;
+    }
+
+    public function setU2fTokenResponse(?string $u2fTokenResponse): void
+    {
+        $this->u2fTokenResponse = $u2fTokenResponse;
     }
 }

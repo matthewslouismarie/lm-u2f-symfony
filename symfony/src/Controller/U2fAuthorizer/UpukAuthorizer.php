@@ -6,6 +6,8 @@ use App\Form\U2fLoginType;
 use App\Form\UsernameAndPasswordType;
 use App\FormModel\U2fLoginSubmission;
 use App\FormModel\UsernameAndPasswordSubmission;
+use App\Model\IAuthorizationRequest;
+use App\Model\AuthorizationRequest;
 use App\Service\AuthRequestService;
 use App\Service\SecureSessionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +16,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * This class handles the authorisation of IUserRequestedAction objects. UPUK
+ * This class handles the authorisation of IAuthorizationRequest objects. UPUK
  * stands for Username, Password and U2F Key.
  */
 class UpukAuthorizer extends AbstractController
@@ -65,12 +67,9 @@ class UpukAuthorizer extends AbstractController
         string $sessionId,
         string $upSubmissionId)
     {
-        $upSubmission = $sSession->getAndRemove($upSubmissionId);
+        $upSubmission = $sSession->get($upSubmissionId);
         if (!is_a($upSubmission, UsernameAndPasswordSubmission::class)) {
-            $url = $this->generateUrl('u2f_authorization_upuk_up', array(
-                'sessionId' => $sessionId,
-            ));
-            return new RedirectResponse($url);
+            return new Response('error');
         }
         $u2fData = $auth->generate($upSubmission->getUsername());
         $u2fSubmission = new U2fLoginSubmission(
@@ -81,7 +80,18 @@ class UpukAuthorizer extends AbstractController
         $form = $this->createForm(U2fLoginType::class, $u2fSubmission);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $action = $sSession->getAndRemove($sessionId);
+            if (!$action instanceof IAuthorizationRequest) {
+                return new Response('Sorry, an error happened');
+            }
+            $validatedAction = new AuthorizationRequest(
+                true,
+                $action->getSuccessRoute());
+            $authorizationRequestSid = $sSession->store($validatedAction);
+            $url = $this->generateUrl($action->getSuccessRoute(), array(
+                'authorizationRequestSid' => $authorizationRequestSid,
+            ));
+            return new RedirectResponse($url);
         }
         return $this->render('u2f_authorization/upuk/uk_login.html.twig', array(
             'form' => $form->createView(),

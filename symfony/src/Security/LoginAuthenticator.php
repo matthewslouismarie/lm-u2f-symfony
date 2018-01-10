@@ -55,7 +55,7 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $username = $credentials->username;
+        $username = $credentials->getUsername();
         $user = $this
             ->om
             ->getRepository(Member::class)->findOneBy(array(
@@ -69,14 +69,14 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if (null === $credentials->u2fTokenResponse) {
+        if (null === $credentials->getU2fTokenResponse()) {
             return false;
         }
         try {
             $this->auth->processResponse(
-                $credentials->requestId,
-                $credentials->username,
-                $credentials->u2fTokenResponse);
+                $credentials->getU2fAuthenticationRequestId(),
+                $credentials->getUsername(),
+                $credentials->getU2fTokenResponse());
         } catch (\Exception $e) {
             throw $e;
         }

@@ -24,7 +24,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
 
     public function testCorrectLogin()
     {
-        $authorizationRequest = new AuthorizationRequest(false, 'login_success_route');
+        $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);
         $sessionId = $this
             ->session
             ->store($authorizationRequest)
@@ -50,7 +50,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
 
     public function testIncorrectupLogIn()
     {
-        $authorizationRequest = new AuthorizationRequest(false, 'login_success_route');
+        $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);
         $sessionId = $this
             ->session
             ->store($authorizationRequest)
@@ -69,7 +69,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
 
     public function testIncorrectUkLogin()
     {
-        $authorizationRequest = new AuthorizationRequest(false, 'login_success_route');
+        $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);
         $sessionId = $this
             ->session
             ->store($authorizationRequest)

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller\U2fAuthorizer;
-
+use App\Entity\Member;
 use App\Exception\NonexistentMemberException;
 use App\Form\U2fLoginType;
 use App\Form\UsernameAndPasswordType;
@@ -11,12 +11,15 @@ use App\Model\IAuthorizationRequest;
 use App\Model\AuthorizationRequest;
 use App\Service\AuthRequestService;
 use App\Service\SecureSessionService;
+use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SecurityException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * This class handles the authorisation of IAuthorizationRequest objects. UPUK
@@ -24,6 +27,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UpukAuthorizer extends AbstractController
 {
+    public function __construct(
+        ObjectManager $om,
+        UserPasswordEncoderInterface $encoder)
+    {
+        $this->om = $om;
+        $this->encoder = $encoder;
+    }
+
     /**
      * @todo Is all the good prefix for the route?
      * 
@@ -94,14 +105,20 @@ class UpukAuthorizer extends AbstractController
                     return new Response('Sorry, an error happened');
                 }
 
+                $this->checkLogin(
+                    $u2fSubmission->getUsername(),
+                    $u2fSubmission->getPassword());
+
                 $auth->processResponse(
                     $u2fSubmission->getU2fAuthenticationRequestId(),
                     $u2fSubmission->getUsername(),
                     $u2fSubmission->getU2fTokenResponse()
                 );
+
                 $validatedAction = new AuthorizationRequest(
                     true,
-                    $action->getSuccessRoute());
+                    $action->getSuccessRoute(),
+                    $u2fSubmission->getUsername());
                 $authorizationRequestSid = $sSession->store($validatedAction);
                 $url = $this->generateUrl($action->getSuccessRoute(), array(
                     'authorizationRequestSid' => $authorizationRequestSid,
@@ -112,8 +129,28 @@ class UpukAuthorizer extends AbstractController
         catch (SecurityException $e) {
             $form->addError(new FormError('Invalid U2F token response.'));
         }
+        catch (AuthenticationException $e) {
+            $form->addError(new FormError('Invalid U2F token response.'));
+        }
         return $this->render('u2f_authorization/upuk/uk_login.html.twig', array(
             'form' => $form->createView(),
+            'sign_requests_json' => $u2fData['sign_requests_json'],
         ));
+    }
+
+    private function checkLogin(string $username, string $password)
+    {
+        $member = $this
+            ->om
+            ->getRepository(Member::class)->findOneBy(array(
+                'username' => $username,
+        ));
+        $isPasswordValid = $this
+            ->encoder
+            ->isPasswordValid($member, $password)
+        ;
+        if (null === $member || !$isPasswordValid) {
+            throw new AuthenticationException();
+        }
     }
 }

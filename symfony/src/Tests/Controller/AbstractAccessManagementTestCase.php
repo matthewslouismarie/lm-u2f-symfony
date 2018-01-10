@@ -9,11 +9,53 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
 {
     private $u2fCount = 0;
 
+    public function logIn(string $username, string $password)
+    {
+        $upLoginGet = $this
+            ->getClient()
+            ->request('GET', '/not-authenticated/login')
+        ;
+
+        $this->getClient()->followRedirect();
+
+        $this->upLogInFromUpPage($username, $password);
+        
+        $requestId = $this->storeInSessionU2fToken(true);
+
+        $this->getClient()->followRedirect();
+
+        $this->ukLogInFromUkPage($requestId);
+        
+        if ($this->getClient()->getResponse()->isRedirection()) {
+            $this->getClient()->followRedirect();
+            $this->assertRegExp(
+                '/^http:\/\/localhost\/not-authenticated\/finish-login\/[a-z0-9]+$/',
+                $this->getClient()->getRequest()->getUri());
+            
+            $submit = $this
+                ->getClient()
+                ->getCrawler()
+                ->selectButton('login_request[submit]');
+            $form = $submit->form();
+            $this->getClient()->submit($form);
+        }
+    }
+
+    public function logOut()
+    {
+        $logout = $this
+            ->getClient()
+            ->request('GET', '/authenticated/log-out');
+        $button = $logout->selectButton('user_confirmation[submit]');
+        $form = $button->form();
+        $this->getClient()->submit($form);
+    }
+
     public function runLoggedOutTests()
     {
         $this->checkUrlStatusCode(
-            '/not-authenticated/authenticate/login',
-            200)
+            '/not-authenticated/login',
+            302)
         ;
         $this->checkUrlStatusCode(
             '/authenticated/change-password',
@@ -41,43 +83,14 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         ;
     }
 
-    public function logIn(string $username, string $password)
-    {
-        $upLoginGet = $this
-            ->getClient()
-            ->request('GET', '/not-authenticated/login')
-        ;
-
-        $this->getClient()->followRedirect();
-
-        $this->upLogInFromUpPage('louis', 'hello');
-        
-        $requestId = $this->storeInSessionU2fToken(true);
-
-        $this->ukLogIn($requestId);
-        
-        $this->getClient()->followRedirect();
-        $this->assertRegExp(
-            '/^http:\/\/localhost\/not-authenticated\/login\/[a-z0-9]+$/',
-            $this->getClient()->getRequest()->getUri());
-    }
-
-    public function logOut()
-    {
-        $logout = $this
-            ->getClient()
-            ->request('GET', '/authenticated/log-out');
-        $button = $logout->selectButton('user_confirmation[submit]');
-        $form = $button->form();
-        $this->getClient()->submit($form);
-    }
-
     public function resetU2fCounter()
     {
         $doctrine = $this->getContainer()->get('doctrine');
         $ubs = $this->getContainer()->get('App\Service\U2FTokenBuilderService');
         $repo = $doctrine->getRepository(U2FToken::class);
-        $oldU2fToken = $repo->find(2);
+        $oldU2fToken = $repo->findOneBy(array(
+            'publicKey' => 'BPXPn5wJaS5cnRfe45NYPv/1foHyRIPMFn4ABhzu8jXbnuGbZXHrDS3gmwP1OywFqADOYsQMg14GbQk1+RDBhHQ=',
+        ));
         $ub = $ubs->createBuilder($oldU2fToken);
         $newU2fToken = $ub->setCounter(0);
         $om = $doctrine->getManager();

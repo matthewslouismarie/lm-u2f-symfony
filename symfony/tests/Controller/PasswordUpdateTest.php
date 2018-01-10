@@ -9,6 +9,7 @@ class PasswordUpdateTest extends AbstractAccessManagementTestCase
      */
     public function testPasswordUpdate()
     {
+        $this->runLoggedOutTests();
         $this->logIn('louis', 'ello');
         $this->runLoggedOutTests();
 

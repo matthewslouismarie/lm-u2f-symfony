@@ -2,6 +2,7 @@
 
 namespace App\Controller\U2fAuthorizer;
 
+use App\Exception\NonexistentMemberException;
 use App\Form\U2fLoginType;
 use App\Form\UsernameAndPasswordType;
 use App\FormModel\U2fLoginSubmission;
@@ -52,7 +53,8 @@ class UpukAuthorizer extends AbstractController
     }
 
     /**
-     * @todo What if the username doesn't exist, or doesn't have U2F tokens?
+     * @todo What if the username doesn't exist?
+     * @todo What if the member doesn't have U2F tokens?
      * 
      * @Route(
      *  "/all/u2f-authorization/upuk/uk/{sessionId}/{upSubmissionId}",
@@ -71,7 +73,11 @@ class UpukAuthorizer extends AbstractController
         if (!is_a($upSubmission, UsernameAndPasswordSubmission::class)) {
             return new Response('error');
         }
-        $u2fData = $auth->generate($upSubmission->getUsername());
+        try {
+            $u2fData = $auth->generate($upSubmission->getUsername());
+        } catch (NonexistentMemberException $e) {
+            return new Response('error');
+        }
         $u2fSubmission = new U2fLoginSubmission(
             $upSubmission->getUsername(),
             $upSubmission->getPassword(),

@@ -8,20 +8,16 @@ class U2fLoginSubmission
 {
     private $username;
 
-    private $password;
-
     private $u2fAuthenticationRequestId;
 
     private $u2fTokenResponse;
 
     public function __construct(
         ?string $username = null,
-        ?string $password = null,
         ?string $u2fTokenResponse = null,
         ?string $u2fAuthenticationRequestId = null)
     {
         $this->username = $username;
-        $this->password = $password;
         $this->u2fTokenResponse = $u2fTokenResponse;
         $this->u2fAuthenticationRequestId = $u2fAuthenticationRequestId;
     }
@@ -29,11 +25,6 @@ class U2fLoginSubmission
     public function getUsername(): ?string
     {
         return $this->username;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
     }
 
     public function getU2fAuthenticationRequestId(): ?string
@@ -49,11 +40,6 @@ class U2fLoginSubmission
     public function setUsername(?string $username): void
     {
         $this->username = $username;
-    }
-
-    public function setPassword(?string $password): void
-    {
-        $this->password = $password;
     }
 
     public function setU2fAuthenticationRequestId(?string $u2fAuthenticationRequestId): void

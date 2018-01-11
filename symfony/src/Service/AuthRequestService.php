@@ -30,6 +30,9 @@ class AuthRequestService
         $this->session = $session;
     }
 
+    /**
+     * @todo Rename auth_id to u2fAuthenticationId?
+     */
     public function generate(string $username): array
     {
         $member = $this->em
@@ -52,6 +55,8 @@ class AuthRequestService
     }
 
     /**
+     * @todo Critical vulnerability! The user is able to modify the U2F
+     * authentication ID!
      * @todo sql transaction
      */
     public function processResponse(string $auth_id, string $username, string $token_response)

@@ -29,7 +29,7 @@ class AuthenticationController extends AbstractController
         SecureSessionService $sSession)
     {
         $request = new AuthorizationRequest(false, 'finish_login', null);
-        $sessionId = $sSession->storeObject($request);
+        $sessionId = $sSession->storeObject($request, IAuthorizationRequest::class);
         $url = $this->generateUrl('u2f_authorization_upuk_up', array(
             'sessionId' => $sessionId,
         ));

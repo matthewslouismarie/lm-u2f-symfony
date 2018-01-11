@@ -48,7 +48,7 @@ class U2FTokenRegistrationService
         \DateTimeImmutable $registration_date_time,
         string $request_id): U2FToken
     {
-        $request = unserialize($this->session->getAndRemove($request_id));
+        $request = $this->session->getAndRemoveArray($request_id);
         $this->server->setRegisterRequest($request);
         $response = RegisterResponse::fromJson($u2fKeyResponse);
         $registration = $this->server->register($response);

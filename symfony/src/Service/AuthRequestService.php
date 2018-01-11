@@ -81,7 +81,7 @@ class AuthRequestService
 
         $oldU2fToken = $this->em
                           ->getRepository(U2FToken::class)
-                          ->find(1);
+                          ->find($u2f_authenticator_id);
         $builder = $this->builder->createBuilder($oldU2fToken);
         $u2fToken = $builder->setCounter($response->getCounter());
         $this->em->detach($oldU2fToken);

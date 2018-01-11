@@ -177,7 +177,12 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
 
     public function checkU2fTokens()
     {
-        $u2fToken = $this->om->getRepository(U2FToken::class)->find(1);
+        $u2fToken = $this
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager()
+            ->getRepository(U2FToken::class)
+            ->find(1);
         $this->assertNotNull($u2fToken);
     }
 }

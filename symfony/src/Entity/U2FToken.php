@@ -100,4 +100,9 @@ class U2FToken
     {
         return $this->publicKey;
     }
+
+    public function setCounter(int $counter): void
+    {
+        $this->counter = $counter;
+    }
 }

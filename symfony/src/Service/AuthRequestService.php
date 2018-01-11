@@ -78,13 +78,13 @@ class AuthRequestService
 
         $challenge = $response->getClientData()->getChallenge();
         $u2f_authenticator_id = $this->getAuthenticatorId($sign_requests, $challenge);
-        
+
         $oldU2fToken = $this->em
                           ->getRepository(U2FToken::class)
-                          ->find($u2f_authenticator_id);
+                          ->find(1);
         $builder = $this->builder->createBuilder($oldU2fToken);
         $u2fToken = $builder->setCounter($response->getCounter());
-        $this->em->remove($oldU2fToken);
+        $this->em->detach($oldU2fToken);
         $this->em->persist($u2fToken);
         $this->em->flush();
     }

@@ -26,6 +26,9 @@ class SecureSessionService
         return $key;
     }
 
+    /**
+     * @todo Add type hint.
+     */
     public function storeObject(\Serializable $object): string
     {
         $key = $this->generateNewKey();

@@ -38,6 +38,7 @@ class UpukAuthorizer extends AbstractController
 
     /**
      * @todo Is all the good prefix for the route?
+     * @todo Move username / password check in form.
      * 
      * @Route(
      *  "/all/u2f-authorization/upuk/up/{sessionId}",
@@ -53,13 +54,21 @@ class UpukAuthorizer extends AbstractController
         $upSubmission = new UsernameAndPasswordSubmission();
         $form = $this->createForm(UsernameAndPasswordType::class, $upSubmission);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $upSubmissionId = $sSession->storeObject($upSubmission);
-            $url = $this->generateUrl('u2f_authorization_upuk_uk', array(
-                'sessionId' => $sessionId,
-                'upSubmissionId' => $upSubmissionId,
-            ));
-            return new RedirectResponse($url);
+        try {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->checkLogin(
+                    $upSubmission->getUsername(),
+                    $upSubmission->getPassword());
+                $upSubmissionId = $sSession->storeObject($upSubmission);
+                $url = $this->generateUrl('u2f_authorization_upuk_uk', array(
+                    'sessionId' => $sessionId,
+                    'upSubmissionId' => $upSubmissionId,
+                ));
+                return new RedirectResponse($url);
+            }
+        }
+        catch (AuthenticationException $e) {
+            $form->addError(new FormError('Invalid username or password.'));
         }
         return $this->render('tks/username_and_password.html.twig', array(
             'form' => $form->createView(),
@@ -92,7 +101,6 @@ class UpukAuthorizer extends AbstractController
         }
         $u2fSubmission = new U2fLoginSubmission(
             $upSubmission->getUsername(),
-            $upSubmission->getPassword(),
             null,
             $u2fData['auth_id']);
         $form = $this->createForm(U2fLoginType::class, $u2fSubmission);
@@ -104,10 +112,6 @@ class UpukAuthorizer extends AbstractController
                 if (!$action instanceof IAuthorizationRequest) {
                     return new Response('Sorry, an error happened');
                 }
-
-                $this->checkLogin(
-                    $u2fSubmission->getUsername(),
-                    $u2fSubmission->getPassword());
 
                 $auth->processResponse(
                     $u2fSubmission->getU2fAuthenticationRequestId(),

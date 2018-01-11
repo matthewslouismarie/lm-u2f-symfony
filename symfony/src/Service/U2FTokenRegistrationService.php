@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Member;
 use App\Entity\U2FToken;
 use Doctrine\ORM\EntityManagerInterface;
+use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 
 /**
@@ -31,7 +32,10 @@ class U2FTokenRegistrationService
     public function generate(): array
     {
         $request = $this->server->generateRegisterRequest();
-        $request_id = $this->session->storeString(serialize($request));
+        $request_id = $this
+            ->session
+            ->storeObject($request, RegisterRequest::class)
+        ;
         $request_json = json_encode($request);
         $registrations = array();
         $sign_requests = json_encode($this->server->generateSignRequests($registrations, $request_id));
@@ -48,7 +52,7 @@ class U2FTokenRegistrationService
         \DateTimeImmutable $registration_date_time,
         string $request_id): U2FToken
     {
-        $request = $this->session->getAndRemoveArray($request_id);
+        $request = $this->session->getAndRemoveObject($request_id, RegisterRequest::class);
         $this->server->setRegisterRequest($request);
         $response = RegisterResponse::fromJson($u2fKeyResponse);
         $registration = $this->server->register($response);

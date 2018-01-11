@@ -94,15 +94,14 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $doctrine = $this->getContainer()->get('doctrine');
         $ubs = $this->getContainer()->get('App\Service\U2FTokenBuilderService');
         $repo = $doctrine->getRepository(U2FToken::class);
-        $oldU2fToken = $repo->findOneBy(array(
-            'publicKey' => 'BPXPn5wJaS5cnRfe45NYPv/1foHyRIPMFn4ABhzu8jXbnuGbZXHrDS3gmwP1OywFqADOYsQMg14GbQk1+RDBhHQ=',
-        ));
-        $ub = $ubs->createBuilder($oldU2fToken);
-        $newU2fToken = $ub->setCounter(0);
+        $oldU2fTokens = $repo->findAll();
         $om = $doctrine->getManager();
-        $om->remove($oldU2fToken);
-        $om->flush();
-        $om->persist($newU2fToken);
+        foreach ($oldU2fTokens as $oldU2fToken) {
+            $ub = $ubs->createBuilder($oldU2fToken);
+            $newU2fToken = $ub->setCounter(0);
+            $om->detach($oldU2fToken);
+            $om->persist($newU2fToken);
+        }
         $om->flush();
     }
 
@@ -135,11 +134,12 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
             ->selectButton('u2f_login[submit]')
         ;
         $form = $postUpLoginButton->form($this->getValidU2fTokenResponse());
-
+        
         $validateLogin = $this
             ->getClient()
             ->submit($form)
         ;
+        $this->checkU2fTokens();
     }
 
     public function storeInSessionU2fToken(bool $isValid): string
@@ -173,5 +173,11 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
             'u2f_login[u2fAuthenticationRequestId]' => $u2fAuthenticationRequestId,
             'u2f_login[u2fTokenResponse]' => '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoibFhhcTgyY2xKQm1YTm5OV0wxVzZHQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAIkwRgIhAN1YRiOqMs1fOCOm7MuOxfYJ6qN7A8PdXrhEzejtw3gNAiEAgi0JJmODYRTN8qflhBNsAjuDkJz06hTUZi2LNbaU4gk"}',
         );
+    }
+
+    public function checkU2fTokens()
+    {
+        $u2fToken = $this->om->getRepository(U2FToken::class)->find(1);
+        $this->assertNotNull($u2fToken);
     }
 }

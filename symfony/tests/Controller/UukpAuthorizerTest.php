@@ -26,6 +26,8 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $this->enterValidUsername();
         $this->getClient()->followRedirect();
         $this->enterValidU2fTokenResponse();
+        $this->getClient()->followRedirect();
+        $this->enterValidU2fTokenResponse();
     }
 
     private function enterValidUsername()

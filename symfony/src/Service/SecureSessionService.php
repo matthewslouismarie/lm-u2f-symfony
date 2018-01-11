@@ -42,14 +42,54 @@ class SecureSessionService
         return $key;
     }
 
-    public function get(?string $key)
+    public function getArray(?string $key): array
     {
         return $this->session->get($key);
     }
 
-    public function getAndRemove(?string $key)
+    /**
+     * @todo Make it return IObject?
+     */
+    public function getObject(?string $key, string $class)
+    {
+        $object = $this->session->get($key);
+        if (!is_a($object, $class)) {
+            throw new \UnexpectedValueException();
+        }
+        return $object;
+    }
+
+    public function getString(?string $key): string
+    {
+        return $this->session->get($key);
+    }
+
+    public function getAndRemoveArray(?string $key): array
     {
         $value = $this->session->get($key);
+        if (!is_array($value)) {
+            throw new \UnexpectedValueException();
+        }
+        $this->session->remove($key);
+        return $value;
+    }
+
+    public function getAndRemoveObject(?string $key, string $class)
+    {
+        $value = $this->session->get($key);
+        if (!is_a($value, $class)) {
+            throw new \UnexpectedValueException();
+        }
+        $this->session->remove($key);
+        return $value;
+    }
+
+    public function getAndRemoveString(?string $key): string
+    {
+        $value = $this->session->get($key);
+        if (!is_string($value)) {
+            throw new \UnexpectedValueException();
+        }
         $this->session->remove($key);
         return $value;
     }

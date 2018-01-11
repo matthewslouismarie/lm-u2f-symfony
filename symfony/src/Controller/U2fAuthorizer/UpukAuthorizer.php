@@ -59,7 +59,7 @@ class UpukAuthorizer extends AbstractController
                 $this->checkLogin(
                     $upSubmission->getUsername(),
                     $upSubmission->getPassword());
-                $upSubmissionId = $sSession->storeObject($upSubmission);
+                $upSubmissionId = $sSession->storeObject($upSubmission, UsernameAndPasswordSubmission::class);
                 $url = $this->generateUrl('u2f_authorization_upuk_uk', array(
                     'sessionId' => $sessionId,
                     'upSubmissionId' => $upSubmissionId,
@@ -123,7 +123,7 @@ class UpukAuthorizer extends AbstractController
                     true,
                     $action->getSuccessRoute(),
                     $u2fSubmission->getUsername());
-                $authorizationRequestSid = $sSession->storeObject($validatedAction);
+                $authorizationRequestSid = $sSession->storeObject($validatedAction, IAuthorizationRequest::class);
                 $url = $this->generateUrl($action->getSuccessRoute(), array(
                     'authorizationRequestSid' => $authorizationRequestSid,
                 ));

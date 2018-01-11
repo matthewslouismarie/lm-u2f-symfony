@@ -117,7 +117,7 @@ class UukpAuthorizer extends AbstractController
                 true,
                 $authorizationRequest->getSuccessRoute(),
                 $username);
-            $authorizationSid = $sSession->storeObject($authorization);
+            $authorizationSid = $sSession->storeObject($authorization, IAuthorizationRequest::class);
             $url = $this->generateUrl($authorizationRequest->getSuccessRoute(), array(
                 'authorizationRequestSid' => $authorizationSid,
             ));

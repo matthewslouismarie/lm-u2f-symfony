@@ -2,7 +2,9 @@
 
 namespace App\Model;
 
-interface IAuthorizationRequest
+use Serializable;
+
+interface IAuthorizationRequest extends Serializable
 {
     public function isAccepted(): bool;
     public function getSuccessRoute(): string;

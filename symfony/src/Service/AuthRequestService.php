@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Service\U2FTokenBuilderService;
 use App\Entity\Member;
 use App\Entity\U2FToken;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SignResponse;
 
 /**
@@ -19,7 +19,7 @@ class AuthRequestService
     private $session;
 
     public function __construct(
-        EntityManagerInterface $em,
+        ObjectManager $em,
         U2FService $u2f,
         U2FTokenBuilderService $builder,
         SecureSessionService $session)
@@ -33,33 +33,50 @@ class AuthRequestService
     /**
      * @todo Rename auth_id to u2fAuthenticationId?
      */
-    public function generate(string $username): array
+    public function generate(
+        string $username,
+        array $idsToExclude = array()): array
     {
         $member = $this->em
                        ->getRepository(Member::class)
                        ->findOneBy(array('username' => $username));
 
         $registrations = $this->em
-                              ->getRepository(U2FToken::class)
-                              ->getMemberRegistrations($member->getId());
+            ->getRepository(U2FToken::class)
+            ->getMemberRegistrations($member->getId())
+        ;
+        
+        $unfilteredSignRequests = $this
+            ->server
+            ->generateSignRequests($registrations)
+        ;
+        $signRequests = array();
+        foreach ($unfilteredSignRequests as $key => $signRequest) {
+            if (!in_array($key, $idsToExclude)) {
+                $signRequests[$key] = $signRequest;
+            }
+        }
 
-        $sign_requests = $this->server->generateSignRequests($registrations);
-        $auth_id = $this->session->storeArray($sign_requests);
+        $auth_id = $this->session->storeArray($signRequests);
 
         return array(
-            'sign_requests_json' => json_encode(array_values($sign_requests)),
+            'sign_requests_json' => json_encode(array_values($signRequests)),
             'username' => $username,
             'auth_id' => $auth_id,
-            'tmp' => $sign_requests,
+            'tmp' => $signRequests,
         );
     }
 
     /**
      * @todo Critical vulnerability! The user is able to modify the U2F
      * authentication ID!
+     * @todo Make stateless.
      * @todo sql transaction
      */
-    public function processResponse(string $auth_id, string $username, string $token_response)
+    public function processResponse(
+        string $auth_id,
+        string $username,
+        string $token_response): int
     {
         $member = $this->em
                        ->getRepository(Member::class)
@@ -79,14 +96,15 @@ class AuthRequestService
         $challenge = $response->getClientData()->getChallenge();
         $u2f_authenticator_id = $this->getAuthenticatorId($sign_requests, $challenge);
 
-        $oldU2fToken = $this->em
-                          ->getRepository(U2FToken::class)
-                          ->find($u2f_authenticator_id);
-        $builder = $this->builder->createBuilder($oldU2fToken);
-        $u2fToken = $builder->setCounter($response->getCounter());
-        $this->em->detach($oldU2fToken);
+        $u2fToken = $this->em
+            ->getRepository(U2FToken::class)
+            ->find($u2f_authenticator_id)
+        ;
+        $u2fToken->setCounter($response->getCounter());
         $this->em->persist($u2fToken);
         $this->em->flush();
+
+        return $u2f_authenticator_id;
     }
 
     private function getAuthenticatorId(array $sign_requests, string $challenge): string

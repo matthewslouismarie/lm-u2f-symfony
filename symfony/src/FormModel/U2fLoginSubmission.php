@@ -4,6 +4,9 @@ namespace App\FormModel;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @todo Remove username.
+ */
 class U2fLoginSubmission
 {
     private $username;

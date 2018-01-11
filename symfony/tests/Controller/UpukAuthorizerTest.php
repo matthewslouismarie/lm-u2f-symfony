@@ -27,7 +27,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
         $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);
         $sessionId = $this
             ->session
-            ->store($authorizationRequest)
+            ->storeObject($authorizationRequest)
         ;
 
         $this
@@ -53,7 +53,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
         $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);
         $sessionId = $this
             ->session
-            ->store($authorizationRequest)
+            ->storeObject($authorizationRequest)
         ;
 
         $this
@@ -72,7 +72,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
         $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);
         $sessionId = $this
             ->session
-            ->store($authorizationRequest)
+            ->storeObject($authorizationRequest)
         ;
 
         $this

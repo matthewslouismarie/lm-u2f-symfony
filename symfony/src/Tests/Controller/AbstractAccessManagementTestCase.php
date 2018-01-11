@@ -155,6 +155,6 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $signRequest->setChallenge('lXaq82clJBmXNnNWL1W6GA');
         $signRequest->setKeyHandle(base64_decode('v8IplXz0zSQUXVYjvSWNcP/70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg=='));
         $signRequests[1] = $signRequest;
-        return $sSession->store(serialize($signRequests));
+        return $sSession->storeArray($signRequests);
     }
 }

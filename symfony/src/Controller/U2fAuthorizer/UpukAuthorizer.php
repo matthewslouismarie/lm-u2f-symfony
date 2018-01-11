@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller\U2fAuthorizer;
+
 use App\Entity\Member;
 use App\Exception\NonexistentMemberException;
 use App\Form\U2fLoginType;
@@ -82,10 +83,8 @@ class UpukAuthorizer extends AbstractController
         string $sessionId,
         string $upSubmissionId)
     {
-        $upSubmission = $sSession->get($upSubmissionId);
-        if (!is_a($upSubmission, UsernameAndPasswordSubmission::class)) {
-            return new Response('error');
-        }
+        $upSubmission = $sSession
+            ->getObject($upSubmissionId, UsernameAndPasswordSubmission::class);
         try {
             $u2fData = $auth->generate($upSubmission->getUsername());
         } catch (NonexistentMemberException $e) {
@@ -100,7 +99,8 @@ class UpukAuthorizer extends AbstractController
         $form->handleRequest($request);
         try {
             if ($form->isSubmitted() && $form->isValid()) {
-                $action = $sSession->getAndRemove($sessionId);
+                $action = $sSession
+                    ->getAndRemoveObject($sessionId, IAuthorizationRequest::class);
                 if (!$action instanceof IAuthorizationRequest) {
                     return new Response('Sorry, an error happened');
                 }

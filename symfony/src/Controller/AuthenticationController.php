@@ -49,10 +49,12 @@ class AuthenticationController extends AbstractController
         SecureSessionService $sSession,
         string $authorizationRequestSid)
     {
-        $authorizationRequest = $sSession->getAndRemove($authorizationRequestSid);
-        if (!$authorizationRequest instanceof IAuthorizationRequest) {
-            return new Response('error');
-        } elseif (!$authorizationRequest->isAccepted()) {
+        $authorizationRequest = $sSession
+            ->getAndRemoveObject(
+                $authorizationRequestSid,
+                IAuthorizationRequest::class)
+        ;
+        if (!$authorizationRequest->isAccepted()) {
             return new Response('error');
         }
 

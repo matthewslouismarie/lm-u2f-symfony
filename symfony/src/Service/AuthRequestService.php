@@ -64,7 +64,7 @@ class AuthRequestService
                               ->getRepository(U2FToken::class)
                               ->getMemberRegistrations($member->getId());
 
-        $sign_requests = $this->session->getAndRemove($auth_id);
+        $sign_requests = $this->session->getAndRemoveArray($auth_id);
         $this->server
              ->setRegistrations($registrations)
              ->setSignRequests($sign_requests);

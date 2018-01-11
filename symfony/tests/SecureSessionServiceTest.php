@@ -14,5 +14,7 @@ class SecureSessionServiceTest extends AbstractAccessManagementTestCase
             ->get('App\Service\SecureSessionService');
         $member = new Member(null, 'louis');
         $sid = $sSession->storeObject($member);
+        $sessionMember = $sSession->getObject($sid, Member::class);
+        $this->assertEquals($member, $sessionMember);
     }
 }

@@ -41,7 +41,7 @@ class AuthRequestService
                               ->getMemberRegistrations($member->getId());
 
         $sign_requests = $this->server->generateSignRequests($registrations);
-        $auth_id = $this->session->store(serialize($sign_requests));
+        $auth_id = $this->session->storeArray($sign_requests);
 
         return array(
             'sign_requests_json' => json_encode(array_values($sign_requests)),
@@ -64,7 +64,7 @@ class AuthRequestService
                               ->getRepository(U2FToken::class)
                               ->getMemberRegistrations($member->getId());
 
-        $sign_requests = unserialize($this->session->getAndRemove($auth_id));
+        $sign_requests = $this->session->getAndRemove($auth_id);
         $this->server
              ->setRegistrations($registrations)
              ->setSignRequests($sign_requests);

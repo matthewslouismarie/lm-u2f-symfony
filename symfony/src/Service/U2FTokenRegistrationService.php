@@ -31,7 +31,7 @@ class U2FTokenRegistrationService
     public function generate(): array
     {
         $request = $this->server->generateRegisterRequest();
-        $request_id = $this->session->store(serialize($request));
+        $request_id = $this->session->storeString(serialize($request));
         $request_json = json_encode($request);
         $registrations = array();
         $sign_requests = json_encode($this->server->generateSignRequests($registrations, $request_id));

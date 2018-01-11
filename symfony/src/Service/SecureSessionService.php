@@ -18,10 +18,26 @@ class SecureSessionService
         $this->session = $session;
     }
 
-    public function store($value): string
+    public function storeArray(array $array): string
     {
         $key = $this->generateNewKey();
-        $this->session->set($key, $value);
+        $this->session->set($key, $array);
+        $this->session->save();
+        return $key;
+    }
+
+    public function storeObject(\Serializable $object): string
+    {
+        $key = $this->generateNewKey();
+        $this->session->set($key, $object);
+        $this->session->save();
+        return $key;
+    }
+
+    public function storeString(string $string): string
+    {
+        $key = $this->generateNewKey();
+        $this->session->set($key, $string);
         $this->session->save();
         return $key;
     }

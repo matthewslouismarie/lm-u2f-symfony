@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class AuthorizationRequest implements IAuthorizationRequest
+class AuthorizationRequest implements IAuthorizationRequest, \Serializable
 {
     private $isAccepted;
     private $successRoute;
@@ -31,5 +31,23 @@ class AuthorizationRequest implements IAuthorizationRequest
     public function getUsername(): ?string
     {
         return $this->username;
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->isAccepted,
+            $this->successRoute,
+            $this->username,
+        ]);
+    }
+
+    public function unserialize($serialize): void
+    {
+        list(
+            $this->isAccepted,
+            $this->successRoute,
+            $this->username,
+        ) = unserialize($serialize);
     }
 }

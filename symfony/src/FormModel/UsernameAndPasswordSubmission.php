@@ -10,7 +10,7 @@ use App\Validator\Constraints\ExistingMemberConstraint;
  * the username is checked. This means an attacker is able to know whether
  * whether it is the username or the password that is incorrect.
  */
-class UsernameAndPasswordSubmission
+class UsernameAndPasswordSubmission implements \Serializable
 {
     /**
      * @Assert\NotBlank()
@@ -43,5 +43,21 @@ class UsernameAndPasswordSubmission
     public function getPassword()
     {
         return $this->password;
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->username,
+            $this->password,
+        ]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        list(
+            $this->username,
+            $this->password,
+        ) = unserialize($serialized);
     }
 }

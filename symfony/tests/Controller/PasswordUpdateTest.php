@@ -4,6 +4,17 @@ namespace App\Tests\Controller;
 
 class PasswordUpdateTest extends AbstractAccessManagementTestCase
 {
+    private $u2z;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->om = $this
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager()
+        ;
+    }
     /**
      * @todo Add password confirmation.
      */
@@ -14,14 +25,15 @@ class PasswordUpdateTest extends AbstractAccessManagementTestCase
         $this->runLoggedOutTests();
 
         $this->resetU2fCounter();
-
+        
         $this->logIn('louis', 'hello');
         $this->runLoggedInTests();
         $this->changePassword();
         $this->logOut();
 
+        
         $this->resetU2fCounter();
-
+        
         $this->logIn('louis', 'meow');
         $this->runLoggedInTests();
     }

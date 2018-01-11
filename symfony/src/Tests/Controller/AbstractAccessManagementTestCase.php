@@ -19,6 +19,10 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $this->getClient()->followRedirect();
 
         $this->upLogInFromUpPage($username, $password);
+
+        if (!$this->getClient()->getResponse()->isRedirection()) {
+            return;
+        }
         
         $requestId = $this->storeInSessionU2fToken(true);
 
@@ -26,19 +30,21 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
 
         $this->ukLogInFromUkPage($requestId);
         
-        if ($this->getClient()->getResponse()->isRedirection()) {
-            $this->getClient()->followRedirect();
-            $this->assertRegExp(
-                '/^http:\/\/localhost\/not-authenticated\/finish-login\/[a-z0-9]+$/',
-                $this->getClient()->getRequest()->getUri());
-            
-            $submit = $this
-                ->getClient()
-                ->getCrawler()
-                ->selectButton('login_request[submit]');
-            $form = $submit->form();
-            $this->getClient()->submit($form);
+        if (!$this->getClient()->getResponse()->isRedirection()) {
+            return;
         }
+        
+        $this->getClient()->followRedirect();
+        $this->assertRegExp(
+            '/^http:\/\/localhost\/not-authenticated\/finish-login\/[a-z0-9]+$/',
+            $this->getClient()->getRequest()->getUri());
+        
+        $submit = $this
+            ->getClient()
+            ->getCrawler()
+            ->selectButton('login_request[submit]');
+        $form = $submit->form();
+        $this->getClient()->submit($form);
     }
 
     public function logOut()
@@ -128,10 +134,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
             ->getCrawler()
             ->selectButton('u2f_login[submit]')
         ;
-        $form = $postUpLoginButton->form(array(
-            'u2f_login[u2fAuthenticationRequestId]' => $requestId,
-            'u2f_login[u2fTokenResponse]' => '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoibFhhcTgyY2xKQm1YTm5OV0wxVzZHQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAIkwRgIhAN1YRiOqMs1fOCOm7MuOxfYJ6qN7A8PdXrhEzejtw3gNAiEAgi0JJmODYRTN8qflhBNsAjuDkJz06hTUZi2LNbaU4gk"}',
-        ));
+        $form = $postUpLoginButton->form($this->getValidU2fTokenResponse());
 
         $validateLogin = $this
             ->getClient()
@@ -156,5 +159,19 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $signRequest->setKeyHandle(base64_decode('v8IplXz0zSQUXVYjvSWNcP/70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg=='));
         $signRequests[1] = $signRequest;
         return $sSession->storeArray($signRequests);
+    }
+
+    public function getValidU2fTokenResponse(): array
+    {
+        $u2fAuthenticationRequestId = $this->storeInSessionU2fToken(true);
+        $submitButton = $this
+            ->getClient()
+            ->getCrawler()
+            ->selectButton('u2f_login[submit]');
+
+        return array(
+            'u2f_login[u2fAuthenticationRequestId]' => $u2fAuthenticationRequestId,
+            'u2f_login[u2fTokenResponse]' => '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoibFhhcTgyY2xKQm1YTm5OV0wxVzZHQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAIkwRgIhAN1YRiOqMs1fOCOm7MuOxfYJ6qN7A8PdXrhEzejtw3gNAiEAgi0JJmODYRTN8qflhBNsAjuDkJz06hTUZi2LNbaU4gk"}',
+        );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Member;
 use App\Factory\MemberFactory;
 use App\Form\PasswordUpdateType;
 use App\FormModel\PasswordUpdateSubmission;
@@ -31,6 +32,7 @@ class PasswordUpdateController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $member = $this->getUser();
             $mf->setPassword($member, $submission->getPassword());
+            $om->persist($member);
             $om->flush();
         }
 

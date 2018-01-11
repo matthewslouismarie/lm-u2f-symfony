@@ -28,7 +28,7 @@ class PasswordResetController extends AbstractController
             ->storeObject($passwordResetRequest, IAuthorizationRequest::class)
         ;
         $url = $this->generateUrl('u2f_authorization_uukp_u', array(
-            'passwordResetRequestSid' => $passwordResetRequestSid,
+            'authorizationRequestSid' => $passwordResetRequestSid,
         ));
         return new RedirectResponse($url);
     }

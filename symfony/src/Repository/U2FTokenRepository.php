@@ -19,11 +19,12 @@ class U2FTokenRepository extends ServiceEntityRepository
     public function getMemberRegistrations(int $member_id): array
     {
         $qb = $this->createQueryBuilder('u2ftoken');
-        $u2f_tokens = $qb->where('u2ftoken.member = :member_id')
-                      ->setParameter('member_id', $member_id)
-                      ->getQuery()
-                      ->getResult();
-
+        $u2f_tokens = $qb
+            ->where('u2ftoken.member = :member_id')
+            ->setParameter('member_id', $member_id)
+            ->getQuery()
+            ->getResult()
+        ;
         $registrations = array();
         foreach ($u2f_tokens as $tkn) {
                 $registration = new Registration();

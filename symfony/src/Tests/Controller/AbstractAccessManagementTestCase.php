@@ -94,13 +94,10 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $doctrine = $this->getContainer()->get('doctrine');
         $ubs = $this->getContainer()->get('App\Service\U2FTokenBuilderService');
         $repo = $doctrine->getRepository(U2FToken::class);
-        $oldU2fTokens = $repo->findAll();
+        $u2fTokens = $repo->findAll();
         $om = $doctrine->getManager();
-        foreach ($oldU2fTokens as $oldU2fToken) {
-            $ub = $ubs->createBuilder($oldU2fToken);
-            $newU2fToken = $ub->setCounter(0);
-            $om->detach($oldU2fToken);
-            $om->persist($newU2fToken);
+        foreach ($u2fTokens as $u2fToken) {
+            $u2fToken->setCounter(0);
         }
         $om->flush();
     }
@@ -164,14 +161,39 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
     public function getValidU2fTokenResponse(): array
     {
         $u2fAuthenticationRequestId = $this->storeInSessionU2fToken(true);
-        $submitButton = $this
-            ->getClient()
-            ->getCrawler()
-            ->selectButton('u2f_login[submit]');
 
         return array(
             'u2f_login[u2fAuthenticationRequestId]' => $u2fAuthenticationRequestId,
             'u2f_login[u2fTokenResponse]' => '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoibFhhcTgyY2xKQm1YTm5OV0wxVzZHQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAIkwRgIhAN1YRiOqMs1fOCOm7MuOxfYJ6qN7A8PdXrhEzejtw3gNAiEAgi0JJmODYRTN8qflhBNsAjuDkJz06hTUZi2LNbaU4gk"}',
+        );
+    }
+
+    public function storeInSessionSecondU2fToken(bool $isValid): string
+    {
+        $sSession = $this
+            ->getContainer()
+            ->get('App\Service\SecureSessionService')
+        ;
+        $signRequests = array();
+        $signRequest = new SignRequest();
+        if ($isValid) {
+            $signRequest->setAppId('https://172.16.238.10');
+        } else {
+            $signRequest->setAppId('https://172.15.238.10');
+        }
+        $signRequest->setChallenge('LKXEXoGL1X4yWVFfwGNhdQ');
+        $signRequest->setKeyHandle(base64_decode('SlhahqO2AGMqu1KZwwVVFgLhkUaOwcuWRWVn1ITLmeq/V38yn1kfANGGrZCVl8qZSm8UF8qgyp8bGEWAVKWe1g=='));
+        $signRequests[2] = $signRequest;
+        return $sSession->storeArray($signRequests);
+    }
+
+    public function getValidSecondU2fTokenResponse(): array
+    {
+        $u2fAuthenticationRequestId = $this->storeInSessionSecondU2fToken(true);
+
+        return array(
+            'u2f_login[u2fAuthenticationRequestId]' => $u2fAuthenticationRequestId,
+            'u2f_login[u2fTokenResponse]' => '{"keyHandle":"SlhahqO2AGMqu1KZwwVVFgLhkUaOwcuWRWVn1ITLmeq_V38yn1kfANGGrZCVl8qZSm8UF8qgyp8bGEWAVKWe1g","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoiTEtYRVhvR0wxWDR5V1ZGZndHTmhkUSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAALgwRQIgWysRasdeUTrdy_ngxYHrM9FXv4o5_wNUQW0sfs7Hf30CIQDlg9P1NcRY0oAyUmHqwuYsH9W2TSw1msTOLGyWYiSRIg"}',
         );
     }
 

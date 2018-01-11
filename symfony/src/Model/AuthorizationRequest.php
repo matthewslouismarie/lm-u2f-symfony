@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class AuthorizationRequest implements IAuthorizationRequest, \Serializable
+class AuthorizationRequest implements IAuthorizationRequest
 {
     private $isAccepted;
     private $successRoute;

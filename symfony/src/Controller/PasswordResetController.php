@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\AuthorizationRequest;
+use App\Model\IAuthorizationRequest;
 use App\Service\SecureSessionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,7 +25,7 @@ class PasswordResetController extends AbstractController
             null
         );
         $passwordResetRequestSid = $sSession
-            ->storeObject($passwordResetRequest)
+            ->storeObject($passwordResetRequest, IAuthorizationRequest::class)
         ;
         $url = $this->generateUrl('u2f_authorization_uukp_u', array(
             'passwordResetRequestSid' => $passwordResetRequestSid,

@@ -26,11 +26,11 @@ class SecureSessionService
         return $key;
     }
 
-    /**
-     * @todo Add type hint.
-     */
-    public function storeObject(\Serializable $object): string
+    public function storeObject(\Serializable $object, string $class): string
     {
+        if (!is_a($object, $class)) {
+            throw new \UnexpectedValueException();
+        }
         $key = $this->generateNewKey();
         $this->session->set($key, $object);
         $this->session->save();

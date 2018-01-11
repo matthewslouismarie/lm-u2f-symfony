@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Model\AuthorizationRequest;
+use App\Model\IAuthorizationRequest;
 use Firehed\U2F\SignRequest;
 
 class UpukAuthorizerTest extends AbstractAccessManagementTestCase
@@ -27,7 +28,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
         $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);
         $sessionId = $this
             ->session
-            ->storeObject($authorizationRequest)
+            ->storeObject($authorizationRequest, IAuthorizationRequest::class)
         ;
 
         $this
@@ -53,7 +54,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
         $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);
         $sessionId = $this
             ->session
-            ->storeObject($authorizationRequest)
+            ->storeObject($authorizationRequest, IAuthorizationRequest::class)
         ;
 
         $this
@@ -72,7 +73,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
         $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);
         $sessionId = $this
             ->session
-            ->storeObject($authorizationRequest)
+            ->storeObject($authorizationRequest, IAuthorizationRequest::class)
         ;
 
         $this

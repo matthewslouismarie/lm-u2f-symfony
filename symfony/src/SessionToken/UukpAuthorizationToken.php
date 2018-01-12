@@ -7,8 +7,13 @@ use Serializable;
 class UukpAuthorizationToken implements Serializable
 {
     private $username;
+    private $firstU2fTokenUsed;
+    private $secondU2fTokenUsed;
     
-    public function __construct(string $username)
+    public function __construct(
+        string $username,
+        int $firstU2fTokenUsed,
+        int $secondU2fTokenUsed)
     {
         $this->username = $username;
     }

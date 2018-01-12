@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Form\U2FTokenRegistrationType;
-use App\FormModel\U2FTokenRegistration;
-use App\Service\U2FTokenRegistrationService;
+use App\Form\U2fTokenRegistrationType;
+use App\FormModel\U2fTokenRegistration;
+use App\Service\U2fTokenRegistrationService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,14 +21,14 @@ class U2fTokenRegistrationController extends AbstractController
      *  name="get_add_u2f_token",
      *  methods={"GET"})
      */
-    public function doGet(Request $request, U2FTokenRegistrationService $service)
+    public function doGet(Request $request, U2fTokenRegistrationService $service)
     {
         $rp_request = $service->generate();
 
-        $submission = new U2FTokenRegistration();
+        $submission = new U2fTokenRegistration();
         $submission->setRequestId($rp_request['request_id']);
 
-        $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
+        $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
 
         return $this->render('add_u2f_token.html.twig', array(
             'request_json' => $rp_request['request_json'],
@@ -44,10 +44,10 @@ class U2fTokenRegistrationController extends AbstractController
      *  name="post_add_u2f_token",
      *  methods={"POST"})
      */
-    public function doPost(Request $request, U2FTokenRegistrationService $service)
+    public function doPost(Request $request, U2fTokenRegistrationService $service)
     {
-        $submission = new U2FTokenRegistration();
-        $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
+        $submission = new U2fTokenRegistration();
+        $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
 
         $form->handleRequest($request);
 

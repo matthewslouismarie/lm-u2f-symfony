@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\U2FToken;
+use App\Entity\U2fToken;
 use App\Entity\Member;
 
 class RegistrationTest extends DbWebTestCase
@@ -35,9 +35,9 @@ class RegistrationTest extends DbWebTestCase
         $firstCrawler = $this
             ->getClient()
             ->request('GET', '/tks/key-'.$keyNo);
-        $button = $firstCrawler->selectButton('u2_f_token_registration[submit]');
+        $button = $firstCrawler->selectButton('u2f_token_registration[submit]');
         $form = $button->form(array(
-            'u2_f_token_registration[u2fTokenResponse]' => 'invalid response',
+            'u2f_token_registration[u2fTokenResponse]' => 'invalid response',
         ));
         $secondCrawler = $this->getClient()->submit($form);
 
@@ -69,7 +69,7 @@ class RegistrationTest extends DbWebTestCase
         $this->checkUrlStatusCode('/tks/finish-registration', 302);
         $this->checkUrlStatusCode('/tks/reset-registration', 200);
 
-        $firstU2fToken = new U2FToken(
+        $firstU2fToken = new U2fToken(
             4,
             'MIICSjCCATKgAwIBAgIEEkpy/jANBgkqhkiG9w0BAQsFADAuMSwwKgYDVQQDEyNZdWJpY28gVTJGIFJvb3QgQ0EgU2VyaWFsIDQ1NzIwMDYzMTAgFw0xNDA4MDEwMDAwMDBaGA8yMDUwMDkwNDAwMDAwMFowLDEqMCgGA1UEAwwhWXViaWNvIFUyRiBFRSBTZXJpYWwgMjQ5NDE0OTcyMTU4MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEPYsbvS/L9ghuEHRxYBRoSEFTwcbTtLaKXoVebkB1fuIrzYmIvzvv183yHLC/XXoVDYRK/pgQPGxmB9n6rih8AqM7MDkwIgYJKwYBBAGCxAoCBBUxLjMuNi4xLjQuMS40MTQ4Mi4xLjEwEwYLKwYBBAGC5RwCAQEEBAMCBSAwDQYJKoZIhvcNAQELBQADggEBAKFPHuoAdva4R2oQor5y5g0CcbtGWy37/Hwb0S01GYmRcDJjHXldCX+jCiajJWNOhXIbwtAahjA/a8B15ZlzGeEiFIsElu7I0fT5TPQRDeYmwolEPR8PW7sjnKE+gdHVqp31r442EmR1v8I68GKDFXJSdi/2iHm88O9XjVXWf5UbTzK2PIrqWw+Zxn19gUp/9ab1Lfg+iUo6XZyLguf4vI2vTIAXX/iXL9p5Mz7EZdgG6syUjxurIgRalVWKSMICJtrAA9QfvJ4F6iimu14QpJ3gYKCk9qJnajTWjEq+jGGHQ1W5An6CjKngZLAC1i6NjPB0SSF1PTXjyHxdV3lFPnc=',
             0,
@@ -87,7 +87,7 @@ class RegistrationTest extends DbWebTestCase
         $this->checkUrlStatusCode('/tks/finish-registration', 302);
         $this->checkUrlStatusCode('/tks/reset-registration', 200);
 
-        $secondU2fToken = new U2FToken(
+        $secondU2fToken = new U2fToken(
             5,
             'MIICSjCCATKgAwIBAgIEEkpy/jANBgkqhkiG9w0BAQsFADAuMSwwKgYDVQQDEyNZdWJpY28gVTJGIFJvb3QgQ0EgU2VyaWFsIDQ1NzIwMDYzMTAgFw0xNDA4MDEwMDAwMDBaGA8yMDUwMDkwNDAwMDAwMFowLDEqMCgGA1UEAwwhWXViaWNvIFUyRiBFRSBTZXJpYWwgMjQ5NDE0OTcyMTU4MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEPYsbvS/L9ghuEHRxYBRoSEFTwcbTtLaKXoVebkB1fuIrzYmIvzvv183yHLC/XXoVDYRK/pgQPGxmB9n6rih8AqM7MDkwIgYJKwYBBAGCxAoCBBUxLjMuNi4xLjQuMS40MTQ4Mi4xLjEwEwYLKwYBBAGC5RwCAQEEBAMCBSAwDQYJKoZIhvcNAQELBQADggEBAKFPHuoAdva4R2oQor5y5g0CcbtGWy37/Hwb0S01GYmRcDJjHXldCX+jCiajJWNOhXIbwtAahjA/a8B15ZlzGeEiFIsElu7I0fT5TPQRDeYmwolEPR8PW7sjnKE+gdHVqp31r442EmR1v8I68GKDFXJSdi/2iHm88O9XjVXWf5UbTzK2PIrqWw+Zxn19gUp/9ab1Lfg+iUo6XZyLguf4vI2vTIAXX/iXL9p5Mz7EZdgG6syUjxurIgRalVWKSMICJtrAA9QfvJ4F6iimu14QpJ3gYKCk9qJnajTWjEq+jGGHQ1W5An6CjKngZLAC1i6NjPB0SSF1PTXjyHxdV3lFPnc=',
             0,
@@ -105,7 +105,7 @@ class RegistrationTest extends DbWebTestCase
         $this->checkUrlStatusCode('/tks/finish-registration', 302);
         $this->checkUrlStatusCode('/tks/reset-registration', 200);
 
-        $thirdU2fToken = new U2FToken(
+        $thirdU2fToken = new U2fToken(
             6,
             'MIICSjCCATKgAwIBAgIEEkpy/jANBgkqhkiG9w0BAQsFADAuMSwwKgYDVQQDEyNZdWJpY28gVTJGIFJvb3QgQ0EgU2VyaWFsIDQ1NzIwMDYzMTAgFw0xNDA4MDEwMDAwMDBaGA8yMDUwMDkwNDAwMDAwMFowLDEqMCgGA1UEAwwhWXViaWNvIFUyRiBFRSBTZXJpYWwgMjQ5NDE0OTcyMTU4MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEPYsbvS/L9ghuEHRxYBRoSEFTwcbTtLaKXoVebkB1fuIrzYmIvzvv183yHLC/XXoVDYRK/pgQPGxmB9n6rih8AqM7MDkwIgYJKwYBBAGCxAoCBBUxLjMuNi4xLjQuMS40MTQ4Mi4xLjEwEwYLKwYBBAGC5RwCAQEEBAMCBSAwDQYJKoZIhvcNAQELBQADggEBAKFPHuoAdva4R2oQor5y5g0CcbtGWy37/Hwb0S01GYmRcDJjHXldCX+jCiajJWNOhXIbwtAahjA/a8B15ZlzGeEiFIsElu7I0fT5TPQRDeYmwolEPR8PW7sjnKE+gdHVqp31r442EmR1v8I68GKDFXJSdi/2iHm88O9XjVXWf5UbTzK2PIrqWw+Zxn19gUp/9ab1Lfg+iUo6XZyLguf4vI2vTIAXX/iXL9p5Mz7EZdgG6syUjxurIgRalVWKSMICJtrAA9QfvJ4F6iimu14QpJ3gYKCk9qJnajTWjEq+jGGHQ1W5An6CjKngZLAC1i6NjPB0SSF1PTXjyHxdV3lFPnc=',
             0,
@@ -158,7 +158,7 @@ class RegistrationTest extends DbWebTestCase
         $this->assertTrue($hasher->isPasswordValid($dbMember, 'password'));
         $this->assertFalse($hasher->isPasswordValid($dbMember, ''));
 
-        $dbU2fTokens = $doctrine->getRepository(U2FToken::class)->findBy(array(
+        $dbU2fTokens = $doctrine->getRepository(U2fToken::class)->findBy(array(
             'member' => $dbMember,
         ));
         $this->assertEquals(3, count($dbU2fTokens));

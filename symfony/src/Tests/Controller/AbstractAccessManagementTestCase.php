@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\U2FToken;
+use App\Entity\U2fToken;
 use Firehed\U2F\SignRequest;
 
 abstract class AbstractAccessManagementTestCase extends DbWebTestCase
@@ -92,8 +92,8 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
     public function resetU2fCounter()
     {
         $doctrine = $this->getContainer()->get('doctrine');
-        $ubs = $this->getContainer()->get('App\Service\U2FTokenBuilderService');
-        $repo = $doctrine->getRepository(U2FToken::class);
+        $ubs = $this->getContainer()->get('App\Service\U2fTokenBuilderService');
+        $repo = $doctrine->getRepository(U2fToken::class);
         $u2fTokens = $repo->findAll();
         $om = $doctrine->getManager();
         foreach ($u2fTokens as $u2fToken) {
@@ -205,7 +205,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
             ->getContainer()
             ->get('doctrine')
             ->getManager()
-            ->getRepository(U2FToken::class)
+            ->getRepository(U2fToken::class)
             ->find(1);
         $this->assertNotNull($u2fToken);
     }

@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Factory\MemberFactory;
-use App\Form\U2FTokenRegistrationType;
+use App\Form\U2fTokenRegistrationType;
 use App\Form\RegistrationType;
 use App\Form\UserConfirmationType;
 use App\FormModel\RegistrationSubmission;
-use App\FormModel\U2FTokenRegistration;
-use App\Service\U2FService;
-use App\Service\U2FTokenRegistrationService;
+use App\FormModel\U2fTokenRegistration;
+use App\Service\U2fService;
+use App\Service\U2fTokenRegistrationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -76,7 +76,7 @@ class RegistrationController extends AbstractController
     public function key(
         Request $request,
         SessionInterface $session,
-        U2FTokenRegistrationService $service,
+        U2fTokenRegistrationService $service,
         ObjectManager $om,
         int $id)
     {
@@ -88,8 +88,8 @@ class RegistrationController extends AbstractController
         }
 
         if ('POST' === $request->getMethod()) {
-            $submission = new U2FTokenRegistration();
-            $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
+            $submission = new U2fTokenRegistration();
+            $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 try {
@@ -100,7 +100,7 @@ class RegistrationController extends AbstractController
                         $submission->getRequestId()
                     );
                     $session->set('tks_u2f_token_'.$id, $u2fToken);
-                    if (U2FService::N_U2F_TOKENS_PER_MEMBER != $id) {
+                    if (U2fService::N_U2F_TOKENS_PER_MEMBER != $id) {
                         $url = $this->generateUrl('tks_key', array(
                             'id' => $id + 1,
                         ));
@@ -118,9 +118,9 @@ class RegistrationController extends AbstractController
         }
 
         $rp_request = $service->generate();
-        $submission = new U2FTokenRegistration();
+        $submission = new U2fTokenRegistration();
         $submission->setRequestId($rp_request['request_id']);
-        $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
+        $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
 
         return $this->render('tks/key.html.twig', array(
             'request_json' => $rp_request['request_json'],
@@ -152,18 +152,18 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $member = $session->get('tks_member');
             $u2fTokens = array();
-            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
+            for ($i = 1; $i <= U2fService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
                 $u2fTokens[] = $session->get('tks_u2f_token_'.$i);
             }
 
-            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
+            for ($i = 1; $i <= U2fService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
                 $session->remove('tks_u2f_token_'.$i);
             }
             $session->remove('tks_member');
             $session->save();
 
             $om->persist($member);
-            for ($i = 0; $i < U2FService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
+            for ($i = 0; $i < U2fService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
                 $om->persist($u2fTokens[$i]);
             }
             $om->flush();
@@ -193,7 +193,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
+            for ($i = 1; $i <= U2fService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
                 $session->remove('tks_u2f_token_'.$i);
             }
             $session->remove('tks_member');

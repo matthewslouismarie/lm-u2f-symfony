@@ -3,7 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Member;
-use App\Entity\U2FToken;
+use App\Entity\U2fToken;
 use Firehed\U2F\RegisterRequest;
 
 class UukpAuthorizerTest extends AbstractAccessManagementTestCase
@@ -91,11 +91,11 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $submitButton = $this
             ->getClient()
             ->getCrawler()
-            ->selectButton('u2_f_token_registration[submit]')
+            ->selectButton('u2f_token_registration[submit]')
         ;
         $form = $submitButton->form([
-            'u2_f_token_registration[requestId]' => $registerRequestSid,
-            'u2_f_token_registration[u2fTokenResponse]' => $registration['u2fTokenResponse'],
+            'u2f_token_registration[requestId]' => $registerRequestSid,
+            'u2f_token_registration[u2fTokenResponse]' => $registration['u2fTokenResponse'],
         ]);
         $this
             ->getClient()
@@ -104,7 +104,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $deletedU2fToken = $this
             ->getContainer()
             ->get('doctrine')
-            ->getRepository(U2FToken::class)
+            ->getRepository(U2fToken::class)
             ->find(3)
         ;
         $this->assertNull($deletedU2fToken);
@@ -112,7 +112,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $newToken = $this
             ->getContainer()
             ->get('doctrine')
-            ->getRepository(U2FToken::class)
+            ->getRepository(U2fToken::class)
             ->findOneBy([
                 'publicKey' => 'BDjHma+8hI7VV1gk9lBDmg3YXWbNLcDM0GCY+94Y/87YctZ666cTwvvLOhSAgjmQfg2X8sT9P1HNsQggfP45fp8=',
             ])
@@ -193,7 +193,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
             ->followRedirect()
         ;
         $this->checkNSignRequests(3);
-        $this->assertEquals(3, count($this->getContainer()->get('doctrine')->getManager()->getRepository(U2FToken::class)->getMemberRegistrations(1)));
+        $this->assertEquals(3, count($this->getContainer()->get('doctrine')->getManager()->getRepository(U2fToken::class)->getMemberRegistrations(1)));
         $this->enterValidSecondU2fTokenResponse();
         $this->getClient()->followRedirect();
         $this->checkNSignRequests(2);
@@ -222,13 +222,13 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
             'registerRequest' => $registerRequest,
             'u2fTokenResponse' => $u2fTokenResponse,
             'publicKey' => 'BDjHma+8hI7VV1gk9lBDmg3YXWbNLcDM0GCY+94Y/87YctZ666cTwvvLOhSAgjmQfg2X8sT9P1HNsQggfP45fp8=',
-        //     'u2fToken' => new U2FToken(
+        //     'u2fToken' => new U2fToken(
         //         null,
         //         'MIICSjCCATKgAwIBAgIEEkpy/jANBgkqhkiG9w0BAQsFADAuMSwwKgYDVQQDEyNZdWJpY28gVTJGIFJvb3QgQ0EgU2VyaWFsIDQ1NzIwMDYzMTAgFw0xNDA4MDEwMDAwMDBaGA8yMDUwMDkwNDAwMDAwMFowLDEqMCgGA1UEAwwhWXViaWNvIFUyRiBFRSBTZXJpYWwgMjQ5NDE0OTcyMTU4MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEPYsbvS/L9ghuEHRxYBRoSEFTwcbTtLaKXoVebkB1fuIrzYmIvzvv183yHLC/XXoVDYRK/pgQPGxmB9n6rih8AqM7MDkwIgYJKwYBBAGCxAoCBBUxLjMuNi4xLjQuMS40MTQ4Mi4xLjEwEwYLKwYBBAGC5RwCAQEEBAMCBSAwDQYJKoZIhvcNAQELBQADggEBAKFPHuoAdva4R2oQor5y5g0CcbtGWy37/Hwb0S01GYmRcDJjHXldCX+jCiajJWNOhXIbwtAahjA/a8B15ZlzGeEiFIsElu7I0fT5TPQRDeYmwolEPR8PW7sjnKE+gdHVqp31r442EmR1v8I68GKDFXJSdi/2iHm88O9XjVXWf5UbTzK2PIrqWw+Zxn19gUp/9ab1Lfg+iUo6XZyLguf4vI2vTIAXX/iXL9p5Mz7EZdgG6syUjxurIgRalVWKSMICJtrAA9QfvJ4F6iimu14QpJ3gYKCk9qJnajTWjEq+jGGHQ1W5An6CjKngZLAC1i6NjPB0SSF1PTXjyHxdV3lFPnc=',
         //         0,
         //         'awNIdH6LuaPQawrz5upSTtygVXbfN0ePRzTTfh1z0hi0uELGafAPKTinrZWUqWOt8zSR80yMvuGPvYteqy5Phw==',
         //         $this->getContainer()
-        //         ["registrationDateTime":"App\Entity\U2FToken":private]=>
+        //         ["registrationDateTime":"App\Entity\U2fToken":private]=>
         //         object(DateTimeImmutable)#189 (3) {
         //           ["date"]=>
         //           string(26) "2018-01-12 13:30:31.429694"
@@ -237,7 +237,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         //           ["timezone"]=>
         //           string(3) "UTC"
         //         }
-        //         ["publicKey":"App\Entity\U2FToken":private]=>
+        //         ["publicKey":"App\Entity\U2fToken":private]=>
         //         string(88) "BDjHma+8hI7VV1gk9lBDmg3YXWbNLcDM0GCY+94Y/87YctZ666cTwvvLOhSAgjmQfg2X8sT9P1HNsQggfP45fp8="
         //       }
         //     ),

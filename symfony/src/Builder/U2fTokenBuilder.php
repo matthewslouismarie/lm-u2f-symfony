@@ -2,20 +2,20 @@
 
 namespace App\Builder;
 
-use App\Entity\U2FToken;
+use App\Entity\U2fToken;
 
-class U2FTokenBuilder
+class U2fTokenBuilder
 {
     private $base;
 
-    public function __construct(U2FToken $u2fToken)
+    public function __construct(U2fToken $u2fToken)
     {
         $this->base = $u2fToken;
     }
 
-    public function setCounter(int $counter): U2FToken
+    public function setCounter(int $counter): U2fToken
     {
-        return new U2FToken(
+        return new U2fToken(
             $this->base->getId(),
             $this->base->getAttestation(),
             $counter,

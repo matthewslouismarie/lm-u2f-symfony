@@ -3,12 +3,12 @@
 namespace App\Service;
 
 use App\Entity\Member;
-use App\Entity\U2FToken;
+use App\Entity\U2fToken;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SignResponse;
 
 /**
- * @todo Rename to U2FAuthService
+ * @todo Rename to U2fAuthService
  */
 class AuthRequestService
 {
@@ -22,8 +22,8 @@ class AuthRequestService
 
     public function __construct(
         ObjectManager $em,
-        U2FService $u2f,
-        U2FTokenBuilderService $builder,
+        U2fService $u2f,
+        U2fTokenBuilderService $builder,
         SecureSessionService $session)
     {
         $this->builder = $builder;
@@ -45,7 +45,7 @@ class AuthRequestService
 
         $registrations = $this
             ->em
-            ->getRepository(U2FToken::class)
+            ->getRepository(U2fToken::class)
             ->getMemberRegistrations($member->getId())
         ;
 
@@ -71,7 +71,7 @@ class AuthRequestService
     }
 
     /**
-     * @todo Critical vulnerability! The user is able to modify the U2F
+     * @todo Critical vulnerability! The user is able to modify the U2f
      * authentication ID!
      * @todo Make stateless.
      * @todo sql transaction
@@ -86,7 +86,7 @@ class AuthRequestService
                        ->findOneBy(array('username' => $username));
 
         $registrations = $this->em
-                              ->getRepository(U2FToken::class)
+                              ->getRepository(U2fToken::class)
                               ->getMemberRegistrations($member->getId());
 
         $sign_requests = $this->session->getAndRemoveArray($auth_id);
@@ -100,7 +100,7 @@ class AuthRequestService
         $u2f_authenticator_id = $this->getAuthenticatorId($sign_requests, $challenge);
 
         $u2fToken = $this->em
-            ->getRepository(U2FToken::class)
+            ->getRepository(U2fToken::class)
             ->find($u2f_authenticator_id)
         ;
         $u2fToken->setCounter($response->getCounter());

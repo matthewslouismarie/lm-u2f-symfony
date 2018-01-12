@@ -21,8 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class UukpAuthorizer extends AbstractController
 {
     /**
-     * @todo Maybe should check authorizationRequestSid?
-     * 
      * @Route(
      *  "/all/u2f-authorisation/uukp/u/{authorizationRequestSid}",
      *  name="u2f_authorization_uukp_u",
@@ -33,24 +31,30 @@ class UukpAuthorizer extends AbstractController
         SecureSessionService $sSession,
         string $authorizationRequestSid)
     {
+        $authorizationRequest = $sSession
+            ->getObject($authorizationRequestSid, IAuthorizationRequest::class)
+        ;
+        if (null !== $authorizationRequest->getUsername()) {
+            return $this
+                ->redirectToFirstU2fKey(
+                    $authorizationRequest,
+                    $sSession,
+                    $authorizationRequest->getUsername())
+            ;
+        }
         $usernameSubmission = new UsernameSubmission();
         $usernameForm = $this
             ->createForm(UsernameType::class, $usernameSubmission)
         ;
         $usernameForm->handleRequest($request);
         if ($usernameForm->isSubmitted() && $usernameForm->isValid()) {
-            $transitingUserInput = new UToU2fUserInput(
-                $usernameSubmission->getUsername(),
-                $sSession->getAndRemoveObject($authorizationRequestSid, IAuthorizationRequest::class))
+            return $this
+                ->redirectToFirstU2fKey(
+                    $authorizationRequest,
+                    $sSession,
+                    $usernameSubmission->getUsername()
+                )
             ;
-            $transitingUserInputSid = $sSession
-                ->storeObject($transitingUserInput, UToU2fUserInput::class);
-            $firstU2fUrl = $this
-                ->generateUrl('u2f_authorization_uukp_u2f_key', array(
-                    'transitingUserInputSid' => $transitingUserInputSid,
-                ))
-            ;
-            return new RedirectResponse($firstU2fUrl);
         }
         return $this->render('u2f_authorization/uukp/username.html.twig', array(
             'form' => $usernameForm->createView(),
@@ -171,5 +175,25 @@ class UukpAuthorizer extends AbstractController
                 'sign_requests_json' => $u2fAuthenticationData['sign_requests_json'],
             ))
         ;
+    }
+
+    private function redirectToFirstU2fKey(
+        IAuthorizationRequest $authorizationRequest,
+        SecureSessionService $sSession,
+        string $username): RedirectResponse
+    {
+
+        $transitingUserInput = new UToU2fUserInput(
+            $username,
+            $authorizationRequest)
+        ;
+        $transitingUserInputSid = $sSession
+            ->storeObject($transitingUserInput, UToU2fUserInput::class);
+        $firstU2fUrl = $this
+            ->generateUrl('u2f_authorization_uukp_u2f_key', array(
+                'transitingUserInputSid' => $transitingUserInputSid,
+            ))
+        ;
+        return new RedirectResponse($firstU2fUrl);
     }
 }

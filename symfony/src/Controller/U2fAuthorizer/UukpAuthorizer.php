@@ -156,7 +156,7 @@ class UukpAuthorizer extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $sSession->remove($userInputSid);
-            $authorizationToken = new UukpAuthorizationToken($username);
+            $authorizationToken = new UukpAuthorizationToken($username, 0, 0);
             $authorizationTokenSid = $sSession
                 ->storeObject($authorizationToken, UukpAuthorizationToken::class)
             ;

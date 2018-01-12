@@ -64,6 +64,20 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $this->runLoggedInTests();
     }
 
+    public function testU2fTokenReset()
+    {
+        $this
+            ->getClient()
+            ->request('GET', '/authenticated/request-u2f-token-reset')
+        ;
+        $isRedirection = $this
+            ->getClient()
+            ->getResponse()
+            ->isRedirection()
+        ;
+        $this->assertTrue($isRedirection);
+    }
+
     private function enterValidUsername()
     {
         $this

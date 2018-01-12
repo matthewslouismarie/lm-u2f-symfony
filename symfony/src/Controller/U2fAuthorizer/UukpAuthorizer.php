@@ -7,7 +7,7 @@ use App\Form\UsernameType;
 use App\FormModel\U2fAuthenticationSubmission;
 use App\FormModel\UsernameSubmission;
 use App\Model\IAuthorizationRequest;
-use App\Service\AuthRequestService;
+use App\Service\U2fAuthenticationManager;
 use App\Service\SecureSessionService;
 use App\SessionToken\UukpAuthorizationToken;
 use App\TransitingUserInput\UToU2fUserInput;
@@ -71,7 +71,7 @@ class UukpAuthorizer extends AbstractController
      *  methods={"GET", "POST"})
      */
     public function firstU2fKey(
-        AuthRequestService $u2fAuthentication,
+        U2fAuthenticationManager $u2fAuthentication,
         Request $request,
         SecureSessionService $sSession,
         string $transitingUserInputSid)
@@ -130,7 +130,7 @@ class UukpAuthorizer extends AbstractController
      *  methods={"GET", "POST"})
      */
     public function secondU2fKey(
-        AuthRequestService $u2fAuthentication,
+        U2fAuthenticationManager $u2fAuthentication,
         Request $request,
         SecureSessionService $sSession,
         string $userInputSid)

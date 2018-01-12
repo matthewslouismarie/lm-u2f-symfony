@@ -10,7 +10,7 @@ use App\FormModel\U2fAuthenticationSubmission;
 use App\FormModel\UsernameAndPasswordSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Model\AuthorizationRequest;
-use App\Service\AuthRequestService;
+use App\Service\U2fAuthenticationManager;
 use App\Service\SecureSessionService;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SecurityException;
@@ -88,7 +88,7 @@ class UpukAuthorizer extends AbstractController
      *  requirements={"sessionId"=".+", "upSubmissionId"=".+"})
      */
     public function upukUk(
-        AuthRequestService $auth,
+        U2fAuthenticationManager $auth,
         Request $request,
         SecureSessionService $sSession,
         string $sessionId,

@@ -3,17 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\U2FToken;
-use App\Service\U2FTokenRegistrationService;
-use App\Form\U2fTokenUpdateType;
 use App\Form\UserConfirmationType;
-use App\FormModel\U2FTokenRegistration;
-use App\FormModel\U2fTokenUpdate;
-use App\Form\U2FTokenRegistrationType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * @todo Delete this class.
@@ -27,8 +20,9 @@ class U2FTokenManagementController extends AbstractController
     {
         $repo = $this->getDoctrine()->getRepository(U2FToken::class);
         $tokens = $repo->findBy(array('member' => $this->getUser()));
+
         return $this->render('u2f_token_list.html.twig', array(
-            'tokens' => $tokens
+            'tokens' => $tokens,
         ));
     }
 
@@ -52,6 +46,7 @@ class U2FTokenManagementController extends AbstractController
             $em = $this->getDoctrine()->getEntityManager();
             $em->remove($token);
             $em->flush();
+
             return $this->render('post_u2f_token_deletion.html.twig');
         } else {
             return $this->render('delete_u2f_token.html.twig', array(

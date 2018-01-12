@@ -19,6 +19,7 @@ class MemberFactory
         $member = new Member($id, $username);
         $hashed = $this->hasher->encodePassword($member, $password);
         $member->setPassword($hashed);
+
         return $member;
     }
 
@@ -26,6 +27,7 @@ class MemberFactory
     {
         $modifiedMember = new Member($id, $member->getUsername());
         $modifiedMember->setPassword($member->getPassword());
+
         return $modifiedMember;
     }
 

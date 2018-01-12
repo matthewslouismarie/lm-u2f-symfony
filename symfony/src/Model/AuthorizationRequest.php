@@ -5,7 +5,9 @@ namespace App\Model;
 class AuthorizationRequest implements IAuthorizationRequest
 {
     private $isAccepted;
+
     private $successRoute;
+
     private $username;
 
     public function __construct(
@@ -47,7 +49,6 @@ class AuthorizationRequest implements IAuthorizationRequest
         list(
             $this->isAccepted,
             $this->successRoute,
-            $this->username,
-        ) = unserialize($serialize);
+            $this->username) = unserialize($serialize);
     }
 }

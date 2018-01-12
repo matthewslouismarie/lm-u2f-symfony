@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Service\U2FTokenBuilderService;
 use App\Entity\Member;
 use App\Entity\U2FToken;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -14,8 +13,11 @@ use Firehed\U2F\SignResponse;
 class AuthRequestService
 {
     private $builder;
+
     private $em;
+
     private $server;
+
     private $session;
 
     public function __construct(
@@ -46,7 +48,7 @@ class AuthRequestService
             ->getRepository(U2FToken::class)
             ->getMemberRegistrations($member->getId())
         ;
-        
+
         $unfilteredSignRequests = $this
             ->server
             ->generateSignRequests($registrations)

@@ -28,7 +28,7 @@ class U2FTokenRegistration
     {
         return $this->u2fTokenResponse;
     }
-    
+
     public function getRequestId()
     {
         return $this->requestId;

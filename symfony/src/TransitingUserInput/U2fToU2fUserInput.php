@@ -12,7 +12,9 @@ use App\FormModel\U2fLoginSubmission;
 class U2fToU2fUserInput implements Serializable
 {
     private $u2fLoginSubmission;
+
     private $usedU2fTokenId;
+
     private $uToU2fUserInput;
 
     public function __construct(
@@ -54,7 +56,6 @@ class U2fToU2fUserInput implements Serializable
         list(
             $this->u2fLoginSubmission,
             $this->usedU2fTokenId,
-            $this->uToU2fUserInput,
-        ) = unserialize($serialized);
+            $this->uToU2fUserInput) = unserialize($serialized);
     }
 }

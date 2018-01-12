@@ -42,6 +42,7 @@ class U2fTokenResetController extends AbstractController
         $url = $this->generateUrl('u2f_authorization_uukp_u', array(
             'authorizationRequestSid' => $authorizationRequestSid,
         ));
+
         return new RedirectResponse($url);
     }
 
@@ -79,6 +80,7 @@ class U2fTokenResetController extends AbstractController
             $om->remove($u2fTokenToDelete[0]);
             $om->flush();
         }
+
         return $this->render('reset_u2f_token.html.twig', array(
             'form' => $form->createView(),
             'request_json' => $challenge['request_json'],

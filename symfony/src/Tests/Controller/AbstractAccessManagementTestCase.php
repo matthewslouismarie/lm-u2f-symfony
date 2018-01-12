@@ -23,22 +23,22 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         if (!$this->getClient()->getResponse()->isRedirection()) {
             return;
         }
-        
+
         $requestId = $this->storeInSessionU2fToken(true);
 
         $this->getClient()->followRedirect();
 
         $this->ukLogInFromUkPage($requestId);
-        
+
         if (!$this->getClient()->getResponse()->isRedirection()) {
             return;
         }
-        
+
         $this->getClient()->followRedirect();
         $this->assertRegExp(
             '/^http:\/\/localhost\/not-authenticated\/finish-login\/[a-z0-9]+$/',
             $this->getClient()->getRequest()->getUri());
-        
+
         $submit = $this
             ->getClient()
             ->getCrawler()
@@ -131,7 +131,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
             ->selectButton('u2f_login[submit]')
         ;
         $form = $postUpLoginButton->form($this->getValidU2fTokenResponse());
-        
+
         $validateLogin = $this
             ->getClient()
             ->submit($form)
@@ -155,6 +155,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $signRequest->setChallenge('lXaq82clJBmXNnNWL1W6GA');
         $signRequest->setKeyHandle(base64_decode('v8IplXz0zSQUXVYjvSWNcP/70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg=='));
         $signRequests[1] = $signRequest;
+
         return $sSession->storeArray($signRequests);
     }
 
@@ -184,6 +185,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $signRequest->setChallenge('LKXEXoGL1X4yWVFfwGNhdQ');
         $signRequest->setKeyHandle(base64_decode('SlhahqO2AGMqu1KZwwVVFgLhkUaOwcuWRWVn1ITLmeq/V38yn1kfANGGrZCVl8qZSm8UF8qgyp8bGEWAVKWe1g=='));
         $signRequests[2] = $signRequest;
+
         return $sSession->storeArray($signRequests);
     }
 

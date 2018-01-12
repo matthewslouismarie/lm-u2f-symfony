@@ -6,12 +6,6 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 
 /**
@@ -21,7 +15,9 @@ use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 abstract class DbWebTestCase extends WebTestCase
 {
     private $client;
+
     private $schemaTool;
+
     private $metadatas;
 
     public function setUp()

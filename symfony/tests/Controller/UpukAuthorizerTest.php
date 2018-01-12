@@ -4,14 +4,15 @@ namespace App\Tests\Controller;
 
 use App\Model\AuthorizationRequest;
 use App\Model\IAuthorizationRequest;
-use Firehed\U2F\SignRequest;
 
 class UpukAuthorizerTest extends AbstractAccessManagementTestCase
 {
     private const UP_ROUTE_REGEX =
     '/^http:\/\/localhost\/all\/u2f-authorization\/upuk\/up\/[a-z0-9]+$/';
+
     private const UK_ROUTE_REGEX =
     '/^http:\/\/localhost\/all\/u2f-authorization\/upuk\/uk\/[a-z0-9]+\/[a-z0-9]+$/';
+
     private $session;
 
     public function setUp()
@@ -36,13 +37,13 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
             ->request('GET', '/all/u2f-authorization/upuk/up/'.$sessionId);
 
         $this->upLogInFromUpPage('louis', 'hello', $sessionId);
-        
+
         $requestId = $this->storeInSessionU2fToken(true);
 
         $this->getClient()->followRedirect();
-        
+
         $this->ukLogInFromUkPage($requestId);
-        
+
         $this->getClient()->followRedirect();
         $this->assertRegExp(
             '/^http:\/\/localhost\/not-authenticated\/login\/[a-z0-9]+$/',
@@ -81,13 +82,13 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
             ->request('GET', '/all/u2f-authorization/upuk/up/'.$sessionId);
 
         $this->upLogInFromUpPage('louis', 'hello', $sessionId);
-        
+
         $requestId = $this->storeInSessionU2fToken(false);
 
         $this->getClient()->followRedirect();
-        
+
         $this->ukLogInFromUkPage($requestId);
-        
+
         $this->assertRegExp(
             self::UK_ROUTE_REGEX,
             $this->getClient()->getRequest()->getUri());

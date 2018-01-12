@@ -6,9 +6,7 @@ use App\Model\IAuthorizationRequest;
 use App\Form\LoginRequestType;
 use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
-use App\FormModel\UserConfirmationSubmission;
 use App\Model\AuthorizationRequest;
-use App\Service\AuthRequestService;
 use App\Service\SecureSessionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,12 +31,13 @@ class AuthenticationController extends AbstractController
         $url = $this->generateUrl('u2f_authorization_upuk_up', array(
             'sessionId' => $sessionId,
         ));
+
         return new RedirectResponse($url);
     }
 
     /**
      * @todo Have a better error handling.
-     * 
+     *
      * @Route(
      *  "/not-authenticated/finish-login/{authorizationRequestSid}",
      *  name="finish_login",
@@ -77,6 +76,7 @@ class AuthenticationController extends AbstractController
     {
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($request);
+
         return $this->render('tks/logout.html.twig', array(
             'form' => $form->createView(),
         ));

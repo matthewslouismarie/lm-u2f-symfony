@@ -39,7 +39,6 @@ class UsernameSubmission implements \Serializable
     public function unserialize($serialized): void
     {
         list(
-            $this->username,
-        ) = unserialize($serialized);
+            $this->username) = unserialize($serialized);
     }
 }

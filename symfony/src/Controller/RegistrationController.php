@@ -16,7 +16,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -58,11 +57,12 @@ class RegistrationController extends AbstractController
             );
             $session->set('tks_member', $member);
             $url = $this->generateUrl('tks_key', array('id' => 1));
+
             return new RedirectResponse($url);
         }
 
         return $this->render('tks/username_and_password.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ));
     }
 
@@ -86,7 +86,7 @@ class RegistrationController extends AbstractController
                 $this->generateUrl('tks_username_and_password')
             );
         }
-        
+
         if ('POST' === $request->getMethod()) {
             $submission = new U2FTokenRegistration();
             $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
@@ -100,17 +100,18 @@ class RegistrationController extends AbstractController
                         $submission->getRequestId()
                     );
                     $session->set('tks_u2f_token_'.$id, $u2fToken);
-                    if ($id != U2FService::N_U2F_TOKENS_PER_MEMBER) {
+                    if (U2FService::N_U2F_TOKENS_PER_MEMBER != $id) {
                         $url = $this->generateUrl('tks_key', array(
                             'id' => $id + 1,
                         ));
+
                         return new RedirectResponse($url);
                     } else {
                         $endUrl = $this->generateUrl('tks_finish_registration');
+
                         return new RedirectResponse($endUrl);
                     }
-                }
-                catch (\TypeError $e) {
+                } catch (\TypeError $e) {
                     $form->addError(new FormError('An error occured. Please try again.'));
                 }
             }
@@ -151,22 +152,21 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $member = $session->get('tks_member');
             $u2fTokens = array();
-            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; $i++) {
+            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
                 $u2fTokens[] = $session->get('tks_u2f_token_'.$i);
             }
 
-            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; $i++) {
+            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
                 $session->remove('tks_u2f_token_'.$i);
             }
             $session->remove('tks_member');
             $session->save();
 
             $om->persist($member);
-            for ($i = 0; $i < U2FService::N_U2F_TOKENS_PER_MEMBER; $i++) {
+            for ($i = 0; $i < U2FService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
                 $om->persist($u2fTokens[$i]);
             }
             $om->flush();
-            
         }
 
         return $this->render('tks/finish_registration.html.twig', array(
@@ -184,6 +184,7 @@ class RegistrationController extends AbstractController
     {
         if (null === $session->get('tks_member')) {
             $url = $this->generateUrl('mkps_registration');
+
             return new RedirectResponse($url);
         }
 
@@ -192,13 +193,14 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; $i++) {
+            for ($i = 1; $i <= U2FService::N_U2F_TOKENS_PER_MEMBER; ++$i) {
                 $session->remove('tks_u2f_token_'.$i);
             }
             $session->remove('tks_member');
             $session->save();
 
             $url = $this->generateUrl('mkps_registration');
+
             return new RedirectResponse($url);
         }
 

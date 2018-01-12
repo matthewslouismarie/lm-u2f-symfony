@@ -10,6 +10,7 @@ use App\Model\AuthorizationRequest;
 use App\Model\IAuthorizationRequest;
 use App\Service\AuthRequestService;
 use App\Service\SecureSessionService;
+use App\SessionToken\UukpAuthorizationToken;
 use App\TransitingUserInput\UToU2fUserInput;
 use App\TransitingUserInput\U2fToU2fUserInput;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -154,16 +155,13 @@ class UukpAuthorizer extends AbstractController
         ;
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $authorization = new AuthorizationRequest(
-                true,
-                $authorizationRequest->getSuccessRoute(),
-                $username);
             $sSession->remove($userInputSid);
-            $authorizationSid = $sSession
-                ->storeObject($authorization, IAuthorizationRequest::class)
+            $authorizationToken = new UukpAuthorizationToken($username);
+            $authorizationTokenSid = $sSession
+                ->storeObject($authorizationToken, UukpAuthorizationToken::class)
             ;
             $url = $this->generateUrl($authorizationRequest->getSuccessRoute(), array(
-                'authorizationRequestSid' => $authorizationSid,
+                'authorizationTokenSid' => $authorizationTokenSid,
             ));
             return new RedirectResponse($url);
         } 

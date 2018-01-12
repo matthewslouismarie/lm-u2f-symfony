@@ -18,7 +18,21 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         ;
     }
 
-    public function testAuthorizer()
+    private function confirmPasswordReset()
+    {
+        $submitButton = $this
+            ->getClient()
+            ->getCrawler()
+            ->selectButton('user_confirmation[submit]')
+        ;
+        $form = $submitButton->form();
+        $this
+            ->getClient()
+            ->submit($form)
+        ;
+    }
+
+    public function testPasswordReset()
     {
         $this
             ->getClient()
@@ -32,6 +46,22 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $this->getClient()->followRedirect();
         $this->checkNSignRequests(2);
         $this->enterValidU2fTokenResponse();
+        $this->getClient()->followRedirect();
+        $submitButton = $this
+            ->getClient()
+            ->getCrawler()
+            ->selectButton('password_update[submit]')
+        ;
+        $form = $submitButton->form(array(
+            'password_update[password]' => 'mega',
+            'password_update[passwordConfirmation]' => 'mega',
+        ));
+        $this
+            ->getClient()
+            ->submit($form)
+        ;
+        $this->logIn('louis', 'mega');
+        $this->runLoggedInTests();
     }
 
     private function enterValidUsername()

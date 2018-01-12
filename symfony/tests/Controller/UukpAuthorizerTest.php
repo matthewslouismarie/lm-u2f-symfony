@@ -33,34 +33,30 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         ;
     }
 
-    // public function testPasswordReset()
-    // {
-    //     $this
-    //         ->getClient()
-    //         ->request('GET', '/not-authenticated/request-password-reset')
-    //     ;
-    //     $this->enterValidUsername();
-    //     $this
-    //         ->getClient()
-    //         ->followRedirect()
-    //     ;
-    //     $this->uukpAuthorize();
-    //     $submitButton = $this
-    //         ->getClient()
-    //         ->getCrawler()
-    //         ->selectButton('password_update[submit]')
-    //     ;
-    //     $form = $submitButton->form(array(
-    //         'password_update[password]' => 'mega',
-    //         'password_update[passwordConfirmation]' => 'mega',
-    //     ));
-    //     $this
-    //         ->getClient()
-    //         ->submit($form)
-    //     ;
-    //     $this->logIn('louis', 'mega');
-    //     $this->runLoggedInTests();
-    // }
+    public function testPasswordReset()
+    {
+        $this
+            ->getClient()
+            ->request('GET', '/not-authenticated/request-password-reset')
+        ;
+        $this->enterValidUsername();
+        $this->uukpAuthorize();
+        $submitButton = $this
+            ->getClient()
+            ->getCrawler()
+            ->selectButton('password_update[submit]')
+        ;
+        $form = $submitButton->form(array(
+            'password_update[password]' => 'mega',
+            'password_update[passwordConfirmation]' => 'mega',
+        ));
+        $this
+            ->getClient()
+            ->submit($form)
+        ;
+        $this->logIn('louis', 'mega');
+        $this->runLoggedInTests();
+    }
 
     public function testU2fTokenReset()
     {

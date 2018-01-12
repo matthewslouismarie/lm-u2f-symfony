@@ -68,6 +68,7 @@ class PasswordResetController extends AbstractController
                 ))
             ;
             $mf->setPassword($member, $submission->getPassword());
+            $om->persist($member);
             $om->flush();
             return $this->render('successful_password_reset.html.twig');
         }

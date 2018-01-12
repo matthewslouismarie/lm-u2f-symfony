@@ -18,7 +18,12 @@ class U2FTokenRegistration
      * @Assert\NotBlank()
      */
     private $requestId;
-    
+
+    public function __construct(?string $requestId = null)
+    {
+        $this->requestId = $requestId;
+    }
+
     public function getU2fTokenResponse()
     {
         return $this->u2fTokenResponse;

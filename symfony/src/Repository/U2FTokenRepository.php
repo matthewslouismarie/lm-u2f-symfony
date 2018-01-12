@@ -36,4 +36,18 @@ class U2FTokenRepository extends ServiceEntityRepository
             }
         return $registrations;
     }
+
+    public function getExcept(Member $member, array $ids)
+    {
+        $qb = $this
+            ->createQueryBuilder('u2ftoken')
+        ;
+        return $qb
+            ->where('u2ftoken.member = :member_id')
+            ->setParameter('member_id', $member->getId())
+            ->andWhere($qb->expr()->notIn('u2ftoken.id', $ids))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

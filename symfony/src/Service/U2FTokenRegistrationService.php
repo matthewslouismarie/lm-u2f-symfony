@@ -28,6 +28,7 @@ class U2FTokenRegistrationService
     /**
      * @todo $registrations
      * @todo Should return an object, e.g. RpRequest, or even IRPRequest.
+     * @todo Make stateless.
      */
     public function generate(): array
     {
@@ -74,12 +75,14 @@ class U2FTokenRegistrationService
 
     /**
      * @todo Change challenge for u2fKeyResponse.
+     * @todo Shouldn't change the database directly.
+     * @todo Make stateless.
      */
     public function processResponse(
         string $challenge,
         Member $member,
         \DateTimeImmutable $registration_date_time,
-        string $request_id)
+        string $request_id): U2FToken
     {
         $u2fToken = $this->getU2fTokenFromResponse(
             $challenge,

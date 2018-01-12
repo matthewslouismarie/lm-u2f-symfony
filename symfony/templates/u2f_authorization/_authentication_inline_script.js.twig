@@ -1,0 +1,8 @@
+const completeAuth = function fCompleteAuth(authResponse)
+{
+  console.log(authResponse);
+  $('#{{ form.u2fTokenResponse.vars.id }}').val(JSON.stringify(authResponse));
+  console.log(JSON.stringify(authResponse));
+}
+var sign_requests = {{ sign_requests_json | raw }};
+u2f.sign(sign_requests, completeAuth);

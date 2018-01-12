@@ -25,7 +25,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/mkps/registration", name="mkps_registration", methods={"GET"})
+     * @Route(
+     *  "/mkps/registration",
+     *  name="mkps_registration",
+     *  methods={"GET"})
      */
     public function fetchLandingPage()
     {

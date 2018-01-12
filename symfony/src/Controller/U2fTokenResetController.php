@@ -2,11 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\U2FToken;
+use App\Form\U2FTokenRegistrationType;
+use App\FormModel\U2FTokenRegistration;
 use App\Model\AuthorizationRequest;
 use App\Service\SecureSessionService;
+use App\Service\U2FTokenRegistrationService;
+use App\SessionToken\UukpAuthorizationToken;
+use DateTimeImmutable;
+use Doctrine\Common\Persistence\ObjectManager;
+use Firehed\U2F\RegisterRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class U2fTokenResetController extends AbstractController
 {
@@ -38,12 +47,43 @@ class U2fTokenResetController extends AbstractController
 
     /**
      * @Route(
-     *  "/authenticated/reset-u2f-token",
+     *  "/authenticated/reset-u2f-token/{authorizationTokenSid}",
      *  name="reset_u2f_token",
      *  methods={"GET", "POST"})
      */
-    public function resetU2fToken()
+    public function resetU2fToken(
+        ObjectManager $om,
+        Request $request,
+        SecureSessionService $sSession,
+        U2FTokenRegistrationService $service,
+        string $authorizationTokenSid)
     {
-        return $this->render('reset_u2f_token.html.twig');
+        $authorizationToken = $sSession
+            ->getObject($authorizationTokenSid, UukpAuthorizationToken::class)
+        ;
+        $challenge = $service->generate();
+        $submission = new U2FTokenRegistration($challenge['request_id']);
+        $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            var_dump($service->processResponse($submission->getU2fTokenResponse(), $this->getUser(), new DateTimeImmutable(), $submission->getRequestId()));
+            $u2fTokenToDelete = $om
+                ->getRepository(U2FToken::class)
+                ->getExcept(
+                    $this->getUser(),
+                    array(
+                        $authorizationToken->getFirstU2fTokenUsed(),
+                        $authorizationToken->getSecondU2fTokenUsed(),
+                    ))
+            ;
+            $om->remove($u2fTokenToDelete[0]);
+            $om->flush();
+        }
+        return $this->render('reset_u2f_token.html.twig', array(
+            'form' => $form->createView(),
+            'request_json' => $challenge['request_json'],
+            'sign_requests' => $challenge['sign_requests'],
+            'tmp' => $sSession->getObject($challenge['request_id'], RegisterRequest::class),
+        ));
     }
 }

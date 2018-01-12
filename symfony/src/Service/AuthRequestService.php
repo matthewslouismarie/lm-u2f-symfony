@@ -40,7 +40,7 @@ class AuthRequestService
         $member = $this->em
         ->getRepository(Member::class)
         ->findOneBy(array('username' => $username));
-        
+
         $registrations = $this
             ->em
             ->getRepository(U2FToken::class)
@@ -102,7 +102,6 @@ class AuthRequestService
             ->find($u2f_authenticator_id)
         ;
         $u2fToken->setCounter($response->getCounter());
-        $this->em->persist($u2fToken);
         $this->em->flush();
 
         return $u2f_authenticator_id;

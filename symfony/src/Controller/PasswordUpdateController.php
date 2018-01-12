@@ -28,7 +28,7 @@ class PasswordUpdateController extends AbstractController
         $submission = new PasswordUpdateSubmission();
         $form = $this->createForm(PasswordUpdateType::class, $submission);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $member = $this->getUser();
             $mf->setPassword($member, $submission->getPassword());

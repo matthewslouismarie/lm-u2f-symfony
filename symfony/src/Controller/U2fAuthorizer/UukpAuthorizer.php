@@ -160,7 +160,16 @@ class UukpAuthorizer extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $sSession->remove($userInputSid);
-            $authorizationToken = new UukpAuthorizationToken($username, 0, 0);
+            $u2fTokenId = $u2fAuthentication->processResponse(
+                $u2fAuthenticationSubmission->getU2fAuthenticationRequestId(),
+                $username,
+                $u2fAuthenticationSubmission->getU2fTokenResponse()              
+            );
+            $authorizationToken = new UukpAuthorizationToken(
+                $username,
+                $userInput->getUsedU2fTokenId(),
+                $u2fTokenId)
+            ;
             $authorizationTokenSid = $sSession
                 ->storeObject($authorizationToken, UukpAuthorizationToken::class)
             ;

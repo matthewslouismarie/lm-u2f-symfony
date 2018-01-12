@@ -6,7 +6,7 @@ use App\Entity\U2fToken;
 use App\Form\U2fTokenRegistrationType;
 use App\FormModel\U2fTokenRegistration;
 use App\Model\AuthorizationRequest;
-use App\Service\SecureSessionService;
+use App\Service\SecureSession;
 use App\Service\U2fTokenRegistrationService;
 use App\SessionToken\UukpAuthorizationToken;
 use DateTimeImmutable;
@@ -25,7 +25,7 @@ class U2fTokenResetController extends AbstractController
      *  name="request_u2f_token_reset",
      *  methods={"GET"})
      */
-    public function requestU2fTokenReset(SecureSessionService $sSession)
+    public function requestU2fTokenReset(SecureSession $sSession)
     {
         $username = $this
             ->getUser()
@@ -56,7 +56,7 @@ class U2fTokenResetController extends AbstractController
     public function resetU2fToken(
         ObjectManager $om,
         Request $request,
-        SecureSessionService $sSession,
+        SecureSession $sSession,
         U2fTokenRegistrationService $service,
         string $authorizationTokenSid)
     {

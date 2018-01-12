@@ -20,7 +20,7 @@ class U2fTokenRegistrationService
     private $em;
 
     public function __construct(EntityManagerInterface $em, U2fService $u2f,
-                                SecureSessionService $session)
+                                SecureSession $session)
     {
         $this->server = $u2f->getServer();
         $this->session = $session;

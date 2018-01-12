@@ -15,7 +15,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         parent::setUp();
         $this->sSession = $this
             ->getContainer()
-            ->get('App\Service\SecureSessionService')
+            ->get('App\Service\SecureSession')
         ;
     }
 

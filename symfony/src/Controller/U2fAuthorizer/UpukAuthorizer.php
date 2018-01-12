@@ -11,7 +11,7 @@ use App\FormModel\UsernameAndPasswordSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Model\AuthorizationRequest;
 use App\Service\U2fAuthenticationManager;
-use App\Service\SecureSessionService;
+use App\Service\SecureSession;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SecurityException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,7 +48,7 @@ class UpukAuthorizer extends AbstractController
      */
     public function upukUp(
         Request $request,
-        SecureSessionService $sSession,
+        SecureSession $sSession,
         string $sessionId)
     {
         $upSubmission = new UsernameAndPasswordSubmission();
@@ -90,7 +90,7 @@ class UpukAuthorizer extends AbstractController
     public function upukUk(
         U2fAuthenticationManager $auth,
         Request $request,
-        SecureSessionService $sSession,
+        SecureSession $sSession,
         string $sessionId,
         string $upSubmissionId)
     {

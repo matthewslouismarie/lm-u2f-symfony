@@ -50,6 +50,9 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
             $this->getClient()->getRequest()->getUri());
     }
 
+    /**
+     * @todo Apply CamelCase to function name.
+     */
     public function testIncorrectupLogIn()
     {
         $authorizationRequest = new AuthorizationRequest(false, 'login_success_route', null);

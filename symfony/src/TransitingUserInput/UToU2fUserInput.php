@@ -8,6 +8,7 @@ use Serializable;
 class UToU2fUserInput implements Serializable
 {
     private $username;
+
     private $authorizationRequest;
 
     public function __construct(
@@ -40,7 +41,6 @@ class UToU2fUserInput implements Serializable
     {
         list(
             $this->username,
-            $this->authorizationRequest,
-        ) = unserialize($serialized);
+            $this->authorizationRequest) = unserialize($serialized);
     }
 }

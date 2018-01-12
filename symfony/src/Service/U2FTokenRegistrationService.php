@@ -14,9 +14,11 @@ use Firehed\U2F\RegisterResponse;
 class U2FTokenRegistrationService
 {
     private $server;
+
     private $session;
+
     private $em;
-    
+
     public function __construct(EntityManagerInterface $em, U2FService $u2f,
                                 SecureSessionService $session)
     {
@@ -40,6 +42,7 @@ class U2FTokenRegistrationService
         $request_json = json_encode($request);
         $registrations = array();
         $sign_requests = json_encode($this->server->generateSignRequests($registrations, $request_id));
+
         return array(
             'request_id' => $request_id,
             'request_json' => $request_json,
@@ -70,6 +73,7 @@ class U2FTokenRegistrationService
             $member,
             $registration_date_time,
             $public_key);
+
         return $u2fToken;
     }
 

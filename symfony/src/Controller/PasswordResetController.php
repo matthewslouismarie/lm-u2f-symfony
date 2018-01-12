@@ -37,6 +37,7 @@ class PasswordResetController extends AbstractController
         $url = $this->generateUrl('u2f_authorization_uukp_u', array(
             'authorizationRequestSid' => $passwordResetRequestSid,
         ));
+
         return new RedirectResponse($url);
     }
 
@@ -70,8 +71,10 @@ class PasswordResetController extends AbstractController
             $mf->setPassword($member, $submission->getPassword());
             $om->persist($member);
             $om->flush();
+
             return $this->render('successful_password_reset.html.twig');
         }
+
         return $this->render('reset_password.html.twig', array(
             'form' => $form->createView(),
         ));

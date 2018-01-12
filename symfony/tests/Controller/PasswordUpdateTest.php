@@ -15,6 +15,7 @@ class PasswordUpdateTest extends AbstractAccessManagementTestCase
             ->getManager()
         ;
     }
+
     /**
      * @todo Add password confirmation.
      */
@@ -25,15 +26,14 @@ class PasswordUpdateTest extends AbstractAccessManagementTestCase
         $this->runLoggedOutTests();
 
         $this->resetU2fCounter();
-        
+
         $this->logIn('louis', 'hello');
         $this->runLoggedInTests();
         $this->changePassword();
         $this->logOut();
 
-        
         $this->resetU2fCounter();
-        
+
         $this->logIn('louis', 'meow');
         $this->runLoggedInTests();
     }
@@ -50,9 +50,9 @@ class PasswordUpdateTest extends AbstractAccessManagementTestCase
             'password_update[passwordConfirmation]' => 'something else',
         ));
         $secondCrawler = $this->getClient()->submit($wrongForm);
-        
+
         $this->assertEquals(200, $this->getClient()->getResponse()->getStatusCode());
-        
+
         $validForm = $button->form(array(
             'password_update[password]' => 'meow',
             'password_update[passwordConfirmation]' => 'meow',

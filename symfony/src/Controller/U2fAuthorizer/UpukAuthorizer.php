@@ -39,7 +39,7 @@ class UpukAuthorizer extends AbstractController
     /**
      * @todo Is all the good prefix for the route?
      * @todo Move username / password check in form.
-     * 
+     *
      * @Route(
      *  "/all/u2f-authorization/upuk/up/{sessionId}",
      *  name="u2f_authorization_upuk_up",
@@ -54,6 +54,7 @@ class UpukAuthorizer extends AbstractController
         $upSubmission = new UsernameAndPasswordSubmission();
         $form = $this->createForm(UsernameAndPasswordType::class, $upSubmission);
         $form->handleRequest($request);
+
         try {
             if ($form->isSubmitted() && $form->isValid()) {
                 $this->checkLogin(
@@ -64,12 +65,13 @@ class UpukAuthorizer extends AbstractController
                     'sessionId' => $sessionId,
                     'upSubmissionId' => $upSubmissionId,
                 ));
+
                 return new RedirectResponse($url);
             }
-        }
-        catch (AuthenticationException $e) {
+        } catch (AuthenticationException $e) {
             $form->addError(new FormError('Invalid username or password.'));
         }
+
         return $this->render('tks/username_and_password.html.twig', array(
             'form' => $form->createView(),
         ));
@@ -78,7 +80,7 @@ class UpukAuthorizer extends AbstractController
     /**
      * @todo What if the username doesn't exist?
      * @todo What if the member doesn't have U2F tokens?
-     * 
+     *
      * @Route(
      *  "/all/u2f-authorization/upuk/uk/{sessionId}/{upSubmissionId}",
      *  name="u2f_authorization_upuk_uk",
@@ -94,6 +96,7 @@ class UpukAuthorizer extends AbstractController
     {
         $upSubmission = $sSession
             ->getObject($upSubmissionId, UsernameAndPasswordSubmission::class);
+
         try {
             $u2fData = $auth->generate($upSubmission->getUsername());
         } catch (NonexistentMemberException $e) {
@@ -105,6 +108,7 @@ class UpukAuthorizer extends AbstractController
             $u2fData['auth_id']);
         $form = $this->createForm(U2fLoginType::class, $u2fSubmission);
         $form->handleRequest($request);
+
         try {
             if ($form->isSubmitted() && $form->isValid()) {
                 $action = $sSession
@@ -127,15 +131,15 @@ class UpukAuthorizer extends AbstractController
                 $url = $this->generateUrl($action->getSuccessRoute(), array(
                     'authorizationRequestSid' => $authorizationRequestSid,
                 ));
+
                 return new RedirectResponse($url);
             }
-        }
-        catch (SecurityException $e) {
+        } catch (SecurityException $e) {
+            $form->addError(new FormError('Invalid U2F token response.'));
+        } catch (AuthenticationException $e) {
             $form->addError(new FormError('Invalid U2F token response.'));
         }
-        catch (AuthenticationException $e) {
-            $form->addError(new FormError('Invalid U2F token response.'));
-        }
+
         return $this->render('u2f_authorization/upuk/uk_login.html.twig', array(
             'form' => $form->createView(),
             'sign_requests_json' => $u2fData['sign_requests_json'],

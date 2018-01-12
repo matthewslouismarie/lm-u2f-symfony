@@ -16,6 +16,7 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
 class LogoutAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $formFactory;
+
     private $router;
 
     public function __construct(
@@ -35,6 +36,7 @@ class LogoutAuthenticator extends AbstractFormLoginAuthenticator
         if ($form->isSubmitted() && $form->isValid()) {
             return array();
         }
+
         throw new AuthenticationException();
     }
 
@@ -56,6 +58,7 @@ class LogoutAuthenticator extends AbstractFormLoginAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         $url = $this->router->generate('homepage');
+
         return new RedirectResponse($url);
     }
 
@@ -64,8 +67,9 @@ class LogoutAuthenticator extends AbstractFormLoginAuthenticator
         $route = $request
             ->attributes
             ->get('_route');
-        $isRouteCorrect = $route === 'logout';
+        $isRouteCorrect = 'logout' === $route;
         $isMethodCorrect = $request->isMethod('POST');
+
         return $isRouteCorrect && $isMethodCorrect;
     }
 }

@@ -28,7 +28,7 @@ class U2fTokenRegistrationController extends AbstractController
         $submission = new U2FTokenRegistration();
         $submission->setRequestId($rp_request['request_id']);
 
-        $form = $this->createForm(U2FTokenRegistrationType::class, $submission);       
+        $form = $this->createForm(U2FTokenRegistrationType::class, $submission);
 
         return $this->render('add_u2f_token.html.twig', array(
             'request_json' => $rp_request['request_json'],
@@ -62,6 +62,7 @@ class U2fTokenRegistrationController extends AbstractController
             echo '<pre>';
             var_dump($u2fToken);
             echo '</pre>';
+
             return new Response(ob_get_clean());
         } else {
             return new RedirectResponse($this->generateUrl('get_add_u2f_token'));

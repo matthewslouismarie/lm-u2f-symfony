@@ -3,17 +3,17 @@
 namespace App\Repository;
 
 use App\Entity\Member;
-use App\Entity\U2FToken;
+use App\Entity\U2fToken;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Firehed\U2F\Registration;
 
-class U2FTokenRepository extends ServiceEntityRepository
+class U2fTokenRepository extends ServiceEntityRepository
 {
     public function __construct(
         RegistryInterface $registry)
     {
-        parent::__construct($registry, U2FToken::class);
+        parent::__construct($registry, U2fToken::class);
     }
 
     public function getMemberRegistrations(int $member_id): array

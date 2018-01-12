@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\U2FToken;
-use App\Form\U2FTokenRegistrationType;
-use App\FormModel\U2FTokenRegistration;
+use App\Entity\U2fToken;
+use App\Form\U2fTokenRegistrationType;
+use App\FormModel\U2fTokenRegistration;
 use App\Model\AuthorizationRequest;
 use App\Service\SecureSessionService;
-use App\Service\U2FTokenRegistrationService;
+use App\Service\U2fTokenRegistrationService;
 use App\SessionToken\UukpAuthorizationToken;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -52,24 +52,25 @@ class U2fTokenResetController extends AbstractController
      *  name="reset_u2f_token",
      *  methods={"GET", "POST"})
      */
+    
     public function resetU2fToken(
         ObjectManager $om,
         Request $request,
         SecureSessionService $sSession,
-        U2FTokenRegistrationService $service,
+        U2fTokenRegistrationService $service,
         string $authorizationTokenSid)
     {
         $authorizationToken = $sSession
             ->getObject($authorizationTokenSid, UukpAuthorizationToken::class)
         ;
         $challenge = $service->generate();
-        $submission = new U2FTokenRegistration($challenge['request_id']);
+        $submission = new U2fTokenRegistration($challenge['request_id']);
         $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $service->processResponse($submission->getU2fTokenResponse(), $this->getUser(), new DateTimeImmutable(), $submission->getRequestId());
             $u2fTokenToDelete = $om
-                ->getRepository(U2FToken::class)
+                ->getRepository(U2fToken::class)
                 ->getExcept(
                     $this->getUser(),
                     array(

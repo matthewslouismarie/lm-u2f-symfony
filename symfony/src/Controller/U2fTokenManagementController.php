@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\U2FToken;
+use App\Entity\U2fToken;
 use App\Form\UserConfirmationType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,14 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @todo Delete this class.
  */
-class U2FTokenManagementController extends AbstractController
+class U2fTokenManagementController extends AbstractController
 {
     /**
      * @Route("/view-my-u2f-tokens", name="view-my-u2f-tokens", methods={"GET"})
      */
-    public function viewU2FTokens()
+    public function viewU2fTokens()
     {
-        $repo = $this->getDoctrine()->getRepository(U2FToken::class);
+        $repo = $this->getDoctrine()->getRepository(U2fToken::class);
         $tokens = $repo->findBy(array('member' => $this->getUser()));
 
         return $this->render('u2f_token_list.html.twig', array(
@@ -33,9 +33,9 @@ class U2FTokenManagementController extends AbstractController
      *  name="delete-u2f-token",
      *  methods={"GET", "POST"})
      */
-    public function deleteU2FToken(Request $request, string $u2fTokenName)
+    public function deleteU2fToken(Request $request, string $u2fTokenName)
     {
-        $repo = $this->getDoctrine()->getRepository(U2FToken::class);
+        $repo = $this->getDoctrine()->getRepository(U2fToken::class);
 
         $token = $repo->findMemberU2fToken($u2fTokenName, $this->getUser());
 

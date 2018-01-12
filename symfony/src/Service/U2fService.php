@@ -5,7 +5,7 @@ namespace App\Service;
 use Firehed\U2F\Server;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class U2FService
+class U2fService
 {
     public const N_U2F_TOKENS_PER_MEMBER = 3;
 

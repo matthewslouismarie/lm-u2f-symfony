@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Member;
-use App\Entity\U2FToken;
+use App\Entity\U2fToken;
 use Doctrine\ORM\EntityManagerInterface;
 use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
@@ -11,7 +11,7 @@ use Firehed\U2F\RegisterResponse;
 /**
  * @todo interface for request ids?
  */
-class U2FTokenRegistrationService
+class U2fTokenRegistrationService
 {
     private $server;
 
@@ -19,7 +19,7 @@ class U2FTokenRegistrationService
 
     private $em;
 
-    public function __construct(EntityManagerInterface $em, U2FService $u2f,
+    public function __construct(EntityManagerInterface $em, U2fService $u2f,
                                 SecureSessionService $session)
     {
         $this->server = $u2f->getServer();
@@ -54,7 +54,7 @@ class U2FTokenRegistrationService
         string $u2fKeyResponse,
         Member $member,
         \DateTimeImmutable $registration_date_time,
-        string $request_id): U2FToken
+        string $request_id): U2fToken
     {
         $request = $this->session->getAndRemoveObject($request_id, RegisterRequest::class);
         $this->server->setRegisterRequest($request);
@@ -65,7 +65,7 @@ class U2FTokenRegistrationService
         $attestation = base64_encode($registration->getAttestationCertificateBinary());
         $public_key = base64_encode($registration->getPublicKey());
         $key_handle = base64_encode($registration->getKeyHandleBinary());
-        $u2fToken = new U2FToken(
+        $u2fToken = new U2fToken(
             null,
             $attestation,
             $counter,
@@ -86,7 +86,7 @@ class U2FTokenRegistrationService
         string $challenge,
         Member $member,
         \DateTimeImmutable $registration_date_time,
-        string $request_id): U2FToken
+        string $request_id): U2fToken
     {
         $u2fToken = $this->getU2fTokenFromResponse(
             $challenge,

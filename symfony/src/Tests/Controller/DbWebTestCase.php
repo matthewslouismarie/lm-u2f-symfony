@@ -10,7 +10,6 @@ use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 
 /**
  * @todo Should be able to automatically load all fixtures.
- * @todo Check that entity_manager is not obsolete.
  */
 abstract class DbWebTestCase extends WebTestCase
 {
@@ -24,15 +23,15 @@ abstract class DbWebTestCase extends WebTestCase
     {
         $this->client = static::createClient();
         $container = self::$kernel->getContainer();
-        $em = $container->get('doctrine.orm.entity_manager');
-        $this->metadatas = $em->getMetadataFactory()->getAllMetadata();
-        $this->schemaTool = new SchemaTool($em);
+        $om = $container->get('doctrine')->getManager();
+        $this->metadatas = $om->getMetadataFactory()->getAllMetadata();
+        $this->schemaTool = new SchemaTool($om);
         $this->schemaTool->createSchema($this->metadatas);
         $fl = new SymfonyFixturesLoader($container);
         $fl->addFixtures(array($container->get('App\DataFixtures\MembersFixture')));
         $fixtures = $fl->getFixtures();
-        $purger = new ORMPurger($em);
-        $executor = new ORMExecutor($em, $purger);
+        $purger = new ORMPurger($om);
+        $executor = new ORMExecutor($om, $purger);
         $executor->execute($fixtures, false);
     }
 

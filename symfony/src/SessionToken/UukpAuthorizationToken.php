@@ -16,6 +16,8 @@ class UukpAuthorizationToken implements Serializable
         int $secondU2fTokenUsed)
     {
         $this->username = $username;
+        $this->firstU2fTokenUsed = $firstU2fTokenUsed;
+        $this->secondU2fTokenUsed = $secondU2fTokenUsed;
     }
 
     public function getUsername(): string
@@ -23,10 +25,22 @@ class UukpAuthorizationToken implements Serializable
         return $this->username;
     }
 
+    public function getFirstU2fTokenUsed(): int
+    {
+        return $this->firstU2fTokenUsed;
+    }
+
+    public function getSecondU2fTokenUsed(): int
+    {
+        return $this->secondU2fTokenUsed;
+    }
+
     public function serialize(): string
     {
         return serialize([
             $this->username,
+            $this->firstU2fTokenUsed,
+            $this->secondU2fTokenUsed,
         ]);
     }
 
@@ -34,6 +48,8 @@ class UukpAuthorizationToken implements Serializable
     {
         list(
             $this->username,
+            $this->firstU2fTokenUsed,
+            $this->secondU2fTokenUsed,
         ) = unserialize($serialized);
     }
 }

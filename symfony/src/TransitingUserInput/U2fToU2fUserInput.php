@@ -5,6 +5,10 @@ namespace App\TransitingUserInput;
 use Serializable;
 use App\FormModel\U2fLoginSubmission;
 
+/**
+ * @todo The RP request - token challenge should be kept instead of the id, and
+ * the id should be dynamically determined from that.
+ */
 class U2fToU2fUserInput implements Serializable
 {
     private $u2fLoginSubmission;

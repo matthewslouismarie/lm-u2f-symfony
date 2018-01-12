@@ -52,7 +52,6 @@ class U2fTokenResetController extends AbstractController
      *  name="reset_u2f_token",
      *  methods={"GET", "POST"})
      */
-    
     public function resetU2fToken(
         ObjectManager $om,
         Request $request,

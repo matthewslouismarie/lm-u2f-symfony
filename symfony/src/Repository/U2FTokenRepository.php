@@ -27,13 +27,14 @@ class U2FTokenRepository extends ServiceEntityRepository
         ;
         $registrations = array();
         foreach ($u2f_tokens as $tkn) {
-                $registration = new Registration();
-                $registration->setCounter($tkn->getCounter());
-                $registration->setAttestationCertificate($tkn->getAttestation());
-                $registration->setPublicKey(base64_decode($tkn->getPublicKey()));
-                $registration->setKeyHandle(base64_decode($tkn->getKeyHandle()));
-                $registrations[$tkn->getId()] = $registration;
-            }
+            $registration = new Registration();
+            $registration->setCounter($tkn->getCounter());
+            $registration->setAttestationCertificate($tkn->getAttestation());
+            $registration->setPublicKey(base64_decode($tkn->getPublicKey()));
+            $registration->setKeyHandle(base64_decode($tkn->getKeyHandle()));
+            $registrations[$tkn->getId()] = $registration;
+        }
+
         return $registrations;
     }
 
@@ -42,6 +43,7 @@ class U2FTokenRepository extends ServiceEntityRepository
         $qb = $this
             ->createQueryBuilder('u2ftoken')
         ;
+
         return $qb
             ->where('u2ftoken.member = :member_id')
             ->setParameter('member_id', $member->getId())

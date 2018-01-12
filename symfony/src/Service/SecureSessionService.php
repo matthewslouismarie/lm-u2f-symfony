@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class SecureSessionService
 {
     private const KEY_LENGTH = 32;
+
     private $session;
 
     public function __construct(SessionInterface $session)
@@ -23,6 +24,7 @@ class SecureSessionService
         $key = $this->generateNewKey();
         $this->session->set($key, $array);
         $this->session->save();
+
         return $key;
     }
 
@@ -34,6 +36,7 @@ class SecureSessionService
         $key = $this->generateNewKey();
         $this->session->set($key, $object);
         $this->session->save();
+
         return $key;
     }
 
@@ -42,6 +45,7 @@ class SecureSessionService
         $key = $this->generateNewKey();
         $this->session->set($key, $string);
         $this->session->save();
+
         return $key;
     }
 
@@ -59,6 +63,7 @@ class SecureSessionService
         if (!is_a($object, $class)) {
             throw new \UnexpectedValueException();
         }
+
         return $object;
     }
 
@@ -74,6 +79,7 @@ class SecureSessionService
             throw new \UnexpectedValueException();
         }
         $this->session->remove($key);
+
         return $value;
     }
 
@@ -84,6 +90,7 @@ class SecureSessionService
             throw new \UnexpectedValueException();
         }
         $this->session->remove($key);
+
         return $value;
     }
 
@@ -94,6 +101,7 @@ class SecureSessionService
             throw new \UnexpectedValueException();
         }
         $this->session->remove($key);
+
         return $value;
     }
 
@@ -102,6 +110,7 @@ class SecureSessionService
         do {
             $random_key = bin2hex(random_bytes(self::KEY_LENGTH));
         } while ($this->session->has($random_key));
+
         return $random_key;
     }
 

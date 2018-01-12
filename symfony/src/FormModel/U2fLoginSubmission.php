@@ -2,8 +2,6 @@
 
 namespace App\FormModel;
 
-use Symfony\Component\Validator\Constraints as Assert;
-
 /**
  * @todo Remove username.
  */

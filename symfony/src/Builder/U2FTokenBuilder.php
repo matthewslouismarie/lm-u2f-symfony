@@ -2,7 +2,6 @@
 
 namespace App\Builder;
 
-use App\Entity\Member;
 use App\Entity\U2FToken;
 
 class U2FTokenBuilder
@@ -22,7 +21,7 @@ class U2FTokenBuilder
             $counter,
             $this->base->getKeyHandle(),
             $this->base->getMember(),
-            $this->base->getRegistrationDateTime()  ,
+            $this->base->getRegistrationDateTime(),
             $this->base->getPublicKey());
     }
 }

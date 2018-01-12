@@ -14,17 +14,17 @@ class PDOService
     public function __construct()
     {
         $config = json_decode(file_get_contents(__DIR__.'/../db.json'), true);
-        
+
         $hostLine = 'mysql:host='.$config['host'].';';
-		$databaseNameLine = 'dbname='.$config['db'].';';
-		$charsetLine = 'charset=utf8';
-		$userLine = $config['username'];
-		$passwordLine = $config['password'];
-		$additionalParameters = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
-		$this->pdo = new \PDO($hostLine.$databaseNameLine.$charsetLine,
-			                 $userLine,
-			                 $passwordLine,
-			                 $additionalParameters);
+        $databaseNameLine = 'dbname='.$config['db'].';';
+        $charsetLine = 'charset=utf8';
+        $userLine = $config['username'];
+        $passwordLine = $config['password'];
+        $additionalParameters = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
+        $this->pdo = new \PDO($hostLine.$databaseNameLine.$charsetLine,
+                             $userLine,
+                             $passwordLine,
+                             $additionalParameters);
     }
 
     /**

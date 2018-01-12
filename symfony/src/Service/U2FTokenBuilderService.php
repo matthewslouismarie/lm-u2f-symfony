@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Builder\U2FTokenBuilder;
-use App\Builder\TokenBuilder;
 use App\Entity\U2FToken;
 
 class U2FTokenBuilderService

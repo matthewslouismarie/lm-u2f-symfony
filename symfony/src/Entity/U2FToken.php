@@ -65,12 +65,12 @@ class U2FToken
         $this->registrationDateTime = $registrationDateTime;
         $this->publicKey = $publicKey;
     }
-    
+
     public function getAttestation(): string
     {
         return $this->attestation;
     }
-    
+
     public function getCounter(): int
     {
         return $this->counter;
@@ -80,7 +80,7 @@ class U2FToken
     {
         return $this->id;
     }
-    
+
     public function getKeyHandle(): string
     {
         return $this->keyHandle;
@@ -95,7 +95,7 @@ class U2FToken
     {
         return $this->member;
     }
-    
+
     public function getPublicKey(): string
     {
         return $this->publicKey;

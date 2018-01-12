@@ -29,7 +29,7 @@ class UsernameAndPasswordSubmission implements \Serializable
     {
         $this->username = $username;
     }
-    
+
     public function setPassword($password)
     {
         $this->password = $password;
@@ -57,7 +57,6 @@ class UsernameAndPasswordSubmission implements \Serializable
     {
         list(
             $this->username,
-            $this->password,
-        ) = unserialize($serialized);
+            $this->password) = unserialize($serialized);
     }
 }

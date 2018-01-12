@@ -21,9 +21,13 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
 class LoginAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $auth;
+
     private $formFactory;
+
     private $om;
+
     private $router;
+
     private $encoder;
 
     public function __construct(
@@ -50,6 +54,7 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
         if ($form->isSubmitted() && $form->isValid()) {
             return $loginRequest->getUsername();
         }
+
         throw new AuthenticationException();
     }
 
@@ -60,6 +65,7 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
             ->getRepository(Member::class)->findOneBy(array(
                 'username' => $username,
             ));
+
         return $user;
     }
 
@@ -89,8 +95,9 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
         $route = $request
             ->attributes
             ->get('_route');
-        $isRouteCorrect = $route === 'finish_login';
+        $isRouteCorrect = 'finish_login' === $route;
         $isMethodCorrect = $request->isMethod('POST');
+
         return $isRouteCorrect && $isMethodCorrect;
     }
 }

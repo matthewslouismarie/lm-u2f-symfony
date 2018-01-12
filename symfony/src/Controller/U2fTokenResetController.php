@@ -35,4 +35,15 @@ class U2fTokenResetController extends AbstractController
         ));
         return new RedirectResponse($url);
     }
+
+    /**
+     * @Route(
+     *  "/authenticated/reset-u2f-token",
+     *  name="reset_u2f_token",
+     *  methods={"GET", "POST"})
+     */
+    public function resetU2fToken()
+    {
+        return $this->render('reset_u2f_token.html.twig');
+    }
 }

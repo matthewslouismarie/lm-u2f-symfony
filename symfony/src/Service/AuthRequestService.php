@@ -38,10 +38,11 @@ class AuthRequestService
         array $idsToExclude = array()): array
     {
         $member = $this->em
-                       ->getRepository(Member::class)
-                       ->findOneBy(array('username' => $username));
-
-        $registrations = $this->em
+        ->getRepository(Member::class)
+        ->findOneBy(array('username' => $username));
+        
+        $registrations = $this
+            ->em
             ->getRepository(U2FToken::class)
             ->getMemberRegistrations($member->getId())
         ;

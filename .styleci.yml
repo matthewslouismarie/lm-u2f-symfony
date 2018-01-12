@@ -1,0 +1,8 @@
+preset: symfony
+
+risky: false
+
+finder:
+  path:
+    - "symfony/src"
+    - "symfony/tests"

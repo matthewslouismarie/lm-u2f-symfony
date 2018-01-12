@@ -83,7 +83,10 @@ class AuthenticationController extends AbstractController
     }
 
     /**
-     * @Route("/not-logged-out", name="not_logged_out", methods={"GET"})
+     * @Route(
+     *  "/not-logged-out",
+     *  name="not_logged_out",
+     *  methods={"GET"})
      */
     public function notLoggedOut()
     {

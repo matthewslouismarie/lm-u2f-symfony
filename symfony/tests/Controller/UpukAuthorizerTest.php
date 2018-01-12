@@ -20,7 +20,7 @@ class UpukAuthorizerTest extends AbstractAccessManagementTestCase
         parent::setUp();
         $this->session = $this
             ->getContainer()
-            ->get('App\Service\SecureSessionService')
+            ->get('App\Service\SecureSession')
         ;
     }
 

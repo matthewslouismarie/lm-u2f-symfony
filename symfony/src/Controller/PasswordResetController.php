@@ -8,7 +8,7 @@ use App\Form\PasswordUpdateType;
 use App\FormModel\PasswordUpdateSubmission;
 use App\Model\AuthorizationRequest;
 use App\Model\IAuthorizationRequest;
-use App\Service\SecureSessionService;
+use App\Service\SecureSession;
 use App\SessionToken\UukpAuthorizationToken;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +24,7 @@ class PasswordResetController extends AbstractController
      *  name="request_password_reset",
      *  methods={"GET"})
      */
-    public function requestPasswordReset(SecureSessionService $sSession)
+    public function requestPasswordReset(SecureSession $sSession)
     {
         $passwordResetRequest = new AuthorizationRequest(
             false,
@@ -51,7 +51,7 @@ class PasswordResetController extends AbstractController
         MemberFactory $mf,
         ObjectManager $om,
         Request $request,
-        SecureSessionService $sSession,
+        SecureSession $sSession,
         string $authorizationTokenSid)
     {
         $authorizationToken = $sSession

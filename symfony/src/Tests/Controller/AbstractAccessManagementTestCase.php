@@ -143,7 +143,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
     {
         $sSession = $this
             ->getContainer()
-            ->get('App\Service\SecureSessionService')
+            ->get('App\Service\SecureSession')
         ;
         $signRequests = array();
         $signRequest = new SignRequest();
@@ -173,7 +173,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
     {
         $sSession = $this
             ->getContainer()
-            ->get('App\Service\SecureSessionService')
+            ->get('App\Service\SecureSession')
         ;
         $signRequests = array();
         $signRequest = new SignRequest();

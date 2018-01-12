@@ -7,7 +7,7 @@ use App\Form\LoginRequestType;
 use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
-use App\Service\SecureSessionService;
+use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,7 +24,7 @@ class AuthenticationController extends AbstractController
      */
     public function startLogin(
         Request $request,
-        SecureSessionService $sSession)
+        SecureSession $sSession)
     {
         $request = new AuthorizationRequest(false, 'finish_login', null);
         $sessionId = $sSession->storeObject($request, IAuthorizationRequest::class);
@@ -45,7 +45,7 @@ class AuthenticationController extends AbstractController
      */
     public function finishLogin(
         Request $request,
-        SecureSessionService $sSession,
+        SecureSession $sSession,
         string $authorizationRequestSid)
     {
         $authorizationRequest = $sSession

@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  * @todo interface for session ids?
  * @todo type hinting for get(…) and store(…)
  */
-class SecureSessionService
+class SecureSession
 {
     private const KEY_LENGTH = 32;
 

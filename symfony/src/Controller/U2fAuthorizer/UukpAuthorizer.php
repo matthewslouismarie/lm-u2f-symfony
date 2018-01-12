@@ -8,7 +8,7 @@ use App\FormModel\U2fAuthenticationSubmission;
 use App\FormModel\UsernameSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Service\U2fAuthenticationManager;
-use App\Service\SecureSessionService;
+use App\Service\SecureSession;
 use App\SessionToken\UukpAuthorizationToken;
 use App\TransitingUserInput\UToU2fUserInput;
 use App\TransitingUserInput\U2fToU2fUserInput;
@@ -27,7 +27,7 @@ class UukpAuthorizer extends AbstractController
      */
     public function username(
         Request $request,
-        SecureSessionService $sSession,
+        SecureSession $sSession,
         string $authorizationRequestSid)
     {
         $authorizationRequest = $sSession
@@ -73,7 +73,7 @@ class UukpAuthorizer extends AbstractController
     public function firstU2fKey(
         U2fAuthenticationManager $u2fAuthentication,
         Request $request,
-        SecureSessionService $sSession,
+        SecureSession $sSession,
         string $transitingUserInputSid)
     {
         $uToU2fUserInput = $sSession
@@ -132,7 +132,7 @@ class UukpAuthorizer extends AbstractController
     public function secondU2fKey(
         U2fAuthenticationManager $u2fAuthentication,
         Request $request,
-        SecureSessionService $sSession,
+        SecureSession $sSession,
         string $userInputSid)
     {
         $userInput = $sSession
@@ -192,7 +192,7 @@ class UukpAuthorizer extends AbstractController
 
     private function redirectToFirstU2fKey(
         IAuthorizationRequest $authorizationRequest,
-        SecureSessionService $sSession,
+        SecureSession $sSession,
         string $username): RedirectResponse
     {
         $transitingUserInput = new UToU2fUserInput(

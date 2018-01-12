@@ -21,7 +21,7 @@ class U2fAuthenticationManager
         ObjectManager $em,
         U2fService $u2f,
         U2fTokenBuilderService $builder,
-        SecureSessionService $session)
+        SecureSession $session)
     {
         $this->builder = $builder;
         $this->em = $em;

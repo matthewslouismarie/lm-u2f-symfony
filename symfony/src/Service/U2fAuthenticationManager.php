@@ -7,10 +7,7 @@ use App\Entity\U2fToken;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SignResponse;
 
-/**
- * @todo Rename to U2fAuthService
- */
-class AuthRequestService
+class U2fAuthenticationManager
 {
     private $builder;
 

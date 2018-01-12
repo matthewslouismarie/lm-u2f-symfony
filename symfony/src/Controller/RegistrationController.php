@@ -77,6 +77,7 @@ class RegistrationController extends AbstractController
         Request $request,
         SessionInterface $session,
         U2FTokenRegistrationService $service,
+        ObjectManager $om,
         int $id)
     {
         if (null === $session->get('tks_member') ||
@@ -104,6 +105,9 @@ class RegistrationController extends AbstractController
                             'id' => $id + 1,
                         ));
                         return new RedirectResponse($url);
+                    } else {
+                        $endUrl = $this->generateUrl('tks_finish_registration');
+                        return new RedirectResponse($endUrl);
                     }
                 }
                 catch (\TypeError $e) {

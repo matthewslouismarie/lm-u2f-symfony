@@ -66,6 +66,7 @@ class U2fTokenResetController extends AbstractController
         $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $service->processResponse($submission->getU2fTokenResponse(), $this->getUser(), new DateTimeImmutable(), $submission->getRequestId());
             $u2fTokenToDelete = $om
                 ->getRepository(U2FToken::class)
                 ->getExcept(

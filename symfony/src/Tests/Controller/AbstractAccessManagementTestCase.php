@@ -92,7 +92,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
     public function resetU2fCounter()
     {
         $doctrine = $this->getContainer()->get('doctrine');
-        $ubs = $this->getContainer()->get('App\Service\U2fTokenBuilderService');
+        $ubs = $this->getContainer()->get('App\Factory\U2fTokenFactory');
         $repo = $doctrine->getRepository(U2fToken::class);
         $u2fTokens = $repo->findAll();
         $om = $doctrine->getManager();

@@ -1,19 +1,14 @@
 <?php
 
-namespace App\Builder;
+namespace App\Factory;
 
 use App\Entity\U2fToken;
 
-class U2fTokenBuilder
+class U2fTokenFactory
 {
-    private $base;
-
-    public function __construct(U2fToken $u2fToken)
-    {
-        $this->base = $u2fToken;
-    }
-
-    public function setCounter(int $counter): U2fToken
+    public function setCounter(
+        U2fToken $u2fToken,
+        int $counter): U2fToken
     {
         return new U2fToken(
             $this->base->getId(),

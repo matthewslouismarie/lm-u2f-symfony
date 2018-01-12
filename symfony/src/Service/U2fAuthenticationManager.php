@@ -9,8 +9,6 @@ use Firehed\U2F\SignResponse;
 
 class U2fAuthenticationManager
 {
-    private $builder;
-
     private $em;
 
     private $server;
@@ -20,10 +18,8 @@ class U2fAuthenticationManager
     public function __construct(
         ObjectManager $em,
         U2fService $u2f,
-        U2fTokenBuilderService $builder,
         SecureSession $session)
     {
-        $this->builder = $builder;
         $this->em = $em;
         $this->server = $u2f->getServer();
         $this->session = $session;

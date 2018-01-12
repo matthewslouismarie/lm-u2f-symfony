@@ -1,8 +1,0 @@
-{% extends "base.html.twig" %}
-
-{% block body %}
-{% for token in tokens %}
-{{ token.name }}
-{{ token.registrationdatetime | date('Y-m-d H:i:s') }}
-{% endfor %}
-{% endblock %}

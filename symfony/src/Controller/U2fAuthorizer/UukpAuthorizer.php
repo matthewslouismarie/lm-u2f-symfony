@@ -2,9 +2,9 @@
 
 namespace App\Controller\U2fAuthorizer;
 
-use App\Form\U2fLoginType;
+use App\Form\U2fAuthenticationType;
 use App\Form\UsernameType;
-use App\FormModel\U2fLoginSubmission;
+use App\FormModel\U2fAuthenticationSubmission;
 use App\FormModel\UsernameSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Service\AuthRequestService;
@@ -83,13 +83,13 @@ class UukpAuthorizer extends AbstractController
         ;
         $username = $uToU2fUserInput->getUsername();
         $u2fAuthenticationData = $u2fAuthentication->generate($username);
-        $u2fAuthenticationSubmission = new U2fLoginSubmission(
+        $u2fAuthenticationSubmission = new U2fAuthenticationSubmission(
             $uToU2fUserInput->getUsername(),
             null,
             $u2fAuthenticationData['auth_id']
         );
         $form = $this
-            ->createForm(U2fLoginType::class, $u2fAuthenticationSubmission)
+            ->createForm(U2fAuthenticationType::class, $u2fAuthenticationSubmission)
         ;
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -151,13 +151,13 @@ class UukpAuthorizer extends AbstractController
             ->generate($username, array($userInput->getUsedU2fTokenId()))
         ;
 
-        $u2fAuthenticationSubmission = new U2fLoginSubmission(
+        $u2fAuthenticationSubmission = new U2fAuthenticationSubmission(
             $username,
             null,
             $u2fAuthenticationData['auth_id']
         );
         $form = $this
-            ->createForm(U2fLoginType::class, $u2fAuthenticationSubmission)
+            ->createForm(U2fAuthenticationType::class, $u2fAuthenticationSubmission)
         ;
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

@@ -3,7 +3,7 @@
 namespace App\TransitingUserInput;
 
 use Serializable;
-use App\FormModel\U2fLoginSubmission;
+use App\FormModel\U2fAuthenticationSubmission;
 
 /**
  * @todo The RP request - token challenge should be kept instead of the id, and
@@ -18,7 +18,7 @@ class U2fToU2fUserInput implements Serializable
     private $uToU2fUserInput;
 
     public function __construct(
-        U2fLoginSubmission $u2fLoginSubmission,
+        U2fAuthenticationSubmission $u2fLoginSubmission,
         int $usedU2fTokenId,
         UToU2fUserInput $uToU2fUserInput)
     {
@@ -27,7 +27,7 @@ class U2fToU2fUserInput implements Serializable
         $this->uToU2fUserInput = $uToU2fUserInput;
     }
 
-    public function getU2fLoginSubmission(): U2fLoginSubmission
+    public function getU2fAuthenticationSubmission(): U2fAuthenticationSubmission
     {
         return $this->u2fLoginSubmission;
     }

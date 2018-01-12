@@ -128,7 +128,7 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $postUpLoginButton = $this
             ->getClient()
             ->getCrawler()
-            ->selectButton('u2f_login[submit]')
+            ->selectButton('u2f_authentication[submit]')
         ;
         $form = $postUpLoginButton->form($this->getValidU2fTokenResponse());
 
@@ -164,8 +164,8 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $u2fAuthenticationRequestId = $this->storeInSessionU2fToken(true);
 
         return array(
-            'u2f_login[u2fAuthenticationRequestId]' => $u2fAuthenticationRequestId,
-            'u2f_login[u2fTokenResponse]' => '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoibFhhcTgyY2xKQm1YTm5OV0wxVzZHQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAIkwRgIhAN1YRiOqMs1fOCOm7MuOxfYJ6qN7A8PdXrhEzejtw3gNAiEAgi0JJmODYRTN8qflhBNsAjuDkJz06hTUZi2LNbaU4gk"}',
+            'u2f_authentication[u2fAuthenticationRequestId]' => $u2fAuthenticationRequestId,
+            'u2f_authentication[u2fTokenResponse]' => '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoibFhhcTgyY2xKQm1YTm5OV0wxVzZHQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAIkwRgIhAN1YRiOqMs1fOCOm7MuOxfYJ6qN7A8PdXrhEzejtw3gNAiEAgi0JJmODYRTN8qflhBNsAjuDkJz06hTUZi2LNbaU4gk"}',
         );
     }
 
@@ -194,8 +194,8 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $u2fAuthenticationRequestId = $this->storeInSessionSecondU2fToken(true);
 
         return array(
-            'u2f_login[u2fAuthenticationRequestId]' => $u2fAuthenticationRequestId,
-            'u2f_login[u2fTokenResponse]' => '{"keyHandle":"SlhahqO2AGMqu1KZwwVVFgLhkUaOwcuWRWVn1ITLmeq_V38yn1kfANGGrZCVl8qZSm8UF8qgyp8bGEWAVKWe1g","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoiTEtYRVhvR0wxWDR5V1ZGZndHTmhkUSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAALgwRQIgWysRasdeUTrdy_ngxYHrM9FXv4o5_wNUQW0sfs7Hf30CIQDlg9P1NcRY0oAyUmHqwuYsH9W2TSw1msTOLGyWYiSRIg"}',
+            'u2f_authentication[u2fAuthenticationRequestId]' => $u2fAuthenticationRequestId,
+            'u2f_authentication[u2fTokenResponse]' => '{"keyHandle":"SlhahqO2AGMqu1KZwwVVFgLhkUaOwcuWRWVn1ITLmeq_V38yn1kfANGGrZCVl8qZSm8UF8qgyp8bGEWAVKWe1g","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoiTEtYRVhvR0wxWDR5V1ZGZndHTmhkUSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAALgwRQIgWysRasdeUTrdy_ngxYHrM9FXv4o5_wNUQW0sfs7Hf30CIQDlg9P1NcRY0oAyUmHqwuYsH9W2TSw1msTOLGyWYiSRIg"}',
         );
     }
 

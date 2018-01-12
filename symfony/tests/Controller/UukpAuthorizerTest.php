@@ -143,7 +143,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $submitButton = $this
             ->getClient()
             ->getCrawler()
-            ->selectButton('u2f_login[submit]')
+            ->selectButton('u2f_authentication[submit]')
         ;
         $u2fAuthenticationForm = $submitButton
             ->form($this->getValidU2fTokenResponse())
@@ -160,7 +160,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $submitButton = $this
             ->getClient()
             ->getCrawler()
-            ->selectButton('u2f_login[submit]')
+            ->selectButton('u2f_authentication[submit]')
         ;
         $u2fAuthenticationForm = $submitButton
             ->form($this->getValidSecondU2fTokenResponse())

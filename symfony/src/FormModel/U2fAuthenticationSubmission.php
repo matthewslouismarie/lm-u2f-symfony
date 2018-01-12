@@ -5,7 +5,7 @@ namespace App\FormModel;
 /**
  * @todo Remove username.
  */
-class U2fLoginSubmission
+class U2fAuthenticationSubmission
 {
     private $username;
 

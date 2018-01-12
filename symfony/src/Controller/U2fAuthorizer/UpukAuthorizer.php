@@ -4,9 +4,9 @@ namespace App\Controller\U2fAuthorizer;
 
 use App\Entity\Member;
 use App\Exception\NonexistentMemberException;
-use App\Form\U2fLoginType;
+use App\Form\U2fAuthenticationType;
 use App\Form\UsernameAndPasswordType;
-use App\FormModel\U2fLoginSubmission;
+use App\FormModel\U2fAuthenticationSubmission;
 use App\FormModel\UsernameAndPasswordSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Model\AuthorizationRequest;
@@ -57,7 +57,7 @@ class UpukAuthorizer extends AbstractController
 
         try {
             if ($form->isSubmitted() && $form->isValid()) {
-                $this->checkLogin(
+                $this->checkAuthentication(
                     $upSubmission->getUsername(),
                     $upSubmission->getPassword());
                 $upSubmissionId = $sSession->storeObject($upSubmission, UsernameAndPasswordSubmission::class);
@@ -102,11 +102,11 @@ class UpukAuthorizer extends AbstractController
         } catch (NonexistentMemberException $e) {
             return new Response('error');
         }
-        $u2fSubmission = new U2fLoginSubmission(
+        $u2fSubmission = new U2fAuthenticationSubmission(
             $upSubmission->getUsername(),
             null,
             $u2fData['auth_id']);
-        $form = $this->createForm(U2fLoginType::class, $u2fSubmission);
+        $form = $this->createForm(U2fAuthenticationType::class, $u2fSubmission);
         $form->handleRequest($request);
 
         try {
@@ -140,13 +140,13 @@ class UpukAuthorizer extends AbstractController
             $form->addError(new FormError('Invalid U2F token response.'));
         }
 
-        return $this->render('u2f_authorization/upuk/uk_login.html.twig', array(
+        return $this->render('u2f_authorization/upuk/uk_authentication.html.twig', array(
             'form' => $form->createView(),
             'sign_requests_json' => $u2fData['sign_requests_json'],
         ));
     }
 
-    private function checkLogin(string $username, string $password)
+    private function checkAuthentication(string $username, string $password)
     {
         $member = $this
             ->om

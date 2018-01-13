@@ -37,7 +37,7 @@ class RegistrationController extends AbstractController
 
     /**
      * @Route(
-     *  "/tks/username-and-password",
+     *  "/not-authenticated/username-and-password",
      *  name="tks_username_and_password",
      *  methods={"GET", "POST"})
      */
@@ -71,7 +71,7 @@ class RegistrationController extends AbstractController
 
     /**
      * @Route(
-     *  "/tks/key-{id}",
+     *  "/not-authenticated/key-{id}",
      *  name="tks_key",
      *  requirements={"id"="\d+"},
      *  methods={"GET", "POST"})
@@ -134,7 +134,7 @@ class RegistrationController extends AbstractController
 
     /**
      * @Route(
-     *  "/tks/finish-registration",
+     *  "/not-authenticated/finish-registration",
      *  name="tks_finish_registration",
      *  methods={"GET", "POST"})
      */
@@ -179,7 +179,7 @@ class RegistrationController extends AbstractController
 
     /**
      * @Route(
-     *  "/tks/reset-registration",
+     *  "/not-authenticated/reset-registration",
      *  name="tks_reset_registration",
      *  methods={"GET", "POST"})
      */

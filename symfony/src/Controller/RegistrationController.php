@@ -32,7 +32,7 @@ class RegistrationController extends AbstractController
      */
     public function fetchLandingPage()
     {
-        return $this->render('tks/registration.html.twig');
+        return $this->render('registration/registration.html.twig');
     }
 
     /**
@@ -64,7 +64,7 @@ class RegistrationController extends AbstractController
             return new RedirectResponse($url);
         }
 
-        return $this->render('tks/username_and_password.html.twig', array(
+        return $this->render('registration/username_and_password.html.twig', array(
             'form' => $form->createView(),
         ));
     }
@@ -125,7 +125,7 @@ class RegistrationController extends AbstractController
         $submission->setRequestId($rp_request['request_id']);
         $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
 
-        return $this->render('tks/key.html.twig', array(
+        return $this->render('registration/key.html.twig', array(
             'request_json' => $rp_request['request_json'],
             'sign_requests' => $rp_request['sign_requests'],
             'form' => $form->createView(),
@@ -172,7 +172,7 @@ class RegistrationController extends AbstractController
             $om->flush();
         }
 
-        return $this->render('tks/finish_registration.html.twig', array(
+        return $this->render('registration/finish_registration.html.twig', array(
             'form' => $form->createView(),
         ));
     }
@@ -207,7 +207,7 @@ class RegistrationController extends AbstractController
             return new RedirectResponse($url);
         }
 
-        return $this->render('tks/reset.html.twig', array(
+        return $this->render('registration/reset.html.twig', array(
             'form' => $form->createView(),
         ));
     }

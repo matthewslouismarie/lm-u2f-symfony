@@ -72,7 +72,7 @@ class UpukAuthorizer extends AbstractController
             $form->addError(new FormError('Invalid username or password.'));
         }
 
-        return $this->render('tks/username_and_password.html.twig', array(
+        return $this->render('registration/username_and_password.html.twig', array(
             'form' => $form->createView(),
         ));
     }

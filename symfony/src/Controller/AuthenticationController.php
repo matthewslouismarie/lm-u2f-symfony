@@ -77,7 +77,7 @@ class AuthenticationController extends AbstractController
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($request);
 
-        return $this->render('tks/logout.html.twig', array(
+        return $this->render('registration/logout.html.twig', array(
             'form' => $form->createView(),
         ));
     }

@@ -8,7 +8,7 @@ use App\Validator\Constraints\IdenticalPassword;
 /**
  * @todo Rename to UpRegistrationSubmission.
  */
-class RegistrationSubmission
+class CredentialRegistrationSubmission
 {
     /**
      * @todo check it's not already used

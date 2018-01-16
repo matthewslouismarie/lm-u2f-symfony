@@ -2,11 +2,13 @@
 
 namespace App\Service;
 
+use UnexpectedValueException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @todo interface for session ids?
- * @todo type hinting for get(…) and store(…)
+ * @todo Sids shouldn't be nullable.
+ * @todo Not thread-safe (e.g. storeArray).
  */
 class SecureSession
 {
@@ -31,7 +33,7 @@ class SecureSession
     public function storeObject(\Serializable $object, string $class): string
     {
         if (!is_a($object, $class)) {
-            throw new \UnexpectedValueException();
+            throw new UnexpectedValueException();
         }
         $key = $this->generateNewKey();
         $this->session->set($key, $object);
@@ -52,6 +54,24 @@ class SecureSession
     public function getArray(?string $key): array
     {
         return $this->session->get($key);
+    }
+
+    public function getTypedArray(string $key, string $class): array
+    {
+        $array = $this
+            ->session
+            ->get($key)
+        ;
+        if (!is_array($array)) {
+            throw new UnexpectedValueException();
+        }
+        foreach ($array as $item) {
+            if (!is_a($item, $class)) {
+                throw new UnexpectedValueException();
+            }
+        }
+
+        return $array;
     }
 
     /**

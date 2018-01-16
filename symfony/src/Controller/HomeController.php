@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     /**
      * @Route(
-     *  "/",
+     *  "/all/",
      *  name="homepage")
      */
     public function home(Request $request)

@@ -26,7 +26,7 @@ class RegistrationController extends AbstractController
 {
     /**
      * @Route(
-     *  "/mkps/registration",
+     *  "/not-authenticated/registration",
      *  name="mkps_registration",
      *  methods={"GET"})
      */

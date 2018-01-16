@@ -3,7 +3,6 @@
 namespace App\FormModel;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Validator\Constraints\IdenticalPassword;
 
 /**
  * @todo Rename to UpRegistrationSubmission.

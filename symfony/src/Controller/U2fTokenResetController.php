@@ -79,6 +79,8 @@ class U2fTokenResetController extends AbstractController
             ;
             $om->remove($u2fTokenToDelete[0]);
             $om->flush();
+
+            return $this->render('successful_u2f_token_reset.html.twig');
         }
 
         return $this->render('reset_u2f_token.html.twig', array(

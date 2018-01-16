@@ -3,12 +3,11 @@
 namespace App\FormModel;
 
 use App\Validator\Constraints\ValidCredential;
-use Serializable;
 
 /**
  * @ValidCredential
  */
-class CredentialAuthenticationSubmission implements Serializable
+class CredentialAuthenticationSubmission implements ISubmission
 {
     private $username;
 

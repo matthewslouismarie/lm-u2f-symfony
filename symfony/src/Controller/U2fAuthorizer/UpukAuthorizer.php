@@ -8,10 +8,12 @@ use App\Form\U2fAuthenticationType;
 use App\Form\CredentialAuthenticationType;
 use App\FormModel\U2fAuthenticationSubmission;
 use App\FormModel\CredentialAuthenticationSubmission;
+use App\FormModel\NewLoginRequest;
 use App\Model\IAuthorizationRequest;
 use App\Model\AuthorizationRequest;
 use App\Service\U2fAuthenticationManager;
 use App\Service\SecureSession;
+use App\Service\SubmissionStack;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SecurityException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,36 +39,27 @@ class UpukAuthorizer extends AbstractController
     }
 
     /**
-     * @todo Is all the good prefix for the route?
-     * @todo Move username / password check in form.
-     *
      * @Route(
-     *  "/all/u2f-authorization/upuk/up/{sessionId}",
+     *  "/all/u2f-authorization/upuk/up/{submissionStackSid}",
      *  name="u2f_authorization_upuk_up",
-     *  methods={"GET", "POST"},
-     *  requirements={"sessionId"=".+"})
+     *  methods={"GET", "POST"})
      */
-    public function upukUp(
+    public function performCredentialAuthentication(
         Request $request,
         SecureSession $sSession,
-        string $sessionId)
+        SubmissionStack $submissionStack,
+        string $submissionStackSid)
     {
         $upSubmission = new CredentialAuthenticationSubmission();
         $form = $this->createForm(CredentialAuthenticationType::class, $upSubmission);
         $form->handleRequest($request);
 
-        try {
-            if ($form->isSubmitted() && $form->isValid()) {
-                $upSubmissionId = $sSession->storeObject($upSubmission, CredentialAuthenticationSubmission::class);
-                $url = $this->generateUrl('u2f_authorization_upuk_uk', array(
-                    'sessionId' => $sessionId,
-                    'upSubmissionId' => $upSubmissionId,
-                ));
-
-                return new RedirectResponse($url);
-            }
-        } catch (AuthenticationException $e) {
-            $form->addError(new FormError('Invalid username or password.'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newSid = $submissionStack->add($submissionStackSid, $upSubmission);
+            $url = $this->generateUrl('u2f_authorization_upuk_uk', [
+                'submissionStackSid' => $newSid,
+            ]);
+            return new RedirectResponse($url);
         }
 
         return $this->render('registration/username_and_password.html.twig', array(
@@ -75,66 +68,43 @@ class UpukAuthorizer extends AbstractController
     }
 
     /**
-     * @todo What if the username doesn't exist?
      * @todo What if the member doesn't have U2F tokens?
      *
      * @Route(
-     *  "/all/u2f-authorization/upuk/uk/{sessionId}/{upSubmissionId}",
+     *  "/all/u2f-authorization/upuk/uk/{submissionStackSid}",
      *  name="u2f_authorization_upuk_uk",
-     *  methods={"GET", "POST"},
-     *  requirements={"sessionId"=".+", "upSubmissionId"=".+"})
+     *  methods={"GET", "POST"})
      */
-    public function upukUk(
+    public function performU2fAuthentication(
         U2fAuthenticationManager $auth,
-        Request $request,
-        SecureSession $sSession,
-        string $sessionId,
-        string $upSubmissionId)
+        Request $httpRequest,
+        SubmissionStack $submissionStack,
+        string $submissionStackSid)
     {
-        $upSubmission = $sSession
-            ->getObject($upSubmissionId, CredentialAuthenticationSubmission::class);
+        $credential = $submissionStack->get(
+            $submissionStackSid,
+            1,
+            CredentialAuthenticationSubmission::class)
+        ;
+        $u2fData = $auth->generate($credential->getUsername());
+        $submission = new U2fAuthenticationSubmission();
+        $form = $this->createForm(U2fAuthenticationType::class, $submission);
 
-        try {
-            $u2fData = $auth->generate($upSubmission->getUsername());
-        } catch (NonexistentMemberException $e) {
-            return new Response('error');
-        }
-        $u2fSubmission = new U2fAuthenticationSubmission(
-            $upSubmission->getUsername(),
-            null,
-            $u2fData['auth_id']);
-        $form = $this->createForm(U2fAuthenticationType::class, $u2fSubmission);
-        $form->handleRequest($request);
-
-        try {
-            if ($form->isSubmitted() && $form->isValid()) {
-                $action = $sSession
-                    ->getAndRemoveObject($sessionId, IAuthorizationRequest::class);
-                if (!$action instanceof IAuthorizationRequest) {
-                    return new Response('Sorry, an error happened');
-                }
-
-                $auth->processResponse(
-                    $u2fSubmission->getU2fAuthenticationRequestId(),
-                    $u2fSubmission->getUsername(),
-                    $u2fSubmission->getU2fTokenResponse()
-                );
-
-                $validatedAction = new AuthorizationRequest(
-                    true,
-                    $action->getSuccessRoute(),
-                    $u2fSubmission->getUsername());
-                $authorizationRequestSid = $sSession->storeObject($validatedAction, IAuthorizationRequest::class);
-                $url = $this->generateUrl($action->getSuccessRoute(), array(
-                    'authorizationRequestSid' => $authorizationRequestSid,
-                ));
-
-                return new RedirectResponse($url);
-            }
-        } catch (SecurityException $e) {
-            $form->addError(new FormError('Invalid U2F token response.'));
-        } catch (AuthenticationException $e) {
-            $form->addError(new FormError('Invalid U2F token response.'));
+        $form->handleRequest($httpRequest);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // process submission stack
+            // if everything goes well
+            $loginRequest = $submissionStack->get(
+                $submissionStackSid,
+                0,
+                NewLoginRequest::class)
+            ;
+            $url = $this->generateUrl(
+                $loginRequest->getSuccessRoute(),
+                [
+                    'submissionStackSid' => $submissionStackSid,
+                ]);
+            return new RedirectResponse($url);
         }
 
         return $this->render('u2f_authorization/upuk/uk_authentication.html.twig', array(

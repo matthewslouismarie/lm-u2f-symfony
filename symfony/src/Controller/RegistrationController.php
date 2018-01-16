@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use App\Factory\MemberFactory;
-use App\Form\U2fTokenRegistrationType;
+use App\Form\U2fRegistrationtype;
 use App\Form\CredentialRegistrationType;
 use App\Form\UserConfirmationType;
 use App\FormModel\CredentialRegistrationSubmission;
-use App\FormModel\U2fTokenRegistration;
+use App\FormModel\U2fRegistrationSubmission;
 use App\Service\U2fService;
 use App\Service\U2fTokenRegistrationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -91,8 +91,8 @@ class RegistrationController extends AbstractController
         }
 
         if ('POST' === $request->getMethod()) {
-            $submission = new U2fTokenRegistration();
-            $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
+            $submission = new U2fRegistrationSubmission();
+            $form = $this->createForm(U2fRegistrationtype::class, $submission);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 try {
@@ -121,9 +121,9 @@ class RegistrationController extends AbstractController
         }
 
         $rp_request = $service->generate();
-        $submission = new U2fTokenRegistration();
+        $submission = new U2fRegistrationSubmission();
         $submission->setRequestId($rp_request['request_id']);
-        $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
+        $form = $this->createForm(U2fRegistrationtype::class, $submission);
 
         return $this->render('registration/key.html.twig', array(
             'request_json' => $rp_request['request_json'],

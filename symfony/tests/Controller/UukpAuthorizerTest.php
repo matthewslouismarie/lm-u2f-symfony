@@ -91,11 +91,11 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $submitButton = $this
             ->getClient()
             ->getCrawler()
-            ->selectButton('u2f_token_registration[submit]')
+            ->selectButton('u2f_registration[submit]')
         ;
         $form = $submitButton->form([
-            'u2f_token_registration[requestId]' => $registerRequestSid,
-            'u2f_token_registration[u2fTokenResponse]' => $registration['u2fTokenResponse'],
+            'u2f_registration[requestId]' => $registerRequestSid,
+            'u2f_registration[u2fTokenResponse]' => $registration['u2fTokenResponse'],
         ]);
         $this
             ->getClient()

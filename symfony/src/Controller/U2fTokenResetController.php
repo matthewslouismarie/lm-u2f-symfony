@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\U2fToken;
-use App\Form\U2fTokenRegistrationType;
-use App\FormModel\U2fTokenRegistration;
+use App\Form\U2fRegistrationtype;
+use App\FormModel\U2fRegistrationSubmission;
 use App\Model\AuthorizationRequest;
 use App\Service\SecureSession;
 use App\Service\U2fTokenRegistrationService;
@@ -63,8 +63,8 @@ class U2fTokenResetController extends AbstractController
             ->getObject($authorizationTokenSid, UukpAuthorizationToken::class)
         ;
         $challenge = $service->generate();
-        $submission = new U2fTokenRegistration($challenge['request_id']);
-        $form = $this->createForm(U2fTokenRegistrationType::class, $submission);
+        $submission = new U2fRegistrationSubmission($challenge['request_id']);
+        $form = $this->createForm(U2fRegistrationtype::class, $submission);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $service->processResponse($submission->getU2fTokenResponse(), $this->getUser(), new DateTimeImmutable(), $submission->getRequestId());

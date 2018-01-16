@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Factory\MemberFactory;
 use App\Form\U2fTokenRegistrationType;
-use App\Form\RegistrationType;
+use App\Form\CredentialRegistrationType;
 use App\Form\UserConfirmationType;
-use App\FormModel\RegistrationSubmission;
+use App\FormModel\CredentialRegistrationSubmission;
 use App\FormModel\U2fTokenRegistration;
 use App\Service\U2fService;
 use App\Service\U2fTokenRegistrationService;
@@ -47,8 +47,8 @@ class RegistrationController extends AbstractController
         SessionInterface $session)
     {
         $session->start();
-        $submission = new RegistrationSubmission();
-        $form = $this->createForm(RegistrationType::class, $submission);
+        $submission = new CredentialRegistrationSubmission();
+        $form = $this->createForm(CredentialRegistrationType::class, $submission);
 
         $form->handleRequest($request);
 

@@ -14,10 +14,10 @@ class RegistrationTest extends DbWebTestCase
         $firstCrawler = $this
             ->getClient()
             ->request('GET', '/not-authenticated/username-and-password');
-        $button = $firstCrawler->selectButton('registration[submit]');
+        $button = $firstCrawler->selectButton('credential_registration[submit]');
         $form = $button->form(array(
-            'registration[username]' => 'johndoe',
-            'registration[password]' => 'password',
+            'credential_registration[username]' => 'johndoe',
+            'credential_registration[password]' => 'password',
         ));
         $secondCrawler = $this->getClient()->submit($form);
         $sessionMember = $session->get('tks_member');

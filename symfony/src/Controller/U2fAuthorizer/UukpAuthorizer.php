@@ -3,9 +3,9 @@
 namespace App\Controller\U2fAuthorizer;
 
 use App\Form\U2fAuthenticationType;
-use App\Form\UsernameType;
+use App\Form\ExistingUsernameType;
 use App\FormModel\U2fAuthenticationSubmission;
-use App\FormModel\UsernameSubmission;
+use App\FormModel\ExistingUsernameSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Service\U2fAuthenticationManager;
 use App\Service\SecureSession;
@@ -41,9 +41,9 @@ class UukpAuthorizer extends AbstractController
                     $authorizationRequest->getUsername())
             ;
         }
-        $usernameSubmission = new UsernameSubmission();
+        $ExistingUsernameSubmission = new ExistingUsernameSubmission();
         $usernameForm = $this
-            ->createForm(UsernameType::class, $usernameSubmission)
+            ->createForm(ExistingUsernameType::class, $ExistingUsernameSubmission)
         ;
         $usernameForm->handleRequest($request);
         if ($usernameForm->isSubmitted() && $usernameForm->isValid()) {
@@ -51,7 +51,7 @@ class UukpAuthorizer extends AbstractController
                 ->redirectToFirstU2fKey(
                     $authorizationRequest,
                     $sSession,
-                    $usernameSubmission->getUsername()
+                    $ExistingUsernameSubmission->getUsername()
                 )
             ;
         }

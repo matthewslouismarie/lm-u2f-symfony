@@ -129,10 +129,10 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         $submitButton = $this
             ->getClient()
             ->getCrawler()
-            ->selectButton('username[submit]')
+            ->selectButton('existing_username[submit]')
         ;
         $usernameForm = $submitButton->form(array(
-            'username[username]' => 'louis',
+            'existing_username[username]' => 'louis',
         ));
         $this->getClient()->submit($usernameForm);
         $this->assertTrue($this->getClient()->getResponse()->isRedirection());

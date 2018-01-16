@@ -6,14 +6,9 @@ use App\Validator\Constraints\ExistingMemberConstraint;
 use Serializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @todo Rename to ExistingUsernameSubmission?
- */
-class UsernameSubmission implements Serializable
+class ExistingUsernameSubmission implements Serializable
 {
     /**
-     * @Assert\NotBlank()
-     * @Assert\Type("string")
      * @ExistingMemberConstraint
      */
     private $username;

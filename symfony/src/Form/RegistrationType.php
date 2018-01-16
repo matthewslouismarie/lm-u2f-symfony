@@ -9,6 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @todo Rename to UpRegistrationType
+ */
 class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -16,6 +19,7 @@ class RegistrationType extends AbstractType
         $builder
             ->add('username')
             ->add('password', PasswordType::class)
+            ->add('passwordConfirmation', PasswordType::class)
             ->add('submit', SubmitType::class)
         ;
     }

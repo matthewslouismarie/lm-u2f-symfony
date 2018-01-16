@@ -5,6 +5,8 @@ namespace App\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 
 /**
+ * @todo Remove Constraint from name.
+ * 
  * @Annotation
  */
 class ExistingMemberConstraint extends Constraint

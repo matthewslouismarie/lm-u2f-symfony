@@ -3,9 +3,10 @@
 namespace App\FormModel;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\Constraints\IdenticalPassword;
 
 /**
- * @todo Maybe methods shouldn't be type-hinted?
+ * @todo Rename to UpRegistrationSubmission.
  */
 class RegistrationSubmission
 {
@@ -22,6 +23,14 @@ class RegistrationSubmission
      */
     private $password;
 
+    /**
+     * @Assert\IdenticalTo(
+     *  propertyPath="password",
+     *  message="Your password confirmation does not match.")
+     * @Assert\Type("string")
+     */
+    private $passwordConfirmation;
+
     public function getUsername(): ?string
     {
         return $this->username;
@@ -32,6 +41,11 @@ class RegistrationSubmission
         return $this->password;
     }
 
+    public function getPasswordConfirmation(): ?string
+    {
+        return $this->passwordConfirmation;
+    }
+
     public function setUsername(string $username): void
     {
         $this->username = $username;
@@ -40,5 +54,10 @@ class RegistrationSubmission
     public function setPassword(string $password): void
     {
         $this->password = $password;
+    }
+
+    public function setPasswordConfirmation(?string $passwordConfirmation): void
+    {
+        $this->passwordConfirmation = $passwordConfirmation;
     }
 }

@@ -30,6 +30,7 @@ class MemberRepository extends ServiceEntityRepository
         if (null === $member) {
             throw new NonexistentMemberException();
         }
+
         return $member;
     }
 

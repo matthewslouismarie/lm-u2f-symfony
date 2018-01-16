@@ -2,10 +2,8 @@
 
 namespace App\FormModel;
 
-use App\Validator\Constraints\ExistingMemberConstraint;
 use App\Validator\Constraints\ValidCredential;
 use Serializable;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ValidCredential

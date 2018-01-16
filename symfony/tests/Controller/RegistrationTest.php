@@ -35,9 +35,9 @@ class RegistrationTest extends DbWebTestCase
         $firstCrawler = $this
             ->getClient()
             ->request('GET', '/not-authenticated/key-'.$keyNo);
-        $button = $firstCrawler->selectButton('u2f_token_registration[submit]');
+        $button = $firstCrawler->selectButton('u2f_registration[submit]');
         $form = $button->form(array(
-            'u2f_token_registration[u2fTokenResponse]' => 'invalid response',
+            'u2f_registration[u2fTokenResponse]' => 'invalid response',
         ));
         $secondCrawler = $this->getClient()->submit($form);
 

@@ -3,27 +3,17 @@
 namespace App\FormModel;
 
 use App\Validator\Constraints\ExistingMemberConstraint;
+use App\Validator\Constraints\ValidCredential;
 use Serializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @todo Both the username and the password should be checked. Right now, only
- * the username is checked. This means an attacker is able to know whether
- * whether it is the username or the password that is incorrect.
+ * @ValidCredential
  */
 class UsernameAndPasswordSubmission implements Serializable
 {
-    /**
-     * @Assert\NotBlank()
-     * @Assert\Type("string")
-     * @ExistingMemberConstraint
-     */
     private $username;
 
-    /**
-     * @Assert\NotBlank()
-     * @Assert\Type("string")
-     */
     private $password;
 
     public function __construct(
@@ -69,4 +59,3 @@ class UsernameAndPasswordSubmission implements Serializable
             $this->password) = unserialize($serialized);
     }
 }
-

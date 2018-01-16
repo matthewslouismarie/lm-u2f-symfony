@@ -57,9 +57,6 @@ class UpukAuthorizer extends AbstractController
 
         try {
             if ($form->isSubmitted() && $form->isValid()) {
-                $this->checkAuthentication(
-                    $upSubmission->getUsername(),
-                    $upSubmission->getPassword());
                 $upSubmissionId = $sSession->storeObject($upSubmission, UsernameAndPasswordSubmission::class);
                 $url = $this->generateUrl('u2f_authorization_upuk_uk', array(
                     'sessionId' => $sessionId,
@@ -144,21 +141,5 @@ class UpukAuthorizer extends AbstractController
             'form' => $form->createView(),
             'sign_requests_json' => $u2fData['sign_requests_json'],
         ));
-    }
-
-    private function checkAuthentication(string $username, string $password)
-    {
-        $member = $this
-            ->om
-            ->getRepository(Member::class)->findOneBy(array(
-                'username' => $username,
-        ));
-        $isPasswordValid = $this
-            ->encoder
-            ->isPasswordValid($member, $password)
-        ;
-        if (null === $member || !$isPasswordValid) {
-            throw new AuthenticationException();
-        }
     }
 }

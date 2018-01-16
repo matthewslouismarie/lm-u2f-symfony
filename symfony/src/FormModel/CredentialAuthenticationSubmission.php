@@ -8,7 +8,7 @@ use Serializable;
 /**
  * @ValidCredential
  */
-class UsernameAndPasswordSubmission implements Serializable
+class CredentialAuthenticationSubmission implements Serializable
 {
     private $username;
 

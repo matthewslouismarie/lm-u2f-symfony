@@ -5,9 +5,9 @@ namespace App\Controller\U2fAuthorizer;
 use App\Entity\Member;
 use App\Exception\NonexistentMemberException;
 use App\Form\U2fAuthenticationType;
-use App\Form\UsernameAndPasswordType;
+use App\Form\CredentialAuthenticationType;
 use App\FormModel\U2fAuthenticationSubmission;
-use App\FormModel\UsernameAndPasswordSubmission;
+use App\FormModel\CredentialAuthenticationSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Model\AuthorizationRequest;
 use App\Service\U2fAuthenticationManager;
@@ -51,13 +51,13 @@ class UpukAuthorizer extends AbstractController
         SecureSession $sSession,
         string $sessionId)
     {
-        $upSubmission = new UsernameAndPasswordSubmission();
-        $form = $this->createForm(UsernameAndPasswordType::class, $upSubmission);
+        $upSubmission = new CredentialAuthenticationSubmission();
+        $form = $this->createForm(CredentialAuthenticationType::class, $upSubmission);
         $form->handleRequest($request);
 
         try {
             if ($form->isSubmitted() && $form->isValid()) {
-                $upSubmissionId = $sSession->storeObject($upSubmission, UsernameAndPasswordSubmission::class);
+                $upSubmissionId = $sSession->storeObject($upSubmission, CredentialAuthenticationSubmission::class);
                 $url = $this->generateUrl('u2f_authorization_upuk_uk', array(
                     'sessionId' => $sessionId,
                     'upSubmissionId' => $upSubmissionId,
@@ -92,7 +92,7 @@ class UpukAuthorizer extends AbstractController
         string $upSubmissionId)
     {
         $upSubmission = $sSession
-            ->getObject($upSubmissionId, UsernameAndPasswordSubmission::class);
+            ->getObject($upSubmissionId, CredentialAuthenticationSubmission::class);
 
         try {
             $u2fData = $auth->generate($upSubmission->getUsername());

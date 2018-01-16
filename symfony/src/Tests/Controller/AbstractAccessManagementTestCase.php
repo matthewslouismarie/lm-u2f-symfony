@@ -109,11 +109,11 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
         $button = $this
             ->getClient()
             ->getCrawler()
-            ->selectButton('username_and_password[submit]')
+            ->selectButton('credential_authentication[submit]')
         ;
         $form = $button->form(array(
-            'username_and_password[username]' => $username,
-            'username_and_password[password]' => $password,
+            'credential_authentication[username]' => $username,
+            'credential_authentication[password]' => $password,
         ));
         $secondCrawler = $this->getClient()->submit($form);
     }

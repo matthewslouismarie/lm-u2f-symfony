@@ -8,11 +8,15 @@ class PasswordUpdateSubmission
 {
     /**
      * @Assert\NotBlank()
+     * @Assert\Type("string")
      */
     private $password;
 
     /**
-     * @Assert\IdenticalTo(propertyPath="password")
+     * @Assert\IdenticalTo(
+     *  propertyPath="password",
+     * message="The password confirmation does not match")
+     * @Assert\Type("string")
      */
     private $passwordConfirmation;
 

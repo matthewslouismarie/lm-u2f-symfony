@@ -24,22 +24,22 @@ class U2fTokenRegistration
         $this->requestId = $requestId;
     }
 
-    public function getU2fTokenResponse()
+    public function getU2fTokenResponse(): ?string
     {
         return $this->u2fTokenResponse;
     }
 
-    public function getRequestId()
+    public function getRequestId(): ?string
     {
         return $this->requestId;
     }
 
-    public function setU2fTokenResponse($u2fTokenResponse)
+    public function setU2fTokenResponse(?string $u2fTokenResponse): void
     {
         $this->u2fTokenResponse = $u2fTokenResponse;
     }
 
-    public function setRequestId($requestId)
+    public function setRequestId(?string $requestId): void
     {
         $this->requestId = $requestId;
     }

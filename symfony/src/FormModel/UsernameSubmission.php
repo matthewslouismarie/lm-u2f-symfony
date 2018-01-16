@@ -2,10 +2,14 @@
 
 namespace App\FormModel;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints\ExistingMemberConstraint;
+use Serializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class UsernameSubmission implements \Serializable
+/**
+ * @todo Rename to ExistingUsernameSubmission?
+ */
+class UsernameSubmission implements Serializable
 {
     /**
      * @Assert\NotBlank()

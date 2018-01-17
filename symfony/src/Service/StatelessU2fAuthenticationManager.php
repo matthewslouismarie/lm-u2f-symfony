@@ -4,10 +4,11 @@ namespace App\Service;
 
 use App\Entity\Member;
 use App\Entity\U2fToken;
+use App\FormModel\U2fAuthenticationRequest;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SignResponse;
 
-class U2fAuthenticationManager
+class StatelessU2fAuthenticationManager
 {
     private $em;
 
@@ -25,12 +26,9 @@ class U2fAuthenticationManager
         $this->session = $session;
     }
 
-    /**
-     * @todo Rename auth_id to u2fAuthenticationId?
-     */
     public function generate(
         string $username,
-        array $idsToExclude = array()): array
+        array $idsToExclude = array()): U2fAuthenticationRequest
     {
         $member = $this
             ->em
@@ -53,14 +51,9 @@ class U2fAuthenticationManager
             unset($signRequests[$id]);
         }
 
-        $auth_id = $this->session->storeArray($signRequests);
+        $u2fAuthenticationRequest = new U2fAuthenticationRequest($signRequests);
 
-        return array(
-            'sign_requests_json' => json_encode(array_values($signRequests)),
-            'username' => $username,
-            'auth_id' => $auth_id,
-            'tmp' => $signRequests,
-        );
+        return $u2fAuthenticationRequest;
     }
 
     /**
@@ -74,18 +67,26 @@ class U2fAuthenticationManager
         string $username,
         string $token_response): int
     {
-        $member = $this->em
-                       ->getRepository(Member::class)
-                       ->findOneBy(array('username' => $username));
+        $member = $this
+            ->em
+            ->getRepository(Member::class)
+            ->findOneBy(['username' => $username])
+        ;
 
-        $registrations = $this->em
-                              ->getRepository(U2fToken::class)
-                              ->getMemberRegistrations($member->getId());
+        $registrations = $this
+            ->em
+            ->getRepository(U2fToken::class)
+            ->getMemberRegistrations($member->getId())
+        ;
 
-        $sign_requests = $this->session->getAndRemoveArray($auth_id);
-        $this->server
-             ->setRegistrations($registrations)
-             ->setSignRequests($sign_requests)
+        $sign_requests = $this
+            ->session
+            ->getAndRemoveArray($auth_id)
+        ;
+        $this
+            ->server
+            ->setRegistrations($registrations)
+            ->setSignRequests($sign_requests)
         ;
         $response = SignResponse::fromJson($token_response);
         $registration = $this->server->authenticate($response);

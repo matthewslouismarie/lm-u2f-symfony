@@ -86,7 +86,7 @@ class MediumSecurityAuthorizer extends AbstractController
             1,
             CredentialAuthenticationSubmission::class)
         ;
-        
+
         $submission = new NewU2fAuthenticationSubmission();
         $form = $this->createForm(NewU2fAuthenticationType::class, $submission);
 
@@ -130,7 +130,7 @@ class MediumSecurityAuthorizer extends AbstractController
             return new RedirectResponse($url);
         }
         $u2fAuthenticationRequest = $auth->generate($credential->getUsername());
-        $submissionStack->set($submissionStackSid, 2, $u2fAuthenticationRequest);        
+        $submissionStack->set($submissionStackSid, 2, $u2fAuthenticationRequest);
 
         return $this->render('u2f_authorization/upuk/uk_authentication.html.twig', array(
             'form' => $form->createView(),

@@ -63,6 +63,7 @@ class SecureSession
             ->get($key)
         ;
         if (!is_array($array)) {
+            var_dump($array);
             throw new UnexpectedValueException();
         }
         foreach ($array as $item) {

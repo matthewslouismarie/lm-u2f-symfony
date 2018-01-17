@@ -12,17 +12,17 @@ class StatelessU2fAuthenticationManager
 {
     private $em;
 
-    private $server;
+    private $u2fService;
 
     private $session;
 
     public function __construct(
         ObjectManager $em,
-        U2fService $u2f,
+        U2fService $u2fService,
         SecureSession $session)
     {
         $this->em = $em;
-        $this->server = $u2f->getServer();
+        $this->u2fService = $u2fService;
         $this->session = $session;
     }
 
@@ -43,7 +43,8 @@ class StatelessU2fAuthenticationManager
         ;
 
         $signRequests = $this
-            ->server
+            ->u2fService
+            ->getServer()
             ->generateSignRequests($registrations)
         ;
 
@@ -63,10 +64,14 @@ class StatelessU2fAuthenticationManager
      * @todo sql transaction
      */
     public function processResponse(
-        string $auth_id,
+        U2fAuthenticationRequest $u2fAuthenticationRequest,
         string $username,
-        string $token_response): int
+        string $u2fTokenResponse): int
     {
+        $server = $this
+            ->u2fService
+            ->getServer()
+        ;
         $member = $this
             ->em
             ->getRepository(Member::class)
@@ -83,18 +88,19 @@ class StatelessU2fAuthenticationManager
             ->session
             ->getAndRemoveArray($auth_id)
         ;
-        $this
-            ->server
+
+        $server
             ->setRegistrations($registrations)
             ->setSignRequests($sign_requests)
         ;
         $response = SignResponse::fromJson($token_response);
-        $registration = $this->server->authenticate($response);
+        $registration = $server->authenticate($response);
 
         $challenge = $response->getClientData()->getChallenge();
         $u2f_authenticator_id = $this->getAuthenticatorId($sign_requests, $challenge);
 
-        $u2fToken = $this->em
+        $u2fToken = $this
+            ->em
             ->getRepository(U2fToken::class)
             ->find($u2f_authenticator_id)
         ;
@@ -104,7 +110,9 @@ class StatelessU2fAuthenticationManager
         return $u2f_authenticator_id;
     }
 
-    private function getAuthenticatorId(array $sign_requests, string $challenge): string
+    private function getAuthenticatorId(
+        array $sign_requests,
+        string $challenge): string
     {
         foreach ($sign_requests as $authenticator_id => $sign_request) {
             if ($sign_request->getChallenge() === $challenge) {

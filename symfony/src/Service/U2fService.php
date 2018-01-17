@@ -9,17 +9,20 @@ class U2fService
 {
     public const N_U2F_TOKENS_PER_MEMBER = 3;
 
-    private $server;
+    private $appId;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->server = new Server();
-        $this->server->disableCAVerification()
-             ->setAppId($container->getParameter('u2f.app_id'));
+        $this->appId = $container->getParameter('u2f.app_id');
     }
 
-    public function getServer()
+    public function getServer(): Server
     {
-        return $this->server;
+        $server = new Server();
+        $server
+            ->disableCAVerification()
+            ->setAppId($this->appId)
+        ;
+        return $server;
     }
 }

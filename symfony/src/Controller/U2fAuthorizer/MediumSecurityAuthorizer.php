@@ -45,9 +45,9 @@ class MediumSecurityAuthorizer extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $newSid = $submissionStack->add($submissionStackSid, $upSubmission);
+            $submissionStack->add($submissionStackSid, $upSubmission);
             $url = $this->generateUrl('medium_security_u2f_authentication', [
-                'submissionStackSid' => $newSid,
+                'submissionStackSid' => $submissionStackSid,
             ]);
             return new RedirectResponse($url);
         }
@@ -80,9 +80,19 @@ class MediumSecurityAuthorizer extends AbstractController
             1,
             CredentialAuthenticationSubmission::class)
         ;
+        
         $u2fAuthenticationRequest = $auth->generate($credential->getUsername());
+        $submissionStack->add($submissionStackSid, $u2fAuthenticationRequest);
+        $formAction = $this->generateUrl('medium_security_u2f_authentication');
+        
         $submission = new NewU2fAuthenticationSubmission();
-        $form = $this->createForm(NewU2fAuthenticationType::class, $submission);
+        $form = $this->createForm(
+            NewU2fAuthenticationType::class,
+            $submission,
+            [
+                'action' => $formAction,
+            ]
+        );
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -96,7 +106,7 @@ class MediumSecurityAuthorizer extends AbstractController
                 ->getRepository(Member::class)
                 ->checkPassword($member, $credential->getPassword())
             ;
-            
+
             // process submission stack
             // if everything goes well
             $loginRequest = $submissionStack->get(

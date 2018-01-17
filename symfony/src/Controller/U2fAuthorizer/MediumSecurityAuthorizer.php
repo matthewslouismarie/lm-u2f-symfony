@@ -69,6 +69,7 @@ class MediumSecurityAuthorizer extends AbstractController
      * @todo What if the user's U2F tokens change during the validation?
      * @todo Delete submission stack.
      * @todo Add validation to form.
+     * @todo Catch exceptions and display error page.
      *
      * @Route(
      *  "/all/u2f-authorization/medium-security/u2f/{submissionStackSid}",

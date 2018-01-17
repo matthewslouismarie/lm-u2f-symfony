@@ -3,7 +3,6 @@
 namespace App\Controller\U2fAuthorizer;
 
 use App\Entity\Member;
-use App\Exception\NonexistentMemberException;
 use App\Form\NewU2fAuthenticationType;
 use App\Form\CredentialAuthenticationType;
 use App\FormModel\NewU2fAuthenticationSubmission;
@@ -15,14 +14,11 @@ use App\Service\StatelessU2fAuthenticationManager;
 use App\Service\SecureSession;
 use App\Service\SubmissionStack;
 use Doctrine\Common\Persistence\ObjectManager;
-use Firehed\U2F\SecurityException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * This class handles the authorisation of IAuthorizationRequest objects. UPUK

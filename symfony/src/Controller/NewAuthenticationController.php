@@ -2,20 +2,20 @@
 
 namespace App\Controller;
 
-use App\Model\IAuthorizationRequest;
-use App\Form\LoginRequestType;
-use App\FormModel\LoginRequest;
-use App\FormModel\NewLoginRequest;
-use App\Form\UserConfirmationType;
-use App\Model\AuthorizationRequest;
-use App\Service\SecureSession;
+// use App\Model\IAuthorizationRequest;
+// use App\Form\LoginRequestType;
+// use App\FormModel\LoginRequest;
+// use App\FormModel\NewLoginRequest;
+// use App\Form\UserConfirmationType;
+// use App\Model\AuthorizationRequest;
+// use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use App\Service\SubmissionStack;
-use App\FormModel\CredentialAuthenticationSubmission;
+// use Symfony\Component\Routing\Annotation\Route;
+// use Symfony\Component\HttpFoundation\RedirectResponse;
+// use Symfony\Component\HttpFoundation\Response;
+// use Symfony\Component\HttpFoundation\Request;
+// use App\Service\SubmissionStack;
+// use App\FormModel\CredentialAuthenticationSubmission;
 
 
 class NewAuthenticationController extends AbstractController

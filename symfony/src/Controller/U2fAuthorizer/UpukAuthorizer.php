@@ -4,14 +4,14 @@ namespace App\Controller\U2fAuthorizer;
 
 use App\Entity\Member;
 use App\Exception\NonexistentMemberException;
-use App\Form\U2fAuthenticationType;
+use App\Form\NewU2fAuthenticationType;
 use App\Form\CredentialAuthenticationType;
-use App\FormModel\U2fAuthenticationSubmission;
+use App\FormModel\NewU2fAuthenticationSubmission;
 use App\FormModel\CredentialAuthenticationSubmission;
 use App\FormModel\NewLoginRequest;
 use App\Model\IAuthorizationRequest;
 use App\Model\AuthorizationRequest;
-use App\Service\U2fAuthenticationManager;
+use App\Service\StatelessU2fAuthenticationManager;
 use App\Service\SecureSession;
 use App\Service\SubmissionStack;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -69,6 +69,10 @@ class UpukAuthorizer extends AbstractController
 
     /**
      * @todo What if the member doesn't have U2F tokens?
+     * @todo What if the authentication expires by the time the user accesses
+     * the success route?
+     * @todo What if the user's U2F tokens change during the validation?
+     * @todo Delete submission stack.
      *
      * @Route(
      *  "/all/u2f-authorization/upuk/uk/{submissionStackSid}",
@@ -76,7 +80,7 @@ class UpukAuthorizer extends AbstractController
      *  methods={"GET", "POST"})
      */
     public function performU2fAuthentication(
-        U2fAuthenticationManager $auth,
+        StatelessU2fAuthenticationManager $auth,
         Request $httpRequest,
         SubmissionStack $submissionStack,
         string $submissionStackSid)
@@ -86,12 +90,22 @@ class UpukAuthorizer extends AbstractController
             1,
             CredentialAuthenticationSubmission::class)
         ;
-        $u2fData = $auth->generate($credential->getUsername());
-        $submission = new U2fAuthenticationSubmission();
-        $form = $this->createForm(U2fAuthenticationType::class, $submission);
+        $u2fAuthenticationRequest = $auth->generate($credential->getUsername());
+        $submission = new NewU2fAuthenticationSubmission();
+        $form = $this->createForm(NewU2fAuthenticationType::class, $submission);
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
+            $member = $this
+                ->getDoctrine()
+                ->getRepository(Member::class)
+                ->getMember($credential->getUsername())
+            ;
+            $validPassword = $this
+                ->getDoctrine()
+                ->getRepository(Member::class)
+                ->checkPassword($member, $credential->getPassword())
+            ;
             // process submission stack
             // if everything goes well
             $loginRequest = $submissionStack->get(
@@ -103,13 +117,15 @@ class UpukAuthorizer extends AbstractController
                 $loginRequest->getSuccessRoute(),
                 [
                     'submissionStackSid' => $submissionStackSid,
-                ]);
+                ])
+            ;
+
             return new RedirectResponse($url);
         }
 
         return $this->render('u2f_authorization/upuk/uk_authentication.html.twig', array(
             'form' => $form->createView(),
-            'sign_requests_json' => $u2fData['sign_requests_json'],
+            'sign_requests_json' => $u2fAuthenticationRequest->getJsonSignRequests(),
         ));
     }
 }

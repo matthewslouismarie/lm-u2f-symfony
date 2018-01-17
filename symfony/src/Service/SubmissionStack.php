@@ -19,7 +19,7 @@ class SubmissionStack
         $this->sSession = $sSession;
     }
 
-    public function add(string $sid, ISubmission $submission): string
+    public function add(string $sid, ISubmission $submission): void
     {
         $submissions = $this
             ->sSession
@@ -28,11 +28,9 @@ class SubmissionStack
 
         $submissions[] = $submission;
 
-        $this->sSession->remove($sid);
-
-        return $this
+        $this
             ->sSession
-            ->storeArray($submissions)
+            ->storeTypedArray($submissions, ISubmission::class, $sid)
         ;
     }
 

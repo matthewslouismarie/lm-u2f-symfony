@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use InvalidArgumentException;
 use UnexpectedValueException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -19,6 +20,22 @@ class SecureSession
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
+    }
+
+    public function storeTypedArray(
+        array $array,
+        string $class,
+        string $sid): void
+    {
+        foreach ($array as $item) {
+            if (!is_a($item, $class)) {
+                throw new InvalidArgumentException();
+            }
+        }
+        $this
+            ->session
+            ->set($sid, $array)
+        ;
     }
 
     public function storeArray(array $array): string

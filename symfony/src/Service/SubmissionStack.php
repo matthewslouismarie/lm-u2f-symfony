@@ -62,6 +62,16 @@ class SubmissionStack
         return $item;
     }
 
+    public function peek(string $sid): ISubmission
+    {
+        $stack = $this
+            ->sSession
+            ->getTypedArray($sid, ISubmission::class)
+        ;
+
+        return $stack[count($stack)];
+    }
+
     /**
      * @todo
      */

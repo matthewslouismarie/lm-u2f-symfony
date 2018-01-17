@@ -23,6 +23,7 @@ class U2fService
             ->disableCAVerification()
             ->setAppId($this->appId)
         ;
+
         return $server;
     }
 }

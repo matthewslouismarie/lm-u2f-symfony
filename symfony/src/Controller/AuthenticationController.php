@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Model\IAuthorizationRequest;
 use App\Form\LoginRequestType;
 use App\FormModel\LoginRequest;
-use App\FormModel\NewLoginRequest;
 use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
 use App\Service\SecureSession;
@@ -14,9 +13,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use App\Service\SubmissionStack;
-use App\FormModel\CredentialAuthenticationSubmission;
-
 
 class AuthenticationController extends AbstractController
 {
@@ -28,13 +24,12 @@ class AuthenticationController extends AbstractController
      */
     public function startLogin(
         Request $request,
-        SubmissionStack $submissionStack,
         SecureSession $sSession)
     {
-        $loginRequest = new NewLoginRequest('finish_login');
-        $sid = $submissionStack->create($loginRequest);
+        $request = new AuthorizationRequest(false, 'finish_login', null);
+        $sessionId = $sSession->storeObject($request, IAuthorizationRequest::class);
         $url = $this->generateUrl('u2f_authorization_upuk_up', array(
-            'submissionStackSid' => $sid,
+            'sessionId' => $sessionId,
         ));
 
         return new RedirectResponse($url);
@@ -44,24 +39,25 @@ class AuthenticationController extends AbstractController
      * @todo Have a better error handling.
      *
      * @Route(
-     *  "/not-authenticated/finish-login/{submissionStackSid}",
+     *  "/not-authenticated/finish-login/{authorizationRequestSid}",
      *  name="finish_login",
      *  methods={"GET", "POST"})
      */
     public function finishLogin(
         Request $request,
         SecureSession $sSession,
-        SubmissionStack $submissionStack,
-        string $submissionStackSid)
+        string $authorizationRequestSid)
     {
-        $credential = $submissionStack->get(
-            $submissionStackSid,
-            1,
-            CredentialAuthenticationSubmission::class)
+        $authorizationRequest = $sSession
+            ->getAndRemoveObject(
+                $authorizationRequestSid,
+                IAuthorizationRequest::class)
         ;
-        $authorizationRequest = $submissionStack->isValid($submissionStackSid);
+        if (!$authorizationRequest->isAccepted()) {
+            return new Response('error');
+        }
 
-        $loginRequest = new LoginRequest($credential->getUsername());
+        $loginRequest = new LoginRequest($authorizationRequest->getUsername());
         $form = $this->createForm(LoginRequestType::class, $loginRequest);
         $form->handleRequest($request);
 

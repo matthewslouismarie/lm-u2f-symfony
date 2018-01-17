@@ -5,40 +5,40 @@ namespace App\Controller;
 // use App\Model\IAuthorizationRequest;
 // use App\Form\LoginRequestType;
 // use App\FormModel\LoginRequest;
-// use App\FormModel\NewLoginRequest;
+use App\FormModel\NewLoginRequest;
 // use App\Form\UserConfirmationType;
 // use App\Model\AuthorizationRequest;
-// use App\Service\SecureSession;
+use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-// use Symfony\Component\Routing\Annotation\Route;
-// use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 // use Symfony\Component\HttpFoundation\Response;
-// use Symfony\Component\HttpFoundation\Request;
-// use App\Service\SubmissionStack;
+use Symfony\Component\HttpFoundation\Request;
+use App\Service\SubmissionStack;
 // use App\FormModel\CredentialAuthenticationSubmission;
 
 
 class NewAuthenticationController extends AbstractController
 {
-    // /**
-    //  * @Route(
-    //  *  "/not-authenticated/login",
-    //  *  name="start_login",
-    //  *  methods={"GET"})
-    //  */
-    // public function startLogin(
-    //     Request $request,
-    //     SubmissionStack $submissionStack,
-    //     SecureSession $sSession)
-    // {
-    //     $loginRequest = new NewLoginRequest('finish_login');
-    //     $sid = $submissionStack->create($loginRequest);
-    //     $url = $this->generateUrl('medium_security_credential', array(
-    //         'submissionStackSid' => $sid,
-    //     ));
+    /**
+     * @Route(
+     *  "/not-authenticated/start-login",
+     *  name="login_request",
+     *  methods={"GET"})
+     */
+    public function startLogin(
+        Request $request,
+        SubmissionStack $submissionStack,
+        SecureSession $sSession)
+    {
+        $loginRequest = new NewLoginRequest('finish_login');
+        $sid = $submissionStack->create($loginRequest);
+        $url = $this->generateUrl('medium_security_credential', array(
+            'submissionStackSid' => $sid,
+        ));
 
-    //     return new RedirectResponse($url);
-    // }
+        return new RedirectResponse($url);
+    }
 
     // /**
     //  * @todo Have a better error handling.

@@ -8,8 +8,6 @@ use App\Form\CredentialAuthenticationType;
 use App\FormModel\NewU2fAuthenticationSubmission;
 use App\FormModel\CredentialAuthenticationSubmission;
 use App\FormModel\NewLoginRequest;
-use App\Model\IAuthorizationRequest;
-use App\Model\AuthorizationRequest;
 use App\Service\StatelessU2fAuthenticationManager;
 use App\Service\SecureSession;
 use App\Service\SubmissionStack;
@@ -20,10 +18,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-/**
- * This class handles the authorisation of IAuthorizationRequest objects. UPUK
- * stands for Username, Password and U2F Key.
- */
 class MediumSecurityAuthorizer extends AbstractController
 {
     public function __construct(

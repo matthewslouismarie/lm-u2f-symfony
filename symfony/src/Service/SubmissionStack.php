@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Exception\CorruptedSubmissionStackException;
 use App\FormModel\ISubmission;
 use App\Service\SecureSession;
 use UnexpectedValueException;

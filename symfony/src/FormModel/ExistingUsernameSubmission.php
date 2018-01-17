@@ -4,7 +4,6 @@ namespace App\FormModel;
 
 use App\Validator\Constraints\ExistingMemberConstraint;
 use Serializable;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class ExistingUsernameSubmission implements Serializable
 {

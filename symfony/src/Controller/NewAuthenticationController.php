@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 // use App\Model\IAuthorizationRequest;
-// use App\Form\LoginRequestType;
-// use App\FormModel\LoginRequest;
+use App\Form\LoginRequestType;
+use App\FormModel\LoginRequest;
 use App\FormModel\NewLoginRequest;
 // use App\Form\UserConfirmationType;
 // use App\Model\AuthorizationRequest;
@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 // use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\SubmissionStack;
-// use App\FormModel\CredentialAuthenticationSubmission;
+use App\FormModel\CredentialAuthenticationSubmission;
 
 
 class NewAuthenticationController extends AbstractController
@@ -31,7 +31,7 @@ class NewAuthenticationController extends AbstractController
         SubmissionStack $submissionStack,
         SecureSession $sSession)
     {
-        $loginRequest = new NewLoginRequest('finish_login');
+        $loginRequest = new NewLoginRequest('finalize_login');
         $sid = $submissionStack->create($loginRequest);
         $url = $this->generateUrl('medium_security_credential', array(
             'submissionStackSid' => $sid,
@@ -40,35 +40,35 @@ class NewAuthenticationController extends AbstractController
         return new RedirectResponse($url);
     }
 
-    // /**
-    //  * @todo Have a better error handling.
-    //  *
-    //  * @Route(
-    //  *  "/not-authenticated/finish-login/{submissionStackSid}",
-    //  *  name="finish_login",
-    //  *  methods={"GET", "POST"})
-    //  */
-    // public function finishLogin(
-    //     Request $request,
-    //     SecureSession $sSession,
-    //     SubmissionStack $submissionStack,
-    //     string $submissionStackSid)
-    // {
-    //     $credential = $submissionStack->get(
-    //         $submissionStackSid,
-    //         1,
-    //         CredentialAuthenticationSubmission::class)
-    //     ;
-    //     $authorizationRequest = $submissionStack->isValid($submissionStackSid);
+    /**
+     * @todo Have a better error handling.
+     *
+     * @Route(
+     *  "/not-authenticated/finalise-login/{submissionStackSid}",
+     *  name="finalize_login",
+     *  methods={"GET", "POST"})
+     */
+    public function finishLogin(
+        Request $request,
+        SecureSession $sSession,
+        SubmissionStack $submissionStack,
+        string $submissionStackSid)
+    {
+        $credential = $submissionStack->get(
+            $submissionStackSid,
+            1,
+            CredentialAuthenticationSubmission::class
+        );
+        $authorizationRequest = $submissionStack->isValid($submissionStackSid);
 
-    //     $loginRequest = new LoginRequest($credential->getUsername());
-    //     $form = $this->createForm(LoginRequestType::class, $loginRequest);
-    //     $form->handleRequest($request);
+        $loginRequest = new LoginRequest($credential->getUsername());
+        $form = $this->createForm(LoginRequestType::class, $loginRequest);
+        $form->handleRequest($request);
 
-    //     return $this->render('finish_login.html.twig', array(
-    //         'form' => $form->createView(),
-    //     ));
-    // }
+        return $this->render('finish_login.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
 
     // /**
     //  * @Route(

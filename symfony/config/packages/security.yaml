@@ -17,6 +17,7 @@ security:
             guard:
                 authenticators:
                     - App\Security\LoginAuthenticator
+                    - App\Security\MemberLoginAuthenticator
                     - App\Security\LogoutAuthenticator
                 entry_point: App\Security\LoginAuthenticator
             access_denied_handler: App\Security\AccessDeniedHandler

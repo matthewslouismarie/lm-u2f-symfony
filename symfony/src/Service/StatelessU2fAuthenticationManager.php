@@ -84,30 +84,25 @@ class StatelessU2fAuthenticationManager
             ->getMemberRegistrations($member->getId())
         ;
 
-        $sign_requests = $this
-            ->session
-            ->getAndRemoveArray($auth_id)
-        ;
-
         $server
             ->setRegistrations($registrations)
-            ->setSignRequests($sign_requests)
+            ->setSignRequests($u2fAuthenticationRequest->getSignRequests())
         ;
-        $response = SignResponse::fromJson($token_response);
+        $response = SignResponse::fromJson($u2fTokenResponse);
         $registration = $server->authenticate($response);
 
         $challenge = $response->getClientData()->getChallenge();
-        $u2f_authenticator_id = $this->getAuthenticatorId($sign_requests, $challenge);
+        $u2fAuthenticatorId = $this->getAuthenticatorId($u2fAuthenticationRequest->getSignRequests(), $challenge);
 
         $u2fToken = $this
             ->em
             ->getRepository(U2fToken::class)
-            ->find($u2f_authenticator_id)
+            ->find($u2fAuthenticatorId)
         ;
         $u2fToken->setCounter($response->getCounter());
         $this->em->flush();
 
-        return $u2f_authenticator_id;
+        return $u2fAuthenticatorId;
     }
 
     private function getAuthenticatorId(

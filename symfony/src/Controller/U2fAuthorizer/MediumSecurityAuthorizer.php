@@ -8,6 +8,7 @@ use App\Form\CredentialAuthenticationType;
 use App\FormModel\NewU2fAuthenticationSubmission;
 use App\FormModel\CredentialAuthenticationSubmission;
 use App\FormModel\NewLoginRequest;
+use App\FormModel\U2fAuthenticationRequest;
 use App\Service\StatelessU2fAuthenticationManager;
 use App\Service\SecureSession;
 use App\Service\SubmissionStack;
@@ -18,6 +19,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+/**
+ * @todo Routes shouldn't be accessible backwards.
+ */
 class MediumSecurityAuthorizer extends AbstractController
 {
     public function __construct(
@@ -30,7 +34,7 @@ class MediumSecurityAuthorizer extends AbstractController
 
     /**
      * @Route(
-     *  "/all/u2f-authorization/medium-security/{submissionStackSid}",
+     *  "/all/u2f-authorization/medium-security/credential/{submissionStackSid}",
      *  name="medium_security_credential",
      *  methods={"GET", "POST"})
      */
@@ -49,6 +53,7 @@ class MediumSecurityAuthorizer extends AbstractController
             $url = $this->generateUrl('medium_security_u2f_authentication', [
                 'submissionStackSid' => $submissionStackSid,
             ]);
+
             return new RedirectResponse($url);
         }
 
@@ -63,9 +68,10 @@ class MediumSecurityAuthorizer extends AbstractController
      * the success route?
      * @todo What if the user's U2F tokens change during the validation?
      * @todo Delete submission stack.
+     * @todo Add validation to form.
      *
      * @Route(
-     *  "/all/u2f-authorization/medium-security/{submissionStackSid}",
+     *  "/all/u2f-authorization/medium-security/u2f/{submissionStackSid}",
      *  name="medium_security_u2f_authentication",
      *  methods={"GET", "POST"})
      */
@@ -81,18 +87,8 @@ class MediumSecurityAuthorizer extends AbstractController
             CredentialAuthenticationSubmission::class)
         ;
         
-        $u2fAuthenticationRequest = $auth->generate($credential->getUsername());
-        $submissionStack->add($submissionStackSid, $u2fAuthenticationRequest);
-        $formAction = $this->generateUrl('medium_security_u2f_authentication');
-        
         $submission = new NewU2fAuthenticationSubmission();
-        $form = $this->createForm(
-            NewU2fAuthenticationType::class,
-            $submission,
-            [
-                'action' => $formAction,
-            ]
-        );
+        $form = $this->createForm(NewU2fAuthenticationType::class, $submission);
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -106,7 +102,17 @@ class MediumSecurityAuthorizer extends AbstractController
                 ->getRepository(Member::class)
                 ->checkPassword($member, $credential->getPassword())
             ;
-
+            $u2fAuthenticationRequest = $submissionStack->get(
+                $submissionStackSid,
+                2,
+                U2fAuthenticationRequest::class
+            );
+            $auth->processResponse(
+                $u2fAuthenticationRequest,
+                $credential->getUsername(),
+                $submission->getU2fTokenResponse()
+            );
+            
             // process submission stack
             // if everything goes well
             $loginRequest = $submissionStack->get(
@@ -123,6 +129,8 @@ class MediumSecurityAuthorizer extends AbstractController
 
             return new RedirectResponse($url);
         }
+        $u2fAuthenticationRequest = $auth->generate($credential->getUsername());
+        $submissionStack->set($submissionStackSid, 2, $u2fAuthenticationRequest);        
 
         return $this->render('u2f_authorization/upuk/uk_authentication.html.twig', array(
             'form' => $form->createView(),

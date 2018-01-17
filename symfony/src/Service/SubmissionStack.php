@@ -34,6 +34,21 @@ class SubmissionStack
         ;
     }
 
+    public function set(string $sid, int $index, ISubmission $submission): void
+    {
+        $submissions = $this
+            ->sSession
+            ->getTypedArray($sid, ISubmission::class)
+        ;
+
+        $submissions[$index] = $submission;
+
+        $this
+            ->sSession
+            ->storeTypedArray($submissions, ISubmission::class, $sid)
+        ;
+    }
+
     public function create(ISubmission $submission): string
     {
         return $this

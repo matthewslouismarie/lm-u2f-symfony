@@ -46,7 +46,7 @@ class MediumSecurityAuthorizer extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $newSid = $submissionStack->add($submissionStackSid, $upSubmission);
-            $url = $this->generateUrl('u2f_authorization_upuk_uk', [
+            $url = $this->generateUrl('medium_security_u2f_authentication', [
                 'submissionStackSid' => $newSid,
             ]);
             return new RedirectResponse($url);

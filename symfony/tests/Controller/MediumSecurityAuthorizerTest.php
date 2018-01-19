@@ -38,9 +38,15 @@ class MediumSecurityAuthorizerTest extends DbWebTestCase
         $this->getClient()->submit($loginRequestFiller->getFilledForm());
     }
 
-    public function testIncorrectLogin()
+    public function testIncorrectUsername()
     {
         $this->logIn('loui', 'hello');
+        $this->assertFalse($this->getClient()->getResponse()->isRedirect());
+    }
+
+    public function testIncorrectPassword()
+    {
+        $this->logIn('louis', '');
         $this->assertFalse($this->getClient()->getResponse()->isRedirect());
     }
 

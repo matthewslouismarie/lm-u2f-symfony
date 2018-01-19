@@ -6,7 +6,7 @@ use App\Tests\U2f\U2fAuthenticationCycle;
 use App\FormModel\U2fAuthenticationRequest;
 use Firehed\U2F\SignRequest;
 
-class MockU2fAuthenticationGenerator
+class U2fAuthenticationMocker
 {
     private $cycles;
     private $currentIndex;

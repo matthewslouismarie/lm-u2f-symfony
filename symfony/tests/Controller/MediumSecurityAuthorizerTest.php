@@ -50,6 +50,12 @@ class MediumSecurityAuthorizerTest extends DbWebTestCase
         $this->assertFalse($this->getClient()->getResponse()->isRedirect());
     }
 
+    public function testIncorrectCredentials()
+    {
+        $this->logIn('', '');
+        $this->assertFalse($this->getClient()->getResponse()->isRedirect());
+    }
+
     private function logIn(string $username, string $password): void
     {
         $this

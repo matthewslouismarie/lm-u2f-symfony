@@ -21,7 +21,7 @@ class MemberRepository extends ServiceEntityRepository
         $this->upEncoder = $upEncoder;
     }
 
-    public function getMember(string $username): Member
+    public function getMember(?string $username): Member
     {
         $member = $this->findOneBy([
                 'username' => $username,
@@ -34,7 +34,7 @@ class MemberRepository extends ServiceEntityRepository
         return $member;
     }
 
-    public function checkPassword(Member $member, string $password): void
+    public function checkPassword(Member $member, ?string $password): void
     {
         $isPasswordValid = $this
             ->upEncoder

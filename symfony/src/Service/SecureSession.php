@@ -36,6 +36,10 @@ class SecureSession
             ->session
             ->set($sid, $array)
         ;
+        $this
+            ->session
+            ->save()
+        ;
     }
 
     public function storeArray(array $array): string

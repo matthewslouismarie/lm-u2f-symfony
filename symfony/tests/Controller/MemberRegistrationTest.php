@@ -17,5 +17,7 @@ class MemberRegistrationTest extends TestCaseTemplate
             'chat')
         ;
         $this->submit($filler->fillForm());
+
+        $this->assertIsRedirect();
     }
 }

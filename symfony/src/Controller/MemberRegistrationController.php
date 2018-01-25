@@ -31,7 +31,6 @@ class MemberRegistrationController extends AbstractController
         );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             return new RedirectResponse($this
                 ->generateUrl('registration_first_u2f_key'))
             ;
@@ -53,6 +52,7 @@ class MemberRegistrationController extends AbstractController
         $registerRequest = $service->generate();
         $submission = new NewU2fRegistrationSubmission();
         $form = $this->createForm(NewU2fRegistrationType::class, $submission);
+
         return $this->render('registration/key.html.twig', [
             'form' => $form->createView(),
             'request_json' => $registerRequest->getRequestAsJson(),

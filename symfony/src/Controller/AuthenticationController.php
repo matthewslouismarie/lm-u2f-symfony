@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Service\SubmissionStack;
 use App\FormModel\CredentialAuthenticationSubmission;
 
-
 class AuthenticationController extends AbstractController
 {
     /**

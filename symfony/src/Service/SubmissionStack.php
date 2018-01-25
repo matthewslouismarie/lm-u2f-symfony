@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\FormModel\ISubmission;
-use App\Service\SecureSession;
 use UnexpectedValueException;
 
 /**

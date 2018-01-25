@@ -105,7 +105,7 @@ class TestCaseTemplate extends DbWebTestCase
 
         $pos = strrpos($uri, '/');
         $lastPart = substr($uri, $pos + 1);
-    
+
         return $lastPart;
     }
 

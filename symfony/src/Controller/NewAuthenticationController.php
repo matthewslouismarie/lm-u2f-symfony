@@ -2,17 +2,14 @@
 
 namespace App\Controller;
 
-// use App\Model\IAuthorizationRequest;
 use App\Form\LoginRequestType;
 use App\FormModel\LoginRequest;
 use App\FormModel\NewLoginRequest;
-// use App\Form\UserConfirmationType;
-// use App\Model\AuthorizationRequest;
+use App\Form\UserConfirmationType;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-// use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\SubmissionStack;
 use App\FormModel\CredentialAuthenticationSubmission;
@@ -70,30 +67,30 @@ class NewAuthenticationController extends AbstractController
         ));
     }
 
-    // /**
-    //  * @Route(
-    //  *  "/authenticated/log-out",
-    //  *  name="logout",
-    //  *  methods={"GET", "POST"})
-    //  */
-    // public function logout(Request $request)
-    // {
-    //     $form = $this->createForm(UserConfirmationType::class);
-    //     $form->handleRequest($request);
+    /**
+     * @Route(
+     *  "/authenticated/log-out",
+     *  name="logout",
+     *  methods={"GET", "POST"})
+     */
+    public function logout(Request $request)
+    {
+        $form = $this->createForm(UserConfirmationType::class);
+        $form->handleRequest($request);
 
-    //     return $this->render('registration/logout.html.twig', array(
-    //         'form' => $form->createView(),
-    //     ));
-    // }
+        return $this->render('registration/logout.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
 
-    // /**
-    //  * @Route(
-    //  *  "/authenticated/not-logged-out",
-    //  *  name="not_logged_out",
-    //  *  methods={"GET"})
-    //  */
-    // public function notLoggedOut()
-    // {
-    //     return $this->render('not_logged_out_error.html.twig');
-    // }
+    /**
+     * @Route(
+     *  "/authenticated/not-logged-out",
+     *  name="not_logged_out",
+     *  methods={"GET"})
+     */
+    public function notLoggedOut()
+    {
+        return $this->render('not_logged_out_error.html.twig');
+    }
 }

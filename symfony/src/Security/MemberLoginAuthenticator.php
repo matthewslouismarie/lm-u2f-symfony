@@ -79,7 +79,7 @@ class MemberLoginAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('start_login');
+        return $this->router->generate('login_request');
     }
 
     /**

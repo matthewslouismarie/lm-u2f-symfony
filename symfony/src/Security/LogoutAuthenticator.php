@@ -52,7 +52,7 @@ class LogoutAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('start_login');
+        return $this->router->generate('login_request');
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)

@@ -133,7 +133,7 @@ class MediumSecurityAuthorizer extends AbstractController
         $u2fAuthenticationRequest = $auth->generate($credential->getUsername());
         $submissionStack->set($submissionStackSid, 2, $u2fAuthenticationRequest);
 
-        return $this->render('u2f_authorization/upuk/uk_authentication.html.twig', array(
+        return $this->render('u2f_authentication.html.twig', array(
             'form' => $form->createView(),
             'sign_requests_json' => $u2fAuthenticationRequest->getJsonSignRequests(),
         ));

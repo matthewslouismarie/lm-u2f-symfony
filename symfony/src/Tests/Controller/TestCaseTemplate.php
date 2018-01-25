@@ -61,6 +61,15 @@ class TestCaseTemplate extends DbWebTestCase
         ;
     }
 
+    public function getHttpStatusCode(): int
+    {
+        return $this
+            ->getClient()
+            ->getResponse()
+            ->getStatusCode()
+        ;
+    }
+
     public function getSubmissionStack(): SubmissionStack
     {
         return $this

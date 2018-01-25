@@ -4,8 +4,6 @@ namespace App\Tests\Controller;
 
 use App\Form\Filler\LoginRequestFiller;
 use App\Form\Filler\CredentialFiller;
-use App\FormModel\U2fAuthenticationRequest;
-use Firehed\U2F\SignRequest;
 
 class MediumSecurityAuthorizerTest extends TestCaseTemplate
 {

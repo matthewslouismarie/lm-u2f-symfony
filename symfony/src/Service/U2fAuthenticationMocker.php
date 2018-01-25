@@ -9,6 +9,7 @@ use Firehed\U2F\SignRequest;
 class U2fAuthenticationMocker
 {
     private $cycles;
+
     private $currentIndex;
 
     public function __construct()
@@ -45,6 +46,7 @@ class U2fAuthenticationMocker
         ];
         $request = new U2fAuthenticationRequest($signRequests);
         $response = '{"keyHandle":"v8IplXz0zSQUXVYjvSWNcP_70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg","clientData":"eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoiS3FUYjYxN3dYNldmTzNROWdjTVBqQSIsIm9yaWdpbiI6Imh0dHBzOi8vMTcyLjE2LjIzOC4xMCIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ","signatureData":"AQAAAPcwRgIhAOB_AJDSVHd1byQ5Id1dVwh8AL_vJOCHq_gvoKkAvosgAiEA3IKZmYshCQ5HiGdAJgJ0UJMlbJmbui6RepGFt1y58aU"}';
+
         return new U2fAuthenticationCycle($request, $response);
     }
 }

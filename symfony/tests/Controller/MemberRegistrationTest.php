@@ -23,6 +23,5 @@ class MemberRegistrationTest extends TestCaseTemplate
 
         $filler = $this->get('App\Service\U2fRegistrationFiller');
         $this->submit($filler->fillForm($this->getCrawler()));
-
     }
 }

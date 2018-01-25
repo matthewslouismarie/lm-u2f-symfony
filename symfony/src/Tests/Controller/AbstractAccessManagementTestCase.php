@@ -46,7 +46,6 @@ abstract class AbstractAccessManagementTestCase extends TestCaseTemplate
         }
         $loginRequestFiller = new LoginRequestFiller($this->getClient()->getCrawler());
         $this->submit($loginRequestFiller->getFilledForm());
-
     }
 
     public function logOut()

@@ -15,7 +15,7 @@ use App\Service\SubmissionStack;
 use App\FormModel\CredentialAuthenticationSubmission;
 
 
-class NewAuthenticationController extends AbstractController
+class AuthenticationController extends AbstractController
 {
     /**
      * @Route(

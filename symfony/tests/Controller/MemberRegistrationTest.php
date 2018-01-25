@@ -19,5 +19,10 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->submit($filler->fillForm());
 
         $this->assertIsRedirect();
+        $this->followRedirect();
+
+        $filler = $this->get('App\Service\U2fRegistrationFiller');
+        $this->submit($filler->fillForm($this->getCrawler()));
+
     }
 }

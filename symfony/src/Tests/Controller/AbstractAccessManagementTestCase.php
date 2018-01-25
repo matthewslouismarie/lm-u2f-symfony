@@ -3,48 +3,50 @@
 namespace App\Tests\Controller;
 
 use App\Entity\U2fToken;
+use App\Form\Filler\CredentialFiller;
+use App\Form\Filler\LoginRequestFiller;
 use Firehed\U2F\SignRequest;
 
-abstract class AbstractAccessManagementTestCase extends DbWebTestCase
+/**
+ * @todo Delete.
+ */
+abstract class AbstractAccessManagementTestCase extends TestCaseTemplate
 {
     private $u2fCount = 0;
 
-    public function logIn(string $username, string $password)
+    public function logIn(string $username, string $password): void
     {
-        $upLoginGet = $this
-            ->getClient()
-            ->request('GET', '/not-authenticated/login')
-        ;
+        $this->doGet('/not-authenticated/start-login');
+        $this->followRedirect();
+        $formFiller = new CredentialFiller($this->getCrawler(), $username, $password);
+        $this->submit($formFiller->getFilledForm());
 
-        $this->getClient()->followRedirect();
-
-        $this->upLogInFromUpPage($username, $password);
-
-        if (!$this->getClient()->getResponse()->isRedirection()) {
+        if (!$this->isRedirect()) {
             return;
         }
-
-        $requestId = $this->storeInSessionU2fToken(true);
-
-        $this->getClient()->followRedirect();
-
-        $this->ukLogInFromUkPage($requestId);
-
-        if (!$this->getClient()->getResponse()->isRedirection()) {
-            return;
-        }
-
-        $this->getClient()->followRedirect();
-        $this->assertRegExp(
-            '/^http:\/\/localhost\/not-authenticated\/finish-login\/[a-z0-9]+$/',
-            $this->getClient()->getRequest()->getUri());
-
-        $submit = $this
-            ->getClient()
+        $this->followRedirect();
+        $u2fButton = $this
             ->getCrawler()
-            ->selectButton('login_request[submit]');
-        $form = $submit->form();
-        $this->getClient()->submit($form);
+            ->selectButton('new_u2f_authentication[submit]')
+        ;
+        $cycle = $this
+            ->getU2fAuthenticationMocker()
+            ->getNewCycle()
+        ;
+        $u2fForm = $u2fButton->form([
+            'new_u2f_authentication[u2fTokenResponse]' => $cycle->getResponse(),
+        ]);
+        $sid = $this->getUriLastPart();
+        $this->getSubmissionStack()->set($sid, 2, $cycle->getRequest());
+        $this->submit($u2fForm);
+        $this->assertIsRedirect();
+        $this->followRedirect();
+        if ("http://localhost/not-authenticated/finalise-login/{$sid}" !== $this->getUri()) {
+            return;
+        }
+        $loginRequestFiller = new LoginRequestFiller($this->getClient()->getCrawler());
+        $this->submit($loginRequestFiller->getFilledForm());
+
     }
 
     public function logOut()
@@ -60,10 +62,6 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
     public function runLoggedOutTests()
     {
         $this->checkUrlStatusCode(
-            '/not-authenticated/login',
-            302)
-        ;
-        $this->checkUrlStatusCode(
             '/authenticated/change-password',
             302)
         ;
@@ -75,10 +73,6 @@ abstract class AbstractAccessManagementTestCase extends DbWebTestCase
 
     public function runLoggedInTests()
     {
-        $this->checkUrlStatusCode(
-            '/not-authenticated/login',
-            302)
-        ;
         $this->checkUrlStatusCode(
             '/authenticated/change-password',
             200)

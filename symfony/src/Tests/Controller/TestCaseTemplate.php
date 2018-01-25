@@ -104,6 +104,7 @@ class TestCaseTemplate extends DbWebTestCase
     {
         return $this
             ->getClient()
+            ->getResponse()
             ->isRedirect()
         ;
     }

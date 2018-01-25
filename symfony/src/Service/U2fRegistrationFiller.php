@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Exception\NonexistentNodeException;
-use App\Service\SubmissionStack;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 

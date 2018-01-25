@@ -2,12 +2,10 @@
 
 namespace App\FormModel;
 
+use Serializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @todo Rename to UpRegistrationSubmission.
- */
-class CredentialRegistrationSubmission
+class CredentialRegistrationSubmission implements Serializable
 {
     /**
      * @todo check it's not already used
@@ -58,5 +56,22 @@ class CredentialRegistrationSubmission
     public function setPasswordConfirmation(?string $passwordConfirmation): void
     {
         $this->passwordConfirmation = $passwordConfirmation;
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->password,
+            $this->passwordConfirmation,
+            $this->username,
+        ]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        list(
+            $this->password,
+            $this->passwordConfirmation,
+            $this->username) = unserialize($serialized);
     }
 }

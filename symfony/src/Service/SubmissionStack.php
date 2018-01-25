@@ -80,6 +80,15 @@ class SubmissionStack
         return $item;
     }
 
+    public function getSize(string $sid): int
+    {
+        return count(
+            $this
+                ->sSession
+                ->getTypedArray($sid, Serializable::class)
+        );
+    }
+
     public function peek(string $sid): Serializable
     {
         $stack = $this

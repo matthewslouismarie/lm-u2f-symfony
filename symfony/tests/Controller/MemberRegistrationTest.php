@@ -27,5 +27,17 @@ class MemberRegistrationTest extends TestCaseTemplate
         $sid = $this->getUriLastPart();
         $form = $filler->fillForm($this->getCrawler(), $sid);
         $this->submit($form);
+        $this->assertIsRedirect();
+        $this->followRedirect();
+        $this->submit($filler->fillForm($this->getCrawler(), $sid));
+        $this->assertIsRedirect();
+        $this->followRedirect();
+        $this->submit($filler->fillForm($this->getCrawler(), $sid));
+        $this->assertIsRedirect();
+        $this->followRedirect();
+        $this->assertEquals(
+            'http://localhost/not-authenticated/registration/success',
+            $this->getUri()
+        );
     }
 }

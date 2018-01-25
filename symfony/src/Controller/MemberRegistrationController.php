@@ -16,6 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MemberRegistrationController extends AbstractController
 {
+    const N_U2F_KEYS = 3;
+
     /**
      * @Route(
      *  "/not-authenticated/register",
@@ -41,6 +43,7 @@ class MemberRegistrationController extends AbstractController
      */
     public function fetchRegistrationPage(
         Request $request,
+        SubmissionStack $stack,
         string $sid): Response
     {
         $submission = new CredentialRegistrationSubmission();
@@ -50,6 +53,7 @@ class MemberRegistrationController extends AbstractController
         );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $stack->add($sid, $submission);
             return new RedirectResponse($this
                 ->generateUrl('registration_u2f_key', [
                     'sid' => $sid,
@@ -63,29 +67,54 @@ class MemberRegistrationController extends AbstractController
     }
 
     /**
+     * @todo 1 is not very explicit.
+     *
      * @Route(
      *  "/not-authenticated/register/u2f-key/{sid}",
      *  name="registration_u2f_key")
      */
-    public function fetchFirstU2fTokenPage(
+    public function fetchU2fPage(
         Request $request,
         SubmissionStack $stack,
         U2fRegistrationManager $service,
         string $sid): Response
     {
-        $registerRequest = $service->generate();
-        $stack->add($sid, $registerRequest->getRequest());
+        if (self::N_U2F_KEYS === $stack->getSize($sid) - 1) {
+            return new RedirectResponse(
+                $this->generateUrl('registration_success')
+            );
+        }
 
         $submission = new NewU2fRegistrationSubmission();
         $form = $this->createForm(NewU2fRegistrationType::class, $submission);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            return new RedirectResponse(
+                $this->generateUrl('registration_u2f_key', [
+                    'sid' => $sid,
+                ])
+            );
         }
+
+        $registerRequest = $service->generate();
+        $stack->add($sid, $registerRequest->getRequest());
 
         return $this->render('registration/key.html.twig', [
             'form' => $form->createView(),
             'request_json' => $registerRequest->getRequestAsJson(),
             'sign_requests' => $registerRequest->getSignRequests(),
+            'tmp' => $registerRequest->getRequest(),
         ]);
+    }
+
+    /**
+     * @Route(
+     *  "/not-authenticated/registration/success",
+     *  name="registration_success",
+     *  methods={"GET"})
+     */
+    public function fetchSuccessPage()
+    {
+        return $this->render('registration/success.html.twig');
     }
 }

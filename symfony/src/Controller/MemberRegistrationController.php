@@ -74,7 +74,7 @@ class MemberRegistrationController extends AbstractController
     {
         $registerRequest = $service->generate();
         $stack->add($sid, $registerRequest->getRequest());
-        
+
         $submission = new NewU2fRegistrationSubmission();
         $form = $this->createForm(NewU2fRegistrationType::class, $submission);
         $form->handleRequest($request);

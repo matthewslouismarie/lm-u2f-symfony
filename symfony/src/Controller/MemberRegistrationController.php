@@ -14,7 +14,7 @@ class MemberRegistrationController extends AbstractController
      * @Route(
      *  "/not-authenticated/register",
      *  name="member_registration",
-     *  methods={"GET"}
+     *  methods={"GET", "POST"}
      *  )
      */
     public function fetchRegistrationPage(): Response

@@ -113,7 +113,7 @@ class MediumSecurityAuthorizer extends AbstractController
                 $credential->getUsername(),
                 $submission->getU2fTokenResponse()
             );
-            
+
             // process submission stack
             // if everything goes well
             $loginRequest = $submissionStack->get(

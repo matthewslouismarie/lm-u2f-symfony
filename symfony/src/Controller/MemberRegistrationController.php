@@ -28,6 +28,7 @@ class MemberRegistrationController extends AbstractController
         $url = $this->generateUrl('member_registration', [
             'sid' => $sid,
         ]);
+
         return new RedirectResponse($url);
     }
 

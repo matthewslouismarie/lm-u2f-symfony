@@ -9,6 +9,8 @@ class MemberRegistrationTest extends TestCaseTemplate
     public function testRegistration(): void
     {
         $this->doGet('/not-authenticated/register');
+        $this->assertIsRedirect();
+        $this->followRedirect();
         $this->assertEquals(200, $this->getHttpStatusCode());
         $filler = new CredentialRegistrationFiller(
             $this->getCrawler(),
@@ -22,6 +24,8 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->followRedirect();
 
         $filler = $this->get('App\Service\U2fRegistrationFiller');
-        $this->submit($filler->fillForm($this->getCrawler()));
+        $sid = $this->getUriLastPart();
+        $form = $filler->fillForm($this->getCrawler(), $sid);
+        $this->submit($form);
     }
 }

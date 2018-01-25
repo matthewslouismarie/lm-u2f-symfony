@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\FormModel\ISubmission;
+use Serializable;
 use UnexpectedValueException;
 
 /**
@@ -18,52 +18,59 @@ class SubmissionStack
         $this->sSession = $sSession;
     }
 
-    public function add(string $sid, ISubmission $submission): void
+    public function add(string $sid, Serializable $submission): void
     {
         $submissions = $this
             ->sSession
-            ->getTypedArray($sid, ISubmission::class)
+            ->getTypedArray($sid, Serializable::class)
         ;
 
         $submissions[] = $submission;
 
         $this
             ->sSession
-            ->storeTypedArray($submissions, ISubmission::class, $sid)
+            ->storeTypedArray($submissions, Serializable::class, $sid)
         ;
     }
 
-    public function set(string $sid, int $index, ISubmission $submission): void
+    public function set(string $sid, int $index, Serializable $submission): void
     {
         $submissions = $this
             ->sSession
-            ->getTypedArray($sid, ISubmission::class)
+            ->getTypedArray($sid, Serializable::class)
         ;
 
         $submissions[$index] = $submission;
 
         $this
             ->sSession
-            ->storeTypedArray($submissions, ISubmission::class, $sid)
+            ->storeTypedArray($submissions, Serializable::class, $sid)
         ;
     }
 
-    public function create(ISubmission $submission): string
+    public function create(?Serializable $submission = null): string
     {
-        return $this
-            ->sSession
-            ->storeArray([$submission])
-        ;
+        if (null === $submission) {
+            return $this
+                ->sSession
+                ->storeArray([])
+            ;
+        } else {
+            return $this
+                ->sSession
+                ->storeArray([$submission])
+            ;
+        }
     }
 
     public function get(
         string $sid,
         int $index,
-        ?string $class = null): ISubmission
+        ?string $class = null): Serializable
     {
         $stack = $this
             ->sSession
-            ->getTypedArray($sid, ISubmission::class)
+            ->getTypedArray($sid, Serializable::class)
         ;
         $item = $stack[$index];
         if (null !== $class && !is_a($item, $class)) {
@@ -73,11 +80,11 @@ class SubmissionStack
         return $item;
     }
 
-    public function peek(string $sid): ISubmission
+    public function peek(string $sid): Serializable
     {
         $stack = $this
             ->sSession
-            ->getTypedArray($sid, ISubmission::class)
+            ->getTypedArray($sid, Serializable::class)
         ;
 
         return $stack[count($stack)];

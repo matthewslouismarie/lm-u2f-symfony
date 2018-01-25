@@ -2,9 +2,10 @@
 
 namespace App\Model;
 
+use App\FormModel\ISubmission;
 use Firehed\U2F\RegisterRequest;
 
-class U2fRegistrationRequest
+class U2fRegistrationRequest implements ISubmission
 {
     private $request;
 
@@ -29,5 +30,20 @@ class U2fRegistrationRequest
     public function getSignRequests(): string
     {
         return $this->signRequests;
+    }
+
+    public function serialize()
+    {
+        return serialize([
+            $this->request,
+            $this->signRequests,
+        ]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        list(
+            $this->request,
+            $this->signRequests) = unserialize($serialized);
     }
 }

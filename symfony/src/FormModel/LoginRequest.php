@@ -2,6 +2,9 @@
 
 namespace App\FormModel;
 
+/**
+ * @todo Delete.
+ */
 class LoginRequest
 {
     private $username;

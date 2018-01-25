@@ -18,7 +18,7 @@ class U2fRegistrationCycle
         $this->stringResponse = $stringResponse;
     }
 
-    public function getRequest(): Request
+    public function getRequest(): RegisterRequest
     {
         return $this->request;
     }

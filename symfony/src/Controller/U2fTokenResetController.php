@@ -6,8 +6,9 @@ use App\Entity\U2fToken;
 use App\Form\U2fRegistrationType;
 use App\FormModel\U2fRegistrationSubmission;
 use App\Model\AuthorizationRequest;
+use App\Model\U2fRegistrationRequest;
 use App\Service\SecureSession;
-use App\Service\U2fTokenRegistrationService;
+use App\Service\U2fRegistrationManager;
 use App\SessionToken\UukpAuthorizationToken;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -56,18 +57,24 @@ class U2fTokenResetController extends AbstractController
         ObjectManager $om,
         Request $request,
         SecureSession $sSession,
-        U2fTokenRegistrationService $service,
+        U2fRegistrationManager $service,
         string $authorizationTokenSid)
     {
         $authorizationToken = $sSession
             ->getObject($authorizationTokenSid, UukpAuthorizationToken::class)
         ;
         $challenge = $service->generate();
-        $submission = new U2fRegistrationSubmission($challenge['request_id']);
+        $sid = $sSession->storeObject($challenge, U2fRegistrationRequest::class);
+        $submission = new U2fRegistrationSubmission($sid);
         $form = $this->createForm(U2fRegistrationType::class, $submission);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $service->processResponse($submission->getU2fTokenResponse(), $this->getUser(), new DateTimeImmutable(), $submission->getRequestId());
+            $u2fToken = $service->getU2fTokenFromResponse(
+                $submission->getU2fTokenResponse(),
+                $this->getUser(),
+                new DateTimeImmutable(),
+                $sSession->getObject($submission->getRequestId(), RegisterRequest::class)
+            );
             $u2fTokenToDelete = $om
                 ->getRepository(U2fToken::class)
                 ->getExcept(
@@ -78,6 +85,7 @@ class U2fTokenResetController extends AbstractController
                     ))
             ;
             $om->remove($u2fTokenToDelete[0]);
+            $om->persist($u2fToken);
             $om->flush();
 
             return $this->render('successful_u2f_token_reset.html.twig');
@@ -85,9 +93,9 @@ class U2fTokenResetController extends AbstractController
 
         return $this->render('reset_u2f_token.html.twig', array(
             'form' => $form->createView(),
-            'request_json' => $challenge['request_json'],
-            'sign_requests' => $challenge['sign_requests'],
-            'tmp' => $sSession->getObject($challenge['request_id'], RegisterRequest::class),
+            'request_json' => $challenge->getRequestAsJson(),
+            'sign_requests' => $challenge->getSignRequests(),
+            'tmp' => $challenge,
         ));
     }
 }

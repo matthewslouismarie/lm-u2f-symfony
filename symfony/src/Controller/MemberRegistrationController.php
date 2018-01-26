@@ -122,6 +122,7 @@ class MemberRegistrationController extends AbstractController
      * @todo Save the stack's array to a local variable and use only that when
      * reading from it.
      * @todo Move DB logic somewhere else.
+     * @todo Create all from the same stack.
      *
      * @Route(
      *  "/not-authenticated/registration/submit/{sid}",

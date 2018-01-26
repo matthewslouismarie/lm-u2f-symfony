@@ -9,7 +9,7 @@ use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 
 /**
- * @todo interface for request ids?
+ * @todo Delete.
  */
 class U2fTokenRegistrationService
 {

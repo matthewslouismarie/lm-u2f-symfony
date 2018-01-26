@@ -4,8 +4,8 @@ namespace App\Tests\Controller;
 
 use App\Entity\Member;
 use App\Entity\U2fToken;
-use App\Form\Filler\CredentialRegistrationFiller;
-use App\Form\Filler\CredentialFiller;
+use App\Service\Form\Filler\CredentialRegistrationFiller;
+use App\Service\Form\Filler\CredentialFiller;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {
@@ -15,13 +15,10 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->assertEquals(200, $this->getHttpStatusCode());
-        $filler = new CredentialRegistrationFiller(
-            $this->getCrawler(),
-            'pwd',
-            'pwd',
-            'chat')
-        ;
-        $this->submit($filler->fillForm());
+        $filler = new CredentialRegistrationFiller();
+        $this->submit(
+            $filler->fillForm($this->getCrawler(), 'pwd', 'pwd', 'chat')
+        );
 
         $this->assertIsRedirect();
         $this->followRedirect();

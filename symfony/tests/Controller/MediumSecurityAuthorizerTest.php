@@ -2,8 +2,8 @@
 
 namespace App\Tests\Controller;
 
-use App\Form\Filler\LoginRequestFiller;
-use App\Form\Filler\CredentialFiller;
+use App\Service\Form\Filler\LoginRequestFiller;
+use App\Service\Form\Filler\CredentialFiller;
 
 class MediumSecurityAuthorizerTest extends TestCaseTemplate
 {
@@ -36,8 +36,10 @@ class MediumSecurityAuthorizerTest extends TestCaseTemplate
             "http://localhost/not-authenticated/finalise-login/{$sid}",
             $this->getUri()
         );
-        $loginRequestFiller = new LoginRequestFiller($this->getClient()->getCrawler());
-        $this->submit($loginRequestFiller->getFilledForm());
+        $loginRequestFiller = new LoginRequestFiller();
+        $this->submit(
+            $loginRequestFiller->fillForm($this->getClient()->getCrawler())
+        );
     }
 
     public function testIncorrectUsername()
@@ -62,7 +64,9 @@ class MediumSecurityAuthorizerTest extends TestCaseTemplate
     {
         $this->doGet('/not-authenticated/start-login');
         $this->followRedirect();
-        $formFiller = new CredentialFiller($this->getCrawler(), $username, $password);
-        $this->submit($formFiller->getFilledForm());
+        $formFiller = new CredentialFiller();
+        $this->submit(
+            $formFiller->fillForm($this->getCrawler(), $password, $username)
+        );
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Tests\Controller;
 
 use App\Entity\U2fToken;
-use App\Form\Filler\CredentialFiller;
-use App\Form\Filler\LoginRequestFiller;
+use App\Service\Form\Filler\CredentialFiller;
+use App\Service\Form\Filler\LoginRequestFiller;
 use Firehed\U2F\SignRequest;
 
 /**
@@ -18,8 +18,10 @@ abstract class AbstractAccessManagementTestCase extends TestCaseTemplate
     {
         $this->doGet('/not-authenticated/start-login');
         $this->followRedirect();
-        $formFiller = new CredentialFiller($this->getCrawler(), $username, $password);
-        $this->submit($formFiller->getFilledForm());
+        $formFiller = new CredentialFiller();
+        $this->submit(
+            $formFiller->fillForm($this->getCrawler(), $password, $username)
+        );
 
         if (!$this->isRedirect()) {
             return;
@@ -44,8 +46,8 @@ abstract class AbstractAccessManagementTestCase extends TestCaseTemplate
         if ("http://localhost/not-authenticated/finalise-login/{$sid}" !== $this->getUri()) {
             return;
         }
-        $loginRequestFiller = new LoginRequestFiller($this->getClient()->getCrawler());
-        $this->submit($loginRequestFiller->getFilledForm());
+        $loginRequestFiller = new LoginRequestFiller();
+        $this->submit($loginRequestFiller->fillForm($this->getClient()->getCrawler()));
     }
 
     public function logOut()

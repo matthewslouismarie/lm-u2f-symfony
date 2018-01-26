@@ -59,13 +59,13 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->assertEquals(3, count($u2fTokens));
 
         $this->assertFalse(
-            $this->get('App\Service\SubmissionStack')->isValidSid($sid)
+            $this->get('App\Service\SerializableStack')->isValidSid($sid)
         );
     }
 
     public function testResetButton(): void
     {
-        $stack = $this->get('App\Service\SubmissionStack');
+        $stack = $this->get('App\Service\SerializableStack');
         $this->doGet('/not-authenticated/registration/start');
         $this->followRedirect();
         $filler = $this->get('App\Service\Form\Filler\CredentialRegistrationFiller');
@@ -86,7 +86,7 @@ class MemberRegistrationTest extends TestCaseTemplate
         ;
         $this->submit($userConfirmationFiller->fillForm($this->getCrawler()));
         $this->assertFalse(
-            $this->get('App\Service\SubmissionStack')->isValidSid($sid)
+            $this->get('App\Service\SerializableStack')->isValidSid($sid)
         );
 
         $this->assertContains('successfully reset.', $this->getCrawler()->text());

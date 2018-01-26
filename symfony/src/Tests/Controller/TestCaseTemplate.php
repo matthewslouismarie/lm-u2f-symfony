@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller;
 
-use App\Service\SubmissionStack;
+use App\Service\SerializableStack;
 use App\Service\Mocker\U2fAuthenticationMocker;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DomCrawler\Crawler;
@@ -80,11 +80,11 @@ class TestCaseTemplate extends DbWebTestCase
         ;
     }
 
-    public function getSubmissionStack(): SubmissionStack
+    public function getSerializableStack(): SerializableStack
     {
         return $this
             ->getContainer()
-            ->get('App\Service\SubmissionStack')
+            ->get('App\Service\SerializableStack')
         ;
     }
 

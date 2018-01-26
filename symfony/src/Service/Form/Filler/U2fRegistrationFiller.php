@@ -4,7 +4,7 @@ namespace App\Service\Form\Filler;
 
 use App\Exception\NonexistentNodeException;
 use App\Service\Mocker\U2fRegistrationMocker;
-use App\Service\SubmissionStack;
+use App\Service\SerializableStack;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
@@ -16,7 +16,7 @@ class U2fRegistrationFiller
 
     public function __construct(
         U2fRegistrationMocker $mocker,
-        SubmissionStack $stack)
+        SerializableStack $stack)
     {
         $this->mocker = $mocker;
         $this->stack = $stack;

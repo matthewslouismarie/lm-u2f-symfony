@@ -25,7 +25,7 @@ class MediumSecurityAuthorizerTest extends TestCaseTemplate
             'new_u2f_authentication[u2fTokenResponse]' => $cycle->getResponse(),
         ]);
         $sid = $this->getUriLastPart();
-        $this->getSubmissionStack()->set($sid, 2, $cycle->getRequest());
+        $this->getSerializableStack()->set($sid, 2, $cycle->getRequest());
         $this->submit($u2fForm);
         $this->assertIsRedirect();
         $this->followRedirect();

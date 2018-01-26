@@ -7,9 +7,9 @@ use UnexpectedValueException;
 
 /**
  * @todo Add more precise type-hinting?
- * @todo Rename to SubmissionStackManager?
+ * @todo Rename to SerializableStackManager?
  */
-class SubmissionStack
+class SerializableStack
 {
     private $sSession;
 

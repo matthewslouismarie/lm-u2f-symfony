@@ -11,7 +11,7 @@ use App\FormModel\U2fAuthenticationRequest;
 use App\Model\AuthorizationRequest;
 use App\Service\StatelessU2fAuthenticationManager;
 use App\Service\SecureSession;
-use App\Service\SubmissionStack;
+use App\Service\SerializableStack;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,24 +34,24 @@ class MediumSecurityAuthorizer extends AbstractController
 
     /**
      * @Route(
-     *  "/all/u2f-authorization/medium-security/credential/{submissionStackSid}",
+     *  "/all/u2f-authorization/medium-security/credential/{SerializableStackSid}",
      *  name="medium_security_credential",
      *  methods={"GET", "POST"})
      */
     public function performCredentialAuthentication(
         Request $request,
         SecureSession $sSession,
-        SubmissionStack $submissionStack,
-        string $submissionStackSid)
+        SerializableStack $SerializableStack,
+        string $SerializableStackSid)
     {
         $upSubmission = new CredentialAuthenticationSubmission();
         $form = $this->createForm(CredentialAuthenticationType::class, $upSubmission);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $submissionStack->add($submissionStackSid, $upSubmission);
+            $SerializableStack->add($SerializableStackSid, $upSubmission);
             $url = $this->generateUrl('medium_security_u2f_authentication', [
-                'submissionStackSid' => $submissionStackSid,
+                'SerializableStackSid' => $SerializableStackSid,
             ]);
 
             return new RedirectResponse($url);
@@ -72,18 +72,18 @@ class MediumSecurityAuthorizer extends AbstractController
      * @todo Catch exceptions and display error page.
      *
      * @Route(
-     *  "/all/u2f-authorization/medium-security/u2f/{submissionStackSid}",
+     *  "/all/u2f-authorization/medium-security/u2f/{SerializableStackSid}",
      *  name="medium_security_u2f_authentication",
      *  methods={"GET", "POST"})
      */
     public function performU2fAuthentication(
         StatelessU2fAuthenticationManager $auth,
         Request $httpRequest,
-        SubmissionStack $submissionStack,
-        string $submissionStackSid)
+        SerializableStack $SerializableStack,
+        string $SerializableStackSid)
     {
-        $credential = $submissionStack->get(
-            $submissionStackSid,
+        $credential = $SerializableStack->get(
+            $SerializableStackSid,
             1,
             CredentialAuthenticationSubmission::class)
         ;
@@ -103,8 +103,8 @@ class MediumSecurityAuthorizer extends AbstractController
                 ->getRepository(Member::class)
                 ->checkPassword($member, $credential->getPassword())
             ;
-            $u2fAuthenticationRequest = $submissionStack->get(
-                $submissionStackSid,
+            $u2fAuthenticationRequest = $SerializableStack->get(
+                $SerializableStackSid,
                 2,
                 U2fAuthenticationRequest::class
             );
@@ -116,22 +116,22 @@ class MediumSecurityAuthorizer extends AbstractController
 
             // process submission stack
             // if everything goes well
-            $loginRequest = $submissionStack->get(
-                $submissionStackSid,
+            $loginRequest = $SerializableStack->get(
+                $SerializableStackSid,
                 0,
                 AuthorizationRequest::class)
             ;
             $url = $this->generateUrl(
                 $loginRequest->getSuccessRoute(),
                 [
-                    'submissionStackSid' => $submissionStackSid,
+                    'SerializableStackSid' => $SerializableStackSid,
                 ])
             ;
 
             return new RedirectResponse($url);
         }
         $u2fAuthenticationRequest = $auth->generate($credential->getUsername());
-        $submissionStack->set($submissionStackSid, 2, $u2fAuthenticationRequest);
+        $SerializableStack->set($SerializableStackSid, 2, $u2fAuthenticationRequest);
 
         return $this->render('u2f_authentication.html.twig', array(
             'form' => $form->createView(),

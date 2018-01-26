@@ -8,7 +8,7 @@ use App\Form\NewU2fRegistrationType;
 use App\Form\UserConfirmationType;
 use App\FormModel\CredentialRegistrationSubmission;
 use App\FormModel\NewU2fRegistrationSubmission;
-use App\Service\SubmissionStack;
+use App\Service\SerializableStack;
 use App\Service\U2fRegistrationManager;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -28,7 +28,7 @@ class MemberRegistrationController extends AbstractController
      *  name="registration_start",
      *  methods={"GET"})
      */
-    public function fetchStartPage(SubmissionStack $stack): Response
+    public function fetchStartPage(SerializableStack $stack): Response
     {
         $sid = $stack->create();
         $url = $this->generateUrl('member_registration', [
@@ -47,7 +47,7 @@ class MemberRegistrationController extends AbstractController
      */
     public function fetchRegistrationPage(
         Request $request,
-        SubmissionStack $stack,
+        SerializableStack $stack,
         string $sid): Response
     {
         $submission = new CredentialRegistrationSubmission();
@@ -83,7 +83,7 @@ class MemberRegistrationController extends AbstractController
     public function fetchU2fPage(
         MemberFactory $mf,
         Request $request,
-        SubmissionStack $stack,
+        SerializableStack $stack,
         U2fRegistrationManager $service,
         string $sid): Response
     {
@@ -132,7 +132,7 @@ class MemberRegistrationController extends AbstractController
         ObjectManager $om,
         MemberFactory $mf,
         string $sid,
-        SubmissionStack $stack,
+        SerializableStack $stack,
         U2fRegistrationManager $u2fRegistrationManager,
         Request $request): Response
     {
@@ -187,7 +187,7 @@ class MemberRegistrationController extends AbstractController
      */
     public function resetRegistration(
         Request $request,
-        SubmissionStack $stack,
+        SerializableStack $stack,
         string $sid): Response
     {
         $form = $this->createForm(UserConfirmationType::class);

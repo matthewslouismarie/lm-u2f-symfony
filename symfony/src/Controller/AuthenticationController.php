@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use App\Service\SubmissionStack;
+use App\Service\SerializableStack;
 use App\FormModel\CredentialAuthenticationSubmission;
 
 class AuthenticationController extends AbstractController
@@ -24,13 +24,13 @@ class AuthenticationController extends AbstractController
      */
     public function startLogin(
         Request $request,
-        SubmissionStack $submissionStack,
+        SerializableStack $SerializableStack,
         SecureSession $sSession)
     {
         $loginRequest = new AuthorizationRequest(false, 'finalize_login', null);
-        $sid = $submissionStack->create($loginRequest);
+        $sid = $SerializableStack->create($loginRequest);
         $url = $this->generateUrl('medium_security_credential', array(
-            'submissionStackSid' => $sid,
+            'SerializableStackSid' => $sid,
         ));
 
         return new RedirectResponse($url);
@@ -40,22 +40,22 @@ class AuthenticationController extends AbstractController
      * @todo Have a better error handling.
      *
      * @Route(
-     *  "/not-authenticated/finalise-login/{submissionStackSid}",
+     *  "/not-authenticated/finalise-login/{SerializableStackSid}",
      *  name="finalize_login",
      *  methods={"GET", "POST"})
      */
     public function finishLogin(
         Request $request,
         SecureSession $sSession,
-        SubmissionStack $submissionStack,
-        string $submissionStackSid)
+        SerializableStack $SerializableStack,
+        string $SerializableStackSid)
     {
-        $credential = $submissionStack->get(
-            $submissionStackSid,
+        $credential = $SerializableStack->get(
+            $SerializableStackSid,
             1,
             CredentialAuthenticationSubmission::class
         );
-        $authorizationRequest = $submissionStack->isValid($submissionStackSid);
+        $authorizationRequest = $SerializableStack->isValid($SerializableStackSid);
 
         $loginRequest = new LoginRequest($credential->getUsername());
         $form = $this->createForm(LoginRequestType::class, $loginRequest);

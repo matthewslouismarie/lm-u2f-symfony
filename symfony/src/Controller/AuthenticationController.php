@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Form\LoginRequestType;
 use App\FormModel\LoginRequest;
-use App\FormModel\NewLoginRequest;
 use App\Form\UserConfirmationType;
+use App\Model\AuthorizationRequest;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,7 +27,7 @@ class AuthenticationController extends AbstractController
         SubmissionStack $submissionStack,
         SecureSession $sSession)
     {
-        $loginRequest = new NewLoginRequest('finalize_login');
+        $loginRequest = new AuthorizationRequest(false, 'finalize_login', null);
         $sid = $submissionStack->create($loginRequest);
         $url = $this->generateUrl('medium_security_credential', array(
             'submissionStackSid' => $sid,

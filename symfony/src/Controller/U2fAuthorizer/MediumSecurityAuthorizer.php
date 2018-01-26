@@ -7,8 +7,8 @@ use App\Form\NewU2fAuthenticationType;
 use App\Form\CredentialAuthenticationType;
 use App\FormModel\NewU2fAuthenticationSubmission;
 use App\FormModel\CredentialAuthenticationSubmission;
-use App\FormModel\NewLoginRequest;
 use App\FormModel\U2fAuthenticationRequest;
+use App\Model\AuthorizationRequest;
 use App\Service\StatelessU2fAuthenticationManager;
 use App\Service\SecureSession;
 use App\Service\SubmissionStack;
@@ -119,7 +119,7 @@ class MediumSecurityAuthorizer extends AbstractController
             $loginRequest = $submissionStack->get(
                 $submissionStackSid,
                 0,
-                NewLoginRequest::class)
+                AuthorizationRequest::class)
             ;
             $url = $this->generateUrl(
                 $loginRequest->getSuccessRoute(),

@@ -57,12 +57,6 @@ class StatelessU2fAuthenticationManager
         return $u2fAuthenticationRequest;
     }
 
-    /**
-     * @todo Critical vulnerability! The user is able to modify the U2f
-     * authentication ID!
-     * @todo Make stateless.
-     * @todo sql transaction
-     */
     public function processResponse(
         U2fAuthenticationRequest $u2fAuthenticationRequest,
         string $username,

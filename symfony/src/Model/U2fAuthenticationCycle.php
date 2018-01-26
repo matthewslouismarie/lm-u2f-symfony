@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\U2f;
+namespace App\Model;
 
 use App\FormModel\U2fAuthenticationRequest;
 

@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Tests\U2f\U2fAuthenticationCycle;
+use App\Model\U2fAuthenticationCycle;
 use App\FormModel\U2fAuthenticationRequest;
 use Firehed\U2F\SignRequest;
 

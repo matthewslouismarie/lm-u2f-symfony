@@ -75,6 +75,7 @@ class MemberRegistrationController extends AbstractController
     /**
      * @todo 1 is not very explicit.
      * @todo Move processing in another controller.
+     * @todo What if the stack is modified in the meantime?
      *
      * @Route(
      *  "/not-authenticated/register/u2f-key/{sid}",
@@ -119,6 +120,10 @@ class MemberRegistrationController extends AbstractController
     }
 
     /**
+     * @todo Save the stack's array to a local variable and use only that when
+     * reading from it.
+     * @todo Move DB logic somewhere else.
+     *
      * @Route(
      *  "/not-authenticated/registration/submit/{sid}",
      *  name="registration_submit")
@@ -186,6 +191,8 @@ class MemberRegistrationController extends AbstractController
     }
 
     /**
+     * @todo What if the stack is invalid or nonexistent when delete is called?
+     *
      * @Route(
      *  "/not-authenticated/registration/reset/{sid}",
      *  name="registration_reset")

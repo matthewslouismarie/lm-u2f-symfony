@@ -9,6 +9,7 @@ use App\FormModel\NewU2fAuthenticationSubmission;
 use App\FormModel\CredentialAuthenticationSubmission;
 use App\FormModel\U2fAuthenticationRequest;
 use App\Model\AuthorizationRequest;
+use App\Model\GrantedAuthorization;
 use App\Service\StatelessU2fAuthenticationManager;
 use App\Service\SecureSession;
 use App\Service\SerializableStack;
@@ -121,6 +122,7 @@ class MediumSecurityAuthorizer extends AbstractController
                 0,
                 AuthorizationRequest::class)
             ;
+            $SerializableStack->add($SerializableStackSid, new GrantedAuthorization());
             $url = $this->generateUrl(
                 $loginRequest->getSuccessRoute(),
                 [

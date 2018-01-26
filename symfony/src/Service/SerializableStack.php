@@ -112,7 +112,7 @@ class SerializableStack
             ->getTypedArray($sid, Serializable::class)
         ;
 
-        return $stack[count($stack)];
+        return $stack[count($stack) - 1];
     }
 
     /**

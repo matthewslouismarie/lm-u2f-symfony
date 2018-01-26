@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Exception\AccessDeniedException;
 use App\Form\LoginRequestType;
 use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
+use App\Model\GrantedAuthorization;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,6 +16,9 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Service\SerializableStack;
 use App\FormModel\CredentialAuthenticationSubmission;
 
+/**
+ * @todo Test denied authorizations.
+ */
 class AuthenticationController extends AbstractController
 {
     /**
@@ -55,7 +60,10 @@ class AuthenticationController extends AbstractController
             1,
             CredentialAuthenticationSubmission::class
         );
-        $authorizationRequest = $SerializableStack->isValid($SerializableStackSid);
+        $authorizationRequest = $SerializableStack->peek($SerializableStackSid);
+        if (!is_a($authorizationRequest, GrantedAuthorization::class)) {
+            throw new AccessDeniedException();
+        }
 
         $loginRequest = new LoginRequest($credential->getUsername());
         $form = $this->createForm(LoginRequestType::class, $loginRequest);

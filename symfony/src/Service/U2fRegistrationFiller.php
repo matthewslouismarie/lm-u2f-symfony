@@ -20,10 +20,10 @@ class U2fRegistrationFiller
         $this->stack = $stack;
     }
 
-    public function fillForm(Crawler $crawler, string $sid): Form
+    public function fillForm(Crawler $crawler, string $sid, int $keyNo): Form
     {
         $cycle = $this->mocker->getNewCycle();
-        $this->stack->set($sid, 0, $cycle->getRequest());
+        $this->stack->set($sid, $keyNo + 1, $cycle->getRequest());
         $button = $crawler->selectButton(
             'new_u2f_registration[submit]'
         );

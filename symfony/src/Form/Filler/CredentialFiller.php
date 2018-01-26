@@ -6,6 +6,10 @@ use App\Exception\NonexistentNodeException;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
+/**
+ * @todo Make it a service.
+ * @todo Rename to AuthenticationCredentialFiller.
+ */
 class CredentialFiller
 {
     private $crawler;

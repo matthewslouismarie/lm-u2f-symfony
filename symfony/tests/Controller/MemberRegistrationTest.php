@@ -5,7 +5,7 @@ namespace App\Tests\Controller;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Service\Form\Filler\CredentialRegistrationFiller;
-use App\Service\Form\Filler\CredentialFiller;
+use App\Service\Form\Filler\CredentialAuthenticationFiller;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {

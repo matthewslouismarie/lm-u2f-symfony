@@ -13,8 +13,7 @@ class CredentialRegistrationFiller
         string $password,
         string $passwordConfirmation,
         string $username
-        ): Form
-    {
+        ): Form {
         $button = $crawler->selectButton('credential_registration[submit]');
         if (0 === $button->count()) {
             throw new NonexistentNodeException();

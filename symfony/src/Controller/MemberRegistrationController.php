@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Member;
 use App\Factory\MemberFactory;
 use App\Form\CredentialRegistrationType;
 use App\Form\NewU2fRegistrationType;
@@ -168,7 +167,7 @@ class MemberRegistrationController extends AbstractController
             $om->persist($u2fToken3);
             $om->flush();
             $stack->delete($sid);
-            
+
             return new RedirectResponse(
                 $this->generateUrl('registration_success')
             );
@@ -207,6 +206,7 @@ class MemberRegistrationController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $stack->delete($sid);
+
             return $this->render('registration/successful_reset.html.twig');
         }
 

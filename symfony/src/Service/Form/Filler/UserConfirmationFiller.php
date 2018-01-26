@@ -10,6 +10,7 @@ class UserConfirmationFiller
     public function fillForm(Crawler $crawler): Form
     {
         $button = $crawler->selectButton('user_confirmation[submit]');
+
         return $button->form();
     }
 }

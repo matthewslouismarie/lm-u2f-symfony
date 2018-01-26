@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Model\U2fRegistrationRequest;
-use Doctrine\ORM\EntityManagerInterface;
 use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 

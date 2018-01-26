@@ -2,7 +2,10 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Member;
+use App\Entity\U2fToken;
 use App\Form\Filler\CredentialRegistrationFiller;
+use App\Form\Filler\CredentialFiller;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {
@@ -35,8 +38,8 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->submit($filler->fillForm($this->getCrawler(), $sid, 2));
         $this->assertIsRedirect();
         $this->followRedirect();
-        $this->assertEquals(
-            'http://localhost/not-authenticated/registration/submit',
+        $this->assertRegExp(
+            '/^http:\/\/localhost\/not-authenticated\/registration\/submit\/.*$/',
             $this->getUri()
         );
         $filler = $this->get('App\Service\Form\Filler\UserConfirmationFiller');
@@ -47,43 +50,17 @@ class MemberRegistrationTest extends TestCaseTemplate
             'http://localhost/not-authenticated/registration/success',
             $this->getUri()
         );
-        $this->doGet('/not-authenticated/start-login');
-        $this->followRedirect();
-        $filler = new CredentialFiller(
-            $this->getCrawler(),
-            'louis',
-            'hello'
-        );
-        $this->submit($filler->getFilledForm());
-        $this->followRedirect();
-
-        /**
-         * @todo Move in a new filler class.
-         */
-        $u2fAuthButton = $this
-            ->getCrawler()
-            ->selectButton('new_u2f_authentication[submit]')
+        $member = $this
+            ->getObjectManager()
+            ->getRepository(Member::class)
+            ->getMember('chat')
         ;
-        $cycle = $this
-            ->getU2fAuthenticationMocker()
-            ->getNewCycle()
+        $this->assertNotNull($member);
+        $u2fTokens = $this
+            ->getObjectManager()
+            ->getRepository(U2fToken::class)
+            ->getMemberRegistrations($member->getId())
         ;
-        $sid = $this->getUriLastPart();
-        $this->getSubmissionStack()->set($sid, 2, $cycle->getRequest());
-        $u2fAuthForm = $u2fAuthButton->form([
-            'new_u2f_authentication[u2fTokenResponse]' => $cycle->getResponse(),
-        ]);
-        
-        $this->submit($u2fAuthForm);
-        $this->followRedirect();
-        $btn = $this->getCrawler()->selectButton('login_request[submit]');
-        $this->submit($btn->form());
-
-        $this->doGet('/not-authenticated/start-login');
-        $this->followRedirect();        
-        $this->assertEquals(
-            'http://localhost/authenticated/not-logged-out',
-            $this->getUri()
-        );
+        $this->assertEquals(3, count($u2fTokens));
     }
 }

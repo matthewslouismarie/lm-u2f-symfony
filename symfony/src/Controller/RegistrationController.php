@@ -94,7 +94,6 @@ class RegistrationController extends AbstractController
             $submission = new U2fRegistrationSubmission();
             $form = $this->createForm(U2fRegistrationType::class, $submission);
             $form->handleRequest($request);
-            var_dump($session->get($submission->getRequestId()));
             if ($form->isSubmitted() && $form->isValid()) {
                 try {
                     $u2fToken = $service->getU2fTokenFromResponse(

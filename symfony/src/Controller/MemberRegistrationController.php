@@ -12,6 +12,7 @@ use App\FormModel\NewU2fRegistrationSubmission;
 use App\Service\SubmissionStack;
 use App\Service\U2fRegistrationManager;
 use DateTimeImmutable;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,7 +94,9 @@ class MemberRegistrationController extends AbstractController
             $stack->add($sid, $submission);
             if (self::N_U2F_KEYS * 2 === $stack->getSize($sid) - 1) {
                 return new RedirectResponse(
-                    $this->generateUrl('registration_submit')
+                    $this->generateUrl('registration_submit', [
+                        'sid' => $sid,
+                    ])
                 );
             } else {
                 return new RedirectResponse(
@@ -117,14 +120,49 @@ class MemberRegistrationController extends AbstractController
 
     /**
      * @Route(
-     *  "/not-authenticated/registration/submit",
+     *  "/not-authenticated/registration/submit/{sid}",
      *  name="registration_submit")
      */
-    public function submitRegistration(Request $request): Response
+    public function submitRegistration(
+        ObjectManager $om,
+        MemberFactory $mf,
+        string $sid,
+        SubmissionStack $stack,
+        U2fRegistrationManager $u2fRegistrationManager,
+        Request $request): Response
     {
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $member = $mf->create(
+                null,
+                $stack->get($sid, 0)->getUsername(),
+                $stack->get($sid, 0)->getPassword()
+            );
+            $u2fToken1 = $u2fRegistrationManager->getU2fTokenFromResponse(
+                $stack->get($sid, 2, NewU2fRegistrationSubmission::class)->getU2fTokenResponse(),
+                $member,
+                new DateTimeImmutable(),
+                $stack->get($sid, 1)
+            );
+            $u2fToken2 = $u2fRegistrationManager->getU2fTokenFromResponse(
+                $stack->get($sid, 4, NewU2fRegistrationSubmission::class)->getU2fTokenResponse(),
+                $member,
+                new DateTimeImmutable(),
+                $stack->get($sid, 3)
+            );
+            $u2fToken3 = $u2fRegistrationManager->getU2fTokenFromResponse(
+                $stack->get($sid, 6, NewU2fRegistrationSubmission::class)->getU2fTokenResponse(),
+                $member,
+                new DateTimeImmutable(),
+                $stack->get($sid, 5)
+            );
+            $om->persist($member);
+            $om->persist($u2fToken1);
+            $om->persist($u2fToken2);
+            $om->persist($u2fToken3);
+            $om->flush();
+            
             return new RedirectResponse(
                 $this->generateUrl('registration_success')
             );
@@ -144,32 +182,5 @@ class MemberRegistrationController extends AbstractController
     public function fetchSuccessPage()
     {
         return $this->render('registration/success.html.twig');
-    }
-
-    /**
-     * @todo Should be given the array itself as parameter.
-     * @todo Should be a route.
-     * @todo EntityManager with DI.
-     */
-    private function processRegistration(
-        MemberFactory $mf,
-        string $sid,
-        SubmissionStack $stack,
-        U2fRegistrationManager $u2fRegistrationManager)
-    {
-        $member = $mf->create(
-            null,
-            $stack->get($sid, 0)->getUsername(),
-            $stack->get($sid, 0)->getPassword()
-        );
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($member);
-        $em->flush();
-        $u2fRegistrationManager->getU2fTokenFromResponse(
-            $stack->get($sid, 2)->getU2fTokenResponse(),
-            $member,
-            new DateTimeImmutable(),
-            $stack->get($sid, 1)->getRequest()
-        );
     }
 }

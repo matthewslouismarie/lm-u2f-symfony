@@ -13,6 +13,8 @@ services:
 
     Doctrine\Bundle\FixturesBundle\Loader\:
         resource: '../vendor/doctrine/doctrine-fixtures-bundle/Loader/*'
+    # Doctrine\Common\Persistence\:
+    #     resource: '../vendor/doctrine/common/lib/Doctrine/Common/Persistence/*'
     App\:
         resource: '../src/{DataFixtures,Factory,Service}'
     App\Controller\:

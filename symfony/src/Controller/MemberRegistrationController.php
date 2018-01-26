@@ -25,7 +25,7 @@ class MemberRegistrationController extends AbstractController
 
     /**
      * @Route(
-     *  "/not-authenticated/register",
+     *  "/not-authenticated/registration/start",
      *  name="registration_start",
      *  methods={"GET"})
      */
@@ -183,5 +183,28 @@ class MemberRegistrationController extends AbstractController
     public function fetchSuccessPage()
     {
         return $this->render('registration/success.html.twig');
+    }
+
+    /**
+     * @Route(
+     *  "/not-authenticated/registration/reset/{sid}",
+     *  name="registration_reset")
+     */
+    public function resetRegistration(
+        Request $request,
+        SubmissionStack $stack,
+        string $sid): Response
+    {
+        $form = $this->createForm(UserConfirmationType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $stack->delete($sid);
+            return $this->render('registration/successful_reset.html.twig');
+        }
+
+        return $this->render('registration/reset.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

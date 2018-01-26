@@ -9,9 +9,9 @@ use App\Service\Form\Filler\CredentialAuthenticationFiller;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {
-    public function testRegistration(): void
+    public function testCorrectRegistration(): void
     {
-        $this->doGet('/not-authenticated/register');
+        $this->doGet('/not-authenticated/registration/start');
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->assertEquals(200, $this->getHttpStatusCode());
@@ -35,7 +35,6 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->submit($filler->fillForm($this->getCrawler(), $sid, 2));
         $this->assertIsRedirect();
         $this->followRedirect();
-        $sid = $this->getUriLastPart();
         $this->assertEquals(
             'http://localhost/not-authenticated/registration/submit/'.$sid,
             $this->getUri()
@@ -64,5 +63,34 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->assertFalse(
             $this->get('App\Service\SubmissionStack')->isValidSid($sid)
         );
+    }
+
+    public function testResetButton(): void
+    {
+        $stack = $this->get('App\Service\SubmissionStack');
+        $this->doGet('/not-authenticated/registration/start');
+        $this->followRedirect();
+        $filler = $this->get('App\Service\Form\Filler\CredentialRegistrationFiller');
+        $this->submit(
+            $filler->fillForm($this->getCrawler(), 'pwd', 'pwd', 'chat')
+        );
+
+        $this->followRedirect();
+        $sid = $this->getUriLastPart();
+
+        $filler = $this->get('App\Service\U2fRegistrationFiller');
+        $form = $filler->fillForm($this->getCrawler(), $sid, 0);
+        $this->submit($form);
+
+        $this->doGet('/not-authenticated/registration/reset/'.$sid);
+        $userConfirmationFiller = $this
+            ->get('App\Service\Form\Filler\UserConfirmationFiller')
+        ;
+        $this->submit($userConfirmationFiller->fillForm($this->getCrawler()));
+        $this->assertFalse(
+            $this->get('App\Service\SubmissionStack')->isValidSid($sid)
+        );
+
+        $this->assertContains('successfully reset.', $this->getCrawler()->text());
     }
 }

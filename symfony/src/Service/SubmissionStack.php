@@ -33,6 +33,14 @@ class SubmissionStack
         ;
     }
 
+    public function delete(string $sid): void
+    {
+        $this
+            ->sSession
+            ->remove($sid)
+        ;
+    }
+
     public function set(string $sid, int $index, Serializable $submission): void
     {
         $submissions = $this
@@ -87,6 +95,14 @@ class SubmissionStack
                 ->sSession
                 ->getTypedArray($sid, Serializable::class)
         );
+    }
+
+    public function isValidSid(string $sid): bool
+    {
+        return $this
+            ->sSession
+            ->isTypedArray($sid, Serializable::class)
+        ;
     }
 
     public function peek(string $sid): Serializable

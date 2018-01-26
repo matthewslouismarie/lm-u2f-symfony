@@ -35,8 +35,9 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->submit($filler->fillForm($this->getCrawler(), $sid, 2));
         $this->assertIsRedirect();
         $this->followRedirect();
-        $this->assertRegExp(
-            '/^http:\/\/localhost\/not-authenticated\/registration\/submit\/.*$/',
+        $sid = $this->getUriLastPart();
+        $this->assertEquals(
+            'http://localhost/not-authenticated/registration/submit/'.$sid,
             $this->getUri()
         );
         $filler = $this->get('App\Service\Form\Filler\UserConfirmationFiller');
@@ -59,5 +60,9 @@ class MemberRegistrationTest extends TestCaseTemplate
             ->getMemberRegistrations($member->getId())
         ;
         $this->assertEquals(3, count($u2fTokens));
+        
+        $this->assertFalse(
+            $this->get('App\Service\SubmissionStack')->isValidSid($sid)
+        );
     }
 }

@@ -162,6 +162,7 @@ class MemberRegistrationController extends AbstractController
             $om->persist($u2fToken2);
             $om->persist($u2fToken3);
             $om->flush();
+            $stack->delete($sid);
             
             return new RedirectResponse(
                 $this->generateUrl('registration_success')

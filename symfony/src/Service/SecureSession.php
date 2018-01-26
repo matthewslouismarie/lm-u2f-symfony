@@ -72,6 +72,23 @@ class SecureSession
         return $key;
     }
 
+    public function isTypedArray(string $sid, string $itemClass): bool
+    {
+        $valueToCheck = $this
+            ->session
+            ->get($sid)
+        ;
+        if (!is_array($valueToCheck)) {
+            return false;
+        }
+        foreach ($valueToCheck as $item) {
+            if (!is_a($item, $itemClass)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function getArray(?string $key): array
     {
         return $this->session->get($key);

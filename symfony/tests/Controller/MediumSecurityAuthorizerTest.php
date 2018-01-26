@@ -36,7 +36,7 @@ class MediumSecurityAuthorizerTest extends TestCaseTemplate
             "http://localhost/not-authenticated/finalise-login/{$sid}",
             $this->getUri()
         );
-        $loginRequestFiller = new LoginRequestFiller();
+        $loginRequestFiller = $this->get('App\Service\Form\Filler\LoginRequestFiller');
         $this->submit(
             $loginRequestFiller->fillForm($this->getClient()->getCrawler())
         );
@@ -64,7 +64,7 @@ class MediumSecurityAuthorizerTest extends TestCaseTemplate
     {
         $this->doGet('/not-authenticated/start-login');
         $this->followRedirect();
-        $formFiller = new CredentialFiller();
+        $formFiller = $this->get('App\Service\Form\Filler\CredentialFiller');
         $this->submit(
             $formFiller->fillForm($this->getCrawler(), $password, $username)
         );

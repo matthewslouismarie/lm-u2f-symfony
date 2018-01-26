@@ -11,18 +11,11 @@ use Firehed\U2F\RegisterResponse;
 
 class U2fRegistrationManager
 {
-    private $server;
+    private $u2f;
 
-    private $session;
-
-    private $em;
-
-    public function __construct(EntityManagerInterface $em, U2fService $u2f,
-                                SecureSession $session)
+    public function __construct(U2fService $u2f)
     {
-        $this->server = $u2f->getServer();
-        $this->session = $session;
-        $this->em = $em;
+        $this->u2f = $u2f;
     }
 
     /**
@@ -32,9 +25,13 @@ class U2fRegistrationManager
      */
     public function generate(): U2fRegistrationRequest
     {
-        $request = $this->server->generateRegisterRequest();
+        $server = $this
+            ->u2f
+            ->getServer()
+        ;
+        $request = $server->generateRegisterRequest();
         $registrations = array();
-        $signRequests = json_encode($this->server->generateSignRequests($registrations));
+        $signRequests = json_encode($server->generateSignRequests($registrations));
 
         return new U2fRegistrationRequest($request, $signRequests);
     }
@@ -43,15 +40,22 @@ class U2fRegistrationManager
         string $u2fKeyResponse,
         Member $member,
         \DateTimeImmutable $registration_date_time,
-        string $request_id): U2fToken
+        RegisterRequest $request): U2fToken
     {
-        $request = $this->session->getAndRemoveObject($request_id, RegisterRequest::class);
-        $this->server->setRegisterRequest($request);
+        $server = $this
+            ->u2f
+            ->getServer()
+        ;
+        $server
+            ->setRegisterRequest($request)
+        ;
         $response = RegisterResponse::fromJson($u2fKeyResponse);
-        $registration = $this->server->register($response);
+        $registration = $server->register($response);
 
         $counter = $registration->getCounter();
-        $attestation = base64_encode($registration->getAttestationCertificateBinary());
+        $attestation = base64_encode(
+            $registration->getAttestationCertificateBinary()
+        );
         $public_key = base64_encode($registration->getPublicKey());
         $key_handle = base64_encode($registration->getKeyHandleBinary());
         $u2fToken = new U2fToken(
@@ -61,31 +65,8 @@ class U2fRegistrationManager
             $key_handle,
             $member,
             $registration_date_time,
-            $public_key);
-
-        return $u2fToken;
-    }
-
-    /**
-     * @todo Change challenge for u2fKeyResponse.
-     * @todo Shouldn't change the database directly.
-     * @todo Make stateless.
-     */
-    public function processResponse(
-        string $challenge,
-        Member $member,
-        \DateTimeImmutable $registration_date_time,
-        string $request_id): U2fToken
-    {
-        $u2fToken = $this->getU2fTokenFromResponse(
-            $challenge,
-            $member,
-            $registration_date_time,
-            $request_id
+            $public_key
         );
-        $this->em->persist($u2fToken);
-
-        $this->em->flush();
 
         return $u2fToken;
     }

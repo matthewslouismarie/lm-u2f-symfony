@@ -2,7 +2,9 @@
 
 namespace App\FormModel;
 
-class NewU2fRegistrationSubmission
+use Serializable;
+
+class NewU2fRegistrationSubmission implements Serializable
 {
     private $u2fTokenResponse;
 
@@ -19,5 +21,18 @@ class NewU2fRegistrationSubmission
     public function setU2fTokenResponse(?string $u2fTokenResponse): void
     {
         $this->u2fTokenResponse = $u2fTokenResponse;
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->u2fTokenResponse,
+        ]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        list(
+            $this->u2fTokenResponse) = unserialize($serialized);
     }
 }

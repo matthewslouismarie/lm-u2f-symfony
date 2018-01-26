@@ -21,7 +21,7 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->assertIsRedirect();
         $this->followRedirect();
 
-        $filler = $this->get('App\Service\U2fRegistrationFiller');
+        $filler = $this->get('App\Service\Form\Filler\U2fRegistrationFiller');
         $sid = $this->getUriLastPart();
         $form = $filler->fillForm($this->getCrawler(), $sid, 0);
         $this->submit($form);
@@ -76,7 +76,7 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->followRedirect();
         $sid = $this->getUriLastPart();
 
-        $filler = $this->get('App\Service\U2fRegistrationFiller');
+        $filler = $this->get('App\Service\Form\Filler\U2fRegistrationFiller');
         $form = $filler->fillForm($this->getCrawler(), $sid, 0);
         $this->submit($form);
 

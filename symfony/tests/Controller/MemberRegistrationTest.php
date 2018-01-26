@@ -15,7 +15,7 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->assertEquals(200, $this->getHttpStatusCode());
-        $filler = new CredentialRegistrationFiller();
+        $filler = $this->get('App\Service\Form\Filler\CredentialRegistrationFiller');
         $this->submit(
             $filler->fillForm($this->getCrawler(), 'pwd', 'pwd', 'chat')
         );

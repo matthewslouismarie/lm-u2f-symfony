@@ -116,7 +116,7 @@ class SerializableStack
     }
 
     /**
-     * @todo
+     * @todo Remove.
      */
     public function isValid(string $sid): bool
     {

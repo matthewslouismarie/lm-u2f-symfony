@@ -7,6 +7,9 @@ use App\Entity\U2fToken;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SignResponse;
 
+/**
+ * @todo Delete.
+ */
 class U2fAuthenticationManager
 {
     private $em;

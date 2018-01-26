@@ -6,9 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @todo Force members to have 3 U2F tokens?
- * @todo Use only username as id?
  * @todo Make immutable.
+ * @todo Remove nullable=false (useless).
+ *
  * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
  */
 class Member implements UserInterface, \Serializable
@@ -21,8 +21,6 @@ class Member implements UserInterface, \Serializable
     private $id;
 
     /**
-     * @todo hash password
-     * @todo Make password not nullable.
      * @ORM\Column(type="string")
      */
     private $password;

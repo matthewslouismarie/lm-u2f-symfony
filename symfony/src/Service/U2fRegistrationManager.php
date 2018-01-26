@@ -19,8 +19,6 @@ class U2fRegistrationManager
 
     /**
      * @todo $registrations
-     * @todo Should return an object, e.g. RpRequest, or even IRPRequest.
-     * @todo Make stateless.
      */
     public function generate(): U2fRegistrationRequest
     {

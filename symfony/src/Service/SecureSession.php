@@ -113,9 +113,6 @@ class SecureSession
         return $array;
     }
 
-    /**
-     * @todo Make it return IObject?
-     */
     public function getObject(?string $key, string $class)
     {
         $object = $this->session->get($key);

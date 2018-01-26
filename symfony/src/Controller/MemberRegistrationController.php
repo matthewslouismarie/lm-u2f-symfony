@@ -73,7 +73,6 @@ class MemberRegistrationController extends AbstractController
 
     /**
      * @todo 1 is not very explicit.
-     * @todo Move processing in another controller.
      * @todo What if the stack is modified in the meantime?
      *
      * @Route(

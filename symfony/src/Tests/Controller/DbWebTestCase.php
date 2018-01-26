@@ -41,7 +41,7 @@ abstract class DbWebTestCase extends WebTestCase
     }
 
     /**
-     * @todo Move in a service?
+     * @todo Remove.
      */
     public function checkUrlStatusCode($url, $expectedStatusCode)
     {

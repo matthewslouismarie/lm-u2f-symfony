@@ -3,7 +3,7 @@
 namespace App\FormModel;
 
 /**
- * @todo Remove username.
+ * @todo Delete.
  */
 class U2fAuthenticationSubmission
 {

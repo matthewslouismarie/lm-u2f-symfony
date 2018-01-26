@@ -6,6 +6,7 @@ use Serializable;
 use App\FormModel\U2fAuthenticationSubmission;
 
 /**
+ * @todo Delete.
  * @todo The RP request - token challenge should be kept instead of the id, and
  * the id should be dynamically determined from that.
  */

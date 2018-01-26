@@ -143,28 +143,16 @@ class MemberRegistrationController extends AbstractController
                 $stack->get($sid, 0)->getUsername(),
                 $stack->get($sid, 0)->getPassword()
             );
-            $u2fToken1 = $u2fRegistrationManager->getU2fTokenFromResponse(
-                $stack->get($sid, 2, NewU2fRegistrationSubmission::class)->getU2fTokenResponse(),
-                $member,
-                new DateTimeImmutable(),
-                $stack->get($sid, 1)
-            );
-            $u2fToken2 = $u2fRegistrationManager->getU2fTokenFromResponse(
-                $stack->get($sid, 4, NewU2fRegistrationSubmission::class)->getU2fTokenResponse(),
-                $member,
-                new DateTimeImmutable(),
-                $stack->get($sid, 3)
-            );
-            $u2fToken3 = $u2fRegistrationManager->getU2fTokenFromResponse(
-                $stack->get($sid, 6, NewU2fRegistrationSubmission::class)->getU2fTokenResponse(),
-                $member,
-                new DateTimeImmutable(),
-                $stack->get($sid, 5)
-            );
             $om->persist($member);
-            $om->persist($u2fToken1);
-            $om->persist($u2fToken2);
-            $om->persist($u2fToken3);
+            for ($i = 1; $i <= self::N_U2F_KEYS; ++$i) {
+                $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
+                    $stack->get($sid, $i * 2, NewU2fRegistrationSubmission::class)->getU2fTokenResponse(),
+                    $member,
+                    new DateTimeImmutable(),
+                    $stack->get($sid, $i * 2 - 1)
+                );
+                $om->persist($u2fToken);
+            }
             $om->flush();
             $stack->delete($sid);
 

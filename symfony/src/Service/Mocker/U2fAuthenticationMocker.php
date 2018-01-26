@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Mocker;
 
 use App\Model\U2fAuthenticationCycle;
 use App\FormModel\U2fAuthenticationRequest;

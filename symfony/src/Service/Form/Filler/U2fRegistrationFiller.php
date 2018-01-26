@@ -3,7 +3,7 @@
 namespace App\Service\Form\Filler;
 
 use App\Exception\NonexistentNodeException;
-use App\Service\U2fRegistrationMocker;
+use App\Service\Mocker\U2fRegistrationMocker;
 use App\Service\SubmissionStack;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;

@@ -3,7 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Service\SubmissionStack;
-use App\Service\U2fAuthenticationMocker;
+use App\Service\Mocker\U2fAuthenticationMocker;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
@@ -92,7 +92,7 @@ class TestCaseTemplate extends DbWebTestCase
     {
         return $this
             ->getContainer()
-            ->get('App\Service\U2fAuthenticationMocker')
+            ->get('App\Service\Mocker\U2fAuthenticationMocker')
         ;
     }
 

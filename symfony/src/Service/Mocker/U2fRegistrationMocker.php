@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Mocker;
 
 use App\Model\U2fRegistrationCycle;
 use Firehed\U2F\RegisterRequest;

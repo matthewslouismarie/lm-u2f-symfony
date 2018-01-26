@@ -4,8 +4,6 @@ namespace App\Tests\Controller;
 
 use App\Entity\Member;
 use App\Entity\U2fToken;
-use App\Service\Form\Filler\CredentialRegistrationFiller;
-use App\Service\Form\Filler\CredentialAuthenticationFiller;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {
@@ -59,7 +57,7 @@ class MemberRegistrationTest extends TestCaseTemplate
             ->getMemberRegistrations($member->getId())
         ;
         $this->assertEquals(3, count($u2fTokens));
-        
+
         $this->assertFalse(
             $this->get('App\Service\SubmissionStack')->isValidSid($sid)
         );

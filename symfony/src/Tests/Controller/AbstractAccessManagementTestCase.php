@@ -3,8 +3,6 @@
 namespace App\Tests\Controller;
 
 use App\Entity\U2fToken;
-use App\Service\Form\Filler\CredentialAuthenticationFiller;
-use App\Service\Form\Filler\LoginRequestFiller;
 use Firehed\U2F\SignRequest;
 
 /**

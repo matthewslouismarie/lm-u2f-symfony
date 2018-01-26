@@ -2,9 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use App\Service\Form\Filler\LoginRequestFiller;
-use App\Service\Form\Filler\CredentialAuthenticationFiller;
-
 class MediumSecurityAuthorizerTest extends TestCaseTemplate
 {
     public function testCorrectLogin()

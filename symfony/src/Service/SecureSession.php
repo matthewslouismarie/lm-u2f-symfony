@@ -86,6 +86,7 @@ class SecureSession
                 return false;
             }
         }
+
         return true;
     }
 

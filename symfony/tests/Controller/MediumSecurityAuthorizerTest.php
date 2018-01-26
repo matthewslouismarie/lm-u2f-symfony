@@ -3,7 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Service\Form\Filler\LoginRequestFiller;
-use App\Service\Form\Filler\CredentialFiller;
+use App\Service\Form\Filler\CredentialAuthenticationFiller;
 
 class MediumSecurityAuthorizerTest extends TestCaseTemplate
 {
@@ -64,7 +64,7 @@ class MediumSecurityAuthorizerTest extends TestCaseTemplate
     {
         $this->doGet('/not-authenticated/start-login');
         $this->followRedirect();
-        $formFiller = $this->get('App\Service\Form\Filler\CredentialFiller');
+        $formFiller = $this->get('App\Service\Form\Filler\CredentialAuthenticationFiller');
         $this->submit(
             $formFiller->fillForm($this->getCrawler(), $password, $username)
         );

@@ -3,7 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\U2fToken;
-use App\Service\Form\Filler\CredentialFiller;
+use App\Service\Form\Filler\CredentialAuthenticationFiller;
 use App\Service\Form\Filler\LoginRequestFiller;
 use Firehed\U2F\SignRequest;
 
@@ -18,7 +18,7 @@ abstract class AbstractAccessManagementTestCase extends TestCaseTemplate
     {
         $this->doGet('/not-authenticated/start-login');
         $this->followRedirect();
-        $formFiller = $this->get('App\Service\Form\Filler\CredentialFiller');
+        $formFiller = $this->get('App\Service\Form\Filler\CredentialAuthenticationFiller');
         $this->submit(
             $formFiller->fillForm($this->getCrawler(), $password, $username)
         );

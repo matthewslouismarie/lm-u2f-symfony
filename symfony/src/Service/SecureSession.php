@@ -100,7 +100,7 @@ class SecureSession
         return true;
     }
 
-    public function getArray(?string $key): array
+    public function getArray(string $key): array
     {
         return $this->session->get($key);
     }
@@ -123,7 +123,7 @@ class SecureSession
         return $array;
     }
 
-    public function getObject(?string $key, string $class)
+    public function getObject(string $key, string $class)
     {
         $object = $this->session->get($key);
         if (!is_a($object, $class)) {
@@ -133,12 +133,12 @@ class SecureSession
         return $object;
     }
 
-    public function getString(?string $key): string
+    public function getString(string $key): string
     {
         return $this->session->get($key);
     }
 
-    public function getAndRemoveArray(?string $key): array
+    public function getAndRemoveArray(string $key): array
     {
         $value = $this->session->get($key);
         if (!is_array($value)) {
@@ -149,7 +149,7 @@ class SecureSession
         return $value;
     }
 
-    public function getAndRemoveObject(?string $key, string $class)
+    public function getAndRemoveObject(string $key, string $class)
     {
         $value = $this->session->get($key);
         if (!is_a($value, $class)) {
@@ -160,7 +160,7 @@ class SecureSession
         return $value;
     }
 
-    public function getAndRemoveString(?string $key): string
+    public function getAndRemoveString(string $key): string
     {
         $value = $this->session->get($key);
         if (!is_string($value)) {
@@ -180,7 +180,7 @@ class SecureSession
         return $random_key;
     }
 
-    public function remove(?string $key): void
+    public function remove(string $key): void
     {
         $this->session->remove($key);
     }

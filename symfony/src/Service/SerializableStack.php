@@ -7,7 +7,7 @@ use UnexpectedValueException;
 
 /**
  * @todo Add more precise type-hinting?
- * @todo Rename to SerializableStackManager?
+ * @todo Rename to SerializableMap?
  */
 class SerializableStack
 {

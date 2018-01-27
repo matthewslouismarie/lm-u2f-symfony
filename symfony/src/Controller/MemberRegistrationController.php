@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Member;
 use App\Factory\MemberFactory;
 use App\Form\CredentialRegistrationType;
 use App\Form\NewU2fRegistrationType;
@@ -46,6 +47,8 @@ class MemberRegistrationController extends AbstractController
      *  )
      */
     public function fetchRegistrationPage(
+        MemberFactory $mf,
+        ObjectManager $om,
         Request $request,
         SerializableStack $stack,
         string $sid): Response
@@ -57,6 +60,13 @@ class MemberRegistrationController extends AbstractController
         );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $member = $mf->create(
+                null,
+                $submission->getUsername(),
+                $submission->getPassword()
+            );
+            $om->persist($member);
+            $om->flush();
             $stack->add($sid, $submission);
 
             return new RedirectResponse($this
@@ -138,12 +148,10 @@ class MemberRegistrationController extends AbstractController
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $member = $mf->create(
-                null,
-                $stack->get($sid, 0)->getUsername(),
-                $stack->get($sid, 0)->getPassword()
-            );
-            $om->persist($member);
+            $member = $om
+                ->getRepository(Member::class)
+                ->findOneBy(['username' => $stack->get($sid, 0)->getUsername()])
+            ;
             for ($i = 1; $i <= self::N_U2F_KEYS; ++$i) {
                 $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
                     $stack->get($sid, $i * 2, NewU2fRegistrationSubmission::class)->getU2fTokenResponse(),

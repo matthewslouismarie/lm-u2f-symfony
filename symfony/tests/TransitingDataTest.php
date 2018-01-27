@@ -50,5 +50,9 @@ class TransitingDataTest extends TestCase
         $this->assertFalse(
             $newTdm->filterBy('route', 'blablabla')->isEmpty()
         );
+
+        $this->assertEquals([$td1->getValue()], $newTdm->toArray());
+        unset($newTdm->toArray()[0]);
+        $this->assertEquals(1, $newTdm->getSize());
     }
 }

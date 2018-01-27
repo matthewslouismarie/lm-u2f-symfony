@@ -73,6 +73,16 @@ class TransitingDataManager implements Serializable
         return 0 === count($this->list);
     }
 
+    public function toArray(): array
+    {
+        $valueList = [];
+        foreach ($this->list as $value) {
+            $valueList[] = $value->getValue();
+        }
+
+        return $valueList;
+    }
+
     public function serialize(): string
     {
         return serialize($this->list);

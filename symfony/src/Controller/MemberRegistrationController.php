@@ -12,8 +12,12 @@ use App\FormModel\NewU2fRegistrationSubmission;
 use App\Model\TransitingData;
 use App\Service\SecureSession;
 use App\Service\U2fRegistrationManager;
+use App\Service\U2fService;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
+use Firehed\U2F\SignResponse;
+use Firehed\U2F\RegisterResponse;
+use Firehed\U2F\Registration;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,9 +100,11 @@ class MemberRegistrationController extends AbstractController
         Request $request,
         SecureSession $secureSession,
         U2fRegistrationManager $service,
+        U2fService $u2fService,
         string $sid): Response
     {
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+        $server = $u2fService->getServer();
         $u2fKeyNo = $tdm
             ->getBy('class', NewU2fRegistrationSubmission::class)
             ->getSize()
@@ -107,13 +113,31 @@ class MemberRegistrationController extends AbstractController
         $form = $this->createForm(NewU2fRegistrationType::class, $submission);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $registerRequest = $tdm
+                ->getBy('key', 'U2fKeyRequest'.$u2fKeyNo)
+                ->getOnlyValue()
+                ->getValue()
+            ;
+            $registration = $server
+                ->setRegisterRequest($registerRequest)
+                ->register(
+                    RegisterResponse::fromJson($submission->getU2fTokenResponse())
+                )
+            ;
             $secureSession->setObject(
                 $sid,
-                $tdm->add(new TransitingData(
-                    'U2fKeySubmission'.$u2fKeyNo,
-                    'registration_u2f_key',
-                    $submission
-                )),
+                $tdm
+                    ->add(new TransitingData(
+                        'U2fKeySubmission'.$u2fKeyNo,
+                        'registration_u2f_key',
+                        $submission
+                    ))
+                    ->add(new TransitingData(
+                        'U2fRegistration'.$u2fKeyNo,
+                        'registration_u2f_key',
+                        $registration
+                    ))
+                ,
                 TransitingDataManager::class
             );
             if (self::N_U2F_KEYS === $u2fKeyNo + 1) {
@@ -131,7 +155,11 @@ class MemberRegistrationController extends AbstractController
             }
         }
 
-        $registerRequest = $service->generate();
+        $registrations = $tdm
+            ->getBy('class', Registration::class)
+            ->toArray()
+        ;
+        $registerRequest = $service->generate($registrations);
         $secureSession->setObject(
             $sid,
             $tdm->add(new TransitingData(

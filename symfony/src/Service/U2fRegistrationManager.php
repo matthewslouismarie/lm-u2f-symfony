@@ -17,17 +17,13 @@ class U2fRegistrationManager
         $this->u2f = $u2f;
     }
 
-    /**
-     * @todo $registrations
-     */
-    public function generate(): U2fRegistrationRequest
+    public function generate($registrations = []): U2fRegistrationRequest
     {
         $server = $this
             ->u2f
             ->getServer()
         ;
         $request = $server->generateRegisterRequest();
-        $registrations = array();
         $signRequests = json_encode($server->generateSignRequests($registrations));
 
         return new U2fRegistrationRequest($request, $signRequests);

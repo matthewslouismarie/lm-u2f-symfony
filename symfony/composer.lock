@@ -1036,7 +1036,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthewslouismarie/lm-u2f.git",
-                "reference": "9d3b6863e24fa7c7dbe60ed06b8262f051f5802b"
+                "reference": "b0931bab7817df3327901ca36cb4664562fa8f05"
             },
             "require": {
                 "matthewslouismarie/lm-web-framework": "dev-master"
@@ -1048,7 +1048,7 @@
                     "Firehed\\U2F\\": "src/"
                 }
             },
-            "time": "2018-01-11T18:14:03+00:00"
+            "time": "2018-01-27T18:36:29+00:00"
         },
         {
             "name": "matthewslouismarie/lm-web-framework",

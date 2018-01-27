@@ -6,8 +6,7 @@ use Serializable;
 use UnexpectedValueException;
 
 /**
- * @todo Add more precise type-hinting?
- * @todo Rename to SerializableMap?
+ * @todo Delete.
  */
 class SerializableStack
 {
@@ -115,9 +114,6 @@ class SerializableStack
         return $stack[count($stack) - 1];
     }
 
-    /**
-     * @todo Remove.
-     */
     public function isValid(string $sid): bool
     {
         return true;

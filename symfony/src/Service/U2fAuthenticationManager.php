@@ -28,9 +28,6 @@ class U2fAuthenticationManager
         $this->session = $session;
     }
 
-    /**
-     * @todo Rename auth_id to u2fAuthenticationId?
-     */
     public function generate(
         string $username,
         array $idsToExclude = array()): array
@@ -66,12 +63,6 @@ class U2fAuthenticationManager
         );
     }
 
-    /**
-     * @todo Critical vulnerability! The user is able to modify the U2f
-     * authentication ID!
-     * @todo Make stateless.
-     * @todo sql transaction
-     */
     public function processResponse(
         string $auth_id,
         string $username,

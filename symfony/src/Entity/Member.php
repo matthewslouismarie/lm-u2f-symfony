@@ -7,7 +7,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @todo Make immutable.
- * @todo Remove nullable=false (useless).
  *
  * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
  */
@@ -26,7 +25,7 @@ class Member implements UserInterface, \Serializable
     private $password;
 
     /**
-     * @ORM\Column(length=25, unique=true, nullable=false)
+     * @ORM\Column(length=25, unique=true)
      */
     private $username;
 

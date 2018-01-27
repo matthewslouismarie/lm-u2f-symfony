@@ -46,6 +46,11 @@ class U2fToken
      */
     private $publicKey;
 
+    /**
+     * @ORM\Column()
+     */
+    private $u2fKeyName;
+
     public function __construct(
         ?int $id,
         string $attestation,
@@ -53,7 +58,8 @@ class U2fToken
         string $keyHandle,
         Member $member,
         \DateTimeImmutable $registrationDateTime,
-        string $publicKey)
+        string $publicKey,
+        string $u2fKeyName)
     {
         $this->id = $id;
         $this->attestation = $attestation;
@@ -62,6 +68,7 @@ class U2fToken
         $this->member = $member;
         $this->registrationDateTime = $registrationDateTime;
         $this->publicKey = $publicKey;
+        $this->u2fKeyName = $u2fKeyName;
     }
 
     public function getAttestation(): string
@@ -97,6 +104,11 @@ class U2fToken
     public function getPublicKey(): string
     {
         return $this->publicKey;
+    }
+
+    public function getU2fKeyName(): string
+    {
+        return $this->u2fKeyName;
     }
 
     public function setCounter(int $counter): void

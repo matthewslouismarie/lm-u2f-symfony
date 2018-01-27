@@ -45,6 +45,7 @@ class U2fRegistrationFiller
                 TransitingDataManager::class
             )
         ;
+
         $button = $crawler->selectButton(
             'new_u2f_registration[submit]'
         );
@@ -53,6 +54,7 @@ class U2fRegistrationFiller
         }
         $form = $button->form([
             'new_u2f_registration[u2fTokenResponse]' => $cycle->getResponse(),
+            'new_u2f_registration[u2fKeyName]' => 'a random name',
         ]);
 
         return $form;

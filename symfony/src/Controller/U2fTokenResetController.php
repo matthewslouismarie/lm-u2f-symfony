@@ -73,7 +73,8 @@ class U2fTokenResetController extends AbstractController
                 $submission->getU2fTokenResponse(),
                 $this->getUser(),
                 new DateTimeImmutable(),
-                $sSession->getObject($submission->getRequestId(), RegisterRequest::class)
+                $sSession->getObject($submission->getRequestId(), RegisterRequest::class),
+                '@todo'
             );
             $u2fTokenToDelete = $om
                 ->getRepository(U2fToken::class)

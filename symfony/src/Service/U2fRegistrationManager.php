@@ -33,7 +33,8 @@ class U2fRegistrationManager
         string $u2fKeyResponse,
         Member $member,
         \DateTimeImmutable $registration_date_time,
-        RegisterRequest $request): U2fToken
+        RegisterRequest $request,
+        string $u2fKeyName): U2fToken
     {
         $server = $this
             ->u2f
@@ -58,7 +59,8 @@ class U2fRegistrationManager
             $key_handle,
             $member,
             $registration_date_time,
-            $public_key
+            $public_key,
+            $u2fKeyName
         );
 
         return $u2fToken;

@@ -95,6 +95,7 @@ class HighSecurityAuthorizerTest extends AbstractAccessManagementTestCase
         ;
         $form = $submitButton->form([
             'u2f_registration[requestId]' => $registerRequestSid,
+            'u2f_registration[u2fKeyName]' => 'Just a name.',
             'u2f_registration[u2fTokenResponse]' => $registration['u2fTokenResponse'],
         ]);
         $this

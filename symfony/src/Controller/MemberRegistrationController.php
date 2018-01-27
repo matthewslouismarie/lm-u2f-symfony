@@ -206,18 +206,20 @@ class MemberRegistrationController extends AbstractController
             );
             $om->persist($member);
             for ($i = 0; $i < self::N_U2F_KEYS; ++$i) {
+                $submission = $tdm
+                    ->getBy('key', 'U2fKeySubmission'.$i)
+                    ->getOnlyValue()
+                    ->getValue()
+                ;
                 $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
-                    $tdm
-                        ->getBy('key', 'U2fKeySubmission'.$i)
-                        ->getOnlyValue()
-                        ->getValue()
-                        ->getU2fTokenResponse(),
+                    $submission->getU2fTokenResponse(),
                     $member,
                     new DateTimeImmutable(),
                     $tdm
                         ->getBy('key', 'U2fKeyRequest'.$i)
                         ->getOnlyValue()
-                        ->getValue()
+                        ->getValue(),
+                    $submission->getU2fKeyName()
                 );
                 $om->persist($u2fToken);
             }

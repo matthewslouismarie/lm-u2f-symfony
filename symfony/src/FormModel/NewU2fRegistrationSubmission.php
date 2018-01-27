@@ -3,19 +3,38 @@
 namespace App\FormModel;
 
 use Serializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class NewU2fRegistrationSubmission implements Serializable
 {
     private $u2fTokenResponse;
 
-    public function __construct(?string $u2fTokenResponse = null)
+    /**
+     * @Assert\NotBlank()
+     */
+    private $u2fKeyName;
+
+    public function __construct(
+        ?string $u2fKeyName = null,
+        ?string $u2fTokenResponse = null)
     {
+        $this->u2fKeyName = $u2fKeyName;
         $this->u2fTokenResponse = $u2fTokenResponse;
+    }
+
+    public function getU2fKeyName(): ?string
+    {
+        return $this->u2fKeyName;
     }
 
     public function getU2fTokenResponse(): ?string
     {
         return $this->u2fTokenResponse;
+    }
+
+    public function setU2fKeyName(?string $u2fKeyName): void
+    {
+        $this->u2fKeyName = $u2fKeyName;
     }
 
     public function setU2fTokenResponse(?string $u2fTokenResponse): void
@@ -26,6 +45,7 @@ class NewU2fRegistrationSubmission implements Serializable
     public function serialize(): string
     {
         return serialize([
+            $this->u2fKeyName,
             $this->u2fTokenResponse,
         ]);
     }
@@ -33,6 +53,7 @@ class NewU2fRegistrationSubmission implements Serializable
     public function unserialize($serialized): void
     {
         list(
+            $this->u2fKeyName,
             $this->u2fTokenResponse) = unserialize($serialized);
     }
 }

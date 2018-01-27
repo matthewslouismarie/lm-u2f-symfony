@@ -4,6 +4,9 @@ namespace App\Factory;
 
 use App\Entity\U2fToken;
 
+/**
+ * @todo Delete.
+ */
 class U2fTokenFactory
 {
     public function setCounter(

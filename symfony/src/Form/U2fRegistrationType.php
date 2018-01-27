@@ -15,6 +15,7 @@ class U2fRegistrationType extends AbstractType
     {
         $builder
             ->add('u2fTokenResponse', HiddenType::class)
+            ->add('u2fKeyName')
             ->add('requestId', HiddenType::class)
             ->add('submit', SubmitType::class)
         ;

@@ -54,9 +54,13 @@ class MemberRegistrationTest extends TestCaseTemplate
         $u2fTokens = $this
             ->getObjectManager()
             ->getRepository(U2fToken::class)
-            ->getMemberRegistrations($member->getId())
+            ->findBy(['member' => $member])
         ;
         $this->assertEquals(3, count($u2fTokens));
+
+        foreach ($u2fTokens as $u2fToken) {
+            $this->assertEquals('a random name', $u2fToken->getU2fKeyName());
+        }
 
         $this->assertFalse(
             $this->get('App\Service\SerializableStack')->isValidSid($sid)

@@ -50,8 +50,6 @@ class MemberRegistrationController extends AbstractController
      *  )
      */
     public function fetchRegistrationPage(
-        MemberFactory $mf,
-        ObjectManager $om,
         Request $request,
         SecureSession $secureSession,
         string $sid): Response
@@ -64,13 +62,6 @@ class MemberRegistrationController extends AbstractController
         );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $member = $mf->create(
-                null,
-                $submission->getUsername(),
-                $submission->getPassword()
-            );
-            $om->persist($member);
-            $om->flush();
             $secureSession->setObject(
                 $sid,
                 $tdm->add(new TransitingData(
@@ -182,18 +173,17 @@ class MemberRegistrationController extends AbstractController
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $username = $tdm
+            $credential = $tdm
                 ->getBy('class', CredentialRegistrationSubmission::class)
                 ->getOnlyValue()
                 ->getValue()
-                ->getUsername()
             ;
-            $member = $om
-                ->getRepository(Member::class)
-                ->findOneBy([
-                    'username' => $username,
-                ])
-            ;
+            $member = $mf->create(
+                null,
+                $credential->getUsername(),
+                $credential->getPassword()
+            );
+            $om->persist($member);
             for ($i = 0; $i < self::N_U2F_KEYS; ++$i) {
                 $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
                     $tdm

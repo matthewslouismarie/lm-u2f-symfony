@@ -12,7 +12,6 @@ use App\FormModel\NewU2fAuthenticationSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Model\Integer;
 use App\Model\TransitingData;
-use App\Service\U2fAuthenticationManager;
 use App\Service\StatelessU2fAuthenticationManager;
 use App\Service\SecureSession;
 use App\SessionToken\HighSecurityAuthorizationToken;

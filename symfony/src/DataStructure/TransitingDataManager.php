@@ -26,12 +26,12 @@ class TransitingDataManager implements Serializable
         $newList = $this->list;
         $newList[] = $newValue;
 
-        return new TransitingDataManager($newList);
+        return new self($newList);
     }
 
     public function filterBy(string $attribute, string $attributeValue): self
     {
-        return new TransitingDataManager(
+        return new self(
             array_filter(
                 $this->list,
                 function ($listValue) use ($attribute, $attributeValue) {
@@ -43,7 +43,7 @@ class TransitingDataManager implements Serializable
 
     public function getBy(string $attribute, string $attributeValue): self
     {
-        return new TransitingDataManager(
+        return new self(
             array_filter(
                 $this->list,
                 function ($listValue) use ($attribute, $attributeValue) {

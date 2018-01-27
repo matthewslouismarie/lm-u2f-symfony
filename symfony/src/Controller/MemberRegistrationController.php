@@ -151,8 +151,8 @@ class MemberRegistrationController extends AbstractController
             )),
             TransitingDataManager::class
         );
-        return $this->render('registration/key.html.twig', [
 
+        return $this->render('registration/key.html.twig', [
             'form' => $form->createView(),
             'request_json' => $registerRequest->getRequestAsJson(),
             'sign_requests' => $registerRequest->getSignRequests(),
@@ -178,7 +178,7 @@ class MemberRegistrationController extends AbstractController
         U2fRegistrationManager $u2fRegistrationManager,
         Request $request): Response
     {
-        $tdm =  $secureSession->getObject($sid, TransitingDataManager::class);
+        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

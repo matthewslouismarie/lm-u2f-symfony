@@ -2,16 +2,17 @@
 
 namespace App\Controller\U2fAuthorizer;
 
+use App\DataStructure\TransitingDataManager;
 use App\Form\U2fAuthenticationType;
 use App\Form\ExistingUsernameType;
 use App\FormModel\U2fAuthenticationSubmission;
 use App\FormModel\ExistingUsernameSubmission;
 use App\Model\IAuthorizationRequest;
+use App\Model\Integer;
+use App\Model\TransitingData;
 use App\Service\U2fAuthenticationManager;
 use App\Service\SecureSession;
 use App\SessionToken\HighSecurityAuthorizationToken;
-use App\TransitingUserInput\UToU2fUserInput;
-use App\TransitingUserInput\U2fToU2fUserInput;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -66,7 +67,7 @@ class HighSecurityAuthorizer extends AbstractController
      * @todo Remove username from form.
      *
      * @Route(
-     *  "/all/u2f-authorisation/high-security/first-u2f-key/{transitingUserInputSid}",
+     *  "/all/u2f-authorisation/high-security/first-u2f-key/{sid}",
      *  name="high_security_authorization_u2f",
      *  methods={"GET", "POST"})
      */
@@ -74,17 +75,19 @@ class HighSecurityAuthorizer extends AbstractController
         U2fAuthenticationManager $u2fAuthentication,
         Request $request,
         SecureSession $sSession,
-        string $transitingUserInputSid)
+        string $sid)
     {
-        $uToU2fUserInput = $sSession
-            ->getObject(
-                    $transitingUserInputSid,
-                    UToU2fUserInput::class)
+        $tdm = $sSession->getObject($sid, TransitingDataManager::class);
+        $username = $tdm
+            ->getBy('key', 'username')
+            ->getOnlyvalue()
+            ->getValue()
+            ->getUsername()
         ;
-        $username = $uToU2fUserInput->getUsername();
+
         $u2fAuthenticationData = $u2fAuthentication->generate($username);
         $u2fAuthenticationSubmission = new U2fAuthenticationSubmission(
-            $uToU2fUserInput->getUsername(),
+            $username,
             null,
             $u2fAuthenticationData['auth_id']
         );
@@ -98,17 +101,23 @@ class HighSecurityAuthorizer extends AbstractController
                 $u2fAuthenticationSubmission->getUsername(),
                 $u2fAuthenticationSubmission->getU2fTokenResponse())
             ;
-            $u2fToU2fUserInput = new U2fToU2fUserInput(
-                $u2fAuthenticationSubmission,
-                $u2fTokenId,
-                $uToU2fUserInput)
-            ;
-            $sSession->remove($transitingUserInputSid);
-            $u2fToU2fUserInputSid = $sSession
-                ->storeObject($u2fToU2fUserInput, U2fToU2fUserInput::class)
-            ;
+            $sSession->setObject(
+                $sid,
+                $tdm
+                    ->add(new TransitingData(
+                        'u2fTokenId',
+                        'high_security_authorization_u2f',
+                        new Integer($u2fTokenId)
+                    ))
+                    ->add(new TransitingData(
+                        'u2fAuthenticationSubmission',
+                        'high_security_authorization_u2f',
+                        $u2fAuthenticationSubmission
+                    )),
+                TransitingDataManager::class
+            );
             $url = $this->generateUrl('high_security_authorization_u2f_2', array(
-                'userInputSid' => $u2fToU2fUserInputSid,
+                'sid' => $sid,
             ));
 
             return new RedirectResponse($url);
@@ -125,7 +134,7 @@ class HighSecurityAuthorizer extends AbstractController
 
     /**
      * @Route(
-     *  "/all/u2f-authorisation/high-security/u2f-key-2/{userInputSid}",
+     *  "/all/u2f-authorisation/high-security/u2f-key-2/{sid}",
      *  name="high_security_authorization_u2f_2",
      *  methods={"GET", "POST"})
      */
@@ -133,22 +142,28 @@ class HighSecurityAuthorizer extends AbstractController
         U2fAuthenticationManager $u2fAuthentication,
         Request $request,
         SecureSession $sSession,
-        string $userInputSid)
+        string $sid)
     {
-        $userInput = $sSession
-            ->getObject($userInputSid, U2fToU2fUserInput::class)
-        ;
-        $username = $userInput
-            ->getUToU2fUserInput()
+        $tdm = $sSession->getObject($sid, TransitingDataManager::class);
+        $username = $tdm
+            ->getBy('key', 'username')
+            ->getOnlyValue()
+            ->getValue()
             ->getUsername()
         ;
-        $authorizationRequest = $userInput
-            ->getUToU2fUserInput()
-            ->getAuthorizationRequest()
+        $authorizationRequest = $tdm
+            ->getBy('key', 'authorizationRequest')
+            ->getOnlyValue()
+            ->getValue()
+        ;
+        $usedTokenId = $tdm
+            ->getBy('key', 'u2fTokenId')
+            ->getOnlyValue()
+            ->getValue()
         ;
 
         $u2fAuthenticationData = $u2fAuthentication
-            ->generate($username, array($userInput->getUsedU2fTokenId()))
+            ->generate($username, [$usedTokenId->getInteger()])
         ;
 
         $u2fAuthenticationSubmission = new U2fAuthenticationSubmission(
@@ -161,7 +176,7 @@ class HighSecurityAuthorizer extends AbstractController
         ;
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $sSession->remove($userInputSid);
+            $sSession->deleteObject($sid, TransitingDataManager::class);
             $u2fTokenId = $u2fAuthentication->processResponse(
                 $u2fAuthenticationSubmission->getU2fAuthenticationRequestId(),
                 $username,
@@ -169,7 +184,7 @@ class HighSecurityAuthorizer extends AbstractController
             );
             $authorizationToken = new HighSecurityAuthorizationToken(
                 $username,
-                $userInput->getUsedU2fTokenId(),
+                $usedTokenId->getInteger(),
                 $u2fTokenId)
             ;
             $authorizationTokenSid = $sSession
@@ -195,18 +210,28 @@ class HighSecurityAuthorizer extends AbstractController
         SecureSession $sSession,
         string $username): RedirectResponse
     {
-        $transitingUserInput = new UToU2fUserInput(
-            $username,
-            $authorizationRequest)
-        ;
-        $transitingUserInputSid = $sSession
-            ->storeObject($transitingUserInput, UToU2fUserInput::class);
-        $firstU2fUrl = $this
-            ->generateUrl('high_security_authorization_u2f', array(
-                'transitingUserInputSid' => $transitingUserInputSid,
-            ))
+        $tdm = new TransitingDataManager();
+
+        $sid = $sSession->storeObject(
+            $tdm
+                ->add(new TransitingData(
+                    'authorizationRequest',
+                    'high_security_authorization_username',
+                    $authorizationRequest
+                ))
+                ->add(new TransitingData(
+                    'username',
+                    'high_security_authorization_username',
+                    new ExistingUsernameSubmission($username)
+                )),
+            TransitingDataManager::class
+        );
+        $url = $this
+            ->generateUrl('high_security_authorization_u2f', [
+                'sid' => $sid,
+            ])
         ;
 
-        return new RedirectResponse($firstU2fUrl);
+        return new RedirectResponse($url);
     }
 }

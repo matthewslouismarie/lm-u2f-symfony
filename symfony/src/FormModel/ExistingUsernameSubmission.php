@@ -14,7 +14,7 @@ class ExistingUsernameSubmission implements Serializable
 
     public function __construct(?string $username = null)
     {
-        $this->username;
+        $this->username = $username;
     }
 
     public function setUsername(?string $username)

@@ -7,7 +7,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class ExistingMemberConstraintValidator extends ConstraintValidator
+class ExistingMemberValidator extends ConstraintValidator
 {
     private $om;
 

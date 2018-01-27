@@ -2,13 +2,13 @@
 
 namespace App\FormModel;
 
-use App\Validator\Constraints\ExistingMemberConstraint;
+use App\Validator\Constraints\ExistingMember;
 use Serializable;
 
 class ExistingUsernameSubmission implements Serializable
 {
     /**
-     * @ExistingMemberConstraint
+     * @ExistingMember
      */
     private $username;
 

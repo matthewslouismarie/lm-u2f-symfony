@@ -4,16 +4,23 @@ namespace App\Service\Mocker;
 
 use App\Model\U2fAuthenticationCycle;
 use App\FormModel\U2fAuthenticationRequest;
+use App\Repository\U2fTokenRepository;
 use Firehed\U2F\SignRequest;
 
+/**
+ * Only works for the user louis.
+ */
 class U2fAuthenticationMocker
 {
     private $cycles;
 
     private $currentIndex;
 
-    public function __construct()
+    private $repo;
+
+    public function __construct(U2fTokenRepository $repo)
     {
+        $this->repo = $repo;
         $this->cycles = [
             $this->getFirstU2fAuthenticationCycle(),
         ];
@@ -22,6 +29,10 @@ class U2fAuthenticationMocker
 
     public function getNewCycle(): U2fAuthenticationCycle
     {
+        $this
+            ->repo
+            ->resetCounters()
+        ;
         return $this->cycles[$this->currentIndex++];
     }
 

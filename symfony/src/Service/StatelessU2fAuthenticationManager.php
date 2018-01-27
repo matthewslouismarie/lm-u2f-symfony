@@ -28,7 +28,7 @@ class StatelessU2fAuthenticationManager
 
     public function generate(
         string $username,
-        array $idsToExclude = array()): U2fAuthenticationRequest
+        array $idsToExclude = []): U2fAuthenticationRequest
     {
         $member = $this
             ->em

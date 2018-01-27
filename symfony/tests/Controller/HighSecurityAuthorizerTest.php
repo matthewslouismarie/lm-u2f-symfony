@@ -6,7 +6,7 @@ use App\Entity\Member;
 use App\Entity\U2fToken;
 use Firehed\U2F\RegisterRequest;
 
-class UukpAuthorizerTest extends AbstractAccessManagementTestCase
+class HighSecurityAuthorizerTest extends AbstractAccessManagementTestCase
 {
     private $sSession;
 
@@ -40,7 +40,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
             ->request('GET', '/not-authenticated/request-password-reset')
         ;
         $this->enterValidUsername();
-        $this->uukpAuthorize();
+        $this->authorize();
         $submitButton = $this
             ->getClient()
             ->getCrawler()
@@ -81,7 +81,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
             ->followRedirect()
         ;
         $this->assertTrue($this->isRedirection());
-        $this->uukpAuthorize(true);
+        $this->authorize(true);
 
         $registration = $this->getU2fTokenRegistration();
         $registerRequestSid = $this
@@ -186,7 +186,7 @@ class UukpAuthorizerTest extends AbstractAccessManagementTestCase
         ;
     }
 
-    private function uukpAuthorize(bool $usernameAlreadySet = false)
+    private function authorize(bool $usernameAlreadySet = false)
     {
         $this
             ->getClient()

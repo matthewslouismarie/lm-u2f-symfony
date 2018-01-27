@@ -4,7 +4,7 @@ namespace App\SessionToken;
 
 use Serializable;
 
-class UukpAuthorizationToken implements Serializable
+class HighSecurityAuthorizationToken implements Serializable
 {
     private $username;
 

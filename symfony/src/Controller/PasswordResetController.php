@@ -9,7 +9,7 @@ use App\FormModel\PasswordUpdateSubmission;
 use App\Model\AuthorizationRequest;
 use App\Model\IAuthorizationRequest;
 use App\Service\SecureSession;
-use App\SessionToken\UukpAuthorizationToken;
+use App\SessionToken\HighSecurityAuthorizationToken;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -34,7 +34,7 @@ class PasswordResetController extends AbstractController
         $passwordResetRequestSid = $sSession
             ->storeObject($passwordResetRequest, IAuthorizationRequest::class)
         ;
-        $url = $this->generateUrl('u2f_authorization_uukp_u', array(
+        $url = $this->generateUrl('high_security_authorization_username', array(
             'authorizationRequestSid' => $passwordResetRequestSid,
         ));
 
@@ -55,7 +55,7 @@ class PasswordResetController extends AbstractController
         string $authorizationTokenSid)
     {
         $authorizationToken = $sSession
-            ->getObject($authorizationTokenSid, UukpAuthorizationToken::class)
+            ->getObject($authorizationTokenSid, HighSecurityAuthorizationToken::class)
         ;
         $submission = new PasswordUpdateSubmission();
         $form = $this->createForm(PasswordUpdateType::class, $submission);

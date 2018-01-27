@@ -9,7 +9,7 @@ use App\FormModel\ExistingUsernameSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Service\U2fAuthenticationManager;
 use App\Service\SecureSession;
-use App\SessionToken\UukpAuthorizationToken;
+use App\SessionToken\HighSecurityAuthorizationToken;
 use App\TransitingUserInput\UToU2fUserInput;
 use App\TransitingUserInput\U2fToU2fUserInput;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,12 +17,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UukpAuthorizer extends AbstractController
+class HighSecurityAuthorizer extends AbstractController
 {
     /**
      * @Route(
-     *  "/all/u2f-authorisation/uukp/u/{authorizationRequestSid}",
-     *  name="u2f_authorization_uukp_u",
+     *  "/all/u2f-authorisation/high-security/u/{authorizationRequestSid}",
+     *  name="high_security_authorization_username",
      *  methods={"GET", "POST"})
      */
     public function username(
@@ -56,7 +56,7 @@ class UukpAuthorizer extends AbstractController
             ;
         }
 
-        return $this->render('u2f_authorization/uukp/username.html.twig', array(
+        return $this->render('high_security_authorizer/username.html.twig', array(
             'form' => $usernameForm->createView(),
         ));
     }
@@ -66,8 +66,8 @@ class UukpAuthorizer extends AbstractController
      * @todo Remove username from form.
      *
      * @Route(
-     *  "/all/u2f-authorisation/uukp/first-u2f-key/{transitingUserInputSid}",
-     *  name="u2f_authorization_uukp_u2f_key",
+     *  "/all/u2f-authorisation/high-security/first-u2f-key/{transitingUserInputSid}",
+     *  name="high_security_authorization_u2f",
      *  methods={"GET", "POST"})
      */
     public function firstU2fKey(
@@ -107,7 +107,7 @@ class UukpAuthorizer extends AbstractController
             $u2fToU2fUserInputSid = $sSession
                 ->storeObject($u2fToU2fUserInput, U2fToU2fUserInput::class)
             ;
-            $url = $this->generateUrl('u2f_authorization_uukp_second_u2f_key', array(
+            $url = $this->generateUrl('high_security_authorization_u2f_2', array(
                 'userInputSid' => $u2fToU2fUserInputSid,
             ));
 
@@ -115,7 +115,7 @@ class UukpAuthorizer extends AbstractController
         }
 
         return $this
-            ->render('u2f_authorization/uukp/first_u2f_token.html.twig', array(
+            ->render('high_security_authorizer/first_u2f_token.html.twig', array(
                 'form' => $form->createView(),
                 'sign_requests_json' => $u2fAuthenticationData['sign_requests_json'],
                 'tmp' => $u2fAuthenticationData['tmp'],
@@ -125,8 +125,8 @@ class UukpAuthorizer extends AbstractController
 
     /**
      * @Route(
-     *  "/all/u2f-authorisation/uukp/u2f-key-2/{userInputSid}",
-     *  name="u2f_authorization_uukp_second_u2f_key",
+     *  "/all/u2f-authorisation/high-security/u2f-key-2/{userInputSid}",
+     *  name="high_security_authorization_u2f_2",
      *  methods={"GET", "POST"})
      */
     public function secondU2fKey(
@@ -167,13 +167,13 @@ class UukpAuthorizer extends AbstractController
                 $username,
                 $u2fAuthenticationSubmission->getU2fTokenResponse()
             );
-            $authorizationToken = new UukpAuthorizationToken(
+            $authorizationToken = new HighSecurityAuthorizationToken(
                 $username,
                 $userInput->getUsedU2fTokenId(),
                 $u2fTokenId)
             ;
             $authorizationTokenSid = $sSession
-                ->storeObject($authorizationToken, UukpAuthorizationToken::class)
+                ->storeObject($authorizationToken, HighSecurityAuthorizationToken::class)
             ;
             $url = $this->generateUrl($authorizationRequest->getSuccessRoute(), array(
                 'authorizationTokenSid' => $authorizationTokenSid,
@@ -183,7 +183,7 @@ class UukpAuthorizer extends AbstractController
         }
 
         return $this
-            ->render('u2f_authorization/uukp/second_u2f_token.html.twig', array(
+            ->render('high_security_authorizer/second_u2f_token.html.twig', array(
                 'form' => $form->createView(),
                 'sign_requests_json' => $u2fAuthenticationData['sign_requests_json'],
             ))
@@ -202,7 +202,7 @@ class UukpAuthorizer extends AbstractController
         $transitingUserInputSid = $sSession
             ->storeObject($transitingUserInput, UToU2fUserInput::class);
         $firstU2fUrl = $this
-            ->generateUrl('u2f_authorization_uukp_u2f_key', array(
+            ->generateUrl('high_security_authorization_u2f', array(
                 'transitingUserInputSid' => $transitingUserInputSid,
             ))
         ;

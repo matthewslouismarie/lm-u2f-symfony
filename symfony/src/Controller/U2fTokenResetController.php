@@ -9,7 +9,7 @@ use App\Model\AuthorizationRequest;
 use App\Model\U2fRegistrationRequest;
 use App\Service\SecureSession;
 use App\Service\U2fRegistrationManager;
-use App\SessionToken\UukpAuthorizationToken;
+use App\SessionToken\HighSecurityAuthorizationToken;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\RegisterRequest;
@@ -40,7 +40,7 @@ class U2fTokenResetController extends AbstractController
         $authorizationRequestSid = $sSession
             ->storeObject($authorizationRequest, AuthorizationRequest::class)
         ;
-        $url = $this->generateUrl('u2f_authorization_uukp_u', array(
+        $url = $this->generateUrl('high_security_authorization_username', array(
             'authorizationRequestSid' => $authorizationRequestSid,
         ));
 
@@ -61,7 +61,7 @@ class U2fTokenResetController extends AbstractController
         string $authorizationTokenSid)
     {
         $authorizationToken = $sSession
-            ->getObject($authorizationTokenSid, UukpAuthorizationToken::class)
+            ->getObject($authorizationTokenSid, HighSecurityAuthorizationToken::class)
         ;
         $challenge = $service->generate();
         $sid = $sSession->storeObject($challenge, U2fRegistrationRequest::class);

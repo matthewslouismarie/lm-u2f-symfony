@@ -69,9 +69,6 @@ class MemberLoginAuthenticator extends AbstractFormLoginAuthenticator
         return $user;
     }
 
-    /**
-     * @todo Check if the try catch block is of any use.
-     */
     public function checkCredentials($credentials, UserInterface $user)
     {
         return true;

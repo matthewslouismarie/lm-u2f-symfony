@@ -64,9 +64,6 @@ class Member implements UserInterface, \Serializable
         return $this->username;
     }
 
-    /**
-     * @todo Remove.
-     */
     public function setPassword(string $password)
     {
         $this->password = $password;

@@ -17,7 +17,8 @@ use App\Service\SerializableStack;
 use App\FormModel\CredentialAuthenticationSubmission;
 
 /**
- * @todo Test denied authorizations.
+ * @todo Test denied authorizations. (what happens if the user accesses
+ * finalize_login without the authorization?)
  */
 class AuthenticationController extends AbstractController
 {

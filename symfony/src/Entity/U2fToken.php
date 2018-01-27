@@ -17,7 +17,6 @@ class U2fToken
     private $id;
 
     /**
-     * @todo rename to owner
      * @ORM\ManyToOne(targetEntity="Member")
      */
     private $member;

@@ -8,7 +8,6 @@ use Serializable;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * @todo interface for session ids?
  * @todo Sids shouldn't be nullable.
  * @todo Not thread-safe (e.g. storeArray).
  * @todo Prevent any modification to stored variables?

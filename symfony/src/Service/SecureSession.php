@@ -54,11 +54,11 @@ class SecureSession
 
     public function storeArray(array $array): string
     {
-        $key = $this->generateNewKey();
-        $this->session->set($key, $array);
+        $sid = $this->generateNewKey();
+        $this->session->set($sid, $array);
         $this->session->save();
 
-        return $key;
+        return $sid;
     }
 
     public function storeObject(Serializable $object, string $class): string
@@ -66,20 +66,20 @@ class SecureSession
         if (!is_a($object, $class)) {
             throw new UnexpectedValueException();
         }
-        $key = $this->generateNewKey();
-        $this->session->set($key, $object);
+        $sid = $this->generateNewKey();
+        $this->session->set($sid, $object);
         $this->session->save();
 
-        return $key;
+        return $sid;
     }
 
     public function storeString(string $string): string
     {
-        $key = $this->generateNewKey();
-        $this->session->set($key, $string);
+        $sid = $this->generateNewKey();
+        $this->session->set($sid, $string);
         $this->session->save();
 
-        return $key;
+        return $sid;
     }
 
     public function isTypedArray(string $sid, string $itemClass): bool
@@ -100,16 +100,16 @@ class SecureSession
         return true;
     }
 
-    public function getArray(string $key): array
+    public function getArray(string $sid): array
     {
-        return $this->session->get($key);
+        return $this->session->get($sid);
     }
 
-    public function getTypedArray(string $key, string $class): array
+    public function getTypedArray(string $sid, string $class): array
     {
         $array = $this
             ->session
-            ->get($key)
+            ->get($sid)
         ;
         if (!is_array($array)) {
             throw new UnexpectedValueException();
@@ -123,9 +123,9 @@ class SecureSession
         return $array;
     }
 
-    public function getObject(string $key, string $class)
+    public function getObject(string $sid, string $class)
     {
-        $object = $this->session->get($key);
+        $object = $this->session->get($sid);
         if (!is_a($object, $class)) {
             throw new \UnexpectedValueException();
         }
@@ -133,40 +133,40 @@ class SecureSession
         return $object;
     }
 
-    public function getString(string $key): string
+    public function getString(string $sid): string
     {
-        return $this->session->get($key);
+        return $this->session->get($sid);
     }
 
-    public function getAndRemoveArray(string $key): array
+    public function getAndRemoveArray(string $sid): array
     {
-        $value = $this->session->get($key);
+        $value = $this->session->get($sid);
         if (!is_array($value)) {
             throw new \UnexpectedValueException();
         }
-        $this->session->remove($key);
+        $this->session->remove($sid);
 
         return $value;
     }
 
-    public function getAndRemoveObject(string $key, string $class)
+    public function getAndRemoveObject(string $sid, string $class)
     {
-        $value = $this->session->get($key);
+        $value = $this->session->get($sid);
         if (!is_a($value, $class)) {
             throw new \UnexpectedValueException();
         }
-        $this->session->remove($key);
+        $this->session->remove($sid);
 
         return $value;
     }
 
-    public function getAndRemoveString(string $key): string
+    public function getAndRemoveString(string $sid): string
     {
-        $value = $this->session->get($key);
+        $value = $this->session->get($sid);
         if (!is_string($value)) {
             throw new \UnexpectedValueException();
         }
-        $this->session->remove($key);
+        $this->session->remove($sid);
 
         return $value;
     }
@@ -174,23 +174,23 @@ class SecureSession
     private function generateNewKey(): string
     {
         do {
-            $random_key = bin2hex(random_bytes(self::KEY_LENGTH));
-        } while ($this->session->has($random_key));
+            $randomSid = bin2hex(random_bytes(self::KEY_LENGTH));
+        } while ($this->session->has($randomSid));
 
-        return $random_key;
+        return $randomSid;
     }
 
-    public function remove(string $key): void
+    public function remove(string $sid): void
     {
-        $this->session->remove($key);
+        $this->session->remove($sid);
     }
 
-    public function deleteObject(string $key, string $class): void
+    public function deleteObject(string $sid, string $class): void
     {
-        $object = $this->session->get($key);
+        $object = $this->session->get($sid);
         if (!is_a($object, $class)) {
             throw new UnexpectedValueException();
         }
-        $this->session->remove($key);
+        $this->session->remove($sid);
     }
 }

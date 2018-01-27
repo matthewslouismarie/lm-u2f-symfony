@@ -15,7 +15,6 @@ use App\Service\U2fRegistrationManager;
 use App\Service\U2fService;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
-use Firehed\U2F\SignResponse;
 use Firehed\U2F\RegisterResponse;
 use Firehed\U2F\Registration;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -136,8 +135,7 @@ class MemberRegistrationController extends AbstractController
                         'U2fRegistration'.$u2fKeyNo,
                         'registration_u2f_key',
                         $registration
-                    ))
-                ,
+                    )),
                 TransitingDataManager::class
             );
             if (self::N_U2F_KEYS === $u2fKeyNo + 1) {

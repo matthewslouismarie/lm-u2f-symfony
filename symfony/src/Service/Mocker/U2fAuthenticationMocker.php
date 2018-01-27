@@ -33,6 +33,7 @@ class U2fAuthenticationMocker
             ->repo
             ->resetCounters()
         ;
+
         return $this->cycles[$this->currentIndex++];
     }
 

@@ -87,8 +87,6 @@ class MemberRegistrationController extends AbstractController
     }
 
     /**
-     * @todo What if the stack is modified in the meantime?
-     *
      * @Route(
      *  "/not-authenticated/register/u2f-key/{sid}",
      *  name="registration_u2f_key")

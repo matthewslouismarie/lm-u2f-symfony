@@ -2,10 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\Member;
-use App\Entity\U2fToken;
-use Firehed\U2F\RegisterRequest;
-
 class HighSecurityAuthorizerTest extends TestCaseTemplate
 {
     public function test()

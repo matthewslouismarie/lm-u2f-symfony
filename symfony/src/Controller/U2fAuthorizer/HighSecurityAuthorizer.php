@@ -68,7 +68,6 @@ class HighSecurityAuthorizer extends AbstractController
 
     /**
      * @todo Check response.
-     * @todo Remove username from form.
      *
      * @Route(
      *  "/all/u2f-authorisation/high-security/first-u2f-key/{sid}",
@@ -204,7 +203,7 @@ class HighSecurityAuthorizer extends AbstractController
                 $usedTokenId->getInteger(),
                 $u2fTokenId
             );
-            
+
             $authorizationTokenSid = $sSession
                 ->storeObject($authorizationToken, HighSecurityAuthorizationToken::class)
             ;

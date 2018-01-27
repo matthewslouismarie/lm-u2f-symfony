@@ -50,6 +50,7 @@ class U2fAuthenticationFiller
         if (0 === $button->count()) {
             throw new NonexistentNodeException();
         }
+
         return $button->form([
             'new_u2f_authentication[u2fTokenResponse]' => $cycle->getResponse(),
         ]);

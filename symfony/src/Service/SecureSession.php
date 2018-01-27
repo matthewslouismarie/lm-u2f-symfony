@@ -4,12 +4,14 @@ namespace App\Service;
 
 use InvalidArgumentException;
 use UnexpectedValueException;
+use Serializable;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @todo interface for session ids?
  * @todo Sids shouldn't be nullable.
  * @todo Not thread-safe (e.g. storeArray).
+ * @todo Prevent any modification to stored variables?
  */
 class SecureSession
 {
@@ -20,6 +22,15 @@ class SecureSession
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
+    }
+
+    public function setObject(string $sid, $object, string $class): void
+    {
+        if (!is_a($object, $class)) {
+            throw new InvalidArgumentException();
+        }
+        $this->session->set($sid, $object);
+        $this->session->save();
     }
 
     public function storeTypedArray(
@@ -51,7 +62,7 @@ class SecureSession
         return $key;
     }
 
-    public function storeObject(\Serializable $object, string $class): string
+    public function storeObject(Serializable $object, string $class): string
     {
         if (!is_a($object, $class)) {
             throw new UnexpectedValueException();
@@ -172,6 +183,15 @@ class SecureSession
 
     public function remove(?string $key): void
     {
+        $this->session->remove($key);
+    }
+
+    public function deleteObject(string $key, string $class): void
+    {
+        $object = $this->session->get($key);
+        if (!is_a($object, $class)) {
+            throw new UnexpectedValueException();
+        }
         $this->session->remove($key);
     }
 }

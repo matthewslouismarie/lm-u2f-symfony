@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DataStructure\TransitingDataManager;
 use App\Entity\Member;
 use App\Factory\MemberFactory;
 use App\Form\CredentialRegistrationType;
@@ -9,7 +10,8 @@ use App\Form\NewU2fRegistrationType;
 use App\Form\UserConfirmationType;
 use App\FormModel\CredentialRegistrationSubmission;
 use App\FormModel\NewU2fRegistrationSubmission;
-use App\Service\SerializableStack;
+use App\Model\TransitingData;
+use App\Service\SecureSession;
 use App\Service\U2fRegistrationManager;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -29,9 +31,10 @@ class MemberRegistrationController extends AbstractController
      *  name="registration_start",
      *  methods={"GET"})
      */
-    public function fetchStartPage(SerializableStack $stack): Response
+    public function fetchStartPage(SecureSession $secureSession): Response
     {
-        $sid = $stack->create();
+        $tdm = new TransitingDataManager();
+        $sid = $secureSession->storeObject($tdm, TransitingDataManager::class);
         $url = $this->generateUrl('member_registration', [
             'sid' => $sid,
         ]);
@@ -50,9 +53,10 @@ class MemberRegistrationController extends AbstractController
         MemberFactory $mf,
         ObjectManager $om,
         Request $request,
-        SerializableStack $stack,
+        SecureSession $secureSession,
         string $sid): Response
     {
+        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
         $submission = new CredentialRegistrationSubmission();
         $form = $this->createForm(
             CredentialRegistrationType::class,
@@ -67,7 +71,15 @@ class MemberRegistrationController extends AbstractController
             );
             $om->persist($member);
             $om->flush();
-            $stack->add($sid, $submission);
+            $secureSession->setObject(
+                $sid,
+                $tdm->add(new TransitingData(
+                    'CredentialRegistration',
+                    'member_registration',
+                    $submission
+                )),
+                TransitingDataManager::class
+            );
 
             return new RedirectResponse($this
                 ->generateUrl('registration_u2f_key', [
@@ -92,16 +104,29 @@ class MemberRegistrationController extends AbstractController
     public function fetchU2fPage(
         MemberFactory $mf,
         Request $request,
-        SerializableStack $stack,
+        SecureSession $secureSession,
         U2fRegistrationManager $service,
         string $sid): Response
     {
+        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+        $u2fKeyNo = $tdm
+            ->getBy('class', NewU2fRegistrationSubmission::class)
+            ->getSize()
+        ;
         $submission = new NewU2fRegistrationSubmission();
         $form = $this->createForm(NewU2fRegistrationType::class, $submission);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $stack->add($sid, $submission);
-            if (self::N_U2F_KEYS * 2 === $stack->getSize($sid) - 1) {
+            $secureSession->setObject(
+                $sid,
+                $tdm->add(new TransitingData(
+                    'U2fKeySubmission'.$u2fKeyNo,
+                    'registration_u2f_key',
+                    $submission
+                )),
+                TransitingDataManager::class
+            );
+            if (self::N_U2F_KEYS === $u2fKeyNo + 1) {
                 return new RedirectResponse(
                     $this->generateUrl('registration_submit', [
                         'sid' => $sid,
@@ -117,9 +142,17 @@ class MemberRegistrationController extends AbstractController
         }
 
         $registerRequest = $service->generate();
-        $stack->add($sid, $registerRequest->getRequest());
-
+        $secureSession->setObject(
+            $sid,
+            $tdm->add(new TransitingData(
+                'U2fKeyRequest'.$u2fKeyNo,
+                'registration_u2f_key',
+                $registerRequest->getRequest()
+            )),
+            TransitingDataManager::class
+        );
         return $this->render('registration/key.html.twig', [
+
             'form' => $form->createView(),
             'request_json' => $registerRequest->getRequestAsJson(),
             'sign_requests' => $registerRequest->getSignRequests(),
@@ -141,28 +174,44 @@ class MemberRegistrationController extends AbstractController
         ObjectManager $om,
         MemberFactory $mf,
         string $sid,
-        SerializableStack $stack,
+        SecureSession $secureSession,
         U2fRegistrationManager $u2fRegistrationManager,
         Request $request): Response
     {
+        $tdm =  $secureSession->getObject($sid, TransitingDataManager::class);
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $username = $tdm
+                ->getBy('class', CredentialRegistrationSubmission::class)
+                ->getOnlyValue()
+                ->getValue()
+                ->getUsername()
+            ;
             $member = $om
                 ->getRepository(Member::class)
-                ->findOneBy(['username' => $stack->get($sid, 0)->getUsername()])
+                ->findOneBy([
+                    'username' => $username,
+                ])
             ;
-            for ($i = 1; $i <= self::N_U2F_KEYS; ++$i) {
+            for ($i = 0; $i < self::N_U2F_KEYS; ++$i) {
                 $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
-                    $stack->get($sid, $i * 2, NewU2fRegistrationSubmission::class)->getU2fTokenResponse(),
+                    $tdm
+                        ->getBy('key', 'U2fKeySubmission'.$i)
+                        ->getOnlyValue()
+                        ->getValue()
+                        ->getU2fTokenResponse(),
                     $member,
                     new DateTimeImmutable(),
-                    $stack->get($sid, $i * 2 - 1)
+                    $tdm
+                        ->getBy('key', 'U2fKeyRequest'.$i)
+                        ->getOnlyValue()
+                        ->getValue()
                 );
                 $om->persist($u2fToken);
             }
             $om->flush();
-            $stack->delete($sid);
+            $secureSession->deleteObject($sid, TransitingDataManager::class);
 
             return new RedirectResponse(
                 $this->generateUrl('registration_success')
@@ -194,14 +243,15 @@ class MemberRegistrationController extends AbstractController
      */
     public function resetRegistration(
         Request $request,
-        SerializableStack $stack,
+        SecureSession $secureSession,
         string $sid): Response
     {
+        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
         $form = $this->createForm(UserConfirmationType::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $stack->delete($sid);
+            $secureSession->deleteObject($sid, TransitingDataManager::class);
 
             return $this->render('registration/successful_reset.html.twig');
         }

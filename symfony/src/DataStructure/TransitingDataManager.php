@@ -4,9 +4,10 @@ namespace App\DataStructure;
 
 use App\Model\TransitingData;
 use InvalidArgumentException;
+use Serializable;
 use UnexpectedValueException;
 
-class TransitingDataManager
+class TransitingDataManager implements Serializable
 {
     private $list;
 
@@ -62,8 +63,23 @@ class TransitingDataManager
         }
     }
 
+    public function getSize(): int
+    {
+        return count($this->list);
+    }
+
     public function isEmpty(): bool
     {
         return 0 === count($this->list);
+    }
+
+    public function serialize(): string
+    {
+        return serialize($this->list);
+    }
+
+    public function unserialize($serialized): void
+    {
+        $this->list = unserialize($serialized);
     }
 }

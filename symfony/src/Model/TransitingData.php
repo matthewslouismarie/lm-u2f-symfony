@@ -47,15 +47,12 @@ class TransitingData
         switch ($attribute) {
             case 'class':
                 return $this->getClass() === $value;
-                break;
 
             case 'key':
                 return $this->getKey() === $value;
-                break;
 
             case 'route':
                 return $this->getRoute() === $value;
-                break;
 
             default:
                 throw new InvalidArgumentException();

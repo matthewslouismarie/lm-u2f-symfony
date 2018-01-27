@@ -3,11 +3,9 @@
 namespace App\Controller\U2fAuthorizer;
 
 use App\DataStructure\TransitingDataManager;
-use App\Form\U2fAuthenticationType;
 use App\Form\NewU2fAuthenticationType;
 use App\Form\ExistingUsernameType;
 use App\FormModel\ExistingUsernameSubmission;
-use App\FormModel\U2fAuthenticationSubmission;
 use App\FormModel\NewU2fAuthenticationSubmission;
 use App\Model\IAuthorizationRequest;
 use App\Model\Integer;

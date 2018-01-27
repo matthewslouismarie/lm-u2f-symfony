@@ -2,6 +2,8 @@
 
 namespace App\Exception;
 
-class NonexistentMemberException extends \Exception
+use Exception;
+
+class NonexistentMemberException extends Exception
 {
 }

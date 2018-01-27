@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\DataStructure\TransitingDataManager;
-use App\Entity\Member;
 use App\Factory\MemberFactory;
 use App\Form\CredentialRegistrationType;
 use App\Form\NewU2fRegistrationType;

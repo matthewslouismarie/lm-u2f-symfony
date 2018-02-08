@@ -5,7 +5,6 @@ namespace App\Security;
 use App\Entity\Member;
 use App\Form\LoginRequestType;
 use App\FormModel\LoginRequest;
-use App\Service\U2fAuthenticationManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +19,6 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
 
 class MemberLoginAuthenticator extends AbstractFormLoginAuthenticator
 {
-    private $auth;
-
     private $formFactory;
 
     private $om;
@@ -31,13 +28,11 @@ class MemberLoginAuthenticator extends AbstractFormLoginAuthenticator
     private $encoder;
 
     public function __construct(
-        U2fAuthenticationManager $auth,
         FormFactoryInterface $formFactory,
         ObjectManager $om,
         RouterInterface $router,
         UserPasswordEncoderInterface $encoder)
     {
-        $this->auth = $auth;
         $this->formFactory = $formFactory;
         $this->om = $om;
         $this->router = $router;

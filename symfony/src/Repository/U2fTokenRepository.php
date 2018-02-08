@@ -5,15 +5,20 @@ namespace App\Repository;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Firehed\U2F\Registration;
 
 class U2fTokenRepository extends ServiceEntityRepository
 {
+    private $om;
+
     public function __construct(
+        ObjectManager $om,
         RegistryInterface $registry)
     {
         parent::__construct($registry, U2fToken::class);
+        $this->om = $om;
     }
 
     public function getMemberRegistrations(int $member_id): array
@@ -50,6 +55,18 @@ class U2fTokenRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->notIn('u2ftoken.id', $ids))
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    public function resetCounters()
+    {
+        $u2fTokens = $this->findAll();
+        foreach ($u2fTokens as $u2fToken) {
+            $u2fToken->setCounter(0);
+        }
+        $this
+            ->om
+            ->flush()
         ;
     }
 }

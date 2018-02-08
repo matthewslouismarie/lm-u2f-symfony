@@ -17,6 +17,7 @@ class ExistingUsernameFiller
         $form = $button->form([
             'existing_username[username]' => $username,
         ]);
+
         return $form;
     }
 }

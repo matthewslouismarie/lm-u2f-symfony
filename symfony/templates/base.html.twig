@@ -1,13 +1,35 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        {% block scripts %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+    {% block scripts %}{% endblock %}
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li>
+          <a href="{{ path('homepage') }}">Home</a>
+        </li>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <li>
+          <a href="{{ path('logout') }}">Log out</a>
+        </li>
+        <li>
+          <a>My Account</a>
+        </li>
+        {% else %}
+        <li>
+            <a href="{{ path('login_request') }}">Login</a>
+        </li>
+        <li>
+            <a href="{{ path('registration_start') }}">Register</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% block body %}{% endblock %}
+    {% block javascripts %}{% endblock %}
+  </body>
 </html>

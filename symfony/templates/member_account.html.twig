@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Account{% endblock %}
+
+{% block body %}
+My account.
+<ul>
+    <li>Delete account</li>
+    <li><a href="{{ path('member_keys') }}">Manage my keys</a></li>
+</ul>
+{% endblock %}

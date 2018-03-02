@@ -7,7 +7,7 @@ use App\Model\ArrayObject;
 use App\Model\StringObject;
 use App\Model\TransitingData;
 
-class AuthentifierTest extends TestCaseTemplate
+class CredentialCheckerTest extends TestCaseTemplate
 {
     private function accessCredentialForm()
     {

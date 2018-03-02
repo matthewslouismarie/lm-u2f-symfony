@@ -9,7 +9,7 @@ use App\Model\TransitingData;
 
 class AuthentifierTest extends TestCaseTemplate
 {
-    public function testUsernamePasswordChecker()
+    private function accessCredentialForm()
     {
         $tdm = (new TransitingDataManager())
             ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_credential'])))
@@ -30,9 +30,14 @@ class AuthentifierTest extends TestCaseTemplate
             200,
             $this->getHttpStatusCode())
         ;
-        $loginRequestFiller = $this->get('App\Service\Form\Filler\CredentialAuthenticationFiller');
+    }
+
+    public function testValidCredential()
+    {
+        $this->accessCredentialForm();
+        $credentialAuthenticationFiller = $this->get('App\Service\Form\Filler\CredentialAuthenticationFiller');
         $this->submit(
-            $loginRequestFiller->fillForm($this->getClient()->getCrawler(), 'hello', 'louis')
+            $credentialAuthenticationFiller->fillForm($this->getClient()->getCrawler(), 'hello', 'louis')
         );
         $this->followRedirect();
         $this->followRedirect();
@@ -44,5 +49,23 @@ class AuthentifierTest extends TestCaseTemplate
             200,
             $this->getHttpStatusCode()
         );
+    }
+
+    public function testInvalidCredential()
+    {
+        $this->accessCredentialForm();
+        $credentialAuthenticationFiller = $this->get('App\Service\Form\Filler\CredentialAuthenticationFiller');
+        $this->submit(
+            $credentialAuthenticationFiller->fillForm($this->getCrawler(), 'hell', 'louis')
+        );
+        $this->assertFalse($this->isRedirect());
+        $this->submit(
+            $credentialAuthenticationFiller->fillForm($this->getCrawler(), 'hello', 'loui')
+        );
+        $this->assertFalse($this->isRedirect());
+        $this->submit(
+            $credentialAuthenticationFiller->fillForm($this->getCrawler(), '', '')
+        );
+        $this->assertFalse($this->isRedirect());
     }
 }

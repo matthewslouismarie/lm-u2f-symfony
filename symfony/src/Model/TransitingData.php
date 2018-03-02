@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Serializable;
+use InvalidArgumentException;
 
 class TransitingData
 {
@@ -37,9 +38,15 @@ class TransitingData
         return $this->route;
     }
 
-    public function getValue(): Serializable
+    public function getValue(?string $class = null): Serializable
     {
-        return $this->value;
+        if (null === $class) {
+            return $this->value;
+        } elseif (get_class($this->value) === $class) {
+            return $this->value;
+        } else {
+            throw new InvalidArgumentException();
+        }
     }
 
     public function isAlike($attribute, $value): bool

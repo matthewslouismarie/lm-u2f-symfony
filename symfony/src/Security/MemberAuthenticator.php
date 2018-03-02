@@ -4,25 +4,23 @@ namespace App\Security;
 
 use App\DataStructure\TransitingDataManager;
 use App\Entity\Member;
-use App\Form\LoginRequestType;
-use App\FormModel\LoginRequest;
+use App\Model\BooleanObject;
+use App\Model\StringObject;
 use App\Service\SecureSession;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Form\FormFactoryInterface;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
+use UnexpectedValueException;
 
 class MemberAuthenticator extends AbstractFormLoginAuthenticator
 {
-    private $formFactory;
-
     private $om;
 
     private $router;
@@ -33,18 +31,17 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     public function __construct(
         SecureSession $secureSession,
-        FormFactoryInterface $formFactory,
         ObjectManager $om,
-        RouterInterface $router,
-        UserPasswordEncoderInterface $encoder)
+        RouterInterface $router)
     {
-        $this->formFactory = $formFactory;
         $this->om = $om;
         $this->router = $router;
-        $this->encoder = $encoder;
         $this->secureSession = $secureSession;
     }
 
+    /**
+     * @todo Type-check for $username and $successfulAuthentication?
+     */
     public function getCredentials(Request $request)
     {
         $tdm = $this
@@ -55,22 +52,36 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
             )
         ;
 
-        return $tdm
-            ->getBy('key', 'username')
-            ->getOnlyValue()
-            ->getValue()
-            ->toString()
-        ;
+        try {
+            $username = $tdm
+                ->getBy('key', 'username')
+                ->getOnlyValue()
+                ->getValue(StringObject::class)
+                ->toString()
+            ;
+    
+            $successfulAuthentication = $tdm
+                ->getBy('key', 'successful_authentication')
+                ->getOnlyValue()
+                ->getValue(BooleanObject::class)
+                ->toBoolean()
+            ;
+        } catch (UnexpectedValueException|InvalidArgumentException $e) {
+            throw new AuthenticationException();
+        }
 
-        throw new AuthenticationException();
+        return [
+            'username' => $username,
+            'successful_authentication' => $successfulAuthentication,
+        ];
     }
 
-    public function getUser($username, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $user = $this
             ->om
             ->getRepository(Member::class)->findOneBy(array(
-                'username' => $username,
+                'username' => $credentials['username'],
             ));
 
         return $user;
@@ -81,7 +92,7 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return true;
+        return $credentials['successful_authentication'];
     }
 
     /**

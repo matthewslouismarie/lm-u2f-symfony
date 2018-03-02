@@ -76,8 +76,10 @@ class AuthenticationController extends AbstractController
     }
 
     /**
+     * @todo Remove (seems useless)
+     *
      * @Route(
-     *  "/not-authenticated/process-login",
+     *  "/not-authenticated/process-login/{sid}",
      *  name="authentication_processing")
      */
     public function processAuthentication()

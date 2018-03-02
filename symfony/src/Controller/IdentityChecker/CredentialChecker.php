@@ -5,6 +5,7 @@ namespace App\Controller\IdentityChecker;
 use App\DataStructure\TransitingDataManager;
 use App\Form\CredentialAuthenticationType;
 use App\FormModel\CredentialAuthenticationSubmission;
+use App\Model\BooleanObject;
 use App\Model\StringObject;
 use App\Model\TransitingData;
 use App\Service\SecureSession;
@@ -43,11 +44,17 @@ class CredentialChecker extends AbstractController
             $secureSession
                 ->setObject(
                     $sid,
-                    $tdm->add(new TransitingData(
-                        'username',
-                        'ic_credential',
-                        new StringObject($submission->getUsername())
-                    )),
+                    $tdm
+                        ->add(new TransitingData(
+                            'username',
+                            'ic_credential',
+                            new StringObject($submission->getUsername())
+                        ))
+                        ->add(new TransitingData(
+                            'successful_authentication',
+                            'ic_credential',
+                            new BooleanObject(true)
+                        )),
                     TransitingDataManager::class)
             ;
 

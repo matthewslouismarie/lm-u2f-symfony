@@ -68,4 +68,21 @@ class CredentialCheckerTest extends TestCaseTemplate
         );
         $this->assertFalse($this->isRedirect());
     }
+
+    public function testDirectAccessToGuard()
+    {
+        $tdm = (new TransitingDataManager())
+            ->add(new TransitingData('username', 'initial_route', new StringObject('louis')))
+        ;
+        $sid = $this
+            ->getSecureSession()
+            ->storeObject($tdm, TransitingDataManager::class)
+        ;
+        $this->doGet("/not-authenticated/process-login/{$sid}");
+        $this->followRedirect();
+        $this->assertEquals(
+            'http://localhost/not-authenticated/start-login',
+            $this->getUri()
+        );
+    }
 }

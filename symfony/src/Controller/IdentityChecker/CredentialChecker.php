@@ -17,6 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class CredentialChecker extends AbstractController
 {
     /**
+     * @todo Rename to checkCredential
+     *
      * @Route(
      *  "/all/check-credential/{sid}",
      *  name="ic_credential")

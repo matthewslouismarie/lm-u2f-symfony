@@ -76,6 +76,17 @@ class AuthenticationController extends AbstractController
     }
 
     /**
+     * @todo /all/ is temporary.
+     * @Route(
+     *  "/all/successful-login",
+     *  name="successful_authentication")
+     */
+    public function successfulAuthentication()
+    {
+        return $this->render('successful_authentication.html.twig');
+    }
+
+    /**
      * @Route(
      *  "/authenticated/log-out",
      *  name="logout",

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Service\SecureSession;
 use App\Service\SerializableStack;
 use App\Service\Mocker\U2fAuthenticationMocker;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -85,6 +86,14 @@ class TestCaseTemplate extends DbWebTestCase
         return $this
             ->getContainer()
             ->get('App\Service\SerializableStack')
+        ;
+    }
+
+    public function getSecureSession(): SecureSession
+    {
+        return $this
+            ->getContainer()
+            ->get('App\Service\SecureSession')
         ;
     }
 

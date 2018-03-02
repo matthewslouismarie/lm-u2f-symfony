@@ -13,7 +13,7 @@ class AuthentifierTest extends TestCaseTemplate
     {
         $tdm = (new TransitingDataManager())
             ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_credential'])))
-            ->add(new TransitingData('success_route', 'initial_route', new StringObject('successful_authentication')))
+            ->add(new TransitingData('success_route', 'initial_route', new StringObject('authentication_processing')))
         ;
         $sid = $this
             ->getSecureSession()
@@ -34,6 +34,15 @@ class AuthentifierTest extends TestCaseTemplate
         $this->submit(
             $loginRequestFiller->fillForm($this->getClient()->getCrawler(), 'hello', 'louis')
         );
-        $this->assertIsRedirect();
+        $this->followRedirect();
+        $this->followRedirect();
+        $this->assertEquals(
+            'http://localhost/authenticated/successful-login',
+            $this->getUri()
+        );
+        $this->assertEquals(
+            200,
+            $this->getHttpStatusCode()
+        );
     }
 }

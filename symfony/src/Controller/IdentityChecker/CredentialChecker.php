@@ -5,6 +5,8 @@ namespace App\Controller\IdentityChecker;
 use App\DataStructure\TransitingDataManager;
 use App\Form\CredentialAuthenticationType;
 use App\FormModel\CredentialAuthenticationSubmission;
+use App\Model\StringObject;
+use App\Model\TransitingData;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -37,6 +39,16 @@ class CredentialChecker extends AbstractController
                 ->getOnlyValue()
                 ->getValue()
                 ->toString()
+            ;
+            $secureSession
+                ->setObject(
+                    $sid,
+                    $tdm->add(new TransitingData(
+                        'username',
+                        'ic_credential',
+                        new StringObject($submission->getUsername())
+                    )),
+                    TransitingDataManager::class)
             ;
 
             return new RedirectResponse($this->generateUrl($successRoute, [

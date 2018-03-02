@@ -76,9 +76,18 @@ class AuthenticationController extends AbstractController
     }
 
     /**
+     * @Route(
+     *  "/not-authenticated/process-login",
+     *  name="authentication_processing")
+     */
+    public function processAuthentication()
+    {
+    }
+
+    /**
      * @todo /all/ is temporary.
      * @Route(
-     *  "/all/successful-login",
+     *  "/authenticated/successful-login",
      *  name="successful_authentication")
      */
     public function successfulAuthentication()

@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Member;
 use App\Entity\U2fToken;
+use App\Tests\TestCaseTemplate;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {

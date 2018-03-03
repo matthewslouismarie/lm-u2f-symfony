@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
 use App\Service\SecureSession;
 use App\Service\SerializableStack;

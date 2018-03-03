@@ -7,6 +7,7 @@ use App\Model\ArrayObject;
 use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
+use App\Tests\TestCaseTemplate;
 
 class U2fCheckerTest extends TestCaseTemplate
 {

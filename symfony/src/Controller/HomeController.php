@@ -15,10 +15,7 @@ class HomeController extends AbstractController
      */
     public function home(Request $request)
     {
-        ob_start();
-        $content = ob_get_clean();
-
-        return $this->render('home.html.twig', array('c' => $content));
+        return $this->render('homepage.html.twig', array('c' => $content));
     }
 
     /**
@@ -33,6 +30,6 @@ class HomeController extends AbstractController
         ob_start();
         $content = ob_get_clean();
 
-        return $this->render('home.html.twig', array('c' => $content));
+        return $this->render('homepage.html.twig', array('c' => $content));
     }
 }

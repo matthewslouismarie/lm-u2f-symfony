@@ -17,19 +17,4 @@ class HomeController extends AbstractController
     {
         return $this->render('homepage.html.twig', array('c' => $content));
     }
-
-    /**
-     * @Route(
-     *  "/not-authenticated/login/{authorizationRequestSid}",
-     *  name="login_success_route",
-     *  methods={"GET"},
-     *  requirements={"authorizationRequestSid"=".+"})
-     */
-    public function finishLogin(Request $request)
-    {
-        ob_start();
-        $content = ob_get_clean();
-
-        return $this->render('homepage.html.twig', array('c' => $content));
-    }
 }

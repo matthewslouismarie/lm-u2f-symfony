@@ -35,6 +35,22 @@ class U2fChecker extends AbstractController
     {
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
 
+        $checkerIndex = $tdm
+            ->getBy('key', 'current_checker_index')
+            ->getOnlyValue()
+            ->getValue(Integer::class)
+            ->toInteger()
+        ;
+        $checkers = $tdm
+            ->getBy('key', 'checkers')
+            ->getOnlyValue()
+            ->getValue(ArrayObject::class)
+            ->toArray()
+        ;
+        if ('ic_u2f' !== $checkers[$checkerIndex]) {
+            throw new Exception();
+        }
+
         $username = $tdm
             ->getBy('key', 'username')
             ->getOnlyValue()
@@ -56,12 +72,6 @@ class U2fChecker extends AbstractController
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
-            $checkerIndex = 1 + $tdm
-                ->getBy('key', 'current_checker_index')
-                ->getOnlyValue()
-                ->getValue(Integer::class)
-                ->toInteger()
-            ;
             $u2fAuthenticationRequest = $tdm
                 ->getBy('key', 'u2f_authentication_request')
                 ->getOnlyValue()
@@ -87,7 +97,8 @@ class U2fChecker extends AbstractController
                         ->add(new TransitingData(
                             'current_checker_index',
                             'ic_u2f',
-                            new Integer($checkerIndex)))
+                            new Integer($checkerIndex + 1)))
+                        ->filterBy('key', 'used_u2f_key_ids')
                         ->add(new TransitingData(
                             'used_u2f_key_ids',
                             'ic_u2f',
@@ -101,7 +112,7 @@ class U2fChecker extends AbstractController
                         ->getBy('key', 'checkers')
                         ->getOnlyValue()
                         ->getValue(ArrayObject::class)
-                        ->toArray()[$checkerIndex],
+                        ->toArray()[$checkerIndex + 1],
                     [
                         'sid' => $sid,
                     ]))

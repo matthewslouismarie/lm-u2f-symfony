@@ -34,18 +34,26 @@ class UsernameChecker extends AbstractController
         StatelessU2fAuthenticationManager $u2fAuthenticationManager)
     {
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-
+        $checkerIndex = $tdm
+            ->getBy('key', 'current_checker_index')
+            ->getOnlyValue()
+            ->getValue(Integer::class)
+            ->toInteger()
+        ;
+        $checkers = $tdm
+            ->getBy('key', 'checkers')
+            ->getOnlyValue()
+            ->getValue(ArrayObject::class)
+            ->toArray()
+        ;
+        if ('ic_username' !== $checkers[$checkerIndex]) {
+            throw new Exception();
+        }
         $submission = new ExistingUsernameSubmission();
         $form = $this->createForm(ExistingUsernameType::class, $submission);
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
-            $checkerIndex = 1 + $tdm
-                ->getBy('key', 'current_checker_index')
-                ->getOnlyValue()
-                ->getValue(Integer::class)
-                ->toInteger()
-            ;
             $secureSession
                 ->setObject(
                     $sid,
@@ -64,7 +72,7 @@ class UsernameChecker extends AbstractController
                         ->add(new TransitingData(
                             'current_checker_index',
                             'ic_username',
-                            new Integer($checkerIndex))),
+                            new Integer($checkerIndex + 1))),
                     TransitingDataManager::class)
             ;
 
@@ -74,7 +82,7 @@ class UsernameChecker extends AbstractController
                         ->getBy('key', 'checkers')
                         ->getOnlyValue()
                         ->getValue(ArrayObject::class)
-                        ->toArray()[$checkerIndex],
+                        ->toArray()[$checkerIndex + 1],
                     [
                         'sid' => $sid,
                     ]))

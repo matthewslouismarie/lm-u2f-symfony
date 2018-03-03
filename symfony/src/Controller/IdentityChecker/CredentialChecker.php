@@ -29,6 +29,23 @@ class CredentialChecker extends AbstractController
         SecureSession $secureSession)
     {
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+
+        $checkerIndex = $tdm
+            ->getBy('key', 'current_checker_index')
+            ->getOnlyValue()
+            ->getValue(Integer::class)
+            ->toInteger()
+        ;
+        $checkers = $tdm
+            ->getBy('key', 'checkers')
+            ->getOnlyValue()
+            ->getValue(ArrayObject::class)
+            ->toArray()
+        ;
+        if ('ic_credential' !== $checkers[$checkerIndex]) {
+            throw new Exception();
+        }
+
         $submission = new CredentialAuthenticationSubmission();
         $form = $this->createForm(
             CredentialAuthenticationType::class,
@@ -37,13 +54,6 @@ class CredentialChecker extends AbstractController
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
-            $checkerIndex = 1 + $tdm
-                ->getBy('key', 'current_checker_index')
-                ->getOnlyValue()
-                ->getValue(Integer::class)
-                ->toInteger()
-            ;
-
             $secureSession
                 ->setObject(
                     $sid,
@@ -62,7 +72,7 @@ class CredentialChecker extends AbstractController
                         ->add(new TransitingData(
                             'current_checker_index',
                             'ic_credential',
-                            new Integer($checkerIndex))),
+                            new Integer($checkerIndex + 1))),
                     TransitingDataManager::class)
             ;
 
@@ -72,7 +82,7 @@ class CredentialChecker extends AbstractController
                         ->getBy('key', 'checkers')
                         ->getOnlyValue()
                         ->getValue(ArrayObject::class)
-                        ->toArray()[$checkerIndex],
+                        ->toArray()[$checkerIndex + 1],
                     [
                         'sid' => $sid,
                     ]))

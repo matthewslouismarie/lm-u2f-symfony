@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\DataStructure\TransitingDataManager;
 use App\Entity\Member;
+use App\Model\ArrayObject;
 use App\Model\BooleanObject;
 use App\Model\StringObject;
 use App\Service\SecureSession;
@@ -19,6 +20,9 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use UnexpectedValueException;
 
+/**
+ * @todo (Security) Prevent rerouting lower request to this.
+ */
 class MemberAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $om;
@@ -41,52 +45,61 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        $tdm = $this
+        return $this
             ->secureSession
             ->getObject(
                 $request->get('sid'),
                 TransitingDataManager::class
             )
         ;
-
-        try {
-            $username = $tdm
-                ->getBy('key', 'username')
-                ->getOnlyValue()
-                ->getValue(StringObject::class)
-                ->toString()
-            ;
-    
-            $successfulAuthentication = $tdm
-                ->getBy('key', 'successful_authentication')
-                ->toArray()
-            ;
-        } catch (UnexpectedValueException|InvalidArgumentException $e) {
-            throw new AuthenticationException();
-        }
-
-        return [
-            'username' => $username,
-            'successful_authentication' => $successfulAuthentication,
-        ];
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($tdm, UserProviderInterface $userProvider)
     {
+        $username = $tdm
+            ->getBy('key', 'username')
+            ->getOnlyValue()
+            ->getValue(StringObject::class)
+            ->toString()
+        ;
         $user = $this
             ->om
             ->getRepository(Member::class)->findOneBy(array(
-                'username' => $credentials['username'],
-            ));
+                'username' => $username,
+            ))
+        ;
 
         return $user;
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($tdm, UserInterface $user)
     {
-        foreach ($credentials['successful_authentication'] as $valid) {
-            if (true !== $valid->toBoolean()) {
-                return false;
+        try {
+            $checkers = $tdm
+                ->getBy('key', 'checkers')
+                ->getOnlyValue()
+                ->getValue(ArrayObject::class)
+                ->toArray()
+            ;
+        }
+        catch (UnexpectedValueException $e) {
+            throw new AuthenticationException();
+        }
+        foreach ($checkers as $checker)
+        {
+            try {
+                $valids = $tdm
+                    ->getBy('route', $checker)
+                    ->getBy('key', 'successful_authentication')
+                    ->toArray()
+                ;
+            } catch (UnexpectedValueException $e) {
+                throw new AuthenticationException();
+            }
+            foreach ($valids as $valid) {
+                if (true !== $valid->toBoolean()) {
+                    return false;
+                }
             }
         }
         return true;

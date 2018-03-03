@@ -45,7 +45,7 @@ class TransitingData
         } elseif (get_class($this->value) === $class) {
             return $this->value;
         } else {
-            throw new InvalidArgumentException();
+            throw new UnexpectedValueException();
         }
     }
 

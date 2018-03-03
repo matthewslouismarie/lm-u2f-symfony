@@ -58,7 +58,7 @@ class AuthenticationController extends AbstractController
         SecureSession $secureSession)
     {
         $tdm = (new TransitingDataManager())
-            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_username', 'ic_u2f', 'ic_u2f', 'authentication_processing'])))
+            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_username', 'ic_u2f', 'authentication_processing'])))
         ;
         $sid = $secureSession->storeObject($tdm, TransitingDataManager::class);
 

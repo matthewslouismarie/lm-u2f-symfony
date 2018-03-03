@@ -14,14 +14,14 @@
         </li>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
         <li>
-          <a href="{{ path('logout') }}">Log out</a>
+          <a href="{{ path('unauthenticate') }}">Log out</a>
         </li>
         <li>
           <a href="{{ path('member_account') }}">My Account</a>
         </li>
         {% else %}
         <li>
-            <a href="{{ path('login_request') }}">Login</a>
+            <a href="{{ path('authenticate') }}">Login</a>
         </li>
         <li>
             <a href="{{ path('registration_start') }}">Register</a>

@@ -3,7 +3,6 @@
 namespace App\Tests;
 
 use App\Service\SecureSession;
-use App\Service\SerializableStack;
 use App\Service\Mocker\U2fAuthenticationMocker;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DomCrawler\Crawler;
@@ -78,14 +77,6 @@ abstract class TestCaseTemplate extends DbWebTestCase
             ->getContainer()
             ->get('doctrine')
             ->getManager()
-        ;
-    }
-
-    public function getSerializableStack(): SerializableStack
-    {
-        return $this
-            ->getContainer()
-            ->get('App\Service\SerializableStack')
         ;
     }
 

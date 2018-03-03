@@ -13,7 +13,6 @@ use App\Model\GrantedAuthorization;
 use App\Model\TransitingData;
 use App\Model\ArrayObject;
 use App\Service\SecureSession;
-use App\Service\SerializableStack;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,7 +28,6 @@ class AuthenticationController extends AbstractController
      */
     public function authenticate(
         Request $request,
-        SerializableStack $SerializableStack,
         SecureSession $secureSession)
     {
         $tdm = (new TransitingDataManager())

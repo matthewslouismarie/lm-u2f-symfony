@@ -9,7 +9,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
-class TestCaseTemplate extends DbWebTestCase
+abstract class TestCaseTemplate extends DbWebTestCase
 {
     public function assertIsRedirect(): void
     {

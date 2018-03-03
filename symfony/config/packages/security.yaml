@@ -18,10 +18,7 @@ security:
                 path: /authenticated/logout
             guard:
                 authenticators:
-                    - App\Security\MemberLoginAuthenticator
                     - App\Security\MemberAuthenticator
-                    - App\Security\LogoutAuthenticator
-                entry_point: App\Security\MemberLoginAuthenticator
             access_denied_handler: App\Security\AccessDeniedHandler
     access_control:
         -

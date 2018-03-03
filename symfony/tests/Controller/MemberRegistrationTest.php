@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Controller\MemberRegistrationController;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Tests\TestCaseTemplate;
@@ -28,12 +29,6 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->submit($form);
         $this->assertIsRedirect();
         $this->followRedirect();
-        $this->submit($filler->fillForm($this->getCrawler(), $sid, 1));
-        $this->assertIsRedirect();
-        $this->followRedirect();
-        $this->submit($filler->fillForm($this->getCrawler(), $sid, 2));
-        $this->assertIsRedirect();
-        $this->followRedirect();
         $this->assertEquals(
             'http://localhost/not-authenticated/registration/submit/'.$sid,
             $this->getUri()
@@ -57,20 +52,18 @@ class MemberRegistrationTest extends TestCaseTemplate
             ->getRepository(U2fToken::class)
             ->findBy(['member' => $member])
         ;
-        $this->assertEquals(3, count($u2fTokens));
+        $this->assertEquals(
+            MemberRegistrationController::N_U2F_KEYS,
+            count($u2fTokens))
+        ;
 
         foreach ($u2fTokens as $u2fToken) {
             $this->assertEquals('a random name', $u2fToken->getU2fKeyName());
         }
-
-        $this->assertFalse(
-            $this->get('App\Service\SerializableStack')->isValidSid($sid)
-        );
     }
 
     public function testResetButton(): void
     {
-        $stack = $this->get('App\Service\SerializableStack');
         $this->doGet('/not-authenticated/registration/start');
         $this->followRedirect();
         $filler = $this->get('App\Service\Form\Filler\CredentialRegistrationFiller');
@@ -90,9 +83,6 @@ class MemberRegistrationTest extends TestCaseTemplate
             ->get('App\Service\Form\Filler\UserConfirmationFiller')
         ;
         $this->submit($userConfirmationFiller->fillForm($this->getCrawler()));
-        $this->assertFalse(
-            $this->get('App\Service\SerializableStack')->isValidSid($sid)
-        );
 
         $this->assertContains('successfully reset.', $this->getCrawler()->text());
     }

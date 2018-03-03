@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MemberRegistrationController extends AbstractController
 {
-    const N_U2F_KEYS = 3;
+    const N_U2F_KEYS = 1;
 
     /**
      * @Route(

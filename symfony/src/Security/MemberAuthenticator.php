@@ -47,7 +47,7 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
     {
         return $this
             ->secureSession
-            ->getObject(
+            ->getAndRemoveObject(
                 $request->get('sid'),
                 TransitingDataManager::class
             )

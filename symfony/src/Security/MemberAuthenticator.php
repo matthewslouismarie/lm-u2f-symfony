@@ -59,9 +59,7 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
     
             $successfulAuthentication = $tdm
                 ->getBy('key', 'successful_authentication')
-                ->getOnlyValue()
-                ->getValue(BooleanObject::class)
-                ->toBoolean()
+                ->toArray()
             ;
         } catch (UnexpectedValueException|InvalidArgumentException $e) {
             throw new AuthenticationException();
@@ -86,7 +84,12 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return $credentials['successful_authentication'];
+        foreach ($credentials['successful_authentication'] as $valid) {
+            if (true !== $valid->toBoolean()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     protected function getLoginUrl()

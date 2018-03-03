@@ -55,6 +55,11 @@ class UsernameChecker extends AbstractController
                             'ic_username',
                             new StringObject($submission->getUsername())
                         ))
+                        ->add(new TransitingData(
+                            'successful_authentication',
+                            'ic_u2f',
+                            new BooleanObject(true)
+                        ))
                         ->filterBy('key', 'current_checker_index')
                         ->add(new TransitingData(
                             'current_checker_index',

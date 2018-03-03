@@ -82,6 +82,7 @@ class U2fChecker extends AbstractController
                             'ic_u2f',
                             new BooleanObject(true)
                         ))
+                        ->filterBy('key', 'u2f_authentication_request')
                         ->filterBy('key', 'current_checker_index')
                         ->add(new TransitingData(
                             'current_checker_index',

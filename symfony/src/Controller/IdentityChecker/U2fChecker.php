@@ -42,6 +42,15 @@ class U2fChecker extends AbstractController
             ->toString()
         ;
 
+        $usedU2fKeyIdsTdm = $tdm
+            ->getBy('key', 'used_u2f_key_ids')
+        ;
+        $usedU2fKeyIds = (0 === $usedU2fKeyIdsTdm->getSize()) ? [] : $usedU2fKeyIdsTdm
+            ->getOnlyValue()
+            ->getValue(ArrayObject::class)
+            ->toArray()
+        ;
+
         $submission = new NewU2fAuthenticationSubmission();
         $form = $this->createForm(NewU2fAuthenticationType::class, $submission);
 
@@ -58,7 +67,7 @@ class U2fChecker extends AbstractController
                 ->getOnlyValue()
                 ->getValue(U2fAuthenticationRequest::class)
             ;
-            $u2fAuthenticationManager->processResponse(
+            $usedU2fKeyIds[] = $u2fAuthenticationManager->processResponse(
                 $u2fAuthenticationRequest,
                 $username,
                 $submission->getU2fTokenResponse()
@@ -77,7 +86,11 @@ class U2fChecker extends AbstractController
                         ->add(new TransitingData(
                             'current_checker_index',
                             'ic_u2f',
-                            new Integer($checkerIndex))),
+                            new Integer($checkerIndex)))
+                        ->add(new TransitingData(
+                            'used_u2f_key_ids',
+                            'ic_u2f',
+                            new ArrayObject($usedU2fKeyIds))),
                     TransitingDataManager::class)
             ;
 
@@ -93,7 +106,7 @@ class U2fChecker extends AbstractController
                     ]))
             ;
         }
-        $u2fAuthenticationRequest = $u2fAuthenticationManager->generate($username);
+        $u2fAuthenticationRequest = $u2fAuthenticationManager->generate($username, $usedU2fKeyIds);
         $secureSession->setObject(
             $sid,
             $tdm->add(new TransitingData(

@@ -2,19 +2,22 @@
 
 namespace App\Controller;
 
+use App\DataStructure\TransitingDataManager;
 use App\Exception\AccessDeniedException;
 use App\Form\LoginRequestType;
+use App\FormModel\CredentialAuthenticationSubmission;
 use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
 use App\Model\GrantedAuthorization;
+use App\Model\TransitingData;
+use App\Model\ArrayObject;
 use App\Service\SecureSession;
+use App\Service\SerializableStack;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use App\Service\SerializableStack;
-use App\FormModel\CredentialAuthenticationSubmission;
 
 /**
  * @todo Test denied authorizations. (what happens if the user accesses
@@ -40,6 +43,28 @@ class AuthenticationController extends AbstractController
         ));
 
         return new RedirectResponse($url);
+    }
+
+
+    /**
+     * @Route(
+     *  "/not-authenticated/authenticate",
+     *  name="authenticate",
+     *  methods={"GET"})
+     */
+    public function authenticate(
+        Request $request,
+        SerializableStack $SerializableStack,
+        SecureSession $secureSession)
+    {
+        $tdm = (new TransitingDataManager())
+            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_username', 'ic_u2f', 'authentication_processing'])))
+        ;
+        $sid = $secureSession->storeObject($tdm, TransitingDataManager::class);
+
+        return new RedirectResponse($this->generateUrl('ic_initialization', [
+            'sid' => $sid,
+        ]));
     }
 
     /**

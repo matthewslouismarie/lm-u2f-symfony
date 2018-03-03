@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 
 /**
- * @todo Check this is the correct way to log out the user in Symfony.
+ * @todo Remove.
  */
 class LogoutAuthenticator extends AbstractFormLoginAuthenticator
 {

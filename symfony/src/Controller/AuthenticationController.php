@@ -101,8 +101,6 @@ class AuthenticationController extends AbstractController
     }
 
     /**
-     * @todo Remove (seems useless)
-     *
      * @Route(
      *  "/not-authenticated/process-login/{sid}",
      *  name="authentication_processing")
@@ -112,7 +110,6 @@ class AuthenticationController extends AbstractController
     }
 
     /**
-     * @todo /all/ is temporary.
      * @Route(
      *  "/authenticated/successful-login",
      *  name="successful_authentication")
@@ -136,6 +133,16 @@ class AuthenticationController extends AbstractController
         return $this->render('registration/logout.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+
+    /**
+     * @Route(
+     *  "/authenticated/logout",
+     *  name="unauthenticate",
+     *  methods={"GET", "POST"})
+     */
+    public function unauthenticate(Request $request)
+    {
     }
 
     /**

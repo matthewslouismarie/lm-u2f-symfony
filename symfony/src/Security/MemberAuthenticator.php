@@ -39,9 +39,6 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
         $this->secureSession = $secureSession;
     }
 
-    /**
-     * @todo Type-check for $username and $successfulAuthentication?
-     */
     public function getCredentials(Request $request)
     {
         $tdm = $this
@@ -87,25 +84,16 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
         return $user;
     }
 
-    /**
-     * @todo
-     */
     public function checkCredentials($credentials, UserInterface $user)
     {
         return $credentials['successful_authentication'];
     }
 
-    /**
-     * @todo
-     */
     protected function getLoginUrl()
     {
         return $this->router->generate('login_request');
     }
 
-    /**
-     * @todo Redirect to previously visited page.
-     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         return new RedirectResponse($this->router->generate('successful_authentication'));

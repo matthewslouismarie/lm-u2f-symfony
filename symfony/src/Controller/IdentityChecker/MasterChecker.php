@@ -3,6 +3,7 @@
 namespace App\Controller\IdentityChecker;
 
 use App\DataStructure\TransitingDataManager;
+use App\Model\ArrayObject;
 use App\Model\Integer;
 use App\Model\TransitingData;
 use App\Service\SecureSession;
@@ -13,8 +14,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class MasterChecker extends AbstractController
 {
     /**
-     * @todo type check for $checkers
-     *
      * @Route(
      *  "/all/initiate-identity-check/{sid}",
      *  name="ic_initialization")
@@ -27,7 +26,7 @@ class MasterChecker extends AbstractController
         $checkers = $tdm
             ->getBy('key', 'checkers')
             ->getOnlyValue()
-            ->getValue()
+            ->getValue(ArrayObject::class)
             ->toArray()
         ;
         $secureSession

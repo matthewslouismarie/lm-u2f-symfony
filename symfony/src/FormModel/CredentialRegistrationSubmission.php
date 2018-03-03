@@ -2,13 +2,14 @@
 
 namespace App\FormModel;
 
+use App\Validator\Constraints\AvailableUsername;
 use Serializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CredentialRegistrationSubmission implements Serializable
 {
     /**
-     * @todo check it's not already used
+     * @AvailableUsername
      * @Assert\NotBlank()
      * @Assert\Type("string")
      */

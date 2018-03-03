@@ -107,7 +107,7 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('login_request');
+        return $this->router->generate('authenticate');
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)

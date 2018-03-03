@@ -111,7 +111,7 @@ class U2fCheckerTest extends TestCaseTemplate
         $this->doGet("/not-authenticated/process-login/{$sid}");
         $this->followRedirect();
         $this->assertEquals(
-            'http://localhost/not-authenticated/start-login',
+            'http://localhost/not-authenticated/authenticate',
             $this->getUri()
         );
     }

@@ -40,18 +40,6 @@ abstract class DbWebTestCase extends WebTestCase
         $this->schemaTool->dropSchema($this->metadatas);
     }
 
-    /**
-     * @todo Remove.
-     */
-    public function checkUrlStatusCode($url, $expectedStatusCode)
-    {
-        $crawler = $this->client->request('GET', $url);
-        $this->assertEquals(
-            $expectedStatusCode,
-            $this->client->getResponse()->getStatusCode()
-        );
-    }
-
     public function getClient()
     {
         return $this->client;

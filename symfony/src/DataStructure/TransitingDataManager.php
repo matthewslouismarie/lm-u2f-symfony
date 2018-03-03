@@ -21,10 +21,6 @@ class TransitingDataManager implements Serializable
         $this->list = $list;
     }
 
-    /**
-     * @todo Check that $newValue doesn't already exist
-     * (only check key and route)?
-     */
     public function add(TransitingData $newValue): self
     {
         $newList = $this->list;

@@ -7,6 +7,7 @@ use App\Form\CredentialAuthenticationType;
 use App\FormModel\CredentialAuthenticationSubmission;
 use App\Model\ArrayObject;
 use App\Model\BooleanObject;
+use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
 use App\Service\SecureSession;
@@ -39,6 +40,12 @@ class UsernameChecker extends AbstractController
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
+            $checkerIndex = 1 + $tdm
+                ->getBy('key', 'current_checker_index')
+                ->getOnlyValue()
+                ->getValue(Integer::class)
+                ->toInteger()
+            ;
             $secureSession
                 ->setObject(
                     $sid,
@@ -47,7 +54,12 @@ class UsernameChecker extends AbstractController
                             'username',
                             'ic_username',
                             new StringObject($submission->getUsername())
-                        )),
+                        ))
+                        ->filterBy('key', 'current_checker_index')
+                        ->add(new TransitingData(
+                            'current_checker_index',
+                            'ic_username',
+                            new Integer($checkerIndex))),
                     TransitingDataManager::class)
             ;
 
@@ -57,7 +69,7 @@ class UsernameChecker extends AbstractController
                         ->getBy('key', 'checkers')
                         ->getOnlyValue()
                         ->getValue(ArrayObject::class)
-                        ->toArray()[1],
+                        ->toArray()[$checkerIndex],
                     [
                         'sid' => $sid,
                     ]))

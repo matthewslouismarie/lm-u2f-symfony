@@ -5,7 +5,9 @@ namespace App\Controller\IdentityChecker;
 use App\DataStructure\TransitingDataManager;
 use App\Form\CredentialAuthenticationType;
 use App\FormModel\CredentialAuthenticationSubmission;
+use App\Model\ArrayObject;
 use App\Model\BooleanObject;
+use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
 use App\Service\SecureSession;
@@ -37,12 +39,13 @@ class CredentialChecker extends AbstractController
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
-            $successRoute = $tdm
-                ->getBy('key', 'success_route')
+            $checkerIndex = 1 + $tdm
+                ->getBy('key', 'current_checker_index')
                 ->getOnlyValue()
-                ->getValue()
-                ->toString()
+                ->getValue(Integer::class)
+                ->toInteger()
             ;
+
             $secureSession
                 ->setObject(
                     $sid,
@@ -56,13 +59,26 @@ class CredentialChecker extends AbstractController
                             'successful_authentication',
                             'ic_credential',
                             new BooleanObject(true)
-                        )),
+                        ))
+                        ->filterBy('key', 'current_checker_index')
+                        ->add(new TransitingData(
+                            'current_checker_index',
+                            'ic_credential',
+                            new Integer($checkerIndex))),
                     TransitingDataManager::class)
             ;
 
-            return new RedirectResponse($this->generateUrl($successRoute, [
-                'sid' => $sid
-            ]));
+            return new RedirectResponse(
+                $this->generateUrl(
+                    $tdm
+                        ->getBy('key', 'checkers')
+                        ->getOnlyValue()
+                        ->getValue(ArrayObject::class)
+                        ->toArray()[$checkerIndex],
+                    [
+                        'sid' => $sid,
+                    ]))
+            ;
         }
 
         return $this->render('identity_checker/credential.html.twig', [

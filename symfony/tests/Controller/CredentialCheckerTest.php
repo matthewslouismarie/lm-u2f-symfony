@@ -12,8 +12,7 @@ class CredentialCheckerTest extends TestCaseTemplate
     private function accessCredentialForm()
     {
         $tdm = (new TransitingDataManager())
-            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_credential'])))
-            ->add(new TransitingData('success_route', 'initial_route', new StringObject('authentication_processing')))
+            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_credential', 'authentication_processing'])))
         ;
         $sid = $this
             ->getSecureSession()

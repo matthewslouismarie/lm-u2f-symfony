@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\DataStructure\TransitingDataManager;
 use App\Model\ArrayObject;
+use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
 
@@ -15,8 +16,7 @@ class U2fCheckerTest extends TestCaseTemplate
     public function testU2f()
     {
         $tdm = (new TransitingDataManager())
-            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_username', 'ic_u2f'])))
-            ->add(new TransitingData('success_route', 'initial_route', new StringObject('authentication_processing')))
+            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_username', 'ic_u2f', 'authentication_processing'])))
         ;
         $sid = $this
             ->getSecureSession()
@@ -24,7 +24,6 @@ class U2fCheckerTest extends TestCaseTemplate
         ;
         $this->doGet("/all/initiate-identity-check/{$sid}");
         $this->followRedirect();
-
 
         $existingUsernameFiller = $this->get('App\Service\Form\Filler\ExistingUsernameFiller');
         $this->submit(

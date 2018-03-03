@@ -3,10 +3,8 @@
 namespace App\Model;
 
 use Serializable;
+use UnexpectedValueException;
 
-/**
- * @todo Delete.
- */
 class Integer implements Serializable
 {
     private $integer;
@@ -21,13 +19,23 @@ class Integer implements Serializable
         return $this->integer;
     }
 
-    public function serialize(): string
+    public function toInteger(): int
     {
         return $this->integer;
     }
 
+    public function serialize(): string
+    {
+        return serialize($this->integer);
+    }
+
     public function unserialize($serialized): void
     {
-        $this->integer = $serialized;
+        $unserialized = unserialize($serialized);
+        if (is_int($unserialized)) {
+            $this->integer = $unserialized;
+        } else {
+            throw new UnexpectedValueException();
+        }
     }
 }

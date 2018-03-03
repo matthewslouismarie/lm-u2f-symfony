@@ -5,7 +5,9 @@ namespace App\Controller\IdentityChecker;
 use App\DataStructure\TransitingDataManager;
 use App\Form\CredentialAuthenticationType;
 use App\FormModel\CredentialAuthenticationSubmission;
+use App\Model\ArrayObject;
 use App\Model\BooleanObject;
+use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
 use App\Service\SecureSession;
@@ -17,6 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\FormModel\NewU2fAuthenticationSubmission;
 use App\Form\NewU2fAuthenticationType;
 use App\FormModel\U2fAuthenticationRequest;
+
 class U2fChecker extends AbstractController
 {
     /**
@@ -44,6 +47,12 @@ class U2fChecker extends AbstractController
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
+            $checkerIndex = 1 + $tdm
+                ->getBy('key', 'current_checker_index')
+                ->getOnlyValue()
+                ->getValue(Integer::class)
+                ->toInteger()
+            ;
             $u2fAuthenticationRequest = $tdm
                 ->getBy('key', 'u2f_authentication_request')
                 ->getOnlyValue()
@@ -63,18 +72,22 @@ class U2fChecker extends AbstractController
                             'successful_authentication',
                             'ic_u2f',
                             new BooleanObject(true)
-                        )),
+                        ))
+                        ->filterBy('key', 'current_checker_index')
+                        ->add(new TransitingData(
+                            'current_checker_index',
+                            'ic_u2f',
+                            new Integer($checkerIndex))),
                     TransitingDataManager::class)
             ;
-                
 
             return new RedirectResponse(
                 $this->generateUrl(
                     $tdm
-                        ->getBy('key', 'success_route')
+                        ->getBy('key', 'checkers')
                         ->getOnlyValue()
-                        ->getValue()
-                        ->toString(),
+                        ->getValue(ArrayObject::class)
+                        ->toArray()[$checkerIndex],
                     [
                         'sid' => $sid,
                     ]))

@@ -3,6 +3,8 @@
 namespace App\Controller\IdentityChecker;
 
 use App\DataStructure\TransitingDataManager;
+use App\Model\Integer;
+use App\Model\TransitingData;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,6 +29,16 @@ class MasterChecker extends AbstractController
             ->getOnlyValue()
             ->getValue()
             ->toArray()
+        ;
+        $secureSession
+            ->setObject(
+                $sid,
+                $tdm->add(new TransitingData(
+                    'current_checker_index',
+                    'ic_initialization',
+                    new Integer(0)
+                )),
+                TransitingDataManager::class)
         ;
 
         return new RedirectResponse($this->generateUrl($checkers[0], [

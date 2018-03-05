@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Service\IdentityCheck\RequestManager;
 use App\Service\SecureSession;
 use App\Service\Mocker\U2fAuthenticationMocker;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -71,6 +72,14 @@ abstract class TestCaseTemplate extends DbWebTestCase
         ;
     }
 
+    public function getIdentityRequestManager(): RequestManager
+    {
+        return $this
+            ->getContainer()
+            ->get('App\Service\IdentityCheck\RequestManager')
+        ;
+    }
+
     public function getObjectManager(): ObjectManager
     {
         return $this
@@ -117,6 +126,14 @@ abstract class TestCaseTemplate extends DbWebTestCase
         $lastPart = substr($uri, $pos + 1);
 
         return $lastPart;
+    }
+
+    public function isAuthenticatedFully(): bool
+    {
+        return $this
+            ->get('security.authorization_checker')
+            ->isGranted('IS_AUTHENTICATED_FULLY')
+        ;
     }
 
     public function isRedirect(): bool

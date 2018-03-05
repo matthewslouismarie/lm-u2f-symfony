@@ -13,14 +13,16 @@ class U2fCheckerTest extends TestCaseTemplate
 {
     public function testU2f()
     {
-        $tdm = (new TransitingDataManager())
-            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_username', 'ic_u2f', 'authentication_processing'])))
+        $identityRequest = $this
+            ->getIdentityRequestManager()
+            ->create(
+            'initial_route',
+            [
+                'ic_username',
+                'ic_u2f', 'authentication_processing',
+            ])
         ;
-        $sid = $this
-            ->getSecureSession()
-            ->storeObject($tdm, TransitingDataManager::class)
-        ;
-        $this->doGet("/all/initiate-identity-check/{$sid}");
+        $this->doGet($identityRequest->getUrl());
         $this->followRedirect();
 
         $existingUsernameFiller = $this->get('App\Service\Form\Filler\ExistingUsernameFiller');
@@ -30,7 +32,7 @@ class U2fCheckerTest extends TestCaseTemplate
         $this->followRedirect();
         $u2fAuthenticationFiller = $this->get('App\Service\Form\Filler\U2fAuthenticationFiller1');
         $this->submit(
-            $u2fAuthenticationFiller->fillForm($this->getClient()->getCrawler(), $sid))
+            $u2fAuthenticationFiller->fillForm($this->getClient()->getCrawler(), $identityRequest->getSid()))
         ;
         
         $this->followRedirect();
@@ -43,18 +45,20 @@ class U2fCheckerTest extends TestCaseTemplate
 
     private function accessCredentialForm()
     {
-        $tdm = (new TransitingDataManager())
-            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_credential', 'authentication_processing'])))
+        $identityRequest = $this
+            ->getIdentityRequestManager()
+            ->create(
+            'initial_route',
+            [
+                'ic_credential',
+                'authentication_processing',
+            ])
         ;
-        $sid = $this
-            ->getSecureSession()
-            ->storeObject($tdm, TransitingDataManager::class)
-        ;
-        $this->doGet("/all/initiate-identity-check/{$sid}");
+        $this->doGet($identityRequest->getUrl());
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->assertEquals(
-            "http://localhost/all/check-credential/{$sid}",
+            "http://localhost/all/check-credential/{$identityRequest->getSid()}",
             $this->getUri())
         ;
         $this->assertEquals(

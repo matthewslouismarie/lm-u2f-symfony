@@ -10,6 +10,9 @@ use App\Service\SecureSession;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
+/**
+ * @todo Delete?
+ */
 class U2fAuthenticationFiller
 {
     private $mocker;

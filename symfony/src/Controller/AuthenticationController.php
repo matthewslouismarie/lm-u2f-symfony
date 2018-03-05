@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\DataStructure\TransitingDataManager;
 use App\Exception\AccessDeniedException;
 use App\Form\LoginRequestType;
 use App\FormModel\CredentialAuthenticationSubmission;
@@ -10,8 +9,7 @@ use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
 use App\Model\GrantedAuthorization;
-use App\Model\TransitingData;
-use App\Model\ArrayObject;
+use App\Service\IdentityCheck\RequestManager;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,18 +24,18 @@ class AuthenticationController extends AbstractController
      *  name="authenticate",
      *  methods={"GET"})
      */
-    public function authenticate(
-        Request $request,
-        SecureSession $secureSession)
+    public function authenticate(RequestManager $requestManager)
     {
-        $tdm = (new TransitingDataManager())
-            ->add(new TransitingData('checkers', 'initial_route', new ArrayObject(['ic_username', 'ic_u2f', 'authentication_processing'])))
+        $identityRequest = $requestManager->create(
+            'authenticate',
+            [
+                'ic_username',
+                'ic_u2f',
+                'authentication_processing',
+            ])
         ;
-        $sid = $secureSession->storeObject($tdm, TransitingDataManager::class);
 
-        return new RedirectResponse($this->generateUrl('ic_initialization', [
-            'sid' => $sid,
-        ]));
+        return new RedirectResponse($identityRequest->getUrl());
     }
 
     /**

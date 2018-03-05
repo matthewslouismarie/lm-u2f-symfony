@@ -20,7 +20,7 @@ class MembersFixture extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $member = new Member(null, 'louis');
+        $member = new Member(null, 'louis', ['ROLE_ADMIN']);
         $encoded = $this->encoder->encodePassword($member, 'hello');
         $member->setPassword($encoded);
         $manager->persist($member);

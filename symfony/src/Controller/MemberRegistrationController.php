@@ -200,7 +200,8 @@ class MemberRegistrationController extends AbstractController
             $member = $mf->create(
                 null,
                 $credential->getUsername(),
-                $credential->getPassword()
+                $credential->getPassword(),
+                ['ROLE_USER']
             );
             $om->persist($member);
             for ($i = 0; $i < self::N_U2F_KEYS; ++$i) {

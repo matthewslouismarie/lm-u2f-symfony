@@ -26,14 +26,20 @@ class Member implements UserInterface, Serializable
     private $password;
 
     /**
+     * @ORM\Column(type="simple_array")
+     */
+    private $roles;
+
+    /**
      * @ORM\Column(length=25, unique=true)
      */
     private $username;
 
-    public function __construct(?int $id, string $username)
+    public function __construct(?int $id, string $username, array $roles)
     {
         $this->id = $id;
         $this->username = $username;
+        $this->roles = $roles;
     }
 
     public function eraseCredentials()
@@ -45,9 +51,9 @@ class Member implements UserInterface, Serializable
         return $this->id;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
-        return array('ROLE_USER');
+        return $this->roles;
     }
 
     public function getPassword()
@@ -73,19 +79,19 @@ class Member implements UserInterface, Serializable
     {
         return serialize(array(
             $this->id,
-            $this->username,
             $this->password,
+            $this->roles,
+            $this->username,
         ));
     }
 
-    public function unserialize($data)
+    public function unserialize($serialized)
     {
         list(
             $this->id,
-            $this->username,
             $this->password,
-            // see section on salt below
-            // $this->salt
-        ) = unserialize($data);
+            $this->roles,
+            $this->username,
+        ) = unserialize($serialized);
     }
 }

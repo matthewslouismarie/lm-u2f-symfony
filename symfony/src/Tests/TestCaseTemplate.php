@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Service\AppConfigManager;
 use App\Service\IdentityCheck\RequestManager;
 use App\Service\SecureSession;
 use App\Service\Mocker\U2fAuthenticationMocker;
@@ -52,6 +53,14 @@ abstract class TestCaseTemplate extends DbWebTestCase
         return $this
             ->getContainer()
             ->get($service)
+        ;
+    }
+
+    public function getAppConfigManager(): AppConfigManager
+    {
+        return $this
+            ->getContainer()
+            ->get('App\Service\AppConfigManager')
         ;
     }
 

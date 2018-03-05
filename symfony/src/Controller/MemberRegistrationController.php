@@ -10,6 +10,7 @@ use App\Form\UserConfirmationType;
 use App\FormModel\CredentialRegistrationSubmission;
 use App\FormModel\NewU2fRegistrationSubmission;
 use App\Model\TransitingData;
+use App\Service\AppConfigManager;
 use App\Service\SecureSession;
 use App\Service\U2fRegistrationManager;
 use App\Service\U2fService;
@@ -25,7 +26,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MemberRegistrationController extends AbstractController
 {
-    const N_U2F_KEYS = 1;
+    private $nU2fKeys;
+
+    public function __construct(AppConfigManager $appConfigManager)
+    {
+        $this->nU2fKeys = $appConfigManager
+            ->getIntSetting(AppConfigManager::REG_N_U2F_KEYS)
+        ;
+    }
 
     /**
      * @Route(
@@ -135,7 +143,7 @@ class MemberRegistrationController extends AbstractController
                     )),
                 TransitingDataManager::class
             );
-            if (self::N_U2F_KEYS === $u2fKeyNo + 1) {
+            if ($this->nU2fKeys === $u2fKeyNo + 1) {
                 return new RedirectResponse(
                     $this->generateUrl('registration_submit', [
                         'sid' => $sid,
@@ -204,7 +212,7 @@ class MemberRegistrationController extends AbstractController
                 ['ROLE_USER']
             );
             $om->persist($member);
-            for ($i = 0; $i < self::N_U2F_KEYS; ++$i) {
+            for ($i = 0; $i < $this->nU2fKeys; ++$i) {
                 $submission = $tdm
                     ->getBy('key', 'U2fKeySubmission'.$i)
                     ->getOnlyValue()

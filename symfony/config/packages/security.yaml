@@ -22,6 +22,9 @@ security:
             access_denied_handler: App\Security\AccessDeniedHandler
     access_control:
         -
+            path: ^/admin(/.*)?$
+            roles: ROLE_ADMIN
+        -
             path: ^/authenticated/.*$
             roles: ROLE_USER
         -

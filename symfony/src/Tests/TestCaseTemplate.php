@@ -128,6 +128,14 @@ abstract class TestCaseTemplate extends DbWebTestCase
         return $lastPart;
     }
 
+    public function isAdmin(): bool
+    {
+        return $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_ADMIN')
+        ;
+    }
+
     public function isAuthenticatedFully(): bool
     {
         return $this

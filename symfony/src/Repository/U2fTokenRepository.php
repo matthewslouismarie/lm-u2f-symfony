@@ -23,13 +23,7 @@ class U2fTokenRepository extends ServiceEntityRepository
 
     public function getMemberRegistrations(int $member_id): array
     {
-        $qb = $this->createQueryBuilder('u2ftoken');
-        $u2f_tokens = $qb
-            ->where('u2ftoken.member = :member_id')
-            ->setParameter('member_id', $member_id)
-            ->getQuery()
-            ->getResult()
-        ;
+        $u2f_tokens = $this->getU2fTokens($member_id);
         $registrations = array();
         foreach ($u2f_tokens as $tkn) {
             $registration = new Registration();
@@ -58,6 +52,22 @@ class U2fTokenRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getU2fTokens(int $memberId): array
+    {
+        $qb = $this->createQueryBuilder('u2ftoken');
+        $u2fTokens = $qb
+            ->where('u2ftoken.member = :member_id')
+            ->setParameter('member_id', $memberId)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $u2fTokens;
+    }
+
+    /**
+     * @todo Delete?
+     */
     public function resetCounters()
     {
         $u2fTokens = $this->findAll();

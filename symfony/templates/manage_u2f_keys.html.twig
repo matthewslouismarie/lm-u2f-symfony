@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<ul class="item-list">
+{% for u2f_key in u2f_keys %}
+    <li class="item">{{ u2f_key.u2fKeyName }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

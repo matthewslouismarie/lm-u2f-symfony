@@ -14,31 +14,23 @@ class U2fKeyManagementTest extends TestCaseTemplate
         $this->authenticateAsLouis();
         $this->doGet('/authenticated/manage-u2f-keys');
 
-        $louis = $this
-            ->get('security.token_storage')
-            ->getToken()
-            ->getUser()
-        ;
+        $member = $this->getLoggedInMember();
         $u2fTokens = $this
             ->get('doctrine')
             ->getManager()
             ->getRepository(U2fToken::class)
-            ->getU2fTokens($louis->getId())
+            ->getU2fTokens($member->getId())
         ;
         $this->assertEquals(
             count($u2fTokens),
-            $this->getCrawler()->filter('.item')->count()
+            $this->getCrawler()->filter('.item-list > .item')->count()
         );
     }
 
     public function testKeyReset()
     {
         $this->authenticateAsLouis();
-        $member = $this
-            ->get('security.token_storage')
-            ->getToken()
-            ->getUser()
-        ;
+        $member = $this->getLoggedInMember();
         $u2fTokens = $this
             ->get('doctrine')
             ->getManager()
@@ -60,10 +52,14 @@ class U2fKeyManagementTest extends TestCaseTemplate
         ;
         $this->followRedirect();
         $this->performHighSecurityIdCheck();
-        $this->doGet('/authenticated/manage-u2f-keys');
         $this->assertEquals(
             $originalNOfU2fKeys - 1,
-            $this->getCrawler()->filter('.item')->count()
-        );
+            count($this
+                ->get('doctrine')
+                ->getManager()
+                ->getRepository(U2fToken::class)
+                ->getU2fTokens($member->getId())))
+        ;
+        $this->assertNull($this->getLoggedInMember());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Member;
 use App\Service\AppConfigManager;
 use App\Service\IdentityCheck\RequestManager;
 use App\Service\Form\Filler\U2fAuthenticationFiller1;
@@ -89,6 +90,19 @@ abstract class TestCaseTemplate extends DbWebTestCase
             ->getContainer()
             ->get('App\Service\IdentityCheck\RequestManager')
         ;
+    }
+
+    public function getLoggedInMember(): ?Member
+    {
+        $token = $this
+            ->get('security.token_storage')
+            ->getToken()
+        ;
+        if (null === $token) {
+            return null;
+        } else {
+            return $token->getUser();
+        }
     }
 
     public function getObjectManager(): ObjectManager

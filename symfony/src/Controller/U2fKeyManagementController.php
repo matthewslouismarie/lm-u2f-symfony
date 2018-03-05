@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 class U2fKeyManagementController extends AbstractController
 {
     /**
@@ -65,12 +67,16 @@ class U2fKeyManagementController extends AbstractController
      */
     public function resetU2fKey(
         string $sid,
+        Request $httpRequest,
         RequestManager $idRequestManager,
+        TokenStorageInterface $tokenStorage,
         U2fTokenRepository $u2fTokenRepo)
     {
         $idRequestManager->checkIdentityFromSid($sid);
         $u2fKeySlug = $idRequestManager->getAdditionalData($sid)['u2fKeySlug'];
         $u2fTokenRepo->removeU2fToken($this->getUser(), $u2fKeySlug);
+
+        $tokenStorage->setToken(null);
 
         return $this->render('u2f_key_removed.html.twig', [
             'u2fKeySlug' => $u2fKeySlug,

@@ -4,7 +4,10 @@ namespace App\Controller\IdentityChecker;
 
 use App\DataStructure\TransitingDataManager;
 use App\Form\CredentialAuthenticationType;
+use App\Form\NewU2fAuthenticationType;
 use App\FormModel\CredentialAuthenticationSubmission;
+use App\FormModel\NewU2fAuthenticationSubmission;
+use App\FormModel\U2fAuthenticationRequest;
 use App\Model\ArrayObject;
 use App\Model\BooleanObject;
 use App\Model\Integer;
@@ -12,13 +15,11 @@ use App\Model\StringObject;
 use App\Model\TransitingData;
 use App\Service\SecureSession;
 use App\Service\StatelessU2fAuthenticationManager;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\FormModel\NewU2fAuthenticationSubmission;
-use App\Form\NewU2fAuthenticationType;
-use App\FormModel\U2fAuthenticationRequest;
 
 class U2fChecker extends AbstractController
 {

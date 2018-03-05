@@ -47,6 +47,7 @@ class U2fToken
     private $publicKey;
 
     /**
+     * @todo Should be a slug and unique for the user.
      * @ORM\Column()
      */
     private $u2fKeyName;

@@ -4,6 +4,8 @@ namespace App\Tests;
 
 use App\Service\AppConfigManager;
 use App\Service\IdentityCheck\RequestManager;
+use App\Service\Form\Filler\U2fAuthenticationFiller1;
+use App\Service\Form\Filler\UserConfirmationFiller;
 use App\Service\SecureSession;
 use App\Service\Mocker\U2fAuthenticationMocker;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -111,6 +113,22 @@ abstract class TestCaseTemplate extends DbWebTestCase
         return $this
             ->getContainer()
             ->get('App\Service\Mocker\U2fAuthenticationMocker')
+        ;
+    }
+
+    public function getU2fAuthenticationFiller(): U2fAuthenticationFiller1
+    {
+        return $this
+            ->getContainer()
+            ->get('App\Service\Form\Filler\U2fAuthenticationFiller1')
+        ;
+    }
+
+    public function getUserConfirmationFiller(): UserConfirmationFiller
+    {
+        return $this
+            ->getContainer()
+            ->get('App\Service\Form\Filler\UserConfirmationFiller')
         ;
     }
 

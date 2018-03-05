@@ -24,4 +24,14 @@ trait AuthenticationTrait
 
         $this->followRedirect();
     }
+
+    private function performHighSecurityIdCheck()
+    {
+        $this->followRedirect();
+        $this->submit($this
+            ->getU2fAuthenticationFiller()
+            ->fillForm($this->getCrawler(), $this->getUriLastPart()))
+        ;
+        $this->followRedirect();
+    }
 }

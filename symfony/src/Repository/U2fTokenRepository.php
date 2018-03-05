@@ -65,6 +65,22 @@ class U2fTokenRepository extends ServiceEntityRepository
         return $u2fTokens;
     }
 
+    public function removeU2fToken(Member $member, string $u2fTokenSlug): void
+    {
+        $u2fToken = $this->findOneBy([
+            'member' => $member,
+            'u2fKeyName' => $u2fTokenSlug,
+        ]);
+        $this
+            ->om
+            ->remove($u2fToken)
+        ;
+        $this
+            ->om
+            ->flush()
+        ;
+    }
+
     /**
      * @todo Delete?
      */

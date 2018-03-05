@@ -7,6 +7,7 @@ use App\Entity\Member;
 use App\Model\ArrayObject;
 use App\Model\BooleanObject;
 use App\Model\StringObject;
+use App\Service\IdentityCheck\RequestManager;
 use App\Service\SecureSession;
 use Doctrine\Common\Persistence\ObjectManager;
 use InvalidArgumentException;
@@ -27,6 +28,8 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $om;
 
+    private $requestManager;
+
     private $router;
 
     private $encoder;
@@ -36,9 +39,11 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
     public function __construct(
         SecureSession $secureSession,
         ObjectManager $om,
+        RequestManager $requestManager,
         RouterInterface $router)
     {
         $this->om = $om;
+        $this->requestManager = $requestManager;
         $this->router = $router;
         $this->secureSession = $secureSession;
     }
@@ -74,35 +79,10 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($tdm, UserInterface $user)
     {
-        try {
-            $checkers = $tdm
-                ->getBy('key', 'checkers')
-                ->getOnlyValue()
-                ->getValue(ArrayObject::class)
-                ->toArray()
-            ;
-        }
-        catch (UnexpectedValueException $e) {
-            throw new AuthenticationException();
-        }
-        foreach ($checkers as $checker)
-        {
-            try {
-                $valids = $tdm
-                    ->getBy('route', $checker)
-                    ->getBy('key', 'successful_authentication')
-                    ->toArray()
-                ;
-            } catch (UnexpectedValueException $e) {
-                throw new AuthenticationException();
-            }
-            foreach ($valids as $valid) {
-                if (true !== $valid->toBoolean()) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return $this
+            ->requestManager
+            ->isIdentityCheckedFromObject($tdm)
+        ;
     }
 
     protected function getLoginUrl()

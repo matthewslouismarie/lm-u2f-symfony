@@ -68,6 +68,7 @@ class U2fKeyManagementController extends AbstractController
         RequestManager $idRequestManager,
         U2fTokenRepository $u2fTokenRepo)
     {
+        $idRequestManager->checkIdentityFromSid($sid);
         $u2fKeySlug = $idRequestManager->getAdditionalData($sid)['u2fKeySlug'];
         $u2fTokenRepo->removeU2fToken($this->getUser(), $u2fKeySlug);
 

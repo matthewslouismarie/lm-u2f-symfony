@@ -9,6 +9,8 @@ use App\Model\StringObject;
 use App\Model\TransitingData;
 use App\Service\SecureSession;
 use App\Repository\U2fTokenRepository;
+use Exception;
+use UnexpectedValueException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -93,5 +95,53 @@ class RequestManager
             ->getValue()
             ->toArray()
         ;
+    }
+
+    /**
+     * @todo Use a more specific exception.
+     */
+    public function checkIdentityFromSid(string $sid): bool
+    {
+        $tdm = $this
+            ->secureSession
+            ->getObject($sid, TransitingDataManager::class)
+        ;
+        $identityVerified = $this->isIdentityCheckedFromObject($tdm);
+        if (false === $identityVerified) {
+            throw new Exception();
+        }
+    }
+
+    public function isIdentityCheckedFromObject(TransitingDataManager $tdm): bool
+    {
+        try {
+            $checkers = $tdm
+                ->getBy('key', 'checkers')
+                ->getOnlyValue()
+                ->getValue(ArrayObject::class)
+                ->toArray()
+            ;
+        }
+        catch (UnexpectedValueException $e) {
+            return false;
+        }
+        foreach ($checkers as $checker)
+        {
+            try {
+                $valids = $tdm
+                    ->getBy('route', $checker)
+                    ->getBy('key', 'successful_authentication')
+                    ->toArray()
+                ;
+            } catch (UnexpectedValueException $e) {
+               return false;
+            }
+            foreach ($valids as $valid) {
+                if (true !== $valid->toBoolean()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

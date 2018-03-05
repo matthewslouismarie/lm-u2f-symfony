@@ -31,7 +31,9 @@ class AdminDashboardController extends AbstractController
         AppConfigManager $appConfigManager,
         Request $httpRequest)
     {
-        $submission = new RegistrationConfigSubmission();
+        $submission = new RegistrationConfigSubmission(
+            $appConfigManager->getIntSetting(AppConfigManager::REG_N_U2F_KEYS))
+        ;
         $form = $this
             ->createForm(RegistrationConfigType::class, $submission)
             ->add('submit', SubmitType::class)

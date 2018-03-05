@@ -87,7 +87,7 @@ class RequestManager
     {
         $tdm = $this
             ->secureSession
-            ->getObject($sid, TransitingDataManager::class)
+            ->getAndRemoveObject($sid, TransitingDataManager::class)
         ;
         return $tdm
             ->getBy('key', 'additional_data')
@@ -100,7 +100,7 @@ class RequestManager
     /**
      * @todo Use a more specific exception.
      */
-    public function checkIdentityFromSid(string $sid): bool
+    public function checkIdentityFromSid(string $sid): void
     {
         $tdm = $this
             ->secureSession

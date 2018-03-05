@@ -10,6 +10,7 @@ use App\Model\BooleanObject;
 use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
+use App\Service\IdentityCheck\RequestManager;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -26,25 +27,11 @@ class CredentialChecker extends AbstractController
     public function checkCredential(
         string $sid,
         Request $httpRequest,
+        RequestManager $idRequestManager,
         SecureSession $secureSession)
     {
+        $checkerIndex = $idRequestManager->verifyRoute('ic_credential', $sid);        
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-
-        $checkerIndex = $tdm
-            ->getBy('key', 'current_checker_index')
-            ->getOnlyValue()
-            ->getValue(Integer::class)
-            ->toInteger()
-        ;
-        $checkers = $tdm
-            ->getBy('key', 'checkers')
-            ->getOnlyValue()
-            ->getValue(ArrayObject::class)
-            ->toArray()
-        ;
-        if ('ic_credential' !== $checkers[$checkerIndex]) {
-            throw new Exception();
-        }
 
         $submission = new CredentialAuthenticationSubmission();
         $form = $this->createForm(

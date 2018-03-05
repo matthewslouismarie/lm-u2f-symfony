@@ -32,7 +32,9 @@ class MasterChecker extends AbstractController
         $secureSession
             ->setObject(
                 $sid,
-                $tdm->add(new TransitingData(
+                $tdm
+                    ->filterBy('key', 'current_checker_index')
+                    ->add(new TransitingData(
                     'current_checker_index',
                     'ic_initialization',
                     new Integer(0)

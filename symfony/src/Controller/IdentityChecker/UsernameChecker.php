@@ -10,6 +10,7 @@ use App\Model\BooleanObject;
 use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
+use App\Service\IdentityCheck\RequestManager;
 use App\Service\SecureSession;
 use App\Service\StatelessU2fAuthenticationManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,25 +31,12 @@ class UsernameChecker extends AbstractController
     public function checkUsername(
         string $sid,
         Request $httpRequest,
+        RequestManager $idRequestManager,
         SecureSession $secureSession,
         StatelessU2fAuthenticationManager $u2fAuthenticationManager)
     {
+        $checkerIndex = $idRequestManager->verifyRoute('ic_username', $sid);
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-        $checkerIndex = $tdm
-            ->getBy('key', 'current_checker_index')
-            ->getOnlyValue()
-            ->getValue(Integer::class)
-            ->toInteger()
-        ;
-        $checkers = $tdm
-            ->getBy('key', 'checkers')
-            ->getOnlyValue()
-            ->getValue(ArrayObject::class)
-            ->toArray()
-        ;
-        if ('ic_username' !== $checkers[$checkerIndex]) {
-            throw new Exception();
-        }
         $submission = new ExistingUsernameSubmission();
         $form = $this->createForm(ExistingUsernameType::class, $submission);
 

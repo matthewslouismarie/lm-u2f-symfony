@@ -5,6 +5,7 @@ namespace App\Service\IdentityCheck;
 use App\DataStructure\TransitingDataManager;
 use App\Model\ArrayObject;
 use App\Model\IdentityRequest;
+use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
 use App\Service\SecureSession;
@@ -87,7 +88,7 @@ class RequestManager
     {
         $tdm = $this
             ->secureSession
-            ->getAndRemoveObject($sid, TransitingDataManager::class)
+            ->getObject($sid, TransitingDataManager::class)
         ;
         return $tdm
             ->getBy('key', 'additional_data')
@@ -143,5 +144,33 @@ class RequestManager
             }
         }
         return true;
+    }
+
+    /**
+     * @todo Use a more specific exception.
+     */
+    public function verifyRoute(string $routeName, string $sid): int
+    {
+        $tdm = $this
+            ->secureSession
+            ->getObject($sid, TransitingDataManager::class)
+        ;
+        $checkerIndex = $tdm
+            ->getBy('key', 'current_checker_index')
+            ->getOnlyValue()
+            ->getValue(Integer::class)
+            ->toInteger()
+        ;
+        $checkers = $tdm
+            ->getBy('key', 'checkers')
+            ->getOnlyValue()
+            ->getValue(ArrayObject::class)
+            ->toArray()
+        ;
+        if ($routeName !== $checkers[$checkerIndex]) {
+            throw new Exception();
+        }
+
+        return $checkerIndex;
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Model;
 
-use Serializable;
 use InvalidArgumentException;
+use UnexpectedValueException;
+use Serializable;
 
 class TransitingData
 {

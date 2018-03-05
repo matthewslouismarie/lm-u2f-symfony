@@ -13,6 +13,7 @@ use App\Model\BooleanObject;
 use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
+use App\Service\IdentityCheck\RequestManager;
 use App\Service\SecureSession;
 use App\Service\StatelessU2fAuthenticationManager;
 use Exception;
@@ -31,26 +32,12 @@ class U2fChecker extends AbstractController
     public function checkU2f(
         string $sid,
         Request $httpRequest,
+        RequestManager $idRequestManager,
         SecureSession $secureSession,
         StatelessU2fAuthenticationManager $u2fAuthenticationManager)
     {
+        $checkerIndex = $idRequestManager->verifyRoute('ic_u2f', $sid);
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-
-        $checkerIndex = $tdm
-            ->getBy('key', 'current_checker_index')
-            ->getOnlyValue()
-            ->getValue(Integer::class)
-            ->toInteger()
-        ;
-        $checkers = $tdm
-            ->getBy('key', 'checkers')
-            ->getOnlyValue()
-            ->getValue(ArrayObject::class)
-            ->toArray()
-        ;
-        if ('ic_u2f' !== $checkers[$checkerIndex]) {
-            throw new Exception();
-        }
 
         $username = $tdm
             ->getBy('key', 'username')

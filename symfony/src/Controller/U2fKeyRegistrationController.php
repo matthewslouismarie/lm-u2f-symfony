@@ -78,11 +78,13 @@ class U2fKeyRegistrationController extends AbstractController
         );
         $secureSession->setObject(
             $sid,
-            $tdm->add(new TransitingData(
-                'u2f_registration_request',
-                'add_u2f_key',
-                $u2fRegistrationRequest->getRequest()
-            )),
+            $tdm
+                ->filterBy('key', 'u2f_registration_request')
+                ->add(new TransitingData(
+                    'u2f_registration_request',
+                    'add_u2f_key',
+                    $u2fRegistrationRequest->getRequest()
+                )),
             TransitingDataManager::class
         );
 

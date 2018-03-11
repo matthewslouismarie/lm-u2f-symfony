@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\U2fToken;
 use App\Form\UserConfirmationType;
 use App\Repository\U2fTokenRepository;
+use App\Service\AppConfigManager;
 use App\Service\IdentityCheck\RequestManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,6 +70,8 @@ class U2fKeyManagementController extends AbstractController
      */
     public function resetU2fKey(
         string $sid,
+        AppConfigManager $config,
+        EntityManagerInterface $em,
         Request $httpRequest,
         RequestManager $idRequestManager,
         TokenStorageInterface $tokenStorage,
@@ -76,7 +81,16 @@ class U2fKeyManagementController extends AbstractController
         $u2fKeySlug = $idRequestManager->getAdditionalData($sid)['u2fKeySlug'];
         $u2fTokenRepo->removeU2fToken($this->getUser(), $u2fKeySlug);
 
-        $tokenStorage->setToken(null);
+        $nKeys = count($em
+            ->getRepository(U2fToken::class)
+            ->getU2fTokens($this->getUser()->getId())
+        );
+        $requiredNKeys = $config
+            ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
+        ;
+        if ($nKeys < $requiredNKeys) {
+            $tokenStorage->setToken(null);
+        }
 
         return $this->render('u2f_key_removed.html.twig', [
             'u2fKeySlug' => $u2fKeySlug,

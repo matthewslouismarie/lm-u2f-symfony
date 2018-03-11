@@ -2,6 +2,8 @@
 
 {% block body %}
 <p>Your key ({{ u2fKeySlug }}) was removed.</p>
+{% if not is_granted('IS_AUTHENTICATED_FULLY') %}
 <p>You will now be signed out. The next time you attempt to log in, you'll have
 to register a new U2F key before being able to access your account again.</p>
+{% endif %}
 {% endblock %}

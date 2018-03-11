@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\U2fToken;
+use App\Service\AppConfigManager;
 use App\Tests\TestCaseTemplate;
 
 class U2fKeyManagementTest extends TestCaseTemplate
@@ -52,14 +53,24 @@ class U2fKeyManagementTest extends TestCaseTemplate
         ;
         $this->followRedirect();
         $this->performHighSecurityIdCheck();
+        $newNOfU2fKeys = count($this
+            ->get('doctrine')
+            ->getManager()
+            ->getRepository(U2fToken::class)
+            ->getU2fTokens($member->getId()))
+        ;
         $this->assertEquals(
             $originalNOfU2fKeys - 1,
-            count($this
-                ->get('doctrine')
-                ->getManager()
-                ->getRepository(U2fToken::class)
-                ->getU2fTokens($member->getId())))
+            $newNOfU2fKeys)
         ;
-        $this->assertNull($this->getLoggedInMember());
+        $requiredNKeys = $this
+            ->get('App\Service\AppConfigManager')
+            ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
+        ;
+        if ($newNOfU2fKeys < $requiredNKeys) {
+            $this->assertNull($this->getLoggedInMember());
+        } else {
+            $this->assertNotNull($this->getLoggedInMember());
+        }
     }
 }

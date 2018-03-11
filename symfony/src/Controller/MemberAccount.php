@@ -18,24 +18,4 @@ class MemberAccount extends AbstractController
     {
         return $this->render('member_account.html.twig');
     }
-
-    /**
-     * @Route(
-     *  "/my-keys",
-     *  name="member_keys"
-     * )
-     */
-    public function memberKeys()
-    {
-        $keys = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository(U2fToken::class)
-            ->getMemberRegistrations($this->getUser()->getId())
-        ;
-
-        return $this->render('member_keys.html.twig', [
-            'keys' => $keys,
-        ]);
-    }
 }

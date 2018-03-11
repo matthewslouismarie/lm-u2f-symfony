@@ -12,6 +12,7 @@ class AppConfigManager
     const DEFAULT_CONFIG_FILENAME = 'default_app_config.json';
     const REG_N_U2F_KEYS = 0;
     const POST_AUTH_N_U2F_KEYS = 1;
+    const ALLOW_U2F_LOGIN = 2;
 
     private $defaultConfigArray;
     private $appConfigRepo;
@@ -35,15 +36,21 @@ class AppConfigManager
         }
     }
 
-    public function getStringSetting(int $id): string
+    public function getBoolSetting(int $id): bool
     {
-        return $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
+        $valueStr = $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
+        return (bool) $valueStr;
     }
 
     public function getIntSetting(int $id): int
     {
         $valueStr = $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
         return intval($valueStr);
+    }
+
+    public function getStringSetting(int $id): string
+    {
+        return $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
     }
 
     /**

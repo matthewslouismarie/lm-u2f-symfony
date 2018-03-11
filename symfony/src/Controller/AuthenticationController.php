@@ -10,6 +10,7 @@ use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
 use App\Model\GrantedAuthorization;
 use App\Service\IdentityCheck\RequestManager;
+use App\Service\AppConfigManager;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,6 +19,39 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AuthenticationController extends AbstractController
 {
+    /**
+     * @Route(
+     *  "/not-authenticated/choose-authenticate",
+     *  name="choose_authenticate")
+     */
+    public function chooseAuthentication(AppConfigManager $config)
+    {
+        if ($config->getBoolSetting(AppConfigManager::ALLOW_U2F_LOGIN)) {
+            return $this->render('choose_authentication_method.html.twig');
+        } else {
+            return new RedirectResponse($this->generateUrl('pwd_authenticate'));
+        }
+    }
+
+    /**
+     * @Route(
+     *  "/not-authenticated/pwd-authenticate",
+     *  name="pwd_authenticate",
+     *  methods={"GET"})
+     */
+    public function pwdAuthenticate(RequestManager $requestManager)
+    {
+        $identityRequest = $requestManager->create(
+            'authenticate',
+            [
+                'ic_credential',
+                'authentication_processing',
+            ])
+        ;
+
+        return new RedirectResponse($identityRequest->getUrl());
+    }
+
     /**
      * @Route(
      *  "/not-authenticated/authenticate",

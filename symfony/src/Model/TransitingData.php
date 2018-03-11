@@ -46,6 +46,7 @@ class TransitingData
         } elseif (get_class($this->value) === $class) {
             return $this->value;
         } else {
+            var_dump($this->value);
             throw new UnexpectedValueException();
         }
     }

@@ -10,6 +10,7 @@ class NewU2fRegistrationSubmission implements Serializable
     private $u2fTokenResponse;
 
     /**
+     * @todo Rename to name?
      * @Assert\NotBlank()
      */
     private $u2fKeyName;

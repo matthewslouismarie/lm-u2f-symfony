@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Model\U2fRegistrationRequest;
+use DateTimeImmutable;
 use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 
@@ -32,7 +33,7 @@ class U2fRegistrationManager
     public function getU2fTokenFromResponse(
         string $u2fKeyResponse,
         Member $member,
-        \DateTimeImmutable $registration_date_time,
+        DateTimeImmutable $registration_date_time,
         RegisterRequest $request,
         string $u2fKeyName): U2fToken
     {

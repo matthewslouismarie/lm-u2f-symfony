@@ -7,6 +7,8 @@ use App\Entity\Member;
 use App\Model\ArrayObject;
 use App\Model\BooleanObject;
 use App\Model\StringObject;
+use App\Repository\U2fTokenRepository;
+use App\Service\AppConfigManager;
 use App\Service\IdentityCheck\RequestManager;
 use App\Service\SecureSession;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -26,6 +28,8 @@ use UnexpectedValueException;
  */
 class MemberAuthenticator extends AbstractFormLoginAuthenticator
 {
+    private $config;
+
     private $om;
 
     private $requestManager;
@@ -36,16 +40,22 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     private $secureSession;
 
+    private $u2fTokenRepository;
+
     public function __construct(
+        AppConfigManager $config,
         SecureSession $secureSession,
         ObjectManager $om,
         RequestManager $requestManager,
-        RouterInterface $router)
+        RouterInterface $router,
+        U2fTokenRepository $u2fTokenRepository)
     {
+        $this->config = $config;
         $this->om = $om;
         $this->requestManager = $requestManager;
         $this->router = $router;
         $this->secureSession = $secureSession;
+        $this->u2fTokenRepository = $u2fTokenRepository;
     }
 
     public function getCredentials(Request $request)
@@ -92,7 +102,13 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        return new RedirectResponse($this->router->generate('successful_authentication'));
+        $userNU2fTokens = count($this->u2fTokenRepository->getU2fTokens($token->getUser()->getId()));
+        $nU2fTokensRequired = $this->config->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS);
+        if ($nU2fTokensRequired === $userNU2fTokens) {
+            return new RedirectResponse($this->router->generate('successful_authentication'));
+        } else {
+            return new RedirectResponse($this->router->generate('successful_authentication'));
+        }
     }
 
     public function supports(Request $request): bool

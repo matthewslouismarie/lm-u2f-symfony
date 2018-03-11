@@ -69,7 +69,7 @@ class U2fTokenRepository extends ServiceEntityRepository
     {
         $u2fToken = $this->findOneBy([
             'member' => $member,
-            'u2fKeyName' => $u2fTokenSlug,
+            'name' => $u2fTokenSlug,
         ]);
         $this
             ->om

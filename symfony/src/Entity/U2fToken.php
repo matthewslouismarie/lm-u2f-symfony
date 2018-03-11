@@ -5,6 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(
+ *    uniqueConstraints={
+ *        @ORM\UniqueConstraint(
+ *            columns={"member_id", "name"})
+ *    }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\U2fTokenRepository")
  */
 class U2fToken
@@ -50,7 +56,7 @@ class U2fToken
      * @todo Should be a slug and unique for the user.
      * @ORM\Column()
      */
-    private $u2fKeyName;
+    private $name;
 
     public function __construct(
         ?int $id,
@@ -60,7 +66,7 @@ class U2fToken
         Member $member,
         \DateTimeImmutable $registrationDateTime,
         string $publicKey,
-        string $u2fKeyName)
+        string $name)
     {
         $this->id = $id;
         $this->attestation = $attestation;
@@ -69,7 +75,7 @@ class U2fToken
         $this->member = $member;
         $this->registrationDateTime = $registrationDateTime;
         $this->publicKey = $publicKey;
-        $this->u2fKeyName = $u2fKeyName;
+        $this->name = $name;
     }
 
     public function getAttestation(): string
@@ -109,7 +115,7 @@ class U2fToken
 
     public function getU2fKeyName(): string
     {
-        return $this->u2fKeyName;
+        return $this->name;
     }
 
     public function setCounter(int $counter): void

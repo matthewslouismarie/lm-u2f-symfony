@@ -88,6 +88,8 @@ class U2fKeyRegistrationController extends AbstractController
 
         return $this->render('add_u2f_key.html.twig', [
             'form' => $form->createView(),
+            'request_json' => $u2fRegistrationRequest->getRequestAsJson(),
+            'sign_requests' => $u2fRegistrationRequest->getSignRequests(),
         ]);
     }
 }

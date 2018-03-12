@@ -3,9 +3,12 @@
 namespace App\Service;
 
 use App\DataStructure\TransitingDataManager;
+use App\Exception\IdentityChecker\BeingProcessedException;
 use App\Exception\IdentityChecker\InvalidCheckerException;
 use App\Exception\IdentityChecker\StartedIdentityCheckException;
+use App\Exception\IdentityChecker\ProcessedException;
 use App\Model\ArrayObject;
+use App\Model\BooleanObject;
 use App\Model\IdentityVerificationRequest;
 use App\Model\Integer;
 use App\Model\StringObject;
@@ -23,6 +26,12 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class IdentityVerificationRequestManager
 {
+    public const NOT_PROCESSED = 0;
+
+    public const BEING_PROCESSED = 1;
+
+    public const PROCESSED = 2;
+
     private $router;
 
     private $secureSession;
@@ -37,6 +46,55 @@ class IdentityVerificationRequestManager
         $this->router = $router;
         $this->secureSession = $secureSession;
         $this->tokenStorage = $tokenStorage;
+    }
+
+    public function achieveOperation(string $sid, string $routeName): TransitingDataManager
+    {
+        $tdm = $this
+            ->secureSession
+            ->getObject($sid, TransitingDataManager::class)
+        ;
+        return $this->achieveOperationTdm($tdm, $routeName, $sid);
+    }
+
+    public function achieveOperationTdm(TransitingDataManager $tdm, string $routeName, string $sid): TransitingDataManager
+    {
+        $this->assertSuccessful($tdm);
+        $this->assertNotProcessed($tdm);
+        $newTdm = $tdm->replaceByKey(new TransitingData(
+            'is_processed',
+            $routeName,
+            new Integer(self::PROCESSED)
+        ));
+
+        $this
+            ->secureSession
+            ->setObject(
+                $sid,
+                $newTdm,
+                TransitingDataManager::class
+            )
+        ;
+
+        return $newTdm;
+    }
+
+    public function assertNotProcessed(TransitingDataManager $tdm): void
+    {
+        $tdmStatus = $tdm
+            ->getBy('key', 'is_processed')
+            ->getOnlyValue()
+            ->getValue(Integer::class)
+            ->toInteger()
+        ;
+        if ($tdmStatus !== self::NOT_PROCESSED)  {
+            if ($tdmStatus === self::BEING_PROCESSED) {
+                throw new BeingProcessedException();
+            } elseif ($tdmStatus === self::PROCESSED) {
+                throw new ProcessedException();
+            }
+            throw new VerificationStatusException();
+        }
     }
 
     /**
@@ -117,6 +175,11 @@ class IdentityVerificationRequestManager
                 'additional_data',
                 $routeName,
                 new ArrayObject($additionalData)))
+            ->add(new TransitingData(
+                'is_processed',
+                $routeName,
+                new Integer(self::NOT_PROCESSED)
+            ))
         ;
     }
 
@@ -153,6 +216,9 @@ class IdentityVerificationRequestManager
         ;
     }
 
+    /**
+     * @todo Dodgy.
+     */
     public function isIdentityCheckedFromObject(TransitingDataManager $tdm): bool
     {
         try {
@@ -184,5 +250,14 @@ class IdentityVerificationRequestManager
             }
         }
         return true;
+    }
+
+    public function setAsProcessed(TransitingDataManager $tdm, string $routeName): TransitingDataManager
+    {
+        return $tdm->replaceByKey(new TransitingData(
+            'is_processed',
+            $routeName,
+            new Integer(self::PROCESSED)
+        ));
     }
 }

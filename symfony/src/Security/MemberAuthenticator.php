@@ -12,6 +12,7 @@ use App\Service\AppConfigManager;
 use App\Service\IdentityVerificationRequestManager;
 use App\Service\SecureSession;
 use Doctrine\Common\Persistence\ObjectManager;
+use Exception;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -60,18 +61,22 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        return $this
-            ->secureSession
-            ->getAndRemoveObject(
-                $request->get('sid'),
-                TransitingDataManager::class
-            )
-        ;
+        $sid = $request->get('sid');
+
+        return [
+            $this
+                ->secureSession
+                ->getObject(
+                    $sid,
+                    TransitingDataManager::class
+                ),
+            $sid,
+        ];
     }
 
-    public function getUser($tdm, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $username = $tdm
+        $username = $credentials[0]
             ->getBy('key', 'username')
             ->getOnlyValue()
             ->getValue(StringObject::class)
@@ -87,12 +92,17 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
         return $user;
     }
 
-    public function checkCredentials($tdm, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user)
     {
-        return $this
-            ->requestManager
-            ->isIdentityCheckedFromObject($tdm)
-        ;
+        try {
+            $this
+                ->requestManager
+                ->achieveOperationTdm($credentials[0], 'authentication_processing', $credentials[1])
+            ;
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     protected function getLoginUrl()
@@ -102,13 +112,7 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $userNU2fTokens = count($this->u2fTokenRepository->getU2fTokens($token->getUser()));
-        $nU2fTokensRequired = $this->config->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS);
-        if ($nU2fTokensRequired <= $userNU2fTokens) {
-            return new RedirectResponse($this->router->generate('successful_authentication'));
-        } else {
-            return new RedirectResponse($this->router->generate('register_u2f_key'));
-        }
+        return new RedirectResponse($this->router->generate('successful_authentication'));        
     }
 
     public function supports(Request $request): bool

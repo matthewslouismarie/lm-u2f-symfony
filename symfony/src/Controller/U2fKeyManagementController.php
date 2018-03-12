@@ -76,12 +76,10 @@ class U2fKeyManagementController extends AbstractController
         EntityManagerInterface $em,
         Request $httpRequest,
         IdentityVerificationRequestManager $idRequestManager,
-        SecureSession $secureSession,
         TokenStorageInterface $tokenStorage,
         U2fTokenRepository $u2fTokenRepo)
     {
-        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-        $idRequestManager->assertSuccessful($tdm);
+        $tdm = $idRequestManager->achieveOperation($sid, 'reset_u2f_key');
         $u2fKeySlug = $idRequestManager->getAdditionalData($tdm)['u2fKeySlug'];
         $u2fTokenRepo->removeU2fToken($this->getUser(), $u2fKeySlug);
 

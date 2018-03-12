@@ -77,6 +77,7 @@ class MemberAccount extends AbstractController
     {
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
         $requestManager->assertSuccessful($tdm);
+        $requestManager->assertNotProcessed($tdm);
         $hashedPassword = $encoder->encodePassword(
             $this->getUser(),
             $requestManager->getAdditionalData($tdm)['new_password']
@@ -84,6 +85,11 @@ class MemberAccount extends AbstractController
         $this->getUser()->setPassword($hashedPassword);
         $em->persist($this->getUser());
         $em->flush();
+        $secureSession->setObject(
+            $sid,
+            $requestManager->setAsProcessed($tdm, 'process_password_update'),
+            TransitingDataManager::class
+        );
 
         return $this->render('successful_password_update.html.twig');
     }

@@ -30,8 +30,7 @@ class U2fKeyRegistrationFiller
         $tdm = $this
             ->secureSession
             ->getObject($sid, TransitingDataManager::class)
-            ->filterBy('key', 'u2f_registration_request')
-            ->add(new TransitingData(
+            ->replaceByKey(new TransitingData(
                 'u2f_registration_request',
                 'add_u2f_key',
                 $cycle->getRequest()

@@ -59,8 +59,7 @@ class UsernameChecker extends AbstractController
                                 'ic_u2f',
                                 new BooleanObject(true)
                             ))
-                            ->filterBy('key', 'current_checker_index')
-                            ->add(new TransitingData(
+                            ->replaceByKey(new TransitingData(
                                 'current_checker_index',
                                 'ic_username',
                                 new Integer($checkerIndex + 1))),

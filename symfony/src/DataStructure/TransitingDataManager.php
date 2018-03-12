@@ -73,6 +73,14 @@ class TransitingDataManager implements Serializable
         return 0 === count($this->list);
     }
 
+    public function replaceByKey(TransitingData $newValue): self
+    {
+        return $this
+            ->filterBy('key', $newValue->getKey())
+            ->add($newValue)
+        ;
+    }
+
     public function toArray(): array
     {
         $valueList = [];

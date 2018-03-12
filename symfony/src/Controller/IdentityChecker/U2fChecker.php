@@ -84,13 +84,11 @@ class U2fChecker extends AbstractController
                                 new BooleanObject(true)
                             ))
                             ->filterBy('key', 'u2f_authentication_request')
-                            ->filterBy('key', 'current_checker_index')
-                            ->add(new TransitingData(
+                            ->replaceByKey(new TransitingData(
                                 'current_checker_index',
                                 'ic_u2f',
                                 new Integer($checkerIndex + 1)))
-                            ->filterBy('key', 'used_u2f_key_ids')
-                            ->add(new TransitingData(
+                            ->replaceByKey(new TransitingData(
                                 'used_u2f_key_ids',
                                 'ic_u2f',
                                 new ArrayObject($usedU2fKeyIds))),

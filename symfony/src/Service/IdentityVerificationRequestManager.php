@@ -42,6 +42,7 @@ class IdentityVerificationRequestManager
     }
 
     /**
+     * @todo Don't reassign value to $tdm.
      * @todo Check that $routeName is a valid route and that $checkers is a
      * valid array of route names (string + existing route)?
      */

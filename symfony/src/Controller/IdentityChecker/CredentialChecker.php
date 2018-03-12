@@ -58,8 +58,7 @@ class CredentialChecker extends AbstractController
                                 'ic_credential',
                                 new BooleanObject(true)
                             ))
-                            ->filterBy('key', 'current_checker_index')
-                            ->add(new TransitingData(
+                            ->replaceByKey(new TransitingData(
                                 'current_checker_index',
                                 'ic_credential',
                                 new Integer($checkerIndex + 1))),

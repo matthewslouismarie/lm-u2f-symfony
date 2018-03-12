@@ -5,7 +5,7 @@ namespace App\Model;
 /**
  * @todo URL or URI?
  */
-class IdentityRequest
+class IdentityVerificationRequest
 {
     private $sid;
 

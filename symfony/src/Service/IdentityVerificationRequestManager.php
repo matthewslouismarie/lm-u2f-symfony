@@ -6,7 +6,7 @@ use App\DataStructure\TransitingDataManager;
 use App\Exception\IdentityChecker\InvalidCheckerException;
 use App\Exception\IdentityChecker\StartedIdentityCheckException;
 use App\Model\ArrayObject;
-use App\Model\IdentityRequest;
+use App\Model\IdentityVerificationRequest;
 use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
@@ -42,37 +42,15 @@ class IdentityVerificationRequestManager
     }
 
     /**
-     * @todo Don't reassign value to $tdm.
      * @todo Check that $routeName is a valid route and that $checkers is a
      * valid array of route names (string + existing route)?
      */
     public function create(
         string $routeName,
         array $checkers,
-        array $additionalData = []): IdentityRequest
+        array $additionalData = []): IdentityVerificationRequest
     {
-        $tdm = (new TransitingDataManager())
-            ->add(new TransitingData(
-                'checkers',
-                $routeName,
-                new ArrayObject($checkers)))
-            ->add(new TransitingData(
-                'additional_data',
-                $routeName,
-                new ArrayObject($additionalData)))
-        ;
-        if (false === in_array('ic_username', $checkers, true) &&
-            false === in_array('ic_credential', $checkers, true)) {
-            $tdm = $tdm->add(new TransitingData(
-                'username',
-                $routeName,
-                new StringObject($this
-                    ->tokenStorage
-                    ->getToken()
-                    ->getUser()
-                    ->getUsername())))
-            ;
-        }
+        $tdm = $this->createTdm($additionalData, $checkers, $routeName);
         $sid = $this
             ->secureSession
             ->storeObject($tdm, TransitingDataManager::class)
@@ -84,7 +62,30 @@ class IdentityVerificationRequestManager
             ])
         ;
 
-        return new IdentityRequest($sid, $url);
+        return new IdentityVerificationRequest($sid, $url);
+    }
+
+    private function createTdm(
+        array $additionalData,
+        array $checkers,
+        string $routeName)
+    {
+        if (false === in_array('ic_username', $checkers, true) &&
+            false === in_array('ic_credential', $checkers, true)) {
+            return $this
+                ->initializeDefaultTdm($additionalData, $checkers, $routeName)
+                ->add(new TransitingData(
+                    'username',
+                    $routeName,
+                    new StringObject($this
+                        ->tokenStorage
+                        ->getToken()
+                        ->getUser()
+                        ->getUsername())))
+            ;
+        } else {
+            return $this->initializeDefaultTdm($additionalData, $checkers, $routeName);
+        }
     }
 
     public function getAdditionalData(string $sid): array
@@ -187,5 +188,22 @@ class IdentityVerificationRequestManager
         }
 
         return $checkerIndex;
+    }
+
+    private function initializeDefaultTdm(
+        array $additionalData,
+        array $checkers,
+        string $routeName)
+    {
+        return (new TransitingDataManager())
+            ->add(new TransitingData(
+                'checkers',
+                $routeName,
+                new ArrayObject($checkers)))
+            ->add(new TransitingData(
+                'additional_data',
+                $routeName,
+                new ArrayObject($additionalData)))
+        ;
     }
 }

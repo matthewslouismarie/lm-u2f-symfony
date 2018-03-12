@@ -70,7 +70,7 @@ class U2fKeyManagementTest extends TestCaseTemplate
         if ($newNOfU2fKeys < $requiredNKeys) {
             $this->doGet('/');
             $this->assertContains(
-                'you need to register a new U2F key',
+                'you need to register',
                 $this->getCrawler()->text()
             );  
         }

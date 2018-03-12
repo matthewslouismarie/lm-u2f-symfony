@@ -81,8 +81,18 @@ class U2fKeyManagementController extends AbstractController
         $u2fKeySlug = $idRequestManager->getAdditionalData($sid)['u2fKeySlug'];
         $u2fTokenRepo->removeU2fToken($this->getUser(), $u2fKeySlug);
 
+        $nU2fKeys = count($em
+            ->getRepository(U2fToken::class)
+            ->getU2fTokens($this->getUser())
+        );
+        $requiredNU2fKeys = $config
+            ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
+        ;
+
         return $this->render('u2f_key_removed.html.twig', [
             'u2fKeySlug' => $u2fKeySlug,
+            'nU2fKeys' => $nU2fKeys,
+            'requiredNU2fKeys' => $requiredNU2fKeys,
         ]);
     }
 }

@@ -2,5 +2,8 @@
 
 {% block body %}
 <p>Your key ({{ u2fKeySlug }}) was removed.</p>
-<p>You may now have to register a new U2F key before being able to access the website again.</p>
+{% if nU2fKeys < requiredNU2fKeys %}
+<p>You will now have to register a new U2F key before being able to access the website again.</p>
+<p>Click <a href={{ path('manage_u2f_keys' )}}>here</a> to do so.</p>
+{% endif %}
 {% endblock %}

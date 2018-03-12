@@ -126,7 +126,7 @@ class SecureSession
     {
         $object = $this->session->get($sid);
         if (!is_a($object, $class)) {
-            throw new \UnexpectedValueException();
+            throw new UnexpectedValueException();
         }
 
         return $object;

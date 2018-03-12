@@ -1,0 +1,87 @@
+<?php
+
+namespace App\EventSubscriber;
+
+use App\Controller\U2fKeyRegistrationController;
+use App\Entity\U2fToken;
+use App\Service\AppConfigManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig_Environment;
+
+class U2fKeyNumberChecker implements EventSubscriberInterface
+{
+    private $authorizationChecker;
+
+    private $config;
+
+    private $em;
+
+    private $router;
+
+    private $twig;
+
+    private $token;
+
+    public function __construct(
+        AppConfigManager $config,
+        EntityManagerInterface $em,
+        RouterInterface $router,
+        AuthorizationCheckerInterface $authorizationChecker,
+        TokenStorageInterface $token,
+        Twig_Environment $twig)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+        $this->config = $config;
+        $this->em = $em;
+        $this->router = $router;
+        $this->token = $token->getToken();
+        $this->twig = $twig;
+    }
+
+    public function onKernelController(FilterControllerEvent $event)
+    {
+        $controller = $event->getController();
+        /*
+         * $controller passed can be either a class or a Closure.
+         * This is not usual in Symfony but it may happen.
+         * If it is a class, it comes in array format
+         */
+        if (!is_array($controller)) {
+            return;
+        }
+
+        if ($this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY') &&
+            !is_a($controller[0], U2fKeyRegistrationController::class)) {
+            $u2fTokens = $this
+                ->em
+                ->getRepository(U2fToken::class)
+                ->findBy(['member' => $this->token->getUser()])
+            ;
+            $nU2fTokensRequired = $this
+                ->config
+                ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
+            ;
+            // echo("\n  Requis: {$nU2fTokensRequired} contre ".count($u2fTokens)."\n");
+            if (count($u2fTokens) < $nU2fTokensRequired) {
+                $event->setController(function() {
+                    return new Response($this->twig->render('new_u2f_key_needed.html.twig'));
+                });
+            }
+        }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::CONTROLLER => 'onKernelController',
+        );
+    }
+}

@@ -17,7 +17,7 @@ class U2fRegistrationTest extends TestCaseTemplate
             ->getObjectManager()
             ->getRepository(U2fToken::class);
         $nU2fKeys = count(
-            $u2fTokenRepository->getU2fTokens($this->getLoggedInMember()->getId())
+            $u2fTokenRepository->getU2fTokens($this->getLoggedInMember())
         );
         $this->doGet('/authenticated/register-u2f-key');
         $this->followRedirect();
@@ -29,7 +29,7 @@ class U2fRegistrationTest extends TestCaseTemplate
         $this->assertEquals(
             $nU2fKeys + 1,
             count(
-                $u2fTokenRepository->getU2fTokens($this->getLoggedInMember()->getId())
+                $u2fTokenRepository->getU2fTokens($this->getLoggedInMember())
             )
         );
     }

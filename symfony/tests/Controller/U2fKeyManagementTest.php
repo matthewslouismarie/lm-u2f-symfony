@@ -20,7 +20,7 @@ class U2fKeyManagementTest extends TestCaseTemplate
             ->get('doctrine')
             ->getManager()
             ->getRepository(U2fToken::class)
-            ->getU2fTokens($member->getId())
+            ->getU2fTokens($member)
         ;
         $this->assertEquals(
             count($u2fTokens),
@@ -36,7 +36,7 @@ class U2fKeyManagementTest extends TestCaseTemplate
             ->get('doctrine')
             ->getManager()
             ->getRepository(U2fToken::class)
-            ->getU2fTokens($member->getId())
+            ->getU2fTokens($member)
         ;
         $originalNOfU2fKeys = count($u2fTokens);
         $this->doGet('/authenticated/manage-u2f-keys');
@@ -57,7 +57,7 @@ class U2fKeyManagementTest extends TestCaseTemplate
             ->get('doctrine')
             ->getManager()
             ->getRepository(U2fToken::class)
-            ->getU2fTokens($member->getId()))
+            ->getU2fTokens($member))
         ;
         $this->assertEquals(
             $originalNOfU2fKeys - 1,
@@ -68,9 +68,11 @@ class U2fKeyManagementTest extends TestCaseTemplate
             ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
         ;
         if ($newNOfU2fKeys < $requiredNKeys) {
-            $this->assertNull($this->getLoggedInMember());
-        } else {
-            $this->assertNotNull($this->getLoggedInMember());
+            $this->doGet('/');
+            $this->assertContains(
+                'you need to register a new U2F key',
+                $this->getCrawler()->text()
+            );  
         }
     }
 }

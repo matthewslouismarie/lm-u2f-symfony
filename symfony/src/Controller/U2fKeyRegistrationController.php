@@ -69,12 +69,13 @@ class U2fKeyRegistrationController extends AbstractController
             $em->persist($newU2fToken);
             $em->flush();
         }
+        $registrations = $em
+        ->getRepository(U2fToken::class)
+        ->getMemberRegistrations(
+            $this->getUser()
+        );
         $u2fRegistrationRequest = $u2fRegistrationManager->generate(
-            $em
-                ->getRepository(U2fToken::class)
-                ->getMemberRegistrations(
-                    $this->getUser()->getId()
-                )
+            $registrations
         );
         $secureSession->setObject(
             $sid,

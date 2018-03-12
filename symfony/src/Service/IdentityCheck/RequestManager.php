@@ -3,6 +3,8 @@
 namespace App\Service\IdentityCheck;
 
 use App\DataStructure\TransitingDataManager;
+use App\Exception\IdentityChecker\InvalidCheckerException;
+use App\Exception\IdentityChecker\StartedIdentityCheckException;
 use App\Model\ArrayObject;
 use App\Model\IdentityRequest;
 use App\Model\Integer;
@@ -48,7 +50,6 @@ class RequestManager
         array $checkers,
         array $additionalData = []): IdentityRequest
     {
-
         $tdm = (new TransitingDataManager())
             ->add(new TransitingData(
                 'checkers',
@@ -150,6 +151,18 @@ class RequestManager
     /**
      * @todo Use a more specific exception.
      */
+    public function checkNotStarted(string $sid): void
+    {
+        $currentCheckerIndexTdm = $this
+            ->secureSession
+            ->getObject($sid, TransitingDataManager::class)
+            ->getBy('key', 'current_checker_index')
+        ;
+        if (0 !== $currentCheckerIndexTdm->getSize()) {
+            throw new StartedIdentityCheckException();
+        }
+    }
+
     public function verifyRoute(string $routeName, string $sid): int
     {
         $tdm = $this
@@ -169,7 +182,7 @@ class RequestManager
             ->toArray()
         ;
         if ($routeName !== $checkers[$checkerIndex]) {
-            throw new Exception();
+            throw new InvalidCheckerException();
         }
 
         return $checkerIndex;

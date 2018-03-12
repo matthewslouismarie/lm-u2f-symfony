@@ -39,7 +39,7 @@ class StatelessU2fAuthenticationManager
         $registrations = $this
             ->em
             ->getRepository(U2fToken::class)
-            ->getMemberRegistrations($member->getId())
+            ->getMemberRegistrations($member)
         ;
 
         $signRequests = $this
@@ -75,7 +75,7 @@ class StatelessU2fAuthenticationManager
         $registrations = $this
             ->em
             ->getRepository(U2fToken::class)
-            ->getMemberRegistrations($member->getId())
+            ->getMemberRegistrations($member)
         ;
 
         $server

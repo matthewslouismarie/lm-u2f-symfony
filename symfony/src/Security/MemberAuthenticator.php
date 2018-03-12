@@ -102,7 +102,7 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $userNU2fTokens = count($this->u2fTokenRepository->getU2fTokens($token->getUser()->getId()));
+        $userNU2fTokens = count($this->u2fTokenRepository->getU2fTokens($token->getUser()));
         $nU2fTokensRequired = $this->config->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS);
         if ($nU2fTokensRequired <= $userNU2fTokens) {
             return new RedirectResponse($this->router->generate('successful_authentication'));

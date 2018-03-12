@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<p>You do not have sufficient U2F keys associated with your account.</p>
-<p>Before being able to use the website again, you need to register a new U2F key.</p>
+<p>You only have {{ nU2fTokens }} keys associated with your account, and you need to have at least {{ nU2fTokensRequired }}.</p>
+<p>Before being able to use the website again, you need to register {{ nU2fTokensRequired - nU2fTokens }} new U2F key(s).</p>
 <p><a href="{{ path('register_u2f_key') }}">Click here to do so</a>.</p>
 {% endblock %}

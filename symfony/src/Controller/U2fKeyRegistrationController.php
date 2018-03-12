@@ -68,6 +68,8 @@ class U2fKeyRegistrationController extends AbstractController
             );
             $em->persist($newU2fToken);
             $em->flush();
+
+            return $this->render('key_added.html.twig');
         }
         $registrations = $em
         ->getRepository(U2fToken::class)

@@ -27,8 +27,8 @@ class MasterChecker extends AbstractController
         SecureSession $secureSession)
     {
         try {
-            $idCheckManager->checkNotStarted($sid);
             $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+            $idCheckManager->assertUnitialized($tdm);
             $checkers = $tdm
                 ->getBy('key', 'checkers')
                 ->getOnlyValue()

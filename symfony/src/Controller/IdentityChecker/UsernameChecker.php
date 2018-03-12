@@ -38,8 +38,8 @@ class UsernameChecker extends AbstractController
         StatelessU2fAuthenticationManager $u2fAuthenticationManager)
     {
         try {
-            $checkerIndex = $idRequestManager->verifyRoute('ic_username', $sid);
             $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+            $checkerIndex = $idRequestManager->assertValidRoute('ic_username', $tdm);
             $submission = new ExistingUsernameSubmission();
             $form = $this->createForm(ExistingUsernameType::class, $submission);
     

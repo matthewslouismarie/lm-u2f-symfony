@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\DataStructure\TransitingDataManager;
 use App\Entity\U2fToken;
 use App\Form\UserConfirmationType;
 use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
 use App\Service\IdentityVerificationRequestManager;
+use App\Service\SecureSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -74,11 +76,13 @@ class U2fKeyManagementController extends AbstractController
         EntityManagerInterface $em,
         Request $httpRequest,
         IdentityVerificationRequestManager $idRequestManager,
+        SecureSession $secureSession,
         TokenStorageInterface $tokenStorage,
         U2fTokenRepository $u2fTokenRepo)
     {
-        $idRequestManager->checkIdentityFromSid($sid);
-        $u2fKeySlug = $idRequestManager->getAdditionalData($sid)['u2fKeySlug'];
+        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+        $idRequestManager->assertSuccessful($tdm);
+        $u2fKeySlug = $idRequestManager->getAdditionalData($tdm)['u2fKeySlug'];
         $u2fTokenRepo->removeU2fToken($this->getUser(), $u2fKeySlug);
 
         $nU2fKeys = count($em

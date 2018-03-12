@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\DataStructure\TransitingDataManager;
 use App\Entity\U2fToken;
 use App\Form\PasswordUpdateType;
 use App\FormModel\PasswordUpdateSubmission;
 use App\Service\IdentityVerificationRequestManager;
+use App\Service\SecureSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -70,12 +72,14 @@ class MemberAccount extends AbstractController
         string $sid,
         EntityManagerInterface $em,
         IdentityVerificationRequestManager $requestManager,
+        SecureSession $secureSession,
         UserPasswordEncoderInterface $encoder)
     {
-        $requestManager->checkIdentityFromSid($sid);
+        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+        $requestManager->assertSuccessful($tdm);
         $hashedPassword = $encoder->encodePassword(
             $this->getUser(),
-            $requestManager->getAdditionalData($sid)['new_password']
+            $requestManager->getAdditionalData($tdm)['new_password']
         );
         $this->getUser()->setPassword($hashedPassword);
         $em->persist($this->getUser());

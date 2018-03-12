@@ -33,8 +33,8 @@ class CredentialChecker extends AbstractController
         SecureSession $secureSession)
     {
         try {
-            $checkerIndex = $idRequestManager->verifyRoute('ic_credential', $sid);        
             $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+            $checkerIndex = $idRequestManager->assertValidRoute('ic_credential', $tdm);
 
             $submission = new CredentialAuthenticationSubmission();
             $form = $this->createForm(

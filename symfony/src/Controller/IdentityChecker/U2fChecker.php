@@ -39,8 +39,8 @@ class U2fChecker extends AbstractController
         StatelessU2fAuthenticationManager $u2fAuthenticationManager)
     {
         try {
-            $checkerIndex = $idRequestManager->verifyRoute('ic_u2f', $sid);
             $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+            $checkerIndex = $idRequestManager->assertValidRoute('ic_u2f', $tdm);
 
             $username = $tdm
                 ->getBy('key', 'username')

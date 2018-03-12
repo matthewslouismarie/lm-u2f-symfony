@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\IdentityCheck;
+namespace App\Service;
 
 use App\DataStructure\TransitingDataManager;
 use App\Exception\IdentityChecker\InvalidCheckerException;
@@ -23,7 +23,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  * @todo Magic string.
  * @todo Method for checking sid?
  */
-class RequestManager
+class IdentityVerificationRequestManager
 {
     private $router;
 

@@ -9,7 +9,7 @@ use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
 use App\Model\GrantedAuthorization;
-use App\Service\IdentityCheck\RequestManager;
+use App\Service\IdentityVerificationRequestManager;
 use App\Service\AppConfigManager;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,7 +39,7 @@ class AuthenticationController extends AbstractController
      *  name="pwd_authenticate",
      *  methods={"GET"})
      */
-    public function pwdAuthenticate(RequestManager $requestManager)
+    public function pwdAuthenticate(IdentityVerificationRequestManager $requestManager)
     {
         $identityRequest = $requestManager->create(
             'authenticate',
@@ -58,7 +58,7 @@ class AuthenticationController extends AbstractController
      *  name="authenticate",
      *  methods={"GET"})
      */
-    public function authenticate(RequestManager $requestManager)
+    public function authenticate(IdentityVerificationRequestManager $requestManager)
     {
         $identityRequest = $requestManager->create(
             'authenticate',

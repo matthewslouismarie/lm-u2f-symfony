@@ -6,7 +6,7 @@ use App\Entity\U2fToken;
 use App\Form\UserConfirmationType;
 use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
-use App\Service\IdentityCheck\RequestManager;
+use App\Service\IdentityVerificationRequestManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -38,7 +38,7 @@ class U2fKeyManagementController extends AbstractController
     public function confirmU2fKeyReset(
         string $u2fKeySlug,
         Request $httpRequest,
-        RequestManager $idRequestManager)
+        IdentityVerificationRequestManager $idRequestManager)
     {
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($httpRequest);
@@ -73,7 +73,7 @@ class U2fKeyManagementController extends AbstractController
         AppConfigManager $config,
         EntityManagerInterface $em,
         Request $httpRequest,
-        RequestManager $idRequestManager,
+        IdentityVerificationRequestManager $idRequestManager,
         TokenStorageInterface $tokenStorage,
         U2fTokenRepository $u2fTokenRepo)
     {

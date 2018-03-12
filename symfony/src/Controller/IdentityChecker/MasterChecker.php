@@ -7,7 +7,7 @@ use App\Exception\IdentityChecker\StartedIdentityCheckException;
 use App\Model\ArrayObject;
 use App\Model\Integer;
 use App\Model\TransitingData;
-use App\Service\IdentityCheck\RequestManager;
+use App\Service\IdentityVerificationRequestManager;
 use App\Service\SecureSession;
 use UnexpectedValueException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +23,7 @@ class MasterChecker extends AbstractController
      */
     public function initiateIdentityCheck(
         string $sid,
-        RequestManager $idCheckManager,
+        IdentityVerificationRequestManager $idCheckManager,
         SecureSession $secureSession)
     {
         try {

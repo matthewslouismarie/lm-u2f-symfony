@@ -14,7 +14,7 @@ use App\Model\BooleanObject;
 use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
-use App\Service\IdentityCheck\RequestManager;
+use App\Service\IdentityVerificationRequestManager;
 use App\Service\SecureSession;
 use App\Service\StatelessU2fAuthenticationManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +33,7 @@ class UsernameChecker extends AbstractController
     public function checkUsername(
         string $sid,
         Request $httpRequest,
-        RequestManager $idRequestManager,
+        IdentityVerificationRequestManager $idRequestManager,
         SecureSession $secureSession,
         StatelessU2fAuthenticationManager $u2fAuthenticationManager)
     {

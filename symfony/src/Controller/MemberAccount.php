@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\U2fToken;
 use App\Form\PasswordUpdateType;
 use App\FormModel\PasswordUpdateSubmission;
-use App\Service\IdentityCheck\RequestManager;
+use App\Service\IdentityVerificationRequestManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -36,7 +36,7 @@ class MemberAccount extends AbstractController
      */
     public function updatePassword(
         Request $request,
-        RequestManager $requestManager)
+        IdentityVerificationRequestManager $requestManager)
     {
         $submission = new PasswordUpdateSubmission();
         $form = $this->createForm(PasswordUpdateType::class, $submission);
@@ -69,7 +69,7 @@ class MemberAccount extends AbstractController
     public function processPasswordUpdate(
         string $sid,
         EntityManagerInterface $em,
-        RequestManager $requestManager,
+        IdentityVerificationRequestManager $requestManager,
         UserPasswordEncoderInterface $encoder)
     {
         $requestManager->checkIdentityFromSid($sid);

@@ -9,7 +9,7 @@ use App\Model\BooleanObject;
 use App\Model\StringObject;
 use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
-use App\Service\IdentityCheck\RequestManager;
+use App\Service\IdentityVerificationRequestManager;
 use App\Service\SecureSession;
 use Doctrine\Common\Persistence\ObjectManager;
 use InvalidArgumentException;
@@ -46,7 +46,7 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
         AppConfigManager $config,
         SecureSession $secureSession,
         ObjectManager $om,
-        RequestManager $requestManager,
+        IdentityVerificationRequestManager $requestManager,
         RouterInterface $router,
         U2fTokenRepository $u2fTokenRepository)
     {

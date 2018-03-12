@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use App\Entity\Member;
 use App\Service\AppConfigManager;
-use App\Service\IdentityCheck\RequestManager;
+use App\Service\IdentityVerificationRequestManager;
 use App\Service\Form\Filler\U2fAuthenticationFiller1;
 use App\Service\Form\Filler\UserConfirmationFiller;
 use App\Service\SecureSession;
@@ -84,11 +84,11 @@ abstract class TestCaseTemplate extends DbWebTestCase
         ;
     }
 
-    public function getIdentityRequestManager(): RequestManager
+    public function getIdentityRequestManager(): IdentityVerificationRequestManager
     {
         return $this
             ->getContainer()
-            ->get('App\Service\IdentityCheck\RequestManager')
+            ->get('App\Service\IdentityVerificationRequestManager')
         ;
     }
 

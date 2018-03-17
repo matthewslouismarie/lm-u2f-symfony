@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Exception\U2f\NoRegisteredU2fTokenException;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\FormModel\U2fAuthenticationRequest;
@@ -41,6 +42,10 @@ class StatelessU2fAuthenticationManager
             ->getRepository(U2fToken::class)
             ->getMemberRegistrations($member)
         ;
+
+        if (0 === count($registrations)) {
+            throw new NoRegisteredU2fTokenException();
+        }
 
         $signRequests = $this
             ->u2fService

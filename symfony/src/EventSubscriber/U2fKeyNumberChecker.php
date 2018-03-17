@@ -48,38 +48,38 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
 
     public function onKernelController(FilterControllerEvent $event)
     {
-        // $controller = $event->getController();
-        // /*
-        //  * $controller passed can be either a class or a Closure.
-        //  * This is not usual in Symfony but it may happen.
-        //  * If it is a class, it comes in array format
-        //  */
-        // if (!is_array($controller)) {
-        //     return;
-        // }
+        $controller = $event->getController();
+        /*
+         * $controller passed can be either a class or a Closure.
+         * This is not usual in Symfony but it may happen.
+         * If it is a class, it comes in array format
+         */
+        if (!is_array($controller)) {
+            return;
+        }
 
-        // if (null !== $this->token &&
-        //     $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY') &&
-        //     !is_a($controller[0], U2fKeyRegistrationController::class)) {
-        //     $nU2fTokens = count($this
-        //         ->em
-        //         ->getRepository(U2fToken::class)
-        //         ->findBy(['member' => $this->token->getUser()])
-        //     );
-        //     $nU2fTokensRequired = $this
-        //         ->config
-        //         ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
-        //     ;
-        //     // echo("\n  Requis: {$nU2fTokensRequired} contre ".count($u2fTokens)."\n");
-        //     if ($nU2fTokens < $nU2fTokensRequired) {
-        //         $event->setController(function() use ($nU2fTokens, $nU2fTokensRequired) {
-        //             return new Response($this->twig->render('new_u2f_key_needed.html.twig', [
-        //                 'nU2fTokens' => $nU2fTokens,
-        //                 'nU2fTokensRequired' => $nU2fTokensRequired,
-        //             ]));
-        //         });
-        //     }
-        // }
+        if (null !== $this->token &&
+            $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY') &&
+            !is_a($controller[0], U2fKeyRegistrationController::class)) {
+            $nU2fTokens = count($this
+                ->em
+                ->getRepository(U2fToken::class)
+                ->findBy(['member' => $this->token->getUser()])
+            );
+            $nU2fTokensRequired = $this
+                ->config
+                ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
+            ;
+            // echo("\n  Requis: {$nU2fTokensRequired} contre ".count($u2fTokens)."\n");
+            if ($nU2fTokens < $nU2fTokensRequired) {
+                $event->setController(function() use ($nU2fTokens, $nU2fTokensRequired) {
+                    return new Response($this->twig->render('new_u2f_key_needed.html.twig', [
+                        'nU2fTokens' => $nU2fTokens,
+                        'nU2fTokensRequired' => $nU2fTokensRequired,
+                    ]));
+                });
+            }
+        }
     }
 
     public static function getSubscribedEvents()

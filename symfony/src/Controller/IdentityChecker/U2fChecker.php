@@ -4,6 +4,7 @@ namespace App\Controller\IdentityChecker;
 
 use App\DataStructure\TransitingDataManager;
 use App\Exception\IdentityChecker\InvalidCheckerException;
+use App\Exception\U2f\NoRegisteredU2fTokenException;
 use App\Form\CredentialAuthenticationType;
 use App\Form\NewU2fAuthenticationType;
 use App\FormModel\CredentialAuthenticationSubmission;
@@ -133,6 +134,9 @@ class U2fChecker extends AbstractController
              * @todo Redirect to correct route instead.
              */
             return $this->render('identity_checker/errors/general_error.html.twig');
+        }
+        catch (NoRegisteredU2fTokenException $e) {
+            return $this->render('identity_checker/errors/no_registered_u2f_token_error.html.twig');
         }
         catch (UnexpectedValueException $e) {
             return $this->render('identity_checker/errors/general_error.html.twig');

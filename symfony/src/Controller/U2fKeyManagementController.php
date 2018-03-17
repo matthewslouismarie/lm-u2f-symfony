@@ -89,7 +89,7 @@ class U2fKeyManagementController extends AbstractController
             ->getU2fTokens($this->getUser())
         );
         $requiredNU2fKeys = $config
-            ->getIntSetting(Setting::POST_AUTH_N_U2F_KEYS)
+            ->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH)
         ;
 
         return $this->render('u2f_key_removed.html.twig', [

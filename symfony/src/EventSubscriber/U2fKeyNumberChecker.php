@@ -69,7 +69,7 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
             );
             $nU2fTokensRequired = $this
                 ->config
-                ->getIntSetting(Setting::POST_AUTH_N_U2F_KEYS)
+                ->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH)
             ;
             // echo("\n  Requis: {$nU2fTokensRequired} contre ".count($u2fTokens)."\n");
             if ($nU2fTokens < $nU2fTokensRequired) {

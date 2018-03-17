@@ -66,7 +66,7 @@ class U2fKeyManagementTest extends TestCaseTemplate
         ;
         $requiredNKeys = $this
             ->get('App\Service\AppConfigManager')
-            ->getIntSetting(Setting::POST_AUTH_N_U2F_KEYS)
+            ->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH)
         ;
         if ($newNOfU2fKeys < $requiredNKeys) {
             $this->doGet('/');

@@ -45,18 +45,27 @@ class AdminDashboardTest extends TestCaseTemplate
     {
         $this->authenticateAsLouis();
         $this->doGet('/admin/registration');
-        $button = $this
-            ->getCrawler()
-            ->selectButton('registration_config[submit]')
+        $this->submit($this
+            ->get('App\Service\Form\Filler\U2fConfigFiller')
+            ->fillForm($this->getCrawler(), true, 2, 3)
+        );
+        $this->assertEquals(
+            true,
+            $this
+                ->getAppConfigManager()
+                ->getIntSetting(Setting::ALLOW_U2F_LOGIN))
         ;
-        $this->submit($button->form([
-            'registration_config[nU2fKeys]' => 2,
-        ]));
         $this->assertEquals(
             2,
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(Setting::REG_N_U2F_KEYS))
+                ->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH))
+        ;
+        $this->assertEquals(
+            3,
+            $this
+                ->getAppConfigManager()
+                ->getIntSetting(Setting::N_U2F_KEYS_REG))
         ;
     }
 

@@ -80,7 +80,7 @@ class U2fKeyRegistrationController extends AbstractController
     
                 return $this->render('key_added.html.twig', [
                     'nU2fTokens' => count($memberU2fTokens),
-                    'nU2fTokensRequired' => $config->getIntSetting(Setting::POST_AUTH_N_U2F_KEYS),
+                    'nU2fTokensRequired' => $config->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH),
                 ]);
             }
             $registrations = $em

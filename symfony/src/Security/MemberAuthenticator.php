@@ -105,6 +105,9 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
         }
     }
 
+    /**
+     * @todo Add a message?
+     */
     protected function getLoginUrl()
     {
         return $this->router->generate('choose_authenticate');

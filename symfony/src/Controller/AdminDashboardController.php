@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Enum\Setting;
 use App\Form\SecurityStrategyType;
 use App\FormModel\SecurityStrategySubmission;
-use App\Form\RegistrationConfigType;
-use App\FormModel\RegistrationConfigSubmission;
+use App\Form\U2fConfigType;
+use App\FormModel\U2fConfigSubmission;
 use App\Service\AppConfigManager;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,18 +34,29 @@ class AdminDashboardController extends AbstractController
         AppConfigManager $appConfigManager,
         Request $httpRequest)
     {
-        $submission = new RegistrationConfigSubmission(
-            $appConfigManager->getIntSetting(Setting::REG_N_U2F_KEYS))
+        $submission = new U2fConfigSubmission(
+            $appConfigManager->getBoolSetting(Setting::ALLOW_U2F_LOGIN),
+            $appConfigManager->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH),
+            $appConfigManager->getIntSetting(Setting::N_U2F_KEYS_REG))
         ;
         $form = $this
-            ->createForm(RegistrationConfigType::class, $submission)
+            ->createForm(U2fConfigType::class, $submission)
             ->add('submit', SubmitType::class)
         ;
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
             $appConfigManager->set(
-                Setting::REG_N_U2F_KEYS,
-                $submission->getNU2fKeys());
+                Setting::ALLOW_U2F_LOGIN,
+                $submission->allowU2fLogin
+            );
+            $appConfigManager->set(
+                Setting::N_U2F_KEYS_POST_AUTH,
+                $submission->nU2fKeysPostAuth
+            );
+            $appConfigManager->set(
+                Setting::N_U2F_KEYS_REG,
+                $submission->nU2fKeysReg
+            );
         }
 
         return $this->render('admin/registration_panel.html.twig', [

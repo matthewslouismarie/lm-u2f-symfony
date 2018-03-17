@@ -8,6 +8,7 @@ use App\Form\NewU2fRegistrationType;
 use App\FormModel\NewU2fRegistrationSubmission;
 use App\Model\TransitingData;
 use App\Model\U2fRegistrationRequest;
+use App\Service\AppConfigManager;
 use App\Service\SecureSession;
 use App\Service\U2fRegistrationManager;
 use DateTimeImmutable;
@@ -45,6 +46,7 @@ class U2fKeyRegistrationController extends AbstractController
      */
     public function addU2fKey(
         string $sid,
+        AppConfigManager $config,
         EntityManagerInterface $em,
         Request $request,
         SecureSession $secureSession,
@@ -70,8 +72,15 @@ class U2fKeyRegistrationController extends AbstractController
                 );
                 $em->persist($newU2fToken);
                 $em->flush();
+                $memberU2fTokens = $em
+                    ->getRepository(U2fToken::class)
+                    ->findBy(['member' => $this->getUser()])
+                ;
     
-                return $this->render('key_added.html.twig');
+                return $this->render('key_added.html.twig', [
+                    'nU2fTokens' => count($memberU2fTokens),
+                    'nU2fTokensRequired' => $config->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS),
+                ]);
             }
             $registrations = $em
             ->getRepository(U2fToken::class)

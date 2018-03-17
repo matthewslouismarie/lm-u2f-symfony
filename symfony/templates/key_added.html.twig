@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-The key was successfully added.
+<p>The key was successfully added.</p>
+{% if nU2fTokens < nU2fTokensRequired %}
+<p>You still need to add {{ nU2fTokensRequired - nU2fTokens }} more U2F key(s).</p>
+<p><a href="{{ path('register_u2f_key') }}">Click here to do so</a>.</p>
+{% endif %}
 {% endblock %}

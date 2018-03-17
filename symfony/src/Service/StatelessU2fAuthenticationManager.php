@@ -43,10 +43,6 @@ class StatelessU2fAuthenticationManager
             ->getMemberRegistrations($member)
         ;
 
-        if (0 === count($registrations)) {
-            throw new NoRegisteredU2fTokenException();
-        }
-
         $signRequests = $this
             ->u2fService
             ->getServer()
@@ -55,6 +51,10 @@ class StatelessU2fAuthenticationManager
 
         foreach ($idsToExclude as $id) {
             unset($signRequests[$id]);
+        }
+
+        if (0 === count($signRequests)) {
+            throw new NoRegisteredU2fTokenException();
         }
 
         $u2fAuthenticationRequest = new U2fAuthenticationRequest($signRequests);

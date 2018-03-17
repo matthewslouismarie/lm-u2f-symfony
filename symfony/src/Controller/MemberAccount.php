@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\DataStructure\TransitingDataManager;
 use App\Entity\U2fToken;
+use App\Enum\Setting;
 use App\Form\PasswordUpdateType;
 use App\FormModel\PasswordUpdateSubmission;
+use App\Service\AppConfigManager;
 use App\Service\IdentityVerificationRequestManager;
 use App\Service\SecureSession;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,9 +28,13 @@ class MemberAccount extends AbstractController
      *  name="member_account"
      * )
      */
-    public function memberAccount()
+    public function memberAccount(AppConfigManager $config)
     {
-        return $this->render('member_account.html.twig');
+        $allowMemberToManageU2fKeys = $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS);
+
+        return $this->render('member_account.html.twig', [
+            'allow_member_to_manage_u2f_keys' => $allowMemberToManageU2fKeys,            
+        ]);
     }
 
     /**

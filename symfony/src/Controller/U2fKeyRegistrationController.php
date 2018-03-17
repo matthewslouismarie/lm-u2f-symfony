@@ -28,8 +28,13 @@ class U2fKeyRegistrationController extends AbstractController
      *  "/authenticated/register-u2f-key",
      *  name="register_u2f_key")
      */
-    public function registerU2fKey(SecureSession $secureSession)
+    public function registerU2fKey(
+        AppConfigManager $config,
+        SecureSession $secureSession)
     {
+        if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
+            return new RedirectResponse($this->generateUrl('member_account'));
+        }
         $sid = $secureSession->storeObject(
             new TransitingDataManager(),
             TransitingDataManager::class
@@ -54,6 +59,9 @@ class U2fKeyRegistrationController extends AbstractController
         U2fRegistrationManager $u2fRegistrationManager
     )
     {
+        if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
+            return new RedirectResponse($this->generateUrl('member_account'));
+        }
         try {
             $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
 

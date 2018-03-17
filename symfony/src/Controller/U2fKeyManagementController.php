@@ -20,12 +20,19 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class U2fKeyManagementController extends AbstractController
 {
     /**
+     * @todo Access authorisation and access denied handling should be done
+     * somewhere else.
      * @Route(
      *  "/authenticated/manage-u2f-keys",
      *  name="manage_u2f_keys")
      */
-    public function manageU2fKeys(U2fTokenRepository $u2fTokenRepo)
+    public function manageU2fKeys(
+        AppConfigManager $config,
+        U2fTokenRepository $u2fTokenRepo)
     {
+        if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
+            return new RedirectResponse($this->generateUrl('member_account'));
+        }
         $u2fKeys = $u2fTokenRepo->getU2fTokens($this->getUser());
 
         return $this->render('manage_u2f_keys.html.twig', [
@@ -40,9 +47,13 @@ class U2fKeyManagementController extends AbstractController
      */
     public function confirmU2fKeyReset(
         string $u2fKeySlug,
+        AppConfigManager $config,
         Request $httpRequest,
         IdentityVerificationRequestManager $idRequestManager)
     {
+        if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
+            return new RedirectResponse($this->generateUrl('member_account'));
+        }
         $form = $this->createForm(UserConfirmationType::class);
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -80,6 +91,9 @@ class U2fKeyManagementController extends AbstractController
         TokenStorageInterface $tokenStorage,
         U2fTokenRepository $u2fTokenRepo)
     {
+        if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
+            return new RedirectResponse($this->generateUrl('member_account'));
+        }
         $tdm = $idRequestManager->achieveOperation($sid, 'reset_u2f_key');
         $u2fKeySlug = $idRequestManager->getAdditionalData($tdm)['u2fKeySlug'];
         $u2fTokenRepo->removeU2fToken($this->getUser(), $u2fKeySlug);

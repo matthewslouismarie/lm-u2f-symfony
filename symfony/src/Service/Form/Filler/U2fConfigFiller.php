@@ -12,7 +12,8 @@ class U2fConfigFiller
         Crawler $crawler,
         bool $allowU2fLogin,
         int $nU2fKeysPostAuth,
-        int $nU2fKeysReg): Form
+        int $nU2fKeysReg,
+        bool $allowMemberToManageU2fKeys): Form
     {
         $button = $crawler->selectButton('u2f_config[submit]');
         if (0 === $button->count()) {
@@ -23,6 +24,7 @@ class U2fConfigFiller
             'u2f_config[allowU2fLogin]' => $allowU2fLogin,
             'u2f_config[nU2fKeysPostAuth]' => $nU2fKeysPostAuth,
             'u2f_config[nU2fKeysReg]' => $nU2fKeysReg,
+            'u2f_config[allowMemberToManageU2fKeys]' => $allowMemberToManageU2fKeys,
         ]);
     }
 }

@@ -6,6 +6,8 @@
 My account.
 <ul>
     <li><a href="{{ path('change_password') }}">Change my password</a></li>
+    {% if allow_member_to_manage_u2f_keys %}
     <li><a href="{{ path('manage_u2f_keys') }}">Manage my keys</a></li>
+    {% endif %}
 </ul>
 {% endblock %}

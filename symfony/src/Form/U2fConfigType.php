@@ -17,6 +17,7 @@ class U2fConfigType extends AbstractType
             ->add('allowU2fLogin', CheckboxType::class, ['required' => false])
             ->add('nU2fKeysPostAuth', IntegerType::class)
             ->add('nU2fKeysReg', IntegerType::class)
+            ->add('allowMemberToManageU2fKeys', CheckboxType::class, ['required' => false])
         ;
     }
 

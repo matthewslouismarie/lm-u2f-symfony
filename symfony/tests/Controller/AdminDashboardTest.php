@@ -47,7 +47,7 @@ class AdminDashboardTest extends TestCaseTemplate
         $this->doGet('/admin/registration');
         $this->submit($this
             ->get('App\Service\Form\Filler\U2fConfigFiller')
-            ->fillForm($this->getCrawler(), true, 2, 3)
+            ->fillForm($this->getCrawler(), true, 2, 3, false)
         );
         $this->assertEquals(
             true,
@@ -66,6 +66,12 @@ class AdminDashboardTest extends TestCaseTemplate
             $this
                 ->getAppConfigManager()
                 ->getIntSetting(Setting::N_U2F_KEYS_REG))
+        ;
+        $this->assertEquals(
+            false,
+            $this
+                ->getAppConfigManager()
+                ->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS))
         ;
     }
 

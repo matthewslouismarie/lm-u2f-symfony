@@ -37,8 +37,9 @@ class AdminDashboardController extends AbstractController
         $submission = new U2fConfigSubmission(
             $appConfigManager->getBoolSetting(Setting::ALLOW_U2F_LOGIN),
             $appConfigManager->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH),
-            $appConfigManager->getIntSetting(Setting::N_U2F_KEYS_REG))
-        ;
+            $appConfigManager->getIntSetting(Setting::N_U2F_KEYS_REG),
+            $appConfigManager->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)
+        );
         $form = $this
             ->createForm(U2fConfigType::class, $submission)
             ->add('submit', SubmitType::class)
@@ -56,6 +57,10 @@ class AdminDashboardController extends AbstractController
             $appConfigManager->set(
                 Setting::N_U2F_KEYS_REG,
                 $submission->nU2fKeysReg
+            );
+            $appConfigManager->set(
+                Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS,
+                $submission->allowMemberToManageU2fKeys
             );
         }
 

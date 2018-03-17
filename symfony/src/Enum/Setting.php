@@ -11,4 +11,6 @@ class Setting
     const ALLOW_U2F_LOGIN = 2;
 
     const SECURITY_STRATEGY = 3;
+
+    const ALLOW_MEMBER_TO_MANAGE_U2F_KEYS = 4;
 }

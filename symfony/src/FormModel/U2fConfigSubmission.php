@@ -23,13 +23,20 @@ class U2fConfigSubmission
      */
     public $nU2fKeysReg;
 
+    /**
+     * @Assert\Type("bool")
+     */
+    public $allowMemberToManageU2fKeys;
+
     public function __construct(
         ?bool $allowU2fLogin = null,
         ?int $nU2fKeysPostAuth = null,
-        ?int $nU2fKeysReg = null)
+        ?int $nU2fKeysReg = null,
+        ?bool $allowMemberToManageU2fKeys = null)
     {
         $this->allowU2fLogin = $allowU2fLogin;
         $this->nU2fKeysPostAuth = $nU2fKeysPostAuth;
         $this->nU2fKeysReg = $nU2fKeysReg;
+        $this->allowMemberToManageU2fKeys = $allowMemberToManageU2fKeys;
     }
 }

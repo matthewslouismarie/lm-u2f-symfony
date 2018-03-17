@@ -58,7 +58,8 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
             return;
         }
 
-        if ($this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY') &&
+        if (null !== $this->token &&
+            $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY') &&
             !is_a($controller[0], U2fKeyRegistrationController::class)) {
             $nU2fTokens = count($this
                 ->em

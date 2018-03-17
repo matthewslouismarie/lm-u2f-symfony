@@ -102,6 +102,7 @@ class MemberRegistrationController extends AbstractController
      *  name="registration_u2f_key")
      */
     public function fetchU2fPage(
+        AppConfigManager $config,
         MemberFactory $mf,
         Request $request,
         SecureSession $secureSession,
@@ -115,6 +116,13 @@ class MemberRegistrationController extends AbstractController
             ->getBy('class', NewU2fRegistrationSubmission::class)
             ->getSize()
         ;
+        if ($u2fKeyNo === $config->getIntSetting(Setting::N_U2F_KEYS_REG)) {
+            return new RedirectResponse(
+                $this->generateUrl('registration_submit', [
+                    'sid' => $sid,
+                ])
+            );
+        }
         $submission = new NewU2fRegistrationSubmission();
         $form = $this->createForm(NewU2fRegistrationType::class, $submission);
         $form->handleRequest($request);

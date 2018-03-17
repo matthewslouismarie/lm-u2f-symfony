@@ -1,5 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<a href="{{ path('admin_registration' ) }}">Registration</a>
+<ul>
+    <li>
+        <a href="{{ path('admin_registration' ) }}">Registration</a>
+    </li>
+    <li>
+        <a href="{{ path('admin_security_strategy') }}">Security Strategy</a>
+    </li>
+</ul>
 {% endblock %}

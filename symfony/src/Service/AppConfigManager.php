@@ -10,9 +10,11 @@ class AppConfigManager
 {
     const CONFIG_FILENAME = 'app_config.json';
     const DEFAULT_CONFIG_FILENAME = 'default_app_config.json';
+
     const REG_N_U2F_KEYS = 0;
     const POST_AUTH_N_U2F_KEYS = 1;
     const ALLOW_U2F_LOGIN = 2;
+    const SECURITY_STRATEGY = 3;
 
     private $defaultConfigArray;
     private $appConfigRepo;

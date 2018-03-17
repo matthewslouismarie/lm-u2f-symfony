@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Form\SecurityStrategyType;
+use App\FormModel\SecurityStrategySubmission;
 use App\Form\RegistrationConfigType;
 use App\FormModel\RegistrationConfigSubmission;
 use App\Service\AppConfigManager;
@@ -46,6 +48,33 @@ class AdminDashboardController extends AbstractController
         }
 
         return $this->render('admin/registration_panel.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route(
+     *  "/admin/security-strategy",
+     *  name="admin_security_strategy")
+     */
+    public function processSecurityStrategyPage(
+        AppConfigManager $config,
+        Request $httpRequest)
+    {
+        $submission = new SecurityStrategySubmission(
+            $config->getIntSetting(AppConfigManager::SECURITY_STRATEGY)
+        );
+        $form = $this
+            ->createForm(SecurityStrategyType::class, $submission)
+            ->add('submit', SubmitType::class)
+        ;
+
+        $form->handleRequest($httpRequest);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $config->set(AppConfigManager::SECURITY_STRATEGY, $submission->securityStrategyId);
+        }
+
+        return $this->render('admin/security_strategy.html.twig', [
             'form' => $form->createView(),
         ]);
     }

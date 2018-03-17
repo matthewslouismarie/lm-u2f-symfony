@@ -12,6 +12,7 @@ use App\Service\SecureSession;
 use App\Service\U2fRegistrationManager;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Firehed\U2F\ClientErrorException;
 use Firehed\U2F\RegisterRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -50,51 +51,57 @@ class U2fKeyRegistrationController extends AbstractController
         U2fRegistrationManager $u2fRegistrationManager
     )
     {
-        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+        try {
+            $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
 
-        $submission = new NewU2fRegistrationSubmission();
-        $form = $this->createForm(NewU2fRegistrationType::class, $submission);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $newU2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
-                $submission->getU2fTokenResponse(),
-                $this->getUser(),
-                new DateTimeImmutable(),
-                $tdm
-                    ->getBy('key', 'u2f_registration_request')
-                    ->getOnlyValue()
-                    ->getValue(RegisterRequest::class),
-                $submission->getU2fKeyName()
+            $submission = new NewU2fRegistrationSubmission();
+            $form = $this->createForm(NewU2fRegistrationType::class, $submission);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $newU2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
+                    $submission->getU2fTokenResponse(),
+                    $this->getUser(),
+                    new DateTimeImmutable(),
+                    $tdm
+                        ->getBy('key', 'u2f_registration_request')
+                        ->getOnlyValue()
+                        ->getValue(RegisterRequest::class),
+                    $submission->getU2fKeyName()
+                );
+                $em->persist($newU2fToken);
+                $em->flush();
+    
+                return $this->render('key_added.html.twig');
+            }
+            $registrations = $em
+            ->getRepository(U2fToken::class)
+            ->getMemberRegistrations(
+                $this->getUser()
             );
-            $em->persist($newU2fToken);
-            $em->flush();
-
-            return $this->render('key_added.html.twig');
+            $u2fRegistrationRequest = $u2fRegistrationManager->generate(
+                $registrations
+            );
+            $secureSession->setObject(
+                $sid,
+                $tdm
+                    ->replaceByKey(new TransitingData(
+                        'u2f_registration_request',
+                        'add_u2f_key',
+                        $u2fRegistrationRequest->getRequest()
+                    )),
+                TransitingDataManager::class
+            );
+    
+            return $this->render('add_u2f_key.html.twig', [
+                'form' => $form->createView(),
+                'request_json' => $u2fRegistrationRequest->getRequestAsJson(),
+                'sign_requests' => $u2fRegistrationRequest->getSignRequests(),
+            ]);
         }
-        $registrations = $em
-        ->getRepository(U2fToken::class)
-        ->getMemberRegistrations(
-            $this->getUser()
-        );
-        $u2fRegistrationRequest = $u2fRegistrationManager->generate(
-            $registrations
-        );
-        $secureSession->setObject(
-            $sid,
-            $tdm
-                ->filterBy('key', 'u2f_registration_request')
-                ->add(new TransitingData(
-                    'u2f_registration_request',
-                    'add_u2f_key',
-                    $u2fRegistrationRequest->getRequest()
-                )),
-            TransitingDataManager::class
-        );
-
-        return $this->render('add_u2f_key.html.twig', [
-            'form' => $form->createView(),
-            'request_json' => $u2fRegistrationRequest->getRequestAsJson(),
-            'sign_requests' => $u2fRegistrationRequest->getSignRequests(),
-        ]);
+        catch (ClientErrorException $e) {
+            return $this->render('registration/errors/u2f_timeout.html.twig', [
+                'sid' => $sid,
+            ]);
+        }
     }
 }

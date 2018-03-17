@@ -18,6 +18,7 @@ use App\Service\IdentityVerificationRequestManager;
 use App\Service\SecureSession;
 use App\Service\StatelessU2fAuthenticationManager;
 use Exception;
+use Firehed\U2F\ClientErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,7 +111,7 @@ class U2fChecker extends AbstractController
             $u2fAuthenticationRequest = $u2fAuthenticationManager->generate($username, $usedU2fKeyIds);
             $secureSession->setObject(
                 $sid,
-                $tdm->add(new TransitingData(
+                $tdm->replaceByKey(new TransitingData(
                     'u2f_authentication_request',
                     'ic_u2f',
                     $u2fAuthenticationRequest)),
@@ -120,6 +121,11 @@ class U2fChecker extends AbstractController
             return $this->render('identity_checker/u2f.html.twig', [
                 'form' => $form->createView(),
                 'sign_requests_json' => $u2fAuthenticationRequest->getJsonSignRequests(),
+            ]);
+        }
+        catch (ClientErrorException $e) {
+            return $this->render('identity_checker/errors/u2f_timeout.html.twig', [
+                'sid' => $sid,
             ]);
         }
         catch (InvalidCheckerException $e) {

@@ -51,7 +51,7 @@ class TransitingDataTest extends TestCase
             $newTdm->filterBy('route', 'blablabla')->isEmpty()
         );
 
-        $this->assertEquals([$td1->getValue()], $newTdm->toArray());
+        $this->assertEquals([$td1->getValue(CredentialAuthenticationSubmission::class)], $newTdm->toArray());
         unset($newTdm->toArray()[0]);
         $this->assertEquals(1, $newTdm->getSize());
     }

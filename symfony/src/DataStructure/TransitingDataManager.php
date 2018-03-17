@@ -85,7 +85,7 @@ class TransitingDataManager implements Serializable
     {
         $valueList = [];
         foreach ($this->list as $value) {
-            $valueList[] = $value->getValue();
+            $valueList[] = $value->getValue($value->getClass());
         }
 
         return $valueList;

@@ -16,6 +16,7 @@ use App\Service\U2fRegistrationManager;
 use App\Service\U2fService;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
+use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 use Firehed\U2F\Registration;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -120,7 +121,7 @@ class MemberRegistrationController extends AbstractController
             $registerRequest = $tdm
                 ->getBy('key', 'U2fKeyRequest'.$u2fKeyNo)
                 ->getOnlyValue()
-                ->getValue()
+                ->getValue(RegisterRequest::class)
             ;
             $registration = $server
                 ->setRegisterRequest($registerRequest)
@@ -203,7 +204,7 @@ class MemberRegistrationController extends AbstractController
             $credential = $tdm
                 ->getBy('class', CredentialRegistrationSubmission::class)
                 ->getOnlyValue()
-                ->getValue()
+                ->getValue(CredentialRegistrationSubmission::class)
             ;
             $member = $mf->create(
                 null,
@@ -216,7 +217,7 @@ class MemberRegistrationController extends AbstractController
                 $submission = $tdm
                     ->getBy('key', 'U2fKeySubmission'.$i)
                     ->getOnlyValue()
-                    ->getValue()
+                    ->getValue(NewU2fRegistrationSubmission::class)
                 ;
                 $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
                     $submission->getU2fTokenResponse(),
@@ -225,7 +226,7 @@ class MemberRegistrationController extends AbstractController
                     $tdm
                         ->getBy('key', 'U2fKeyRequest'.$i)
                         ->getOnlyValue()
-                        ->getValue(),
+                        ->getValue(RegisterRequest::class),
                     $submission->getU2fKeyName()
                 );
                 $om->persist($u2fToken);

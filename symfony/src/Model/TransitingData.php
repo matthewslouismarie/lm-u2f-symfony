@@ -39,13 +39,12 @@ class TransitingData
         return $this->route;
     }
 
-    public function getValue(?string $class = null): Serializable
+    public function getValue(string $class): Serializable
     {
-        if (null === $class) {
-            return $this->value;
-        } elseif (get_class($this->value) === $class) {
+        if (get_class($this->value) === $class) {
             return $this->value;
         } else {
+            echo "\n Expected: ".get_class($this->value).", but got: ".$class."\n";
             throw new UnexpectedValueException();
         }
     }

@@ -211,7 +211,7 @@ class IdentityVerificationRequestManager
         return $tdm
             ->getBy('key', 'additional_data')
             ->getOnlyValue()
-            ->getValue()
+            ->getValue(ArrayObject::class)
             ->toArray()
         ;
     }

@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 use App\Controller\MemberRegistrationController;
 use App\Entity\Member;
 use App\Entity\U2fToken;
+use App\Enum\Setting;
 use App\Tests\TestCaseTemplate;
 use App\Service\AppConfigManager;
 
@@ -56,7 +57,7 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->assertEquals(
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(AppConfigManager::REG_N_U2F_KEYS),
+                ->getIntSetting(Setting::REG_N_U2F_KEYS),
             count($u2fTokens))
         ;
 

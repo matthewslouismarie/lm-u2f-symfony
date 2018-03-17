@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 
 use App\Controller\U2fKeyRegistrationController;
 use App\Entity\U2fToken;
+use App\Enum\Setting;
 use App\Service\AppConfigManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -68,7 +69,7 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
             );
             $nU2fTokensRequired = $this
                 ->config
-                ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
+                ->getIntSetting(Setting::POST_AUTH_N_U2F_KEYS)
             ;
             // echo("\n  Requis: {$nU2fTokensRequired} contre ".count($u2fTokens)."\n");
             if ($nU2fTokens < $nU2fTokensRequired) {

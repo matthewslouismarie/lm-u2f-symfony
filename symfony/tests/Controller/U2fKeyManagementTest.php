@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\U2fToken;
+use App\Enum\Setting;
 use App\Service\AppConfigManager;
 use App\Tests\TestCaseTemplate;
 
@@ -65,7 +66,7 @@ class U2fKeyManagementTest extends TestCaseTemplate
         ;
         $requiredNKeys = $this
             ->get('App\Service\AppConfigManager')
-            ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
+            ->getIntSetting(Setting::POST_AUTH_N_U2F_KEYS)
         ;
         if ($newNOfU2fKeys < $requiredNKeys) {
             $this->doGet('/');

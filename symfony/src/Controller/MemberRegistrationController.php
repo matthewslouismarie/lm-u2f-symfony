@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DataStructure\TransitingDataManager;
+use App\Enum\Setting;
 use App\Factory\MemberFactory;
 use App\Form\CredentialRegistrationType;
 use App\Form\NewU2fRegistrationType;
@@ -32,7 +33,7 @@ class MemberRegistrationController extends AbstractController
     public function __construct(AppConfigManager $appConfigManager)
     {
         $this->nU2fKeys = $appConfigManager
-            ->getIntSetting(AppConfigManager::REG_N_U2F_KEYS)
+            ->getIntSetting(Setting::REG_N_U2F_KEYS)
         ;
     }
 

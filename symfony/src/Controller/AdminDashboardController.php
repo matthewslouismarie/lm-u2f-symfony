@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Enum\Setting;
 use App\Form\SecurityStrategyType;
 use App\FormModel\SecurityStrategySubmission;
 use App\Form\RegistrationConfigType;
@@ -34,7 +35,7 @@ class AdminDashboardController extends AbstractController
         Request $httpRequest)
     {
         $submission = new RegistrationConfigSubmission(
-            $appConfigManager->getIntSetting(AppConfigManager::REG_N_U2F_KEYS))
+            $appConfigManager->getIntSetting(Setting::REG_N_U2F_KEYS))
         ;
         $form = $this
             ->createForm(RegistrationConfigType::class, $submission)
@@ -43,7 +44,7 @@ class AdminDashboardController extends AbstractController
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
             $appConfigManager->set(
-                AppConfigManager::REG_N_U2F_KEYS,
+                Setting::REG_N_U2F_KEYS,
                 $submission->getNU2fKeys());
         }
 
@@ -62,7 +63,7 @@ class AdminDashboardController extends AbstractController
         Request $httpRequest)
     {
         $submission = new SecurityStrategySubmission(
-            $config->getIntSetting(AppConfigManager::SECURITY_STRATEGY)
+            $config->getIntSetting(Setting::SECURITY_STRATEGY)
         );
         $form = $this
             ->createForm(SecurityStrategyType::class, $submission)
@@ -71,7 +72,7 @@ class AdminDashboardController extends AbstractController
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
-            $config->set(AppConfigManager::SECURITY_STRATEGY, $submission->securityStrategyId);
+            $config->set(Setting::SECURITY_STRATEGY, $submission->securityStrategyId);
         }
 
         return $this->render('admin/security_strategy.html.twig', [

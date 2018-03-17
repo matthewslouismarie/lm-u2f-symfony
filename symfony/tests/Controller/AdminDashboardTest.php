@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Enum\SecurityStrategy;
+use App\Enum\Setting;
 use App\Service\AppConfigManager;
 use App\Tests\TestCaseTemplate;
 
@@ -55,7 +56,7 @@ class AdminDashboardTest extends TestCaseTemplate
             2,
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(AppConfigManager::REG_N_U2F_KEYS))
+                ->getIntSetting(Setting::REG_N_U2F_KEYS))
         ;
     }
 
@@ -74,7 +75,7 @@ class AdminDashboardTest extends TestCaseTemplate
             SecurityStrategy::U2F,
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(AppConfigManager::SECURITY_STRATEGY))
+                ->getIntSetting(Setting::SECURITY_STRATEGY))
         ;
         $this->submit($button->form([
             'security_strategy[securityStrategyId]' => SecurityStrategy::PWD,
@@ -83,7 +84,7 @@ class AdminDashboardTest extends TestCaseTemplate
             SecurityStrategy::PWD,
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(AppConfigManager::SECURITY_STRATEGY))
+                ->getIntSetting(Setting::SECURITY_STRATEGY))
         ;
     }
 }

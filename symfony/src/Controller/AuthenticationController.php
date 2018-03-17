@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Enum\Setting;
 use App\Exception\AccessDeniedException;
 use App\Form\LoginRequestType;
 use App\FormModel\CredentialAuthenticationSubmission;
@@ -26,7 +27,7 @@ class AuthenticationController extends AbstractController
      */
     public function chooseAuthentication(AppConfigManager $config)
     {
-        if ($config->getBoolSetting(AppConfigManager::ALLOW_U2F_LOGIN)) {
+        if ($config->getBoolSetting(Setting::ALLOW_U2F_LOGIN)) {
             return $this->render('choose_authentication_method.html.twig');
         } else {
             return new RedirectResponse($this->generateUrl('pwd_authenticate'));

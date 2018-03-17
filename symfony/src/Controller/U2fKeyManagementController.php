@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DataStructure\TransitingDataManager;
 use App\Entity\U2fToken;
+use App\Enum\Setting;
 use App\Form\UserConfirmationType;
 use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
@@ -88,7 +89,7 @@ class U2fKeyManagementController extends AbstractController
             ->getU2fTokens($this->getUser())
         );
         $requiredNU2fKeys = $config
-            ->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS)
+            ->getIntSetting(Setting::POST_AUTH_N_U2F_KEYS)
         ;
 
         return $this->render('u2f_key_removed.html.twig', [

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DataStructure\TransitingDataManager;
 use App\Entity\U2fToken;
+use App\Enum\Setting;
 use App\Form\NewU2fRegistrationType;
 use App\FormModel\NewU2fRegistrationSubmission;
 use App\Model\TransitingData;
@@ -79,7 +80,7 @@ class U2fKeyRegistrationController extends AbstractController
     
                 return $this->render('key_added.html.twig', [
                     'nU2fTokens' => count($memberU2fTokens),
-                    'nU2fTokensRequired' => $config->getIntSetting(AppConfigManager::POST_AUTH_N_U2F_KEYS),
+                    'nU2fTokensRequired' => $config->getIntSetting(Setting::POST_AUTH_N_U2F_KEYS),
                 ]);
             }
             $registrations = $em

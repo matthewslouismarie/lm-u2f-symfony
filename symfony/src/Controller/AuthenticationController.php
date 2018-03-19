@@ -59,18 +59,24 @@ class AuthenticationController extends AbstractController
      *  name="authenticate",
      *  methods={"GET"})
      */
-    public function authenticate(IdentityVerificationRequestManager $requestManager)
+    public function authenticate(
+        AppConfigManager $config,
+        IdentityVerificationRequestManager $requestManager)
     {
-        $identityRequest = $requestManager->create(
-            'authenticate',
-            [
-                'ic_username',
-                'ic_u2f',
-                'authentication_processing',
-            ])
-        ;
-
-        return new RedirectResponse($identityRequest->getUrl());
+        if ($config->getBoolSetting(Setting::ALLOW_U2F_LOGIN)) {
+            $identityRequest = $requestManager->create(
+                'authenticate',
+                [
+                    'ic_username',
+                    'ic_u2f',
+                    'authentication_processing',
+                ])
+            ;
+    
+            return new RedirectResponse($identityRequest->getUrl());
+        } else {
+            return new RedirectResponse($this->generateUrl('pwd_authenticate'));            
+        }
     }
 
     /**

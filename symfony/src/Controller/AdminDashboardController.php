@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Enum\Setting;
+use App\Form\PwdConfigType;
 use App\Form\SecurityStrategyType;
-use App\FormModel\SecurityStrategySubmission;
 use App\Form\U2fConfigType;
+use App\FormModel\PwdConfigSubmission;
+use App\FormModel\SecurityStrategySubmission;
 use App\FormModel\U2fConfigSubmission;
 use App\Service\AppConfigManager;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -23,6 +25,39 @@ class AdminDashboardController extends AbstractController
     public function getDashboard()
     {
         return $this->render('admin/admin_overview.html.twig');
+    }
+
+    /**
+     * @Route(
+     *  "/admin/password",
+     *  name="admin_password")
+     */
+    public function getPasswordPanel(
+        AppConfigManager $config,
+        Request $httpRequest)
+    {
+        $submission = new PwdConfigSubmission(
+            $config->getIntSetting(Setting::PWD_MIN_LENGTH),
+            $config->getBoolSetting(Setting::PWD_NUMBERS),
+            $config->getBoolSetting(Setting::PWD_SPECIAL_CHARS),
+            $config->getBoolSetting(Setting::PWD_UPPERCASE))
+        ;
+        $form = $this
+            ->createForm(PwdConfigType::class, $submission)
+            ->add('submit', SubmitType::class)
+            ->handleRequest($httpRequest)
+        ;
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $config->set(Setting::PWD_MIN_LENGTH, $submission->minimumLength);
+            $config->set(Setting::PWD_NUMBERS, $submission->requireNumbers);
+            $config->set(Setting::PWD_SPECIAL_CHARS, $submission->requireSpecialCharacters);
+            $config->set(Setting::PWD_UPPERCASE, $submission->requireUppercaseLetters);
+        }
+
+        return $this->render('admin/password.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**

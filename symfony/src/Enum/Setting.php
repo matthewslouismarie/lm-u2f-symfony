@@ -13,4 +13,12 @@ class Setting
     const SECURITY_STRATEGY = 3;
 
     const ALLOW_MEMBER_TO_MANAGE_U2F_KEYS = 4;
+
+    const PWD_MIN_LENGTH = 5;
+
+    const PWD_NUMBERS = 6;
+
+    const PWD_SPECIAL_CHARS = 7;
+
+    const PWD_UPPERCASE = 8;
 }

@@ -9,6 +9,8 @@ use App\Tests\TestCaseTemplate;
 
 class AdminDashboardTest extends TestCaseTemplate
 {
+    use AdminDashboardTrait;
+
     private function authenticateAsLouis()
     {
         $this->doGet('/not-authenticated/authenticate');
@@ -75,11 +77,14 @@ class AdminDashboardTest extends TestCaseTemplate
         ;
     }
 
-    public function testPwdPanel()
+    public function testPassword()
     {
-        $this->authenticateAsLouis();
-        $this->doGet('/admin/password');
-        
+        $this->changePwdSettings([
+            'minimumLength' => 4,
+            'requireNumbers' => true,
+            'requireSpecialCharacters' => true,
+            'requireUppercaseLetters' => true,
+        ]);
     }
 
     public function testSecurityMode()

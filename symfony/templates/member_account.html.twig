@@ -9,5 +9,6 @@ My account.
     {% if allow_member_to_manage_u2f_keys %}
     <li><a href="{{ path('manage_u2f_keys') }}">Manage my keys</a></li>
     {% endif %}
+    <li><a href="{{ path('delete_account') }}">Delete my account</a></li>
 </ul>
 {% endblock %}

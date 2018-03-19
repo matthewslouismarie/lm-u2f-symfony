@@ -14,7 +14,7 @@ class PasswordUpdateTest extends TestCaseTemplate
     public function testPasswordUpdate()
     {
         $this->authenticateAsLouis();
-        $this->doGet('/change-password');
+        $this->doGet('/authenticated/change-password');
         $this->submit(
             $this
                 ->get('App\Service\Form\Filler\PasswordUpdateFiller')

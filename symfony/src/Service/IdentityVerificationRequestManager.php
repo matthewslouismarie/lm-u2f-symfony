@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\DataStructure\TransitingDataManager;
+use App\Enum\SecurityStrategy;
+use App\Enum\Setting;
 use App\Exception\IdentityChecker\BeingProcessedException;
 use App\Exception\IdentityChecker\InvalidCheckerException;
 use App\Exception\IdentityChecker\StartedIdentityCheckException;
@@ -13,6 +15,7 @@ use App\Model\IdentityVerificationRequest;
 use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
+use App\Service\AppConfigManager;
 use App\Service\SecureSession;
 use App\Repository\U2fTokenRepository;
 use Exception;
@@ -32,6 +35,8 @@ class IdentityVerificationRequestManager
 
     public const PROCESSED = 2;
 
+    private $config;
+
     private $router;
 
     private $secureSession;
@@ -39,10 +44,12 @@ class IdentityVerificationRequestManager
     private $tokenStorage;
 
     public function __construct(
+        AppConfigManager $config,
         RouterInterface $router,
         SecureSession $secureSession,
         TokenStorageInterface $tokenStorage)
     {
+        $this->config = $config;
         $this->router = $router;
         $this->secureSession = $secureSession;
         $this->tokenStorage = $tokenStorage;
@@ -135,6 +142,40 @@ class IdentityVerificationRequestManager
         }
 
         return $checkerIndex;
+    }
+
+    /**
+     * @todo Exception.
+     */
+    public function createHighSecurityAuthenticationRequest(
+        string $callerRouteName,
+        string $calleeRouteName,
+        array $additionalData = [])
+    {
+        switch ($this->config->getIntSetting(Setting::SECURITY_STRATEGY)) {
+            case SecurityStrategy::U2F:
+                return $this->create(
+                    $callerRouteName,
+                    [
+                        'ic_u2f',
+                        $calleeRouteName,
+                    ],
+                    $additionalData)
+                ;
+
+            case SecurityStrategy::PWD:
+                return $this->create(
+                    $calleeRouteName,
+                    [
+                        'ic_credential',
+                        $calleeRouteName,
+                    ],
+                    $additionalData)
+                ;
+
+            default:
+                throw new Exception();
+        }
     }
 
     /**

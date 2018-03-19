@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAAA,cAAe;EACX,MAAM,EAAE,CAAC;;ACDb,aAAc;EACV,WAAW,ECGH,IAAI;EDDZ,gCAAmB;IEFnB,SAAS,EAAE,IAAI;IACf,WAAW,EAAE,IAAI;IACjB,YAAY,EAAE,IAAI;;ACHtB,YAAa;EACT,UAAU,EAAE,KAAK;EAEjB,oBAAQ;IACJ,UAAU,EAAE,CAAC;IACb,aAAa,EAAE,CAAC;IAChB,YAAY,EAAE,CAAC;IACf,UAAU,EAAE,KAAK;IDNrB,SAAS,EAAE,IAAI;IACf,WAAW,EAAE,IAAI;IACjB,YAAY,EAAE,IAAI;ECQlB,4BAAgB;IACZ,OAAO,EAAE,YAAY;IACrB,UAAU,EFZN,IAAI;IEaR,aAAa,EFbT,IAAI;EEgBZ,kCAAsB;IAClB,KAAK,EAAE,IAAI;EAGf,8CAAkC;IAC9B,WAAW,EFrBP,IAAI;EEwBZ,oCAAwB;IACpB,KAAK,EFxBI,IAAI;IEyBb,eAAe,EAAE,IAAI;EAGzB,0CAA8B;IAC1B,aAAa,EAAE,oBAA8B",
-"sources": ["../sass/elements/_document-body.scss","../sass/elements/_main-content.scss","../sass/settings/_settings.scss","../sass/mixins/_content-wrapper.scss","../sass/elements/_main-navbar.scss"],
-"names": [],
-"file": "style.min.css"
-}

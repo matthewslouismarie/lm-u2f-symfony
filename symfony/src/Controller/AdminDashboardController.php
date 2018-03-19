@@ -26,6 +26,8 @@ class AdminDashboardController extends AbstractController
     }
 
     /**
+     * @todo Change name for U2F.
+     *
      * @Route(
      *  "/admin/registration",
      *  name="admin_registration")

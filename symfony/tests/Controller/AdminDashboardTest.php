@@ -75,6 +75,13 @@ class AdminDashboardTest extends TestCaseTemplate
         ;
     }
 
+    public function testPwdPanel()
+    {
+        $this->authenticateAsLouis();
+        $this->doGet('/admin/password');
+        
+    }
+
     public function testSecurityMode()
     {
         $this->authenticateAsLouis();

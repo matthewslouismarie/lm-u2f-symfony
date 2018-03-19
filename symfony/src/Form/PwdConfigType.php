@@ -18,6 +18,7 @@ class PwdConfigType extends AbstractType
                 'empty_data' => null,
                 'required' => false,
             ])
+            ->add('enforceMinimumLength', CheckboxType::class, ['required' => false])
             ->add('requireNumbers', CheckboxType::class, ['required' => false])
             ->add('requireSpecialCharacters', CheckboxType::class, ['required' => false])
             ->add('requireUppercaseLetters', CheckboxType::class, ['required' => false])

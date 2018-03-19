@@ -81,6 +81,7 @@ class AdminDashboardTest extends TestCaseTemplate
     {
         $this->changePwdSettings([
             'minimumLength' => 4,
+            'enforceMinLength' => true,
             'requireNumbers' => true,
             'requireSpecialCharacters' => true,
             'requireUppercaseLetters' => true,

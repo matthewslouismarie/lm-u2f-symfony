@@ -38,6 +38,7 @@ class AdminDashboardController extends AbstractController
     {
         $submission = new PwdConfigSubmission(
             $config->getIntSetting(Setting::PWD_MIN_LENGTH),
+            $config->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH),
             $config->getBoolSetting(Setting::PWD_NUMBERS),
             $config->getBoolSetting(Setting::PWD_SPECIAL_CHARS),
             $config->getBoolSetting(Setting::PWD_UPPERCASE))
@@ -50,6 +51,7 @@ class AdminDashboardController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $config->set(Setting::PWD_MIN_LENGTH, $submission->minimumLength);
+            $config->set(Setting::PWD_ENFORCE_MIN_LENGTH, $submission->enforceMinimumLength);
             $config->set(Setting::PWD_NUMBERS, $submission->requireNumbers);
             $config->set(Setting::PWD_SPECIAL_CHARS, $submission->requireSpecialCharacters);
             $config->set(Setting::PWD_UPPERCASE, $submission->requireUppercaseLetters);

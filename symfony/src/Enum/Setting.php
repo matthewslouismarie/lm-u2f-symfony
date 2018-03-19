@@ -21,4 +21,6 @@ class Setting
     const PWD_SPECIAL_CHARS = 7;
 
     const PWD_UPPERCASE = 8;
+
+    const PWD_ENFORCE_MIN_LENGTH = 9;
 }

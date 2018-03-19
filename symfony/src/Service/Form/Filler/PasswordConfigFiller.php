@@ -11,6 +11,7 @@ class PasswordConfigFiller
     public function fillForm(
         Crawler $crawler,
         int $minimumLength,
+        bool $enforceMinimumLength,
         bool $requireNumbers,
         bool $requireSpecialCharacters,
         bool $requireUppercaseLetters): Form
@@ -21,6 +22,7 @@ class PasswordConfigFiller
         }
         $form = $button->form([
             'pwd_config[minimumLength]' => $minimumLength,
+            'pwd_config[enforceMinimumLength]' => $enforceMinimumLength,
             'pwd_config[requireNumbers]' => $requireNumbers,
             'pwd_config[requireSpecialCharacters]' => $requireSpecialCharacters,
             'pwd_config[requireUppercaseLetters]' => $requireUppercaseLetters,

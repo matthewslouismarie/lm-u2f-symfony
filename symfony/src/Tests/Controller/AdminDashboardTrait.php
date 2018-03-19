@@ -16,10 +16,18 @@ trait AdminDashboardTrait
             ->fillForm(
                 $this->getCrawler(),
                 $pwdSettings['minimumLength'],
+                $pwdSettings['enforceMinLength'],
                 $pwdSettings['requireNumbers'],
                 $pwdSettings['requireSpecialCharacters'],
                 $pwdSettings['requireUppercaseLetters']))
         ;
+
+        $this->assertEquals(
+            $pwdSettings['enforceMinLength'],
+            $this
+                ->getAppConfigManager()
+                ->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH))
+                ;
 
         $this->assertEquals(
             $pwdSettings['minimumLength'],

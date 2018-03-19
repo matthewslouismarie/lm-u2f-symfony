@@ -14,6 +14,11 @@ class PwdConfigSubmission
     /**
      * @Assert\Type("bool")
      */
+    public $enforceMinimumLength;
+
+    /**
+     * @Assert\Type("bool")
+     */
     public $requireNumbers;
 
     /**
@@ -33,11 +38,13 @@ class PwdConfigSubmission
 
     public function __construct(
         ?int $minimumLength = null,
+        ?bool $enforceMinimumLength = null,
         ?bool $requireNumbers = null,
         ?bool $requireSpecialCharacters = null,
         ?bool $requireUppercaseLetters = null)
     {
         $this->minimumLength = $minimumLength;
+        $this->enforceMinimumLength = $enforceMinimumLength;
         $this->requireNumbers = $requireNumbers;
         $this->requireSpecialCharacters = $requireSpecialCharacters;
         $this->requireUppercaseLetters = $requireUppercaseLetters;

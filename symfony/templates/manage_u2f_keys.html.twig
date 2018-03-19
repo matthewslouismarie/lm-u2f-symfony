@@ -6,4 +6,5 @@
     <li class="item"><a class="link" href="{{ path('confirm_u2f_key_reset', {u2fKeySlug: u2f_key.u2fKeyName}) }}">Remove {{ u2f_key.u2fKeyName }}</a></li>
 {% endfor %}
 </ul>
+<p><a href="{{ path('register_u2f_key') }}">Add a new U2F key</a></p>
 {% endblock %}

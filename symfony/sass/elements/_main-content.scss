@@ -1,0 +1,7 @@
+.main-content {
+    padding-top: $margin-lg;
+
+    > .content-wrapper {
+        @include content-wrapper();
+    }
+}

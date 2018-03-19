@@ -46,6 +46,10 @@ RUN sudo curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
 RUN sudo apt-get install -y nodejs
 RUN sudo npm install -g grunt-cli
 
+# SASS
+RUN sudo apt-get install -y ruby-full
+RUN sudo gem install sass
+
 # Set working directory
 WORKDIR /var/www/html
 

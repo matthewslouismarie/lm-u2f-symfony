@@ -3,33 +3,39 @@
   <head>
     <meta charset="UTF-8">
     <title>{% block title %}Welcome!{% endblock %}</title>
-    {% block stylesheets %}{% endblock %}
+    {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('style.min.css') }}">
+    {% endblock %}
     {% block scripts %}{% endblock %}
   </head>
-  <body>
-    <nav>
-      <ul>
-        <li>
-          <a href="{{ path('homepage') }}">Home</a>
+  <body class="document-body">
+    <nav class="main-navbar">
+      <ul class="list">
+        <li class="item -left">
+          <a class="link" href="{{ path('homepage') }}">Home</a>
         </li>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-        <li>
-          <a href="{{ path('unauthenticate') }}">Log out</a>
+        <li class="item">
+          <a class="link" href="{{ path('unauthenticate') }}">Log out</a>
         </li>
-        <li>
-          <a href="{{ path('member_account') }}">My Account</a>
+        <li class="item">
+          <a class="link" href="{{ path('member_account') }}">My Account</a>
         </li>
         {% else %}
-        <li>
-            <a href="{{ path('choose_authenticate') }}">Login</a>
+        <li class="item">
+            <a class="link" href="{{ path('choose_authenticate') }}">Login</a>
         </li>
-        <li>
-            <a href="{{ path('registration_start') }}">Register</a>
+        <li class="item">
+            <a class="link" href="{{ path('registration_start') }}">Register</a>
         </li>
         {% endif %}
       </ul>
     </nav>
-    {% block body %}{% endblock %}
+    <main class="main-content">
+      <div class="content-wrapper">
+        {% block body %}{% endblock %}
+      </div>
+    </main>
     {% block javascripts %}{% endblock %}
   </body>
 </html>

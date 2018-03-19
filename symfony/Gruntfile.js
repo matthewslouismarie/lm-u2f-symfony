@@ -23,8 +23,30 @@ module.exports = function(grunt) {
           }
         ]
       }
+    },
+    sass: {
+      dist: {
+        files: {
+          'public/style.min.css': 'sass/style.scss',
+        }
+      }
+    },
+    watch: {
+      sass: {
+        files: [
+          'sass/style.scss',
+          'sass/elements/*.scss',
+          'sass/mixins/*.scss',
+          'sass/settings/*.scss',
+        ],
+        tasks: ['sass']
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+
+  grunt.registerTask('default', ['sass', 'watch']);
 }

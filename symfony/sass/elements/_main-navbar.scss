@@ -1,0 +1,34 @@
+.main-navbar {
+    background: black;
+
+    > .list {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-left: 0;
+        text-align: right;
+        @include content-wrapper();
+    }
+
+    > .list > .item {
+        display: inline-block;
+        margin-top: $sm-margin;
+        margin-bottom: $sm-margin;
+    }
+
+    > .list > .item.-left {
+        float: left;
+    }
+
+    > .list > .item:not(:first-child) {
+        margin-left: $sm-margin;
+    }
+
+    > .list > .item > .link {
+        color: $dark_txt_color;
+        text-decoration: none;
+    }
+
+    > .list > .item > .link:hover {
+        border-bottom: $md-border solid $dark_hovered;
+    }
+}

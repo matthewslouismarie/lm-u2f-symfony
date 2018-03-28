@@ -7,21 +7,17 @@ use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
 use App\Tests\TestCaseTemplate;
-use App\Tests\U2fSecurityStrategyTrait;
+use App\Tests\SecurityStrategyTrait;
 use App\Service\AppConfigManager;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {
-    use U2fSecurityStrategyTrait;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->activateU2fSecurityStrategy();
-    }
+    use SecurityStrategyTrait;
 
     public function testCorrectRegistrationU2f(): void
     {
+        $this->activateU2fSecurityStrategy();
+
         $this->doGet('/not-authenticated/registration/start');
         $this->assertIsRedirect();
         $this->followRedirect();
@@ -75,8 +71,42 @@ class MemberRegistrationTest extends TestCaseTemplate
         }
     }
 
+    public function testCorrectRegistrationPwd(): void
+    {
+        $this->activatePwdSecurityStrategy();
+        
+        $this->doGet('/not-authenticated/registration/start');
+        $this->assertIsRedirect();
+        $this->followRedirect();
+        $this->assertEquals(200, $this->getHttpStatusCode());
+        $filler = $this->get('App\Service\Form\Filler\CredentialRegistrationFiller');
+        $this->submit(
+            $filler->fillForm($this->getCrawler(), 'JeeeSuis_58', 'JeeeSuis_58', 'chat')
+        );
+
+        $this->followRedirect();
+        $this->followRedirect();
+        $this->submit(
+            $this->getUserConfirmationFiller()->fillForm($this->getCrawler()))
+        ;
+        $this->followRedirect();
+
+        $this->assertEquals(
+            'http://localhost/not-authenticated/registration/success',
+            $this->getUri()
+        );
+        $member = $this
+            ->getObjectManager()
+            ->getRepository(Member::class)
+            ->getMember('chat')
+        ;
+        $this->assertNotNull($member);
+    }
+
     public function testResetButton(): void
     {
+        $this->activateU2fSecurityStrategy();
+        
         $this->doGet('/not-authenticated/registration/start');
         $this->followRedirect();
         $filler = $this->get('App\Service\Form\Filler\CredentialRegistrationFiller');

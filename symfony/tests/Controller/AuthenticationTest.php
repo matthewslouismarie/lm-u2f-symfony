@@ -2,12 +2,16 @@
 
 namespace App\Tests\Controller;
 
+use App\Tests\SecurityStrategyTrait;
 use App\Tests\TestCaseTemplate;
 
 class AuthenticationTest extends TestCaseTemplate
 {
-    public function testCorrectAuthentication()
+    use SecurityStrategyTrait;
+
+    public function testCorrectU2fAuthentication()
     {
+        $this->activateU2fSecurityStrategy();
         $this->doGet('/not-authenticated/authenticate');
         $this->assertIsRedirect();
         $this->followRedirect();
@@ -26,6 +30,23 @@ class AuthenticationTest extends TestCaseTemplate
         ;
 
         $this->followRedirect();
+        $this->assertTrue($this->isAuthenticatedFully());
+    }
+
+    public function testCorrectPwdAuthentication()
+    {
+        $this->activatePwdSecurityStrategy();
+        $this->doGet('/not-authenticated/pwd-authenticate');
+        $this->assertIsRedirect();
+        $this->followRedirect();
+        $this->followRedirect();
+        $this->submit(
+            $this
+            ->get('App\Service\Form\Filler\CredentialAuthenticationFiller')
+            ->fillForm($this->getCrawler(), 'hello', 'louis'))
+        ;
+        $this->followRedirect();
+
         $this->assertTrue($this->isAuthenticatedFully());
     }
 

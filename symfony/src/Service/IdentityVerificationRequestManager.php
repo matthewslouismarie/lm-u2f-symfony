@@ -150,7 +150,7 @@ class IdentityVerificationRequestManager
     public function createHighSecurityAuthenticationRequest(
         string $callerRouteName,
         string $calleeRouteName,
-        array $additionalData = [])
+        array $additionalData = []): IdentityVerificationRequest
     {
         switch ($this->config->getIntSetting(Setting::SECURITY_STRATEGY)) {
             case SecurityStrategy::U2F:

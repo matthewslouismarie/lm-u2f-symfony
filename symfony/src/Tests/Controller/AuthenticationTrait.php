@@ -8,6 +8,10 @@ use Exception;
 
 trait AuthenticationTrait
 {
+    /**
+     * @todo Make public.
+     * @todo Rename to u2fAuthenticate().
+     */
     private function authenticateAsLouis()
     {
         $this->doGet('/not-authenticated/authenticate');
@@ -26,6 +30,24 @@ trait AuthenticationTrait
             ->fillForm($this->getCrawler(), $this->getUriLastPart()))
         ;
 
+        $this->followRedirect();
+    }
+
+    /**
+     * @todo Make public.
+     * @todo Rename to pwdAuthenticate().
+     */
+    private function pwdAuthenticateAsLouis()
+    {
+        $this->doGet('/not-authenticated/pwd-authenticate');
+        $this->followRedirect();
+        $this->followRedirect();
+        $this->submit(
+            $this
+            ->get('App\Service\Form\Filler\CredentialAuthenticationFiller')
+            ->fillForm($this->getCrawler(), 'hello', 'louis'))
+        ;
+        $this->followRedirect();
         $this->followRedirect();
     }
 

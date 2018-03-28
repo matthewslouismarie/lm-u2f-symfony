@@ -1,0 +1,6 @@
+.document-footer {
+    > .nav {
+        border-top: $sm-border solid $dk;
+        @include content-wrapper();
+    }
+}

@@ -36,6 +36,15 @@
         {% block body %}{% endblock %}
       </div>
     </main>
+    <footer class="document-footer">
+      <nav class="nav">
+        <ul class="inline-list">
+          <li class="item">
+            <a class="link" href="{{ path('admin') }}">Administration</a>
+          </li>
+        </ul>
+      </nav>
+    </footer>
     {% block javascripts %}{% endblock %}
   </body>
 </html>

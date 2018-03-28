@@ -1,3 +1,7 @@
 .document-body {
     margin: 0;
+
+    > .document-footer {
+        margin-top: $margin-lg;
+    }
 }

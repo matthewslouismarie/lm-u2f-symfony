@@ -36,4 +36,30 @@ class MoneyTransferTest extends TestCaseTemplate
                 ->getContent())
         ;
     }
+
+    public function testMoneyTransferU2f()
+    {
+        $this->activateU2fSecurityStrategy();
+        $this->authenticateAsLouis();
+
+        $this->doGet('/authenticated/transfer-money');
+        $this->submit($this
+                ->get('App\Service\Form\Filler\UserConfirmationFiller')
+                ->fillForm($this->getCrawler()))
+        ;
+        $this->followRedirect();
+        $this->followRedirect();
+        $this->submit($this
+            ->get('App\Service\Form\Filler\U2fAuthenticationFiller1')
+            ->fillForm($this->getCrawler(), $this->getUriLastPart()))
+        ;
+        $this->followRedirect();
+        $this->assertContains(
+            'The money transfer was successful.',
+            $this
+                ->getClient()
+                ->getResponse()
+                ->getContent())
+        ;
+    }
 }

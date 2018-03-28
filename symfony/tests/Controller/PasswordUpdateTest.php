@@ -4,13 +4,21 @@ namespace App\Tests\Controller;
 
 use App\Service\Adaptor\PasswordHasher;
 use App\Tests\TestCaseTemplate;
+use App\Tests\U2fSecurityStrategyTrait;
 
 class PasswordUpdateTest extends TestCaseTemplate
 {
     use AuthenticationTrait;
+    use U2fSecurityStrategyTrait;
 
     const NEW_PASSWORD = 'new password';
 
+    public function setUp()
+    {
+        parent::setUp();
+        $this->activateU2fSecurityStrategy();
+    }
+        
     public function testPasswordUpdate()
     {
         $this->authenticateAsLouis();

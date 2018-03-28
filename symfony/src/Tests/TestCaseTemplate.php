@@ -35,6 +35,11 @@ abstract class TestCaseTemplate extends DbWebTestCase
         $this->assertFalse($isRedirect);
     }
 
+    public function debugResponse(): void
+    {
+        file_put_contents(__DIR__.'/response.html', $this->getClient()->getResponse()->getContent());
+    }
+
     public function doGet(string $url): void
     {
         $this

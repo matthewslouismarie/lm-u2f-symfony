@@ -7,11 +7,20 @@ use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
 use App\Tests\TestCaseTemplate;
+use App\Tests\U2fSecurityStrategyTrait;
 use App\Service\AppConfigManager;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {
-    public function testCorrectRegistration(): void
+    use U2fSecurityStrategyTrait;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->activateU2fSecurityStrategy();
+    }
+
+    public function testCorrectRegistrationU2f(): void
     {
         $this->doGet('/not-authenticated/registration/start');
         $this->assertIsRedirect();

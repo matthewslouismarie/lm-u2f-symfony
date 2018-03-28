@@ -11,7 +11,7 @@ class AdminDashboardTest extends TestCaseTemplate
 {
     use AdminDashboardTrait;
 
-    private function authenticateAsLouis()
+    private function u2fAuthenticate()
     {
         $this->doGet('/not-authenticated/authenticate');
         $this->assertIsRedirect();
@@ -38,14 +38,14 @@ class AdminDashboardTest extends TestCaseTemplate
     {
         $this->doGet('/admin');
         $this->assertEquals(302, $this->getHttpStatusCode());
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
         $this->doGet('/admin');
         $this->assertEquals(200, $this->getHttpStatusCode());        
     }
 
     public function testAdminOptions()
     {
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
         $this->doGet('/admin/registration');
         $this->submit($this
             ->get('App\Service\Form\Filler\U2fConfigFiller')
@@ -90,7 +90,7 @@ class AdminDashboardTest extends TestCaseTemplate
 
     public function testSecurityMode()
     {
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
         $this->doGet('/admin/security-strategy');
         $button = $this
             ->getCrawler()

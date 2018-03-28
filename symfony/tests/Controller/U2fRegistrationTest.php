@@ -12,7 +12,7 @@ class U2fRegistrationTest extends TestCaseTemplate
 
     public function testU2fRegistration()
     {
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
         $u2fTokenRepository = $this
             ->getObjectManager()
             ->getRepository(U2fToken::class);

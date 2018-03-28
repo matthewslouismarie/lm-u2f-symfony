@@ -8,11 +8,7 @@ use Exception;
 
 trait AuthenticationTrait
 {
-    /**
-     * @todo Make public.
-     * @todo Rename to u2fAuthenticate().
-     */
-    private function authenticateAsLouis()
+    public function u2fAuthenticate()
     {
         $this->doGet('/not-authenticated/authenticate');
         $this->followRedirect();
@@ -33,11 +29,7 @@ trait AuthenticationTrait
         $this->followRedirect();
     }
 
-    /**
-     * @todo Make public.
-     * @todo Rename to pwdAuthenticate().
-     */
-    private function pwdAuthenticateAsLouis()
+    public function pwdAuthenticate()
     {
         $this->doGet('/not-authenticated/pwd-authenticate');
         $this->followRedirect();

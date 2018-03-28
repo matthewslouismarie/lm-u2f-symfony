@@ -9,7 +9,7 @@ trait AdminDashboardTrait
     private function changePwdSettings(array $pwdSettings)
     {
         $config = $this->getAppConfigManager();
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
         $this->doGet('/admin/password');
         $this->submit($this
             ->get('App\Service\Form\Filler\PasswordConfigFiller')

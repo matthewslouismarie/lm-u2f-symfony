@@ -10,7 +10,7 @@ class AccountDeletionTest extends TestCaseTemplate
 
     public function testAccountDeletion()
     {
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
         $this->doGet('/authenticated/my-account/delete-account');
         $this->assertContains(
             'Do you really want to delete your account?',

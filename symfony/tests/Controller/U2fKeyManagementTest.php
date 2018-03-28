@@ -13,7 +13,7 @@ class U2fKeyManagementTest extends TestCaseTemplate
 
     public function testManagementPage()
     {
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
         $this->doGet('/authenticated/manage-u2f-keys');
 
         $member = $this->getLoggedInMember();
@@ -31,7 +31,7 @@ class U2fKeyManagementTest extends TestCaseTemplate
 
     public function testKeyReset()
     {
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
         $member = $this->getLoggedInMember();
         $u2fTokens = $this
             ->get('doctrine')

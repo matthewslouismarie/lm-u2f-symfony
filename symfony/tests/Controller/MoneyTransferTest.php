@@ -14,7 +14,7 @@ class MoneyTransferTest extends TestCaseTemplate
     public function testMoneyTransferPwd()
     {
         $this->activatePwdSecurityStrategy();
-        $this->pwdAuthenticateAsLouis();
+        $this->pwdAuthenticate();
 
         $this->doGet('/authenticated/transfer-money');
         $this->submit($this
@@ -40,7 +40,7 @@ class MoneyTransferTest extends TestCaseTemplate
     public function testMoneyTransferU2f()
     {
         $this->activateU2fSecurityStrategy();
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
 
         $this->doGet('/authenticated/transfer-money');
         $this->submit($this

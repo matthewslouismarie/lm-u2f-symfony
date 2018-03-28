@@ -17,7 +17,7 @@ class PasswordUpdateTest extends TestCaseTemplate
     {
         $this->activateU2fSecurityStrategy();
         
-        $this->authenticateAsLouis();
+        $this->u2fAuthenticate();
         $this->doGet('/authenticated/change-password');
         $this->submit(
             $this

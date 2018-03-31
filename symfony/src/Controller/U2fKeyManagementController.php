@@ -8,7 +8,7 @@ use App\Enum\Setting;
 use App\Form\UserConfirmationType;
 use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
-use App\Service\IdentityVerificationRequestManager;
+use App\Service\AuthenticationManager;
 use App\Service\SecureSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,7 +49,7 @@ class U2fKeyManagementController extends AbstractController
         string $u2fKeySlug,
         AppConfigManager $config,
         Request $httpRequest,
-        IdentityVerificationRequestManager $idRequestManager)
+        AuthenticationManager $idRequestManager)
     {
         if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
             return new RedirectResponse($this->generateUrl('member_account'));
@@ -87,7 +87,7 @@ class U2fKeyManagementController extends AbstractController
         AppConfigManager $config,
         EntityManagerInterface $em,
         Request $httpRequest,
-        IdentityVerificationRequestManager $idRequestManager,
+        AuthenticationManager $idRequestManager,
         TokenStorageInterface $tokenStorage,
         U2fTokenRepository $u2fTokenRepo)
     {

@@ -10,7 +10,7 @@ use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
 use App\Model\GrantedAuthorization;
-use App\Service\IdentityVerificationRequestManager;
+use App\Service\AuthenticationManager;
 use App\Service\AppConfigManager;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,7 +40,7 @@ class AuthenticationController extends AbstractController
      *  name="pwd_authenticate",
      *  methods={"GET"})
      */
-    public function pwdAuthenticate(IdentityVerificationRequestManager $requestManager)
+    public function pwdAuthenticate(AuthenticationManager $requestManager)
     {
         $identityRequest = $requestManager->create(
             'authenticate',
@@ -61,7 +61,7 @@ class AuthenticationController extends AbstractController
      */
     public function authenticate(
         AppConfigManager $config,
-        IdentityVerificationRequestManager $requestManager)
+        AuthenticationManager $requestManager)
     {
         if ($config->getBoolSetting(Setting::ALLOW_U2F_LOGIN)) {
             $identityRequest = $requestManager->create(

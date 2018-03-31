@@ -11,7 +11,7 @@ use App\Model\BooleanObject;
 use App\Model\Integer;
 use App\Model\StringObject;
 use App\Model\TransitingData;
-use App\Service\IdentityVerificationRequestManager;
+use App\Service\AuthenticationManager;
 use App\Service\SecureSession;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,7 +29,7 @@ class CredentialChecker extends AbstractController
     public function checkCredential(
         string $sid,
         Request $httpRequest,
-        IdentityVerificationRequestManager $idRequestManager,
+        AuthenticationManager $idRequestManager,
         SecureSession $secureSession)
     {
         try {

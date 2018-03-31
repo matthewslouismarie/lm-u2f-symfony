@@ -9,7 +9,7 @@ use App\Form\PasswordUpdateType;
 use App\Form\UserConfirmationType;
 use App\FormModel\PasswordUpdateSubmission;
 use App\Service\AppConfigManager;
-use App\Service\IdentityVerificationRequestManager;
+use App\Service\AuthenticationManager;
 use App\Service\SecureSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,7 +46,7 @@ class MemberAccount extends AbstractController
      */
     public function updatePassword(
         Request $request,
-        IdentityVerificationRequestManager $requestManager)
+        AuthenticationManager $requestManager)
     {
         $submission = new PasswordUpdateSubmission();
         $form = $this->createForm(PasswordUpdateType::class, $submission);
@@ -79,7 +79,7 @@ class MemberAccount extends AbstractController
     public function processPasswordUpdate(
         string $sid,
         EntityManagerInterface $em,
-        IdentityVerificationRequestManager $requestManager,
+        AuthenticationManager $requestManager,
         SecureSession $secureSession,
         UserPasswordEncoderInterface $encoder)
     {
@@ -108,7 +108,7 @@ class MemberAccount extends AbstractController
      *  name="delete_account")
      */
     public function deleteAccount(
-        IdentityVerificationRequestManager $authenticationRequestManager,
+        AuthenticationManager $authenticationRequestManager,
         Request $httpRequest)
     {
         $form = $this->createForm(UserConfirmationType::class);
@@ -138,7 +138,7 @@ class MemberAccount extends AbstractController
      */
     public function processAccountDeletion(
         string $sid,
-        IdentityVerificationRequestManager $authenticationRequestManager,
+        AuthenticationManager $authenticationRequestManager,
         TokenStorageInterface $tokenStorage)
     {
         $tdm = $authenticationRequestManager->achieveOperation($sid, 'process_account_deletion');

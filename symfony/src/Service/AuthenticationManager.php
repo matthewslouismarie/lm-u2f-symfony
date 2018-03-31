@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * @todo Magic string.
  */
-class IdentityVerificationRequestManager
+class AuthenticationManager
 {
     public const NOT_PROCESSED = 0;
 

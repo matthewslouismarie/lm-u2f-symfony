@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\UserConfirmationType;
-use App\Service\IdentityVerificationRequestManager;
+use App\Service\AuthenticationManager;
 use App\Service\SecureSession;
 
 class MoneyTransferController extends AbstractController
@@ -15,7 +15,7 @@ class MoneyTransferController extends AbstractController
     private $requestManager;
 
     public function __construct(
-        IdentityVerificationRequestManager $requestManager)
+        AuthenticationManager $requestManager)
     {
         $this->requestManager = $requestManager;
     }

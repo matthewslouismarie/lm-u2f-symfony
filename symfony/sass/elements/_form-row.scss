@@ -53,8 +53,29 @@
     color: $btn-color;
     background-color: $btn-background-color;
     border-width: 0;
+    display: inline-block;
     line-height: $form-ln-height;
     font-size: $form-ft-size;
-    text-transform: uppercase;    
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  > .buttoncontainer > .button:disabled {
+    color: #353535;
+    cursor: not-allowed;
+  }
+
+  > .buttoncontainer > .message {
+    display: inline-block;
+    margin-bottom: 0;
+    margin-top: 0;
+    vertical-align: middle;
+  }
+
+  > .buttoncontainer > .image {
+    display: inline-block;
+    height: $form-ln-height;
+    vertical-align: middle;
+    padding-right: $md-padding;
   }
 }

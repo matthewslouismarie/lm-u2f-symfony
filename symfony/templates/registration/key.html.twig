@@ -1,13 +1,23 @@
 {% extends "base.html.twig" %}
 
+{%- block u2fMessage -%}
+<img alt="" class="image" src="{{ asset("img/loading.gif") }}"><p class="message">Waiting for you to activate your U2F key.</p>
+{%- endblock -%}
+
 {% block scripts %}
 <script src="{{ asset('jquery.min.js') }}"></script>
 <script src="{{ asset('u2f-api.js') }}"></script>
 <script>
+  $(document).ready(function () {
+    $("#{{ form.submit.vars.id }}").attr("disabled", true);
+    $(".buttoncontainer").prepend("{{ block('u2fMessage')|escape("js") }}");
+  });
   const completeRegistration = function fCompleteRegistration(registerResponse)
   {
-    console.log(registerResponse);
+    $("#{{ form.submit.vars.id }}").attr("disabled", false);    
     $('#{{ form.u2fTokenResponse.vars.id }}').val(JSON.stringify(registerResponse));
+    $(".buttoncontainer > .message").fadeOut();
+    $(".buttoncontainer > .image").fadeOut();
   }
   var request = {{ request_json | raw }};
   var sign_requests = {{ sign_requests | raw }};
@@ -16,5 +26,6 @@
 {% endblock %}
 
 {% block body %}
+<p>Please plug in and activate your U2F key.</p>
 {{ form(form) }}
 {% endblock %}

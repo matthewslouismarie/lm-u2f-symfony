@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class NewU2fRegistrationSubmission implements Serializable
 {
     /**
+     * @todo Rename to u2fKeyResponse
      * @Assert\NotBlank(message = "You did not validate your U2F key.")
      */
     private $u2fTokenResponse;

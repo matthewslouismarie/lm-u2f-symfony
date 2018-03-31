@@ -1,8 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<ul>
-    <li><a href="{{ path('pwd_authenticate') }}">Login using password</a></li>
-    <li><a href="{{ path('authenticate') }}">Login using U2F key</a></li>
-</ul>
+<ul class="choice-list -two"
+  ><li class="choice">
+    <a class="link" href="{{ path('pwd_authenticate') }}">Login using password</a>
+  </li
+  ><li class="choice">
+    <a class="link" href="{{ path('authenticate') }}">Login using U2F key</a>
+  </li
+></ul>
 {% endblock %}

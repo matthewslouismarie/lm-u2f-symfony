@@ -1,0 +1,28 @@
+.choice-list {
+    list-style-type: none;
+    padding: 0;
+    
+    > .choice {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;        
+    }
+
+    > .choice > .link {
+        display: block;        
+        font-size: $big-text;
+        text-decoration: none;
+    }
+
+    &.-two > .choice {
+        width: 50%;
+    }
+
+    &.-two > .choice > .link {
+        font-family: $btn-font;
+    }
+
+    &.-two > .choice > .link:hover {
+        text-decoration: underline;
+    }
+}

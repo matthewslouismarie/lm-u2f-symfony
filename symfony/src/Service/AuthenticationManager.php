@@ -167,7 +167,7 @@ class AuthenticationManager
                 return $this->create(
                     $calleeRouteName,
                     [
-                        'ic_credential',
+                        'ic_password',
                         $calleeRouteName,
                     ],
                     $additionalData)

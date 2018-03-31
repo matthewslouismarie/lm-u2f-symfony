@@ -24,8 +24,8 @@ class MoneyTransferTest extends TestCaseTemplate
         $this->followRedirect();
         $this->followRedirect();
         $this->submit($this
-            ->get('App\Service\Form\Filler\CredentialAuthenticationFiller')
-            ->fillForm($this->getCrawler(), 'hello', 'louis'))
+            ->get('App\Service\Form\Filler\ValidPasswordFiller')
+            ->fillForm($this->getCrawler(), 'hello'))
         ;
         $this->followRedirect();
         $this->assertContains(

@@ -1,0 +1,46 @@
+.form-row {
+  padding-bottom: $sm-margin;
+  padding-top: $sm-margin;
+
+  > .labelcontainer {
+    display: inline-block;
+    width: 20%;
+  }
+
+  > .labelcontainer > .label {
+    text-transform: uppercase;
+    line-height: $form-ln-height;
+    font-size: $form-ft-size;
+    color: $bg-color;
+  }
+
+  > .fieldcontainer {
+    display: inline-block;
+    width: 80%;
+  }
+
+  > .fieldcontainer > .field {
+    color: $bg-color;    
+    background-color: $sm-color;
+    padding-left: 0;
+    padding-right: 0;
+    display: block;
+    width: 100%;
+    border: 0;
+    font-size: $form-ft-size;
+    line-height: $form-ln-height;
+  }
+
+  > .buttoncontainer {
+    text-align: right;    
+  }
+
+  > .buttoncontainer > .button {
+    color: $btn-color;
+    background-color: $btn-background-color;
+    border-width: 0;
+    line-height: $form-ln-height;
+    font-size: $form-ft-size;
+    text-transform: uppercase;    
+  }
+}

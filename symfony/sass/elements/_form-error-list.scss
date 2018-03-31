@@ -1,0 +1,9 @@
+.form-error-list {
+  > .list {
+    list-style-type: none;
+    background-color: $error-background-color;
+    border: $md-border solid $error-border-color;
+    color: $error-text-color;
+    padding: $md-padding;
+  }
+}

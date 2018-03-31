@@ -19,6 +19,7 @@
 {%- endblock -%}
 
 {# @todo: overwrite form_errors, form_widget and form_label #}
+{# @todo: better way to check for checkbox #}
 {%- block form_row -%}
 {% spaceless %}
 <div class="form-row">
@@ -31,7 +32,11 @@
     {{ form_label(form, null, {"label_attr": {"class": "label"}}) }}
   </div>
   <div class="fieldcontainer">
-    {{ form_widget(form, {"attr": {"class": "field"}}) }}
+    {%- if checked is defined -%}
+      {{ form_widget(form, {"attr": {"class": "field -checkbox"}}) }}      
+    {%- else -%}
+      {{ form_widget(form, {"attr": {"class": "field"}}) }}
+    {%- endif -%}
   </div>
 </div>
 {% endspaceless %}

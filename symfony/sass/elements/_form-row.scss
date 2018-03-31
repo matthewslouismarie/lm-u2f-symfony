@@ -5,6 +5,11 @@
   > .labelcontainer {
     display: inline-block;
     width: 20%;
+    vertical-align: middle;
+  }
+
+  &.-long-label > .labelcontainer {
+    width: 30%;
   }
 
   > .labelcontainer > .label {
@@ -16,7 +21,12 @@
 
   > .fieldcontainer {
     display: inline-block;
+    vertical-align: middle;    
     width: 80%;
+  }
+
+  &.-long-label > .fieldcontainer {
+    width: 70%;
   }
 
   > .fieldcontainer > .field {
@@ -29,6 +39,10 @@
     border: 0;
     font-size: $form-ft-size;
     line-height: $form-ln-height;
+  }
+
+  > .fieldcontainer > .field.-checkbox {
+    width: auto;
   }
 
   > .buttoncontainer {

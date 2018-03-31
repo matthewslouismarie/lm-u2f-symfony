@@ -15,7 +15,10 @@ class SecurityStrategyType extends AbstractType
     {
         $builder
             ->add('securityStrategyId', ChoiceType::class, [
-                'choices' => SecurityStrategy::getIds(),
+                'choices' => [
+                    'Password' => SecurityStrategy::PWD,
+                    'U2F' => SecurityStrategy::U2F,
+                ]
             ])
         ;
     }

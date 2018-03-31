@@ -45,7 +45,12 @@
 {% block submit_widget %}
 <div class="form-row">
   <div class="buttoncontainer">
-    <button class="button" type="submit">{{ name|humanize }}</button>
+    {{ parent(form) }}
   </div>
 </div>
 {% endblock %}
+
+{%- block button_attributes -%}
+class="button" id="{{ id }}" name="{{ full_name }}"{% if disabled %} disabled="disabled"{% endif -%}
+{{ block('attributes') }}
+{%- endblock button_attributes -%}

@@ -257,6 +257,16 @@ class AuthenticationManager
         ;
     }
 
+    public function getUsername(TransitingDataManager $tdm): string
+    {
+        return $tdm
+            ->getBy('key', 'username')
+            ->getOnlyValue()
+            ->getValue(StringObject::class)
+            ->toString()
+        ;
+    }
+
     /**
      * @todo Dodgy.
      */

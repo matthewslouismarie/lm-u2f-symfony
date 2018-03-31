@@ -9,6 +9,9 @@ use App\Validator\Constraints\ValidPassword;
  */
 class ValidPasswordSubmission implements ISubmission
 {
+    /**
+     * @ValidPassword()
+     */
     public $password;
 
     public function __construct(

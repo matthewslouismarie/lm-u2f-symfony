@@ -2,74 +2,59 @@
 
 namespace App\Validator\Constraints;
 
-use App\Enum\Setting;
+use Symfony\Component\HttpFoundation\RequestStack;
+use App\DataStructure\TransitingDataManager;
+use App\Entity\Member;
 use App\Exception\InvalidPasswordException;
-use App\Service\AppConfigManager;
+use App\Exception\NonexistentMemberException;
+use App\Repository\MemberRepository;
+use App\Service\AuthenticationManager;
+use App\Service\SecureSession;
+use App\Service\UriHelper;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 class ValidPasswordValidator extends ConstraintValidator
 {
-    private $config;
+    private $authenticationManager;
 
-    public function __construct(AppConfigManager $config)
+    private $memberRepository;
+
+    private $secureSession;
+
+    private $uriHelper;
+
+    public function __construct(
+        AuthenticationManager $authenticationManager,
+        MemberRepository $memberRepository,
+        SecureSession $secureSession,
+        UriHelper $uriHelper)
     {
-        $this->config = $config;
+        $this->authenticationManager = $authenticationManager;
+        $this->memberRepository = $memberRepository;
+        $this->secureSession = $secureSession;
+        $this->uriHelper = $uriHelper;
     }
 
-    /**
-     * @todo Exception.
-     */
     public function validate($password, Constraint $constraint)
     {
-        if (true === $this->config->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH)) {
-            $pwdMinLength = $this->config->getIntSetting(Setting::PWD_MIN_LENGTH);
-            if (mb_strlen($password, 'utf-8') < $pwdMinLength) {
-                $this->addError("Your password needs to be at least {$pwdMinLength} characters long", $password);
-            }
-        }
-        if (true === $this->config->getBoolSetting(Setting::PWD_NUMBERS)) {
-            switch (preg_match('/[0-9]/', $password)) {
-                case 0:
-                    $this->addError('Your password needs to contain numbers.', $password);
-                    break;
-
-                case false:
-                    throw new Exception();
-                    break;
-            }
-        }
-        if (true === $this->config->getBoolSetting(Setting::PWD_SPECIAL_CHARS)) {
-            switch (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $password)) {
-                case 0:
-                    $this->addError('Your password needs to contain special characters', $password);
-                    break;
-
-                case false:
-                    throw new Exception();
-                    break;
-            }
-        }
-        if (true === $this->config->getBoolSetting(Setting::PWD_UPPERCASE)) {
-            switch (preg_match('/[A-Z]/', $password)) {
-                case 0:
-                    $this->addError('Your password needs to contain uppercase letters.', $password);
-                    break;
-
-                case false:
-                    throw new Exception();
-                    break;
-            }
-        }
-    }
-
-    private function addError(string $message, string $password): void
-    {
-        $this
-            ->context
-            ->buildViolation($message)
-            ->setParameter('{{ string }}', $password)
-            ->addViolation()
+        $member = null;
+        $uri = $this->uriHelper->getLastElement();
+        $tdm = $this->secureSession->getObject($uri, TransitingDataManager::class);
+        $username = $this
+            ->authenticationManager
+            ->getUsername($tdm)
         ;
+
+        try {
+            $member = $this->memberRepository->getMember($username);
+            $this->memberRepository->checkPassword($member, $password);
+        } catch (NonexistentMemberException | InvalidPasswordException $e) {
+            $this->context->buildViolation($constraint->message)
+                ->setParameter('{{ string }}', $password)
+                ->addViolation()
+            ;
+        }
     }
 }

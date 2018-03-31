@@ -3,7 +3,7 @@
 namespace App\FormModel;
 
 use App\Validator\Constraints\AvailableUsername;
-use App\Validator\Constraints\ValidPassword;
+use App\Validator\Constraints\ValidNewPassword;
 use Serializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -17,7 +17,7 @@ class CredentialRegistrationSubmission implements Serializable
     private $username;
 
     /**
-     * @ValidPassword
+     * @ValidNewPassword
      * @Assert\NotBlank()
      * @Assert\Type("string")
      */

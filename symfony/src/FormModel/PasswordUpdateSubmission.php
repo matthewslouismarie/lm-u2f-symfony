@@ -2,13 +2,13 @@
 
 namespace App\FormModel;
 
-use App\Validator\Constraints\ValidPassword;
+use App\Validator\Constraints\ValidNewPassword;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class PasswordUpdateSubmission
 {
     /**
-     * @ValidPassword
+     * @ValidNewPassword
      * @Assert\NotBlank()
      * @Assert\Type("string")
      */

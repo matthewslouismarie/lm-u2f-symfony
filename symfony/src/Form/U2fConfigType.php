@@ -15,8 +15,8 @@ class U2fConfigType extends AbstractType
     {
         $builder
             ->add('allowU2fLogin', CheckboxType::class, ['required' => false])
-            ->add('nU2fKeysPostAuth', IntegerType::class)
-            ->add('nU2fKeysReg', IntegerType::class)
+            ->add('nU2fKeysPostAuth', IntegerType::class, ['label' => "Members' minimum number of U2F keys"])
+            ->add('nU2fKeysReg', IntegerType::class, [ "label" => "Number of U2F keys asked during registration"])
             ->add('allowMemberToManageU2fKeys', CheckboxType::class, ['required' => false])
         ;
     }

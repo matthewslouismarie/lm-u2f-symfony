@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<a href="{{ path('admin') }}">Back</a>
+{%- include "admin/_back_button.html.twig" -%}
 {{ form(form) }}
 {% endblock %}

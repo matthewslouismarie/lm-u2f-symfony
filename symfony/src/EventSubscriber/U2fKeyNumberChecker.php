@@ -50,11 +50,7 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
-        /*
-         * $controller passed can be either a class or a Closure.
-         * This is not usual in Symfony but it may happen.
-         * If it is a class, it comes in array format
-         */
+
         if (!is_array($controller)) {
             return;
         }

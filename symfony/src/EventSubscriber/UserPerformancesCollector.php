@@ -48,12 +48,12 @@ class UserPerformancesCollector implements EventSubscriberInterface
     public function onRequestStart(GetResponseEvent $event)
     {
         $microtimeFloat = microtime(true);
-        $uri = $event->getRequest()->getUri();
+        $uri = $event->getRequest()->getPathInfo();
         if ($this->isRequestMonitored($event))
         {
             $pageMetric = new PageMetric(
                 $microtimeFloat,
-                $this->config->getBoolSetting(Setting::PARTICIPANT_ID),
+                $this->config->getStringSetting(Setting::PARTICIPANT_ID),
                 PageMetric::REQUEST,
                 $uri)
             ;
@@ -71,12 +71,12 @@ class UserPerformancesCollector implements EventSubscriberInterface
     public function onRequestEnd(PostResponseEvent $event)
     {
         $microtimeFloat = microtime(true);
-        $uri = $event->getRequest()->getUri();
+        $uri = $event->getRequest()->getPathInfo();
         if ($this->isRequestMonitored($event))
         {
             $pageMetric = new PageMetric(
                 $microtimeFloat,
-                $this->config->getBoolSetting(Setting::PARTICIPANT_ID),
+                $this->config->getStringSetting(Setting::PARTICIPANT_ID),
                 PageMetric::RESPONSE,
                 $uri)
             ;
@@ -93,9 +93,9 @@ class UserPerformancesCollector implements EventSubscriberInterface
 
     private function isRequestMonitored(KernelEvent $event): bool
     {
-        $uri = $event->getRequest()->getUri();
-        return false === strpos($uri, '/admin/') &&
-               false === strpos($uri, '/_wdt/') &&
+        $localPath = $event->getRequest()->getPathInfo();
+        return false === strpos($localPath, '/admin') &&
+               false === strpos($localPath, '/_wdt') &&
                $event->isMasterRequest() &&
                true === $this->config->getBoolSetting(Setting::USER_STUDY_MODE_ACTIVE)
         ;

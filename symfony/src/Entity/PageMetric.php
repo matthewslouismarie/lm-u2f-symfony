@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 
 /**
- * @Entity()
+ * @Entity(repositoryClass="App\Repository\PageMetricRepository")
  */
 class PageMetric
 {
@@ -43,19 +43,19 @@ class PageMetric
     /**
      * @Column()
      */
-    private $uri;
+    private $localPath;
 
     public function __construct(
         float $microtime,
         string $participantId,
         string $type,
-        string $uri,
+        string $localPath,
         ?int $id = null)
     {
         $this->microtime = $microtime;
         $this->participantId = $participantId;
         $this->type = $type;
-        $this->uri = $uri;
+        $this->localPath = $localPath;
         $this->id = $id;
     }
 
@@ -66,7 +66,7 @@ class PageMetric
 
     public function getMicrotime(): float
     {
-        return $this->microtimeSpent;
+        return $this->microtime;
     }
 
     public function getParticipantId(): string
@@ -79,8 +79,8 @@ class PageMetric
         return $this->type;
     }
 
-    public function getUri(): string
+    public function getLocalPath(): string
     {
-        return $this->uri;
+        return $this->localPath;
     }
 }

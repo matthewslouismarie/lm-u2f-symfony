@@ -2,6 +2,8 @@
 
 namespace App\Enum;
 
+use ReflectionClass;
+
 /**
  * @todo Rename to SettingKey?
  */
@@ -11,7 +13,7 @@ class Setting
 
     const N_U2F_KEYS_POST_AUTH = "N_U2F_KEYS_POST_AUTH";
 
-    const ALLOW_U2F_LOGIN = "ALLOW_U2F_LGIN";
+    const ALLOW_U2F_LOGIN = "ALLOW_U2F_LOGIN";
 
     const SECURITY_STRATEGY = "SECURITY_STRATEGY";
 
@@ -30,4 +32,10 @@ class Setting
     const USER_STUDY_MODE_ACTIVE = 'IS_USER_STUDY_MODE_ACTIVE';
 
     const PARTICIPANT_ID = "PARTICIPANT_ID";
+
+    public static function getKeys(): array
+    {
+        $reflection = new ReflectionClass(__CLASS__);
+        return $reflection->getConstants();
+    }
 }

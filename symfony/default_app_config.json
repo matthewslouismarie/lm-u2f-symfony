@@ -1,7 +1,7 @@
 {
     "N_U2F_KEYS_REG": 1,
     "N_U2F_KEYS_POST_AUTH": 3,
-    "ALLOW_U2F_LGIN": true,
+    "ALLOW_U2F_LOGIN": true,
     "SECURITY_STRATEGY": 0,
     "ALLOW_MEMBER_TO_MANAGE_U2F_KEYS": true,
     "PWD_MIN_LENGTH": null,

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Enum\Setting;
 use App\Repository\AppSettingRepository;
 use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -33,6 +34,11 @@ class AppConfigManager
         }
     }
 
+    public function get(string $id)
+    {
+        return $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
+    }
+
     public function getBoolSetting($id): bool
     {
         $valueStr = $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
@@ -58,5 +64,15 @@ class AppConfigManager
         $this->appConfigRepo->set($id, $value);
 
         return $this;
+    }
+
+    public function toJson(): string
+    {
+        $configArray = [];
+        foreach (Setting::getKeys() as $currentKey) {
+            $configArray[$currentKey] = $this->get($currentKey);
+        }
+
+        return json_encode($configArray);
     }
 }

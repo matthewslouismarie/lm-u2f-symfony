@@ -16,11 +16,14 @@ use App\Repository\PageMetricRepository;
 use App\Service\AppConfigManager;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminDashboardController extends AbstractController
 {
+    const EXPORT_FILENAME = "options.json";
+
     /**
      * @Route(
      *  "/admin",
@@ -195,5 +198,23 @@ class AdminDashboardController extends AbstractController
             'participantId' => $participantId,
             'participantIds' => $participantIds,
         ]);
+    }
+
+    /**
+     * @Route(
+     *  "/admin/export",
+     *  name="admin_export")
+     */
+    public function exportToJson(AppConfigManager $config)
+    {
+        $response = new Response();
+
+        //set headers
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.self::EXPORT_FILENAME.'"');
+
+        $response->setContent($config->toJson());
+
+        return $response;
     }
 }

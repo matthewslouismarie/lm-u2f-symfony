@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{%- block title -%}New U2F key needed{%- endblock -%}
+
 {% block body %}
 <p>You only have {{ nU2fTokens }} keys associated with your account, and you need to have at least {{ nU2fTokensRequired }}.</p>
 <p>Before being able to use the website again, you need to register {{ nU2fTokensRequired - nU2fTokens }} new U2F key(s).</p>

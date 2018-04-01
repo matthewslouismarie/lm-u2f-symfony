@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{%- block title -%}Participant metrics for {{ participantId }}{%- endblock -%}
+
 {%- block body -%}
 {%- include "admin/_back_button.html.twig" -%}
 <p>You are viewing participant {{participantId}}'s metrics.</p>

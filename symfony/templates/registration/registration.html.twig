@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{%- block title -%}Registration{%- endblock -%}
+
 {% block body %}
 <p>Hello. To register, you will need two U2F keys.</p>
 <a href="{{ path('tks_username_and_password') }}">Register the master pair's first U2F key.</a>

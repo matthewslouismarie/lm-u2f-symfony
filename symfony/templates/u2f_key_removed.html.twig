@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{%- block title -%}The U2F key has been removed{%- endblock -%}
+
 {% block body %}
 <p>Your key ({{ u2fKeySlug }}) was removed.</p>
 {% if nU2fKeys < requiredNU2fKeys %}

@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{%- block title -%}Please activate your U2F key{%- endblock -%}
+
 {%- block u2fMessage -%}
 <img alt="" class="image" src="{{ asset("img/loading.gif") }}"><p class="message">Waiting for you to activate your U2F key.</p>
 {%- endblock -%}

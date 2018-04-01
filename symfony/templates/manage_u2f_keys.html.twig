@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{%- block title -%}Manage U2F keys{%- endblock -%}
+
 {% block body %}
 <ul class="item-list">
 {% for u2f_key in u2f_keys %}

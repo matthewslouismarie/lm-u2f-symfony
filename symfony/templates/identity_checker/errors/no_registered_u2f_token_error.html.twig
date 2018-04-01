@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{%- block title -%}Error (no registered U2F key){%- endblock -%}
+
 {% block body %}
 <p>We're sorry, but it seems you do not have any registered U2F keys.</p>
 <p>Please login using your password instead <a href="{{ path('pwd_authenticate') }}">by clicking here</a>.</p>

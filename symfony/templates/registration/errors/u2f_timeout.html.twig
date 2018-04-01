@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{%- block title -%}Error (U2F timeout){%- endblock -%}
+
 {% block body %}
 <p>We're sorry, but you took too long to activate your U2F key.</p>
 <p><a href="{{ path('add_u2f_key', {'sid': sid}) }}">Please try again by clicking here.</a></p>

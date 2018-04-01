@@ -59,7 +59,7 @@ class AppConfigManager
     /**
      * @todo Use a more specific exception.
      */
-    public function set(string $id, string $value): self
+    public function set(string $id, $value): self
     {
         $this->appConfigRepo->set($id, $value);
 

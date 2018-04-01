@@ -53,6 +53,7 @@ class UserPerformancesCollector implements EventSubscriberInterface
         {
             $pageMetric = new PageMetric(
                 $microtimeFloat,
+                $this->config->getBoolSetting(Setting::PARTICIPANT_ID),
                 PageMetric::REQUEST,
                 $uri)
             ;
@@ -75,6 +76,7 @@ class UserPerformancesCollector implements EventSubscriberInterface
         {
             $pageMetric = new PageMetric(
                 $microtimeFloat,
+                $this->config->getBoolSetting(Setting::PARTICIPANT_ID),
                 PageMetric::RESPONSE,
                 $uri)
             ;

@@ -33,6 +33,11 @@ class PageMetric
     /**
      * @Column()
      */
+    private $participantId;
+
+    /**
+     * @Column()
+     */
     private $type;
 
     /**
@@ -42,11 +47,13 @@ class PageMetric
 
     public function __construct(
         float $microtime,
+        string $participantId,
         string $type,
         string $uri,
         ?int $id = null)
     {
         $this->microtime = $microtime;
+        $this->participantId = $participantId;
         $this->type = $type;
         $this->uri = $uri;
         $this->id = $id;
@@ -60,6 +67,11 @@ class PageMetric
     public function getMicrotime(): float
     {
         return $this->microtimeSpent;
+    }
+
+    public function getParticipantId(): string
+    {
+        return $this->participantId;
     }
 
     public function getType(): string

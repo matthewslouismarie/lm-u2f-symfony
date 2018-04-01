@@ -13,8 +13,8 @@ class AppSettingRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, AppSetting::class);
     }
-    
-    public function set(int $id, string $value): void
+
+    public function set(string $id, string $value): void
     {
         $em = $this->getEntityManager();
         $appSetting = $this->find($id);
@@ -29,7 +29,7 @@ class AppSettingRepository extends ServiceEntityRepository
     /**
      * @todo Use more specific exception.
      */
-    public function get(int $id): ?string
+    public function get(string $id): ?string
     {
         $appSetting = $this->find($id);
         if (null !== $appSetting) {

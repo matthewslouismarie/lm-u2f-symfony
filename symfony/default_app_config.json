@@ -8,5 +8,7 @@
     "6": true,
     "7": true,
     "8": true,
-    "9": true
+    "9": true,
+    "IS_USER_STUDY_MODE_ACTIVE": false,
+    "PARTICIPANT_ID": "Undefined"
 }

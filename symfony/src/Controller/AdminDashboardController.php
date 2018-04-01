@@ -6,9 +6,11 @@ use App\Enum\Setting;
 use App\Form\PwdConfigType;
 use App\Form\SecurityStrategyType;
 use App\Form\U2fConfigType;
+use App\Form\UserStudyConfigType;
 use App\FormModel\PwdConfigSubmission;
 use App\FormModel\SecurityStrategySubmission;
 use App\FormModel\U2fConfigSubmission;
+use App\FormModel\UserStudyConfigSubmission;
 use App\Service\AppConfigManager;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -131,6 +133,40 @@ class AdminDashboardController extends AbstractController
         }
 
         return $this->render('admin/security_strategy.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route(
+     *  "/admin/user-study",
+     *  name="admin_user_study")
+     */
+    public function configureUserStudy(
+        AppConfigManager $config,
+        Request $httpRequest)
+    {
+        $submission = new UserStudyConfigSubmission(
+            $config->getBoolSetting(Setting::USER_STUDY_MODE_ACTIVE),
+            $config->getStringSetting(Setting::PARTICIPANT_ID)
+        );
+        $form = $this->createForm(UserStudyConfigType::class, $submission);
+
+        $form->handleRequest($httpRequest);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $config->set(
+                Setting::USER_STUDY_MODE_ACTIVE,
+                $submission->isUserStudyModeActive)
+            ;
+            if (true !== empty($submission->participantId)) {
+                $config->set(
+                    Setting::PARTICIPANT_ID,
+                    $submission->participantId)
+                ;
+            }
+        }
+
+        return $this->render('admin/user_study.html.twig', [
             'form' => $form->createView(),
         ]);
     }

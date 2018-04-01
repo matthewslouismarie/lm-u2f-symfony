@@ -33,19 +33,19 @@ class AppConfigManager
         }
     }
 
-    public function getBoolSetting(int $id): bool
+    public function getBoolSetting($id): bool
     {
         $valueStr = $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
         return (bool) $valueStr;
     }
 
-    public function getIntSetting(int $id): int
+    public function getIntSetting($id): int
     {
         $valueStr = $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
         return intval($valueStr);
     }
 
-    public function getStringSetting(int $id): string
+    public function getStringSetting($id): string
     {
         return $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
     }
@@ -53,7 +53,7 @@ class AppConfigManager
     /**
      * @todo Use a more specific exception.
      */
-    public function set(int $id, string $value): self
+    public function set(string $id, string $value): self
     {
         $this->appConfigRepo->set($id, $value);
 

@@ -6,33 +6,12 @@ use App\Enum\SecurityStrategy;
 use App\Enum\Setting;
 use App\Service\AppConfigManager;
 use App\Tests\TestCaseTemplate;
+use App\Tests\Controller\AuthenticationTrait;
 
 class AdminDashboardTest extends TestCaseTemplate
 {
     use AdminDashboardTrait;
-
-    private function u2fAuthenticate()
-    {
-        $this->doGet('/not-authenticated/authenticate');
-        $this->assertIsRedirect();
-        $this->followRedirect();
-        $this->followRedirect();
-        $this->submit(
-            $this
-            ->get('App\Service\Form\Filler\ExistingUsernameFiller')
-            ->fillForm($this->getCrawler(), 'louis'))
-        ;
-        $this->followRedirect();
-
-        $this->submit(
-            $this
-            ->get('App\Service\Form\Filler\U2fAuthenticationFiller1')
-            ->fillForm($this->getCrawler(), $this->getUriLastPart()))
-        ;
-
-        $this->followRedirect();
-        $this->assertTrue($this->isAdmin());
-    }
+    use AuthenticationTrait;
 
     public function testAdmin()
     {
@@ -113,6 +92,45 @@ class AdminDashboardTest extends TestCaseTemplate
             $this
                 ->getAppConfigManager()
                 ->getIntSetting(Setting::SECURITY_STRATEGY))
+        ;
+    }
+
+    public function testUserStudy()
+    {
+        $this->u2fAuthenticate();
+        $this->doGet('/admin/user-study');
+        $this->submit($this
+            ->get('App\Service\Form\Filler\UserStudyConfigFiller')
+            ->fillForm($this->getCrawler(), true, 'P0'))
+        ;
+        $this->assertEquals(
+            true,
+            $this
+                ->getAppConfigManager()
+                ->getBoolSetting(Setting::USER_STUDY_MODE_ACTIVE))
+        ;
+        $this->assertEquals(
+            "P0",
+            $this
+                ->getAppConfigManager()
+                ->getStringSetting(Setting::PARTICIPANT_ID))
+        ;
+        $this->submit($this
+            ->get('App\Service\Form\Filler\UserStudyConfigFiller')
+            ->fillForm($this->getCrawler(), true, null))
+        ;
+        $this->assertEquals(
+            "P0",
+            $this
+                ->getAppConfigManager()
+                ->getStringSetting(Setting::PARTICIPANT_ID))
+        ;
+        $this->assertContains(
+            "You must provide",
+            $this
+                ->getClient()
+                ->getResponse()
+                ->getContent())
         ;
     }
 }

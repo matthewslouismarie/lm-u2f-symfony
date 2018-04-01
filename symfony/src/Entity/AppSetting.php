@@ -14,7 +14,7 @@ class AppSetting
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
     private $id;
 
@@ -23,13 +23,13 @@ class AppSetting
      */
     private $value;
 
-    public function __construct(int $id, string $value)
+    public function __construct(string $id, string $value)
     {
         $this->id = $id;
         $this->value = $value;
     }
 
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }

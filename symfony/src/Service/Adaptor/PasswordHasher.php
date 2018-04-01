@@ -5,6 +5,9 @@ namespace App\Service\Adaptor;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @todo Unused.
+ */
 class PasswordHasher
 {
     private $adaptee;

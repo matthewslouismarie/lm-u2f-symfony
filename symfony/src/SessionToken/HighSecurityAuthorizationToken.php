@@ -4,6 +4,9 @@ namespace App\SessionToken;
 
 use Serializable;
 
+/**
+ * @todo Unused.
+ */
 class HighSecurityAuthorizationToken implements Serializable
 {
     private $username;

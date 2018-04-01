@@ -38,7 +38,7 @@ class U2fCheckerTest extends TestCaseTemplate
         $this->followRedirect();
         $this->followRedirect();
         $this->assertEquals(
-            'http://localhost/authenticated/successful-login',
+            'http://localhost/authenticated/post-login',
             $this->getUri()
         );
     }
@@ -77,7 +77,7 @@ class U2fCheckerTest extends TestCaseTemplate
         $this->followRedirect();
         $this->followRedirect();
         $this->assertEquals(
-            'http://localhost/authenticated/successful-login',
+            'http://localhost/authenticated/post-login',
             $this->getUri()
         );
         $this->assertEquals(

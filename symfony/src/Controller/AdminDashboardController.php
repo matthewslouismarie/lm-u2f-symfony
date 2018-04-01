@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\PageMetric;
+use App\Form\ConfigImportType;
 use App\Enum\Setting;
 use App\Form\PwdConfigType;
 use App\Form\SecurityStrategyType;
 use App\Form\U2fConfigType;
 use App\Form\UserStudyConfigType;
+use App\FormModel\ConfigImportSubmission;
 use App\FormModel\PwdConfigSubmission;
 use App\FormModel\SecurityStrategySubmission;
 use App\FormModel\U2fConfigSubmission;
@@ -216,5 +218,23 @@ class AdminDashboardController extends AbstractController
         $response->setContent($config->toJson());
 
         return $response;
+    }
+
+    /**
+     * @Route(
+     *  "/admin/import",
+     *  name="admin_import")
+     */
+    public function importFromJson(AppConfigManager $config, Request $httpRequest)
+    {
+        $submission = new ConfigImportSubmission($config->toJson());
+        $form = $this->createForm(ConfigImportType::class, $submission);
+        $form->handleRequest($httpRequest);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $config->fromJson($submission->jsonConfig);
+        }
+        return $this->render('admin/import.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

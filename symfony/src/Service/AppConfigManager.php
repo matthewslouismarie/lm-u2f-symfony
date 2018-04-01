@@ -75,4 +75,20 @@ class AppConfigManager
 
         return json_encode($configArray);
     }
+
+    /**
+     * @todo Exception
+     */
+    public function fromJson(string $json): void
+    {
+        $configArray = json_decode($json, true);
+        if (null === $configArray) {
+            throw new Exception();
+        }
+        foreach (Setting::getKeys() as $currentKey) {
+            if (true === isset($configArray[$currentKey])) {
+                $this->set($currentKey, $configArray[$currentKey]);
+            }
+        }
+    }
 }

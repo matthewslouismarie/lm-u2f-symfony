@@ -42,12 +42,6 @@ class MemberRegistrationTest extends TestCaseTemplate
         );
         $filler = $this->get('App\Service\Form\Filler\UserConfirmationFiller');
         $this->submit($filler->fillForm($this->getCrawler()));
-        $this->assertIsRedirect();
-        $this->followRedirect();
-        $this->assertEquals(
-            'http://localhost/not-authenticated/registration/success',
-            $this->getUri()
-        );
         $member = $this
             ->getObjectManager()
             ->getRepository(Member::class)
@@ -89,12 +83,7 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->submit(
             $this->getUserConfirmationFiller()->fillForm($this->getCrawler()))
         ;
-        $this->followRedirect();
 
-        $this->assertEquals(
-            'http://localhost/not-authenticated/registration/success',
-            $this->getUri()
-        );
         $member = $this
             ->getObjectManager()
             ->getRepository(Member::class)

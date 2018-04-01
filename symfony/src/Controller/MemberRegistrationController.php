@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use UnexpectedValueException;
 
 class MemberRegistrationController extends AbstractController
 {
@@ -210,62 +211,56 @@ class MemberRegistrationController extends AbstractController
         U2fRegistrationManager $u2fRegistrationManager,
         Request $request): Response
     {
-        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-        $form = $this->createForm(UserConfirmationType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $credential = $tdm
-                ->getBy('class', CredentialRegistrationSubmission::class)
-                ->getOnlyValue()
-                ->getValue(CredentialRegistrationSubmission::class)
-            ;
-            $member = $mf->create(
-                null,
-                $credential->getUsername(),
-                $credential->getPassword(),
-                ['ROLE_USER']
-            );
-            $om->persist($member);
-            for ($i = 0; $i < $this->nU2fKeys; ++$i) {
-                $submission = $tdm
-                    ->getBy('key', 'U2fKeySubmission'.$i)
+        try {
+            $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+            $form = $this->createForm(UserConfirmationType::class);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $credential = $tdm
+                    ->getBy('class', CredentialRegistrationSubmission::class)
                     ->getOnlyValue()
-                    ->getValue(NewU2fRegistrationSubmission::class)
+                    ->getValue(CredentialRegistrationSubmission::class)
                 ;
-                $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
-                    $submission->getU2fTokenResponse(),
-                    $member,
-                    new DateTimeImmutable(),
-                    $tdm
-                        ->getBy('key', self::U2F_REG_REQUEST_KEY)
-                        ->getOnlyValue()
-                        ->getValue(RegisterRequest::class),
-                    $submission->getU2fKeyName()
+                $member = $mf->create(
+                    null,
+                    $credential->getUsername(),
+                    $credential->getPassword(),
+                    ['ROLE_USER']
                 );
-                $om->persist($u2fToken);
+                $om->persist($member);
+                for ($i = 0; $i < $this->nU2fKeys; ++$i) {
+                    $submission = $tdm
+                        ->getBy('key', 'U2fKeySubmission'.$i)
+                        ->getOnlyValue()
+                        ->getValue(NewU2fRegistrationSubmission::class)
+                    ;
+                    $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
+                        $submission->getU2fTokenResponse(),
+                        $member,
+                        new DateTimeImmutable(),
+                        $tdm
+                            ->getBy('key', self::U2F_REG_REQUEST_KEY)
+                            ->getOnlyValue()
+                            ->getValue(RegisterRequest::class),
+                        $submission->getU2fKeyName()
+                    );
+                    $om->persist($u2fToken);
+                }
+                $om->flush();
+                $secureSession->deleteObject($sid, TransitingDataManager::class);
+
+                return $this->render("messages/success.html.twig", [
+                    "pageTitle" => "Account created successfully",
+                    "message" => "Your account was successfully created!",
+                ]);
             }
-            $om->flush();
-            $secureSession->deleteObject($sid, TransitingDataManager::class);
 
-            return new RedirectResponse(
-                $this->generateUrl('registration_success')
-            );
+            return $this->render('registration/submit.html.twig', [
+                'form' => $form->createView(),
+            ]);
+        } catch (UnexpectedValueException $e) {
+            return $this->render("messages/unspecified_error.html.twig");
         }
-
-        return $this->render('registration/submit.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route(
-     *  "/not-authenticated/registration/success",
-     *  name="registration_success",
-     *  methods={"GET"})
-     */
-    public function fetchSuccessPage()
-    {
-        return $this->render('registration/success.html.twig');
     }
 
     /**

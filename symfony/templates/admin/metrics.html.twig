@@ -3,7 +3,9 @@
 {%- block body -%}
 {%- include "admin/_back_button.html.twig" -%}
 <p>You are viewing participant {{participantId}}'s metrics.</p>
-<p>You can change the participant in the User Study Configuration panel.</p>
+{%- if participantIds|length > 0 -%}
+<p>You can switch to: {%- for id in participantIds -%}<a href="{{ path("admin_metrics", {"participantId": id}) }}">{{ id }}</a>{%- if not loop.last -%},{%- endif -%}{%- endfor -%}</p>
+{%- endif -%}
 <div class="table-container">
   <table class="standard-table">
     <thead class="thead">

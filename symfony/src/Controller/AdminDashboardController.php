@@ -26,9 +26,13 @@ class AdminDashboardController extends AbstractController
      *  "/admin",
      *  name="admin")
      */
-    public function getDashboard()
+    public function getDashboard(AppConfigManager $config)
     {
-        return $this->render('admin/admin_overview.html.twig');
+        $participantId = $config->getStringSetting(Setting::PARTICIPANT_ID);
+        
+        return $this->render('admin/admin_overview.html.twig', [
+            'participantId' => $participantId,
+        ]);
     }
 
     /**
@@ -175,20 +179,21 @@ class AdminDashboardController extends AbstractController
 
     /**
      * @Route(
-     *  "/admin/metrics",
+     *  "/admin/metrics/{participantId}",
      *  name="admin_metrics")
      */
     public function metrics(
+        string $participantId,
         AppConfigManager $config,
         PageMetricRepository $repository)
     {
-        $participantId = $config->getStringSetting(Setting::PARTICIPANT_ID);
         $metrics = $repository->getArray($participantId);
-        // $metrics = $repository->findAll();
+        $participantIds = $repository->getParticipantIdsExcept($participantId);
 
         return $this->render('admin/metrics.html.twig', [
             'metrics' => $metrics,
             'participantId' => $participantId,
+            'participantIds' => $participantIds,
         ]);
     }
 }

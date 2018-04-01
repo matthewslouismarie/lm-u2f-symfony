@@ -17,10 +17,12 @@ use App\Service\U2fRegistrationManager;
 use App\Service\U2fService;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
+use Firehed\U2F\ClientErrorException;
 use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 use Firehed\U2F\Registration;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -131,46 +133,50 @@ class MemberRegistrationController extends AbstractController
         $submission = new NewU2fRegistrationSubmission();
         $form = $this->createForm(NewU2fRegistrationType::class, $submission);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $registerRequest = $tdm
-                ->getBy('key', self::U2F_REG_REQUEST_KEY)
-                ->getOnlyValue()
-                ->getValue(RegisterRequest::class)
-            ;
-            $registration = $server
-                ->setRegisterRequest($registerRequest)
-                ->register(
-                    RegisterResponse::fromJson($submission->getU2fTokenResponse())
-                )
-            ;
-            $secureSession->setObject(
-                $sid,
-                $tdm
-                    ->add(new TransitingData(
-                        'U2fKeySubmission'.$u2fKeyNo,
-                        'registration_u2f_key',
-                        $submission
-                    ))
-                    ->add(new TransitingData(
-                        'U2fRegistration'.$u2fKeyNo,
-                        'registration_u2f_key',
-                        $registration
-                    )),
-                TransitingDataManager::class
-            );
-            if ($this->nU2fKeys === $u2fKeyNo + 1) {
-                return new RedirectResponse(
-                    $this->generateUrl('registration_submit', [
-                        'sid' => $sid,
-                    ])
+        try {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $registerRequest = $tdm
+                    ->getBy('key', self::U2F_REG_REQUEST_KEY)
+                    ->getOnlyValue()
+                    ->getValue(RegisterRequest::class)
+                ;
+                $registration = $server
+                    ->setRegisterRequest($registerRequest)
+                    ->register(
+                        RegisterResponse::fromJson($submission->getU2fTokenResponse())
+                    )
+                ;
+                $secureSession->setObject(
+                    $sid,
+                    $tdm
+                        ->add(new TransitingData(
+                            'U2fKeySubmission'.$u2fKeyNo,
+                            $request->get("_route"),
+                            $submission
+                        ))
+                        ->add(new TransitingData(
+                            'U2fRegistration'.$u2fKeyNo,
+                            $request->get("_route"),
+                            $registration
+                        )),
+                    TransitingDataManager::class
                 );
-            } else {
-                return new RedirectResponse(
-                    $this->generateUrl('registration_u2f_key', [
-                        'sid' => $sid,
-                    ])
-                );
+                if ($this->nU2fKeys === $u2fKeyNo + 1) {
+                    return new RedirectResponse(
+                        $this->generateUrl('registration_submit', [
+                            'sid' => $sid,
+                        ])
+                    );
+                } else {
+                    return new RedirectResponse(
+                        $this->generateUrl($request->get("_route"), [
+                            'sid' => $sid,
+                        ])
+                    );
+                }
             }
+        } catch (ClientErrorException $e) {
+            $form->addError(new FormError("You already registered this U2F key"));
         }
 
         $registrations = $tdm
@@ -182,7 +188,7 @@ class MemberRegistrationController extends AbstractController
             $sid,
             $tdm->replaceByKey(new TransitingData(
                 self::U2F_REG_REQUEST_KEY,
-                'registration_u2f_key',
+                $request->get("_route"),
                 $registerRequest->getRequest()
             )),
             TransitingDataManager::class

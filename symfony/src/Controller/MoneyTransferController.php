@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Exception\IdentityChecker\ProcessedException;
 use App\Form\UserConfirmationType;
 use App\Service\AuthenticationManager;
 use App\Service\SecureSession;
@@ -53,11 +54,18 @@ class MoneyTransferController extends AbstractController
      */
     public function completeMoneyTransfer(string $sid)
     {
-        $tdm = $this
-            ->requestManager
-            ->achieveOperation($sid, 'complete_money_transfer')
-        ;
+        try {
+            $tdm = $this
+                ->requestManager
+                ->achieveOperation($sid, 'complete_money_transfer')
+            ;
 
-        return $this->render('successful_money_transfer.html.twig');
+            return $this->render('messages/success.html.twig', [
+                "pageTitle" => "Successful money transfer",
+                "message" => "The transfer was made successfully."
+            ]);
+        } catch (ProcessedException $e) {
+            return $this->render("messages/unspecified_error.html.twig");
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\DataStructure\TransitingDataManager;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
+use App\Exception\IdentityChecker\ProcessedException;
 use App\Form\PasswordUpdateType;
 use App\Form\UserConfirmationType;
 use App\FormModel\PasswordUpdateSubmission;
@@ -83,23 +84,30 @@ class MemberAccount extends AbstractController
         SecureSession $secureSession,
         UserPasswordEncoderInterface $encoder)
     {
-        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-        $requestManager->assertSuccessful($tdm);
-        $requestManager->assertNotProcessed($tdm);
-        $hashedPassword = $encoder->encodePassword(
-            $this->getUser(),
-            $requestManager->getAdditionalData($tdm)['new_password']
-        );
-        $this->getUser()->setPassword($hashedPassword);
-        $em->persist($this->getUser());
-        $em->flush();
-        $secureSession->setObject(
-            $sid,
-            $requestManager->setAsProcessed($tdm, 'process_password_update'),
-            TransitingDataManager::class
-        );
-
-        return $this->render('successful_password_update.html.twig');
+        try {
+            $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
+            $requestManager->assertSuccessful($tdm);
+            $requestManager->assertNotProcessed($tdm);
+            $hashedPassword = $encoder->encodePassword(
+                $this->getUser(),
+                $requestManager->getAdditionalData($tdm)['new_password']
+            );
+            $this->getUser()->setPassword($hashedPassword);
+            $em->persist($this->getUser());
+            $em->flush();
+            $secureSession->setObject(
+                $sid,
+                $requestManager->setAsProcessed($tdm, 'process_password_update'),
+                TransitingDataManager::class
+            );
+    
+            return $this->render('messages/success.html.twig', [
+                "pageTitle" => "Your password was updated",
+                "message" => "Your password was successfully updated."
+            ]);
+        } catch (ProcessedException $e) {
+            return $this->render("messages/unspecified_error.html.twig");
+        }
     }
 
     /**

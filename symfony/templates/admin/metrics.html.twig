@@ -4,20 +4,22 @@
 {%- include "admin/_back_button.html.twig" -%}
 <p>You are viewing participant {{participantId}}'s metrics.</p>
 <p>You can change the participant in the User Study Configuration panel.</p>
-<table class="standard-table">
-  <thead class="thead">
-    <tr class="standard-row">
-      <th class="cell">Local Path</th>
-      <th class="cell">Time Spent (s)</th>
-    </tr>
-  </thead>
-  <tbody class="tbody">
-    {%- for metric in metrics -%}
+<div class="table-container">
+  <table class="standard-table">
+    <thead class="thead">
       <tr class="standard-row">
-        <th class="cell">{{ metric.localPath }}</th>
-        <th class="cell">{{ metric.timeSpent }}</th>
+        <th class="cell">Local Path</th>
+        <th class="cell">Time Spent (s)</th>
       </tr>
-    {%- endfor -%}
-  </tbody>
-</table>
+    </thead>
+    <tbody class="tbody">
+      {%- for metric in metrics -%}
+        <tr class="standard-row">
+          <th class="cell">{{ metric.localPath }}</th>
+          <th class="cell">{{ metric.timeSpent }}</th>
+        </tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+</div>
 {%- endblock -%}

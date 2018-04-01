@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\PageMetric;
 use App\Enum\Setting;
 use App\Form\PwdConfigType;
 use App\Form\SecurityStrategyType;
@@ -11,6 +12,7 @@ use App\FormModel\PwdConfigSubmission;
 use App\FormModel\SecurityStrategySubmission;
 use App\FormModel\U2fConfigSubmission;
 use App\FormModel\UserStudyConfigSubmission;
+use App\Repository\PageMetricRepository;
 use App\Service\AppConfigManager;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -168,6 +170,25 @@ class AdminDashboardController extends AbstractController
 
         return $this->render('admin/user_study.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route(
+     *  "/admin/metrics",
+     *  name="admin_metrics")
+     */
+    public function metrics(
+        AppConfigManager $config,
+        PageMetricRepository $repository)
+    {
+        $participantId = $config->getStringSetting(Setting::PARTICIPANT_ID);
+        $metrics = $repository->getArray($participantId);
+        // $metrics = $repository->findAll();
+
+        return $this->render('admin/metrics.html.twig', [
+            'metrics' => $metrics,
+            'participantId' => $participantId,
         ]);
     }
 }

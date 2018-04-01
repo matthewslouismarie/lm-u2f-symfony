@@ -1,0 +1,5 @@
+.standard-row {
+  > .cell {
+    border: $sm-border solid $medium-contrast-color;
+  }
+}

@@ -1,0 +1,6 @@
+.error-message {
+  @include message();
+  background-color: $error-background-color;
+  border-color: $sm-border solid $error-foreground-color;
+  color: $error-foreground-color;
+}

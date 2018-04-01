@@ -1,0 +1,5 @@
+@mixin message() {
+  border-style: solid;
+  border-width: $sm-border;
+  padding: $md-padding;
+}

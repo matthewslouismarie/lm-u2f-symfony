@@ -288,7 +288,7 @@ class AuthenticationManager
             try {
                 $valids = $tdm
                     ->getBy('route', $checker)
-                    ->getBy('key', 'successful_authentication')
+                    ->getBy('key', 'post_authentication')
                     ->toArray()
                 ;
             } catch (UnexpectedValueException $e) {

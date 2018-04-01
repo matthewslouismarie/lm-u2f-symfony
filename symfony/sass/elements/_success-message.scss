@@ -1,0 +1,6 @@
+.success-message {
+  @include message();
+  background-color: $success-background-color;
+  border-color: $sm-border solid $success-foreground-color;
+  color: $success-foreground-color;
+}

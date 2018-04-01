@@ -9,7 +9,9 @@ use App\FormModel\CredentialAuthenticationSubmission;
 use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
+use App\Model\BooleanObject;
 use App\Model\GrantedAuthorization;
+use App\Security\MemberAuthenticator;
 use App\Service\AuthenticationManager;
 use App\Service\AppConfigManager;
 use App\Service\SecureSession;
@@ -17,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use UnexpectedValueException;
 
 class AuthenticationController extends AbstractController
 {
@@ -90,12 +93,30 @@ class AuthenticationController extends AbstractController
 
     /**
      * @Route(
-     *  "/authenticated/successful-login",
-     *  name="successful_authentication")
+     *  "/authenticated/post-login",
+     *  name="post_authentication")
      */
-    public function successfulAuthentication()
+    public function postAuthentication(SecureSession $secureSession)
     {
-        return $this->render('successful_authentication.html.twig');
+        try {
+            $isJustLoggedIn = $secureSession
+                ->getAndRemoveObject(
+                    MemberAuthenticator::JUST_LOGGED_IN,
+                    BooleanObject::class)
+                ->toBoolean()
+            ;
+            if (true === $isJustLoggedIn) {
+                return $this->render('messages/success.html.twig', [
+                    "pageTitle" => "You are logged in",
+                    "message" => "You successfully logged in.",
+                ]);
+            } else {
+                throw new UnexpectedValueException();
+            }
+
+        } catch (UnexpectedValueException $e) {
+            return $this->render("messages/unspecified_error.html.twig");
+        }
     }
 
     /**

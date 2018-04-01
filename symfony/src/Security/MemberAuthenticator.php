@@ -23,12 +23,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use UnexpectedValueException;
+use Twig_Environment;
 
 /**
  * @todo (Security) Prevent rerouting lower request to this.
  */
 class MemberAuthenticator extends AbstractFormLoginAuthenticator
 {
+    const JUST_LOGGED_IN = "JUST_LOGGED_IN";
+
     private $config;
 
     private $om;
@@ -49,6 +52,7 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
         ObjectManager $om,
         AuthenticationManager $requestManager,
         RouterInterface $router,
+        Twig_Environment $twig,
         U2fTokenRepository $u2fTokenRepository)
     {
         $this->config = $config;
@@ -115,7 +119,14 @@ class MemberAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        return new RedirectResponse($this->router->generate('successful_authentication'));        
+        $this
+            ->secureSession
+            ->setObject(
+                self::JUST_LOGGED_IN,
+                new BooleanObject(true),
+                BooleanObject::class)
+        ;
+        return new RedirectResponse($this->router->generate('post_authentication'));        
     }
 
     public function supports(Request $request): bool

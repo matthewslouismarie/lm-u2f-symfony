@@ -8,7 +8,7 @@ use Serializable;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * @todo Not thread-safe (e.g. storeArray).
+ * @todo Thread-safe (e.g. storeArray)? Should be.
  * @todo Prevent any modification to stored variables?
  */
 class SecureSession
@@ -141,7 +141,7 @@ class SecureSession
     {
         $value = $this->session->get($sid);
         if (!is_array($value)) {
-            throw new \UnexpectedValueException();
+            throw new UnexpectedValueException();
         }
         $this->session->remove($sid);
 

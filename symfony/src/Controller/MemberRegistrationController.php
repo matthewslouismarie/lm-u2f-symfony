@@ -28,6 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MemberRegistrationController extends AbstractController
 {
+    const U2F_REG_REQUEST_KEY = 'u2f_reg_request_key';
+
     private $nU2fKeys;
 
     public function __construct(AppConfigManager $appConfigManager)
@@ -112,8 +114,9 @@ class MemberRegistrationController extends AbstractController
     {
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
         $server = $u2fService->getServer();
+
         $u2fKeyNo = $tdm
-            ->getBy('class', NewU2fRegistrationSubmission::class)
+            ->getBy('class', Registration::class)
             ->getSize()
         ;
         if ($u2fKeyNo === $config->getIntSetting(Setting::N_U2F_KEYS_REG)) {
@@ -123,12 +126,13 @@ class MemberRegistrationController extends AbstractController
                 ])
             );
         }
+
         $submission = new NewU2fRegistrationSubmission();
         $form = $this->createForm(NewU2fRegistrationType::class, $submission);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $registerRequest = $tdm
-                ->getBy('key', 'U2fKeyRequest'.$u2fKeyNo)
+                ->getBy('key', self::U2F_REG_REQUEST_KEY)
                 ->getOnlyValue()
                 ->getValue(RegisterRequest::class)
             ;
@@ -175,8 +179,8 @@ class MemberRegistrationController extends AbstractController
         $registerRequest = $service->generate($registrations);
         $secureSession->setObject(
             $sid,
-            $tdm->add(new TransitingData(
-                'U2fKeyRequest'.$u2fKeyNo,
+            $tdm->replaceByKey(new TransitingData(
+                self::U2F_REG_REQUEST_KEY,
                 'registration_u2f_key',
                 $registerRequest->getRequest()
             )),
@@ -233,7 +237,7 @@ class MemberRegistrationController extends AbstractController
                     $member,
                     new DateTimeImmutable(),
                     $tdm
-                        ->getBy('key', 'U2fKeyRequest'.$i)
+                        ->getBy('key', self::U2F_REG_REQUEST_KEY)
                         ->getOnlyValue()
                         ->getValue(RegisterRequest::class),
                     $submission->getU2fKeyName()

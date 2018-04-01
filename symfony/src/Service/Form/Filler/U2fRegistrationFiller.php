@@ -2,6 +2,7 @@
 
 namespace App\Service\Form\Filler;
 
+use App\Controller\MemberRegistrationController;
 use App\DataStructure\TransitingDataManager;
 use App\Exception\NonexistentNodeException;
 use App\Model\TransitingData;
@@ -30,9 +31,8 @@ class U2fRegistrationFiller
         $tdm = $this
             ->secureSession
             ->getObject($sid, TransitingDataManager::class)
-            ->filterBy('key', 'U2fKeyRequest'.$keyNo)
-            ->add(new TransitingData(
-                'U2fKeyRequest'.$keyNo,
+            ->replaceByKey(new TransitingData(
+                MemberRegistrationController::U2F_REG_REQUEST_KEY,
                 'registration_u2f_key',
                 $cycle->getRequest()
             ))

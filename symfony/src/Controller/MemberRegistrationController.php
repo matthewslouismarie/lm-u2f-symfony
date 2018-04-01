@@ -67,6 +67,7 @@ class MemberRegistrationController extends AbstractController
      *  )
      */
     public function fetchRegistrationPage(
+        AppConfigManager $config,
         Request $request,
         SecureSession $secureSession,
         string $sid): Response
@@ -96,8 +97,19 @@ class MemberRegistrationController extends AbstractController
             );
         }
 
+        $isMinLengthEnforced = $config->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH);
+        $minLength = $config->getIntSetting(Setting::PWD_MIN_LENGTH);
+        $specialChars = $config->getBoolSetting(Setting::PWD_SPECIAL_CHARS);
+        $numbers = $config->getBoolSetting(Setting::PWD_NUMBERS);
+        $capitalLetters = $config->getBoolSetting(Setting::PWD_UPPERCASE);
+
         return $this->render('registration/username_and_password.html.twig', [
             'form' => $form->createView(),
+            "isMinLengthEnforced" => $isMinLengthEnforced,
+            "minLength" => $minLength,
+            "specialChars" => $specialChars,
+            "numbers" => $numbers,
+            "capitalLetters" => $capitalLetters,
         ]);
     }
 

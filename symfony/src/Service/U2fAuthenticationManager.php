@@ -9,7 +9,7 @@ use App\FormModel\U2fAuthenticationRequest;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SignResponse;
 
-class StatelessU2fAuthenticationManager
+class U2fAuthenticationManager
 {
     private $em;
 

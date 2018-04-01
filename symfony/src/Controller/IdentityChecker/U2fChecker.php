@@ -17,7 +17,7 @@ use App\Model\StringObject;
 use App\Model\TransitingData;
 use App\Service\AuthenticationManager;
 use App\Service\SecureSession;
-use App\Service\StatelessU2fAuthenticationManager;
+use App\Service\U2fAuthenticationManager;
 use Exception;
 use Firehed\U2F\ClientErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +38,7 @@ class U2fChecker extends AbstractController
         Request $httpRequest,
         AuthenticationManager $idRequestManager,
         SecureSession $secureSession,
-        StatelessU2fAuthenticationManager $u2fAuthenticationManager)
+        U2fAuthenticationManager $u2fAuthenticationManager)
     {
         try {
             $tdm = $secureSession->getObject($sid, TransitingDataManager::class);

@@ -16,9 +16,7 @@ class CredentialRegistrationType extends AbstractType
         $builder
             ->add('username')
             ->add('password', PasswordType::class)
-            ->add('passwordConfirmation', PasswordType::class, [
-                'always_empty' => false,
-            ])
+            ->add('passwordConfirmation', PasswordType::class)
             ->add('submit', SubmitType::class)
         ;
     }

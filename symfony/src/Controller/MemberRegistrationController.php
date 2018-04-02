@@ -216,6 +216,8 @@ class MemberRegistrationController extends AbstractController
 
     /**
      * @todo Move DB logic somewhere else.
+     * @todo Not restful.
+     * @todo Not ACID.
      *
      * @Route(
      *  "/not-authenticated/registration/submit/{sid}",
@@ -231,47 +233,43 @@ class MemberRegistrationController extends AbstractController
     {
         try {
             $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-            $form = $this->createForm(UserConfirmationType::class);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                $credential = $tdm
-                    ->getBy('class', CredentialRegistrationSubmission::class)
+            $credential = $tdm
+                ->getBy('class', CredentialRegistrationSubmission::class)
+                ->getOnlyValue()
+                ->getValue(CredentialRegistrationSubmission::class)
+            ;
+            $member = $mf->create(
+                null,
+                $credential->getUsername(),
+                $credential->getPassword(),
+                ['ROLE_USER']
+            );
+            $om->persist($member);
+            for ($i = 0; $i < $this->nU2fKeys; ++$i) {
+                $submission = $tdm
+                    ->getBy('key', 'U2fKeySubmission'.$i)
                     ->getOnlyValue()
-                    ->getValue(CredentialRegistrationSubmission::class)
+                    ->getValue(NewU2fRegistrationSubmission::class)
                 ;
-                $member = $mf->create(
-                    null,
-                    $credential->getUsername(),
-                    $credential->getPassword(),
-                    ['ROLE_USER']
-                );
-                $om->persist($member);
-                for ($i = 0; $i < $this->nU2fKeys; ++$i) {
-                    $submission = $tdm
-                        ->getBy('key', 'U2fKeySubmission'.$i)
+                $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
+                    $submission->getU2fTokenResponse(),
+                    $member,
+                    new DateTimeImmutable(),
+                    $tdm
+                        ->getBy('key', self::U2F_REG_REQUEST_KEY)
                         ->getOnlyValue()
-                        ->getValue(NewU2fRegistrationSubmission::class)
-                    ;
-                    $u2fToken = $u2fRegistrationManager->getU2fTokenFromResponse(
-                        $submission->getU2fTokenResponse(),
-                        $member,
-                        new DateTimeImmutable(),
-                        $tdm
-                            ->getBy('key', self::U2F_REG_REQUEST_KEY)
-                            ->getOnlyValue()
-                            ->getValue(RegisterRequest::class),
-                        $submission->getU2fKeyName()
-                    );
-                    $om->persist($u2fToken);
-                }
-                $om->flush();
-                $secureSession->deleteObject($sid, TransitingDataManager::class);
-
-                return $this->render("messages/success.html.twig", [
-                    "pageTitle" => "Account created successfully",
-                    "message" => "Your account was successfully created!",
-                ]);
+                        ->getValue(RegisterRequest::class),
+                    $submission->getU2fKeyName()
+                );
+                $om->persist($u2fToken);
             }
+            $om->flush();
+            $secureSession->deleteObject($sid, TransitingDataManager::class);
+
+            return $this->render("messages/success.html.twig", [
+                "pageTitle" => "Account created successfully",
+                "message" => "Your account was successfully created!",
+            ]);
 
             return $this->render('registration/submit.html.twig', [
                 'form' => $form->createView(),

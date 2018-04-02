@@ -16,6 +16,9 @@
         </li>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
         <li class="item">
+          <a class="link" href="{{ path('transfer_money') }}">Transfer money</a>
+        </li>
+        <li class="item">
           <a class="link" href="{{ path('unauthenticate') }}">Log out</a>
         </li>
         <li class="item">

@@ -34,7 +34,7 @@ class MoneyTransferTest extends TestCaseTemplate
         ;
         $this->followRedirect();
         $this->assertContains(
-            'The money transfer was successful.',
+            'success',
             $this
                 ->getClient()
                 ->getResponse()
@@ -60,7 +60,7 @@ class MoneyTransferTest extends TestCaseTemplate
         ;
         $this->followRedirect();
         $this->assertContains(
-            'The money transfer was successful.',
+            'success',
             $this
                 ->getClient()
                 ->getResponse()

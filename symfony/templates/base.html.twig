@@ -36,6 +36,8 @@
         {% block body %}{% endblock %}
       </div>
     </main>
+
+    {%- if is_granted('ROLE_ADMIN') -%}
     <footer class="document-footer">
       <nav class="nav">
         <ul class="inline-list">
@@ -45,6 +47,7 @@
         </ul>
       </nav>
     </footer>
+    {%- endif -%}
     {% block javascripts %}{% endblock %}
   </body>
 </html>

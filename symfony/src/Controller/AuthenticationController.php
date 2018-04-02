@@ -30,10 +30,15 @@ class AuthenticationController extends AbstractController
      */
     public function chooseAuthentication(AppConfigManager $config)
     {
-        if ($config->getBoolSetting(Setting::ALLOW_U2F_LOGIN)) {
+        if ($config->getBoolSetting(Setting::ALLOW_PWD_LOGIN)
+        && $config->getBoolSetting(Setting::ALLOW_U2F_LOGIN)) {
             return $this->render('choose_authentication_method.html.twig');
-        } else {
+        } elseif ($config->getBoolSetting(Setting::ALLOW_PWD_LOGIN)) {
             return new RedirectResponse($this->generateUrl('pwd_authenticate'));
+        } elseif ($config->getBoolSetting(Setting::ALLOW_U2F_LOGIN)) {
+            return new RedirectResponse($this->generateUrl('authenticate'));
+        } else {
+            return $this->render("messages/unspecified_error.html.twig");
         }
     }
 
@@ -43,8 +48,13 @@ class AuthenticationController extends AbstractController
      *  name="pwd_authenticate",
      *  methods={"GET"})
      */
-    public function pwdAuthenticate(AuthenticationManager $requestManager)
+    public function pwdAuthenticate(
+        AppConfigManager $config,
+        AuthenticationManager $requestManager)
     {
+        if (false === $config->getBoolSetting(Setting::ALLOW_PWD_LOGIN)) {
+            return new RedirectResponse($this->generateUrl('choose_authenticate'));
+        }
         $identityRequest = $requestManager->create(
             'authenticate',
             [

@@ -13,6 +13,8 @@ class Setting
 
     const N_U2F_KEYS_POST_AUTH = "N_U2F_KEYS_POST_AUTH";
 
+    const ALLOW_PWD_LOGIN = "ALLOW_PWD_LOGIN";
+
     const ALLOW_U2F_LOGIN = "ALLOW_U2F_LOGIN";
 
     const SECURITY_STRATEGY = "SECURITY_STRATEGY";

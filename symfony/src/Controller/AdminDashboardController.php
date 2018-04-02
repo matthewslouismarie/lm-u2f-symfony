@@ -50,6 +50,7 @@ class AdminDashboardController extends AbstractController
         Request $httpRequest)
     {
         $submission = new PwdConfigSubmission(
+            $config->getIntSetting(Setting::ALLOW_PWD_LOGIN),
             $config->getIntSetting(Setting::PWD_MIN_LENGTH),
             $config->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH),
             $config->getBoolSetting(Setting::PWD_NUMBERS),
@@ -63,6 +64,7 @@ class AdminDashboardController extends AbstractController
         ;
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $config->set(Setting::ALLOW_PWD_LOGIN, $submission->allowPwdAuthentication);
             $config->set(Setting::PWD_MIN_LENGTH, $submission->minimumLength);
             $config->set(Setting::PWD_ENFORCE_MIN_LENGTH, $submission->enforceMinimumLength);
             $config->set(Setting::PWD_NUMBERS, $submission->requireNumbers);

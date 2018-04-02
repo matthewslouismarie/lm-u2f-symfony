@@ -7,6 +7,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PwdConfigSubmission
 {
     /**
+     * @Assert\Type("bool")
+     */
+    public $allowPwdAuthentication;
+
+    /**
      * @Assert\Type("integer")
      */
     public $minimumLength;
@@ -37,12 +42,14 @@ class PwdConfigSubmission
     public $forceComplexPasswords;
 
     public function __construct(
+        ?bool $allowPwdAuthentication = null,
         ?int $minimumLength = null,
         ?bool $enforceMinimumLength = null,
         ?bool $requireNumbers = null,
         ?bool $requireSpecialCharacters = null,
         ?bool $requireUppercaseLetters = null)
     {
+        $this->allowPwdAuthentication = $allowPwdAuthentication;
         $this->minimumLength = $minimumLength;
         $this->enforceMinimumLength = $enforceMinimumLength;
         $this->requireNumbers = $requireNumbers;

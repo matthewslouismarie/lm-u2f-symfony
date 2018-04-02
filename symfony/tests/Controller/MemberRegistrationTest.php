@@ -40,8 +40,6 @@ class MemberRegistrationTest extends TestCaseTemplate
             'http://localhost/not-authenticated/registration/submit/'.$sid,
             $this->getUri()
         );
-        $filler = $this->get('App\Service\Form\Filler\UserConfirmationFiller');
-        $this->submit($filler->fillForm($this->getCrawler()));
         $member = $this
             ->getObjectManager()
             ->getRepository(Member::class)
@@ -80,9 +78,6 @@ class MemberRegistrationTest extends TestCaseTemplate
 
         $this->followRedirect();
         $this->followRedirect();
-        $this->submit(
-            $this->getUserConfirmationFiller()->fillForm($this->getCrawler()))
-        ;
 
         $member = $this
             ->getObjectManager()

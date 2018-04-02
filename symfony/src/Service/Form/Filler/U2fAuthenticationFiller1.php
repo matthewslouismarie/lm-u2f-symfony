@@ -49,12 +49,12 @@ class U2fAuthenticationFiller1
                 TransitingDataManager::class
             )
         ;
-        $button = $crawler->selectButton('new_u2f_authentication[submit]');
-        if (0 === $button->count()) {
+        $formNode = $crawler->filter("[name=\"new_u2f_authentication\"]");
+        if (0 === $formNode->count()) {
             throw new NonexistentNodeException();
         }
 
-        return $button->form([
+        return $formNode->form([
             'new_u2f_authentication[u2fTokenResponse]' => $cycle->getResponse(),
         ]);
     }

@@ -45,15 +45,13 @@ class U2fKeyRegistrationFiller
             )
         ;
 
-        $button = $crawler->selectButton(
-            'new_u2f_registration[submit]'
-        );
-        if (0 === $button->count()) {
+        $formNode = $crawler->filter("[name=\"new_u2f_registration\"]");
+        if (0 === $formNode->count()) {
             throw new NonexistentNodeException();
         }
-        $form = $button->form([
+        $form = $formNode->form([
             'new_u2f_registration[u2fTokenResponse]' => $cycle->getResponse(),
-            'new_u2f_registration[u2fKeyName]' => 'a random name',
+            'new_u2f_registration[u2fKeyName]' => "random-name-".microtime(),
         ]);
 
         return $form;

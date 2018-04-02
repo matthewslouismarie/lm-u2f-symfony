@@ -28,7 +28,8 @@
 </script>
 {% endblock %}
 
-{% block body %}
+{%- block body -%}
+{%- include "partials/_u2f_steps.html.twig" -%}
 <p>Please plug in and activate your U2F key.</p>
 {{ form(form, {"attr": {"id": form.vars.id}}) }}
-{% endblock %}
+{%- endblock -%}

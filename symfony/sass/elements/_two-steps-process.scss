@@ -1,0 +1,39 @@
+.two-steps-process {
+  padding-left: 0;
+
+  > .step {
+    padding-left: 0;
+    width: 50%;
+    display: inline-block;
+  }
+
+  > .step > .stepfigure {
+    margin-bottom: 0;
+    margin-left: $md-margin;
+    margin-right: $md-margin;
+    margin-top: 0;
+  }
+
+  > .step > .stepfigure > .stepcaption {
+    padding-bottom: $md-padding;
+    padding-top: $md-padding;
+    text-align: center;
+  }
+
+  > .step > .stepfigure > .stepimage {
+    width: 100%;
+    height: auto;
+  }
+
+  > .step > .stepindex {
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+    font-size: $big-text;
+    border-radius: 50%;
+    background-color: $cs0-low;
+    width: $md-circle-width;
+    height: $md-circle-width;
+    line-height: $md-circle-width;
+  }
+}

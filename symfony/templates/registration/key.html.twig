@@ -20,6 +20,7 @@
     $('#{{ form.u2fTokenResponse.vars.id }}').val(JSON.stringify(registerResponse));
     $(".buttoncontainer > .message").fadeOut();
     $(".buttoncontainer > .image").fadeOut();
+    $("#{{ form.vars.id }}").submit();
   }
   var request = {{ request_json | raw }};
   var sign_requests = {{ sign_requests | raw }};
@@ -29,5 +30,5 @@
 
 {% block body %}
 <p>Please plug in and activate your U2F key.</p>
-{{ form(form) }}
+{{ form(form, {"attr": {"id": form.vars.id}}) }}
 {% endblock %}

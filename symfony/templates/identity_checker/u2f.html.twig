@@ -21,6 +21,7 @@
     $("#{{ form.submit.vars.id }}").attr("disabled", false);
     $(".buttoncontainer > .message").fadeOut();
     $(".buttoncontainer > .image").fadeOut();
+    $("#{{ form.vars.id }}").submit();
   }
   var sign_requests = {{ sign_requests_json | raw }};
   u2f.sign(sign_requests, completeAuth);
@@ -29,5 +30,5 @@
 
 {% block body %}
 <p>Press "Submit" after having activated your U2F key.</p>
-{{ form(form) }}
+{{ form(form, {"attr": {"id": form.vars.id}}) }}
 {% endblock %}

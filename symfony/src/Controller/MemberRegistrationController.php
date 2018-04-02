@@ -22,6 +22,7 @@ use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 use Firehed\U2F\Registration;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -114,6 +115,8 @@ class MemberRegistrationController extends AbstractController
     }
 
     /**
+     * @todo Not ACID.
+     *
      * @Route(
      *  "/not-authenticated/register/u2f-key/{sid}",
      *  name="registration_u2f_key")
@@ -144,6 +147,12 @@ class MemberRegistrationController extends AbstractController
 
         $submission = new NewU2fRegistrationSubmission();
         $form = $this->createForm(NewU2fRegistrationType::class, $submission);
+        if (1 === $config->getIntSetting(Setting::N_U2F_KEYS_REG)) {
+            $form->add("u2fKeyName", HiddenType::class, [
+                "required" => false,
+                "data" => "Key {$u2fKeyNo}",
+            ]);
+        }
         $form->handleRequest($request);
         try {
             if ($form->isSubmitted() && $form->isValid()) {

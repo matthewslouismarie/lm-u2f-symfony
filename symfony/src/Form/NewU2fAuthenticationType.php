@@ -15,7 +15,6 @@ class NewU2fAuthenticationType extends AbstractType
     {
         $builder
             ->add('u2fTokenResponse', HiddenType::class)
-            ->add('submit', SubmitType::class)
         ;
     }
 

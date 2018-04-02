@@ -1,0 +1,11 @@
+.neutral-message
+{
+  padding: $md-padding;
+  font-size: $big-text;
+  text-align: center;
+
+  > .message {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+}

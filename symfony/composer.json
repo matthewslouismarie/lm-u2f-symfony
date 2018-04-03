@@ -81,7 +81,7 @@
         },
         {
             "type": "git",
-            "url": "https://github.com/matthewslouismarie/authentifier"
+            "url": "/var/www/html/authentifier"
         }
     ],
     "minimum-stability": "dev",

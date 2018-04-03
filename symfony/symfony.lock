@@ -74,17 +74,26 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "matthewslouismarie/authentifier": {
+        "version": "dev-master"
+    },
     "matthewslouismarie/lm-u2f": {
         "version": "dev-master"
     },
     "matthewslouismarie/lm-web-framework": {
         "version": "dev-master"
     },
+    "nikic/php-parser": {
+        "version": "v4.0.1"
+    },
     "ocramius/package-versions": {
         "version": "1.2.0"
     },
     "ocramius/proxy-manager": {
         "version": "2.2.0"
+    },
+    "paragonie/random_compat": {
+        "version": "v2.0.11"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -242,8 +251,17 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.6.0"
     },
+    "symfony/polyfill-php56": {
+        "version": "v1.7.0"
+    },
+    "symfony/polyfill-php70": {
+        "version": "v1.7.0"
+    },
     "symfony/polyfill-php72": {
         "version": "v1.6.0"
+    },
+    "symfony/polyfill-util": {
+        "version": "v1.7.0"
     },
     "symfony/profiler-pack": {
         "version": "v1.0.2"
@@ -268,6 +286,9 @@
             "version": "3.3",
             "ref": "85834af1496735f28d831489d12ab1921a875e0d"
         }
+    },
+    "symfony/security-csrf": {
+        "version": "v4.0.7"
     },
     "symfony/stopwatch": {
         "version": "v4.0.0"

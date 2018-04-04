@@ -16,3 +16,6 @@
 ###< symfony/phpunit-bridge ###
 /.sass-cache
 /public/*.min.css.map
+/update_authentifier
+/reinstall_authentifier
+/.matthewslouismarie

@@ -147,7 +147,7 @@ class AuthenticationManager
     /**
      * @todo Exception.
      */
-    public function createHighSecurityAuthenticationRequest(
+    public function createHighSecurityAuthenticationProcess(
         string $callerRouteName,
         string $calleeRouteName,
         array $additionalData = []): IdentityVerificationRequest

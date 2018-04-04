@@ -116,14 +116,14 @@ class MemberAccount extends AbstractController
      *  name="delete_account")
      */
     public function deleteAccount(
-        AuthenticationManager $authenticationRequestManager,
+        AuthenticationManager $AuthenticationProcessManager,
         Request $httpRequest)
     {
         $form = $this->createForm(UserConfirmationType::class);
 
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
-            $request = $authenticationRequestManager->createHighSecurityAuthenticationRequest(
+            $request = $AuthenticationProcessManager->createHighSecurityAuthenticationProcess(
                 'delete_account',
                 'process_account_deletion')
             ;
@@ -146,10 +146,10 @@ class MemberAccount extends AbstractController
      */
     public function processAccountDeletion(
         string $sid,
-        AuthenticationManager $authenticationRequestManager,
+        AuthenticationManager $AuthenticationProcessManager,
         TokenStorageInterface $tokenStorage)
     {
-        $tdm = $authenticationRequestManager->achieveOperation($sid, 'process_account_deletion');
+        $tdm = $AuthenticationProcessManager->achieveOperation($sid, 'process_account_deletion');
         $tokenStorage->setToken(null);
 
         return $this->render('successful_account_deletion.html.twig');

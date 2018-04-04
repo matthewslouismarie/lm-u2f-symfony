@@ -3,9 +3,9 @@
 namespace App\Service;
 
 use InvalidArgumentException;
-use UnexpectedValueException;
 use Serializable;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use UnexpectedValueException;
 
 /**
  * @todo Thread-safe (e.g. storeArray)? Should be.
@@ -152,7 +152,7 @@ class SecureSession
     {
         $value = $this->session->get($sid);
         if (!is_a($value, $class)) {
-            throw new \UnexpectedValueException();
+            throw new UnexpectedValueException();
         }
         $this->session->remove($sid);
 
@@ -163,14 +163,14 @@ class SecureSession
     {
         $value = $this->session->get($sid);
         if (!is_string($value)) {
-            throw new \UnexpectedValueException();
+            throw new UnexpectedValueException();
         }
         $this->session->remove($sid);
 
         return $value;
     }
 
-    private function generateNewKey(): string
+    public function generateNewKey(): string
     {
         do {
             $randomSid = bin2hex(random_bytes(self::KEY_LENGTH));

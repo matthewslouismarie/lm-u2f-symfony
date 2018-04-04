@@ -57,13 +57,13 @@ class U2fAuthenticationManager
             throw new NoRegisteredU2fTokenException();
         }
 
-        $u2fAuthenticationRequest = new U2fAuthenticationRequest($signRequests);
+        $u2fAuthenticationProcess = new U2fAuthenticationRequest($signRequests);
 
-        return $u2fAuthenticationRequest;
+        return $u2fAuthenticationProcess;
     }
 
     public function processResponse(
-        U2fAuthenticationRequest $u2fAuthenticationRequest,
+        U2fAuthenticationRequest $u2fAuthenticationProcess,
         string $username,
         string $u2fTokenResponse): int
     {
@@ -85,13 +85,13 @@ class U2fAuthenticationManager
 
         $server
             ->setRegistrations($registrations)
-            ->setSignRequests($u2fAuthenticationRequest->getSignRequests())
+            ->setSignRequests($u2fAuthenticationProcess->getSignRequests())
         ;
         $response = SignResponse::fromJson($u2fTokenResponse);
         $registration = $server->authenticate($response);
 
         $challenge = $response->getClientData()->getChallenge();
-        $u2fAuthenticatorId = $this->getAuthenticatorId($u2fAuthenticationRequest->getSignRequests(), $challenge);
+        $u2fAuthenticatorId = $this->getAuthenticatorId($u2fAuthenticationProcess->getSignRequests(), $challenge);
 
         $u2fToken = $this
             ->em

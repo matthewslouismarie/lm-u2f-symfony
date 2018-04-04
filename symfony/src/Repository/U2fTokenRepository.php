@@ -6,8 +6,11 @@ use App\Entity\Member;
 use App\Entity\U2fToken;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use LM\Authentifier\Enum\Persistence\Operation;
+use LM\Authentifier\Model\PersistOperation;
 use Firehed\U2F\Registration;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use UnexpectedValueException;
 
 class U2fTokenRepository extends ServiceEntityRepository
 {
@@ -55,6 +58,55 @@ class U2fTokenRepository extends ServiceEntityRepository
     public function getU2fTokens(Member $member): array
     {
         return $this->findBy(['member' => $member]);
+    }
+
+    public function processPersistOperation(PersistOperation $persistOperation): void
+    {
+        if ($persistOperation->getType()->is(new Operation(Operation::UPDATE))) {
+            $registration = $persistOperation->getObject();
+            $tkn = $this
+                ->findOneBy([
+                    "publicKey" => base64_encode($registration->getPublicKey()),
+                ])
+            ;
+            // if (1 !== count($tkn)) {
+            //     throw new UnexpectedValueException();
+            // }
+            $counter = $registration->getCounter();
+            $attestation = base64_encode(
+                $registration->getAttestationCertificateBinary()
+            );
+            $publicKey = base64_encode($registration->getPublicKey());
+            $keyHandle = base64_encode($registration->getKeyHandleBinary());
+            $newTkn = new U2fToken(
+                null,
+                $attestation,
+                $counter,
+                $keyHandle,
+                $tkn->getMember(),
+                $tkn->getRegistrationDateTime(),
+                $publicKey,
+                $tkn->getU2fKeyName()
+            );
+            $this
+                ->om
+                ->remove($tkn)
+            ;
+            $this
+                ->om
+                ->flush()
+            ;
+            $this
+                ->om
+                ->persist($newTkn)
+            ;
+            $this
+                ->om
+                ->flush()
+            ;
+        } else {
+            throw new Exception("Not supported yet");
+        }
     }
 
     public function removeU2fToken(Member $member, string $u2fTokenSlug): void

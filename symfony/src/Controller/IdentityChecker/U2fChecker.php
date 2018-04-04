@@ -65,13 +65,13 @@ class U2fChecker extends AbstractController
 
             $form->handleRequest($httpRequest);
             if ($form->isSubmitted() && $form->isValid()) {
-                $u2fAuthenticationRequest = $tdm
+                $u2fAuthenticationProcess = $tdm
                     ->getBy('key', 'u2f_authentication_request')
                     ->getOnlyValue()
                     ->getValue(U2fAuthenticationRequest::class)
                 ;
                 $usedU2fKeyIds[] = $u2fAuthenticationManager->processResponse(
-                    $u2fAuthenticationRequest,
+                    $u2fAuthenticationProcess,
                     $username,
                     $submission->getU2fTokenResponse()
                 );
@@ -109,19 +109,19 @@ class U2fChecker extends AbstractController
                         ]))
                 ;
             }
-            $u2fAuthenticationRequest = $u2fAuthenticationManager->generate($username, $usedU2fKeyIds);
+            $u2fAuthenticationProcess = $u2fAuthenticationManager->generate($username, $usedU2fKeyIds);
             $secureSession->setObject(
                 $sid,
                 $tdm->replaceByKey(new TransitingData(
                     'u2f_authentication_request',
                     'ic_u2f',
-                    $u2fAuthenticationRequest)),
+                    $u2fAuthenticationProcess)),
                 TransitingDataManager::class)
             ;
 
             return $this->render('identity_checker/u2f.html.twig', [
                 'form' => $form->createView(),
-                'sign_requests_json' => $u2fAuthenticationRequest->getJsonSignRequests(),
+                'sign_requests_json' => $u2fAuthenticationProcess->getJsonSignRequests(),
             ]);
         }
         catch (ClientErrorException $e) {

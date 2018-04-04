@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Callback\Authentifier\MemberAuthenticationCallback;
 use App\Enum\Setting;
 use App\Exception\AccessDeniedException;
 use App\Form\LoginRequestType;
@@ -11,10 +12,21 @@ use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
 use App\Model\BooleanObject;
 use App\Model\GrantedAuthorization;
+use App\Repository\U2fTokenRepository;
+use App\Repository\MemberRepository;
 use App\Security\MemberAuthenticator;
+use App\Service\Authentifier\Configuration;
 use App\Service\AuthenticationManager;
 use App\Service\AppConfigManager;
 use App\Service\SecureSession;
+use Firehed\U2F\Registration;
+use LM\Authentifier\Controller\AuthenticationKernel;
+use LM\Authentifier\Enum\AuthenticationProcess\Status;
+use LM\Authentifier\Factory\AuthenticationProcessFactory;
+use LM\Authentifier\Model\AuthenticationProcess;
+use LM\Authentifier\Model\DataManager;
+use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -103,6 +115,19 @@ class AuthenticationController extends AbstractController
 
     /**
      * @Route(
+     *  "/not-authenticated/tmp-process-login/{sid}",
+     *  name="tmp_authentication_processing")
+     */
+    public function tmpProcessAuthentication()
+    {
+        return $this->render("messages/success.html.twig", [
+            "message" => "Yey",
+            "pageTitle" => "Yey",
+        ]);
+    }
+
+    /**
+     * @Route(
      *  "/authenticated/post-login",
      *  name="post_authentication")
      */
@@ -148,5 +173,47 @@ class AuthenticationController extends AbstractController
     public function notLoggedOut()
     {
         return $this->render('not_logged_out_error.html.twig');
+    }
+
+    /**
+     * @todo Hard-coded username.
+     *
+     * @Route(
+     *  "/all/authenticate/{sid}",
+     *  name="authentication")
+     */
+    public function processRequest(
+        ?string $sid = null,
+        AuthenticationProcessFactory $authenticationProcessFactory,
+        MemberAuthenticationCallback $callback,
+        MemberRepository $memberRepo,
+        SecureSession $secureSession,
+        U2fTokenRepository $u2fRepo,
+        Configuration $config,
+        Request $httpRequest)
+    {
+        $authKernel = new AuthenticationKernel($config);
+        $diactorosFactory = new DiactorosFactory();
+        $httpFoundationFactory = new HttpFoundationFactory();
+        $psrHttpRequest = $diactorosFactory->createRequest($httpRequest);
+        if (null === $sid) {
+            $newAuthProcess = $authenticationProcessFactory->createU2fProcess(
+                "louis",
+                $u2fRepo->getMemberRegistrations($memberRepo->getMember("louis")),
+                $callback
+            );
+            $authentifierResponse = $authKernel->processHttpRequest($psrHttpRequest, $newAuthProcess);
+            $sid = $secureSession->storeObject($newAuthProcess, AuthenticationProcess::class);
+
+            return new RedirectResponse($this->generateUrl("authentication", [
+                "sid" => $sid,
+            ]));
+        }
+
+        $authRequest = $secureSession->getAndRemoveObject($sid, AuthenticationProcess::class);
+        $authentifierResponse = $authKernel->processHttpRequest($psrHttpRequest, $authRequest);
+        $secureSession->setObject($sid, $authentifierResponse->getProcess(), AuthenticationProcess::class);
+
+        return $httpFoundationFactory->createResponse($authentifierResponse->getHttpResponse());
     }
 }

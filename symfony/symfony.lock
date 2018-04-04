@@ -71,6 +71,9 @@
     "doctrine/orm": {
         "version": "v2.6.0"
     },
+    "guzzlehttp/psr7": {
+        "version": "1.4.2"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -95,11 +98,23 @@
     "paragonie/random_compat": {
         "version": "v2.0.11"
     },
+    "php-di/invoker": {
+        "version": "2.0.0"
+    },
+    "php-di/php-di": {
+        "version": "6.0.0-alpha3"
+    },
+    "php-di/phpdoc-reader": {
+        "version": "2.1.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
     "psr/container": {
         "version": "1.0.0"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
     },
     "psr/log": {
         "version": "1.0.2"
@@ -269,6 +284,9 @@
     "symfony/property-access": {
         "version": "v4.0.2"
     },
+    "symfony/psr-http-message-bridge": {
+        "version": "v1.0.2"
+    },
     "symfony/routing": {
         "version": "3.3",
         "recipe": {
@@ -337,6 +355,9 @@
     },
     "zendframework/zend-code": {
         "version": "3.3.0"
+    },
+    "zendframework/zend-diactoros": {
+        "version": "1.7.1"
     },
     "zendframework/zend-eventmanager": {
         "version": "3.2.0"

@@ -28,7 +28,7 @@ class U2fToken
     private $member;
 
     /**
-     * @ORM\Column(type="string", length=788)
+     * @ORM\Column(type="string", length=2000)
      */
     private $attestation;
 

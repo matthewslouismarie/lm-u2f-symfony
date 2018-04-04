@@ -21,6 +21,9 @@ class MemberRepository extends ServiceEntityRepository
         $this->upEncoder = $upEncoder;
     }
 
+    /**
+     * @todo Username nullable?
+     */
     public function getMember(?string $username): Member
     {
         $member = $this->findOneBy([

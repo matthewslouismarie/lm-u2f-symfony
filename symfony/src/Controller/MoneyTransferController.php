@@ -34,7 +34,7 @@ class MoneyTransferController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $req = $this
                 ->requestManager
-                ->createHighSecurityAuthenticationRequest(
+                ->createHighSecurityAuthenticationProcess(
                     'transfer_money',
                     'complete_money_transfer')
             ;

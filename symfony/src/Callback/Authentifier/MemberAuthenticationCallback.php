@@ -4,6 +4,7 @@ namespace App\Callback\Authentifier;
 
 use App\Security\Token\AuthenticationToken;
 use App\Service\SecureSession;
+use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\IAuthenticationCallback;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -19,12 +20,12 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
     /**
      * @todo Probably not a good way of implementing authentication.
      */
-    public function filterSuccessResponse(ResponseInterface $response): ResponseInterface
+    public function filterSuccessResponse(AuthenticationProcess $authProcess, ResponseInterface $response): ResponseInterface
     {
         $sid = $this
             ->container
             ->get(SecureSession::class)
-            ->storeObject(new AuthenticationToken("louis"), AuthenticationToken::class)
+            ->storeObject(new AuthenticationToken($authProcess->getUsername()), AuthenticationToken::class)
         ;
         $redirectResponse = new RedirectResponse($this
             ->container
@@ -38,7 +39,7 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
         return $psr7Factory->createResponse($redirectResponse);
     }
 
-    public function filterFailureResponse(ResponseInterface $response): ResponseInterface
+    public function filterFailureResponse(AuthenticationProcess $authProcess, ResponseInterface $response): ResponseInterface
     {
         return $response;
     }

@@ -77,6 +77,9 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "jeremeamia/superclosure": {
+        "version": "2.4.0"
+    },
     "matthewslouismarie/authentifier": {
         "version": "dev-master"
     },
@@ -87,7 +90,7 @@
         "version": "dev-master"
     },
     "nikic/php-parser": {
-        "version": "v4.0.1"
+        "version": "v3.1.5"
     },
     "ocramius/package-versions": {
         "version": "1.2.0"
@@ -95,14 +98,11 @@
     "ocramius/proxy-manager": {
         "version": "2.2.0"
     },
-    "paragonie/random_compat": {
-        "version": "v2.0.11"
-    },
     "php-di/invoker": {
         "version": "2.0.0"
     },
     "php-di/php-di": {
-        "version": "6.0.0-alpha3"
+        "version": "6.0.0"
     },
     "php-di/phpdoc-reader": {
         "version": "2.1.0"
@@ -269,9 +269,6 @@
     "symfony/polyfill-php56": {
         "version": "v1.7.0"
     },
-    "symfony/polyfill-php70": {
-        "version": "v1.7.0"
-    },
     "symfony/polyfill-php72": {
         "version": "v1.6.0"
     },
@@ -296,6 +293,9 @@
             "ref": "a249484db698d1a847a30291c8f732414ac47e25"
         }
     },
+    "symfony/security": {
+        "version": "v4.0.2"
+    },
     "symfony/security-bundle": {
         "version": "3.3",
         "recipe": {
@@ -304,9 +304,6 @@
             "version": "3.3",
             "ref": "85834af1496735f28d831489d12ab1921a875e0d"
         }
-    },
-    "symfony/security-csrf": {
-        "version": "v4.0.7"
     },
     "symfony/stopwatch": {
         "version": "v4.0.0"

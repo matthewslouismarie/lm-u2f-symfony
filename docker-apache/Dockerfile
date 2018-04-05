@@ -51,6 +51,6 @@ RUN sudo apt-get install -y ruby-full
 RUN sudo gem install sass
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /var/www/html/symfony
 
 CMD sudo apache2-foreground

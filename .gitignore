@@ -3,3 +3,4 @@
 /symfony/public/jquery.min.js
 /symfony/public/jquery.min.map
 /symfony/public/style.min.css
+/docker-compose.override.yml

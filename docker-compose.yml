@@ -10,7 +10,6 @@ services:
       - 443:443
     volumes:
       - ./symfony/:/var/www/html/symfony/
-      - ../authentifier/:/var/www/html/authentifier/
     networks:
       app_net:
         ipv4_address: 172.16.238.10

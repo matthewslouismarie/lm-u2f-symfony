@@ -33,6 +33,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
+/**
+ * @todo To delete at some point (as it is replaced by LoginController).
+ */
 class AuthenticationController extends AbstractController
 {
     /**
@@ -179,7 +182,7 @@ class AuthenticationController extends AbstractController
      * @todo Hard-coded username.
      *
      * @Route(
-     *  "/all/authenticate/{sid}",
+     *  "/authenticated/authenticate/{sid}",
      *  name="authentication")
      */
     public function processRequest(

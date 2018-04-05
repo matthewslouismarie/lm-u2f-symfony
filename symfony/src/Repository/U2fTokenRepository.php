@@ -40,6 +40,29 @@ class U2fTokenRepository extends ServiceEntityRepository
         return $registrations;
     }
 
+    public function getRegistrationsFromUsername(string $username): array
+    {
+        $member = $this
+            ->om
+            ->getRepository(Member::class)
+            ->findOneBy([
+                "username" => $username,
+            ])
+        ;
+        $u2f_tokens = $this->getU2fTokens($member);
+        $registrations = array();
+        foreach ($u2f_tokens as $tkn) {
+            $registration = new Registration();
+            $registration->setCounter($tkn->getCounter());
+            $registration->setAttestationCertificate($tkn->getAttestation());
+            $registration->setPublicKey(base64_decode($tkn->getPublicKey()));
+            $registration->setKeyHandle(base64_decode($tkn->getKeyHandle()));
+            $registrations[$tkn->getId()] = $registration;
+        }
+
+        return $registrations;
+    }
+
     public function getExcept(Member $member, array $ids)
     {
         $qb = $this

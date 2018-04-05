@@ -33,3 +33,7 @@ services:
 
     App\Service\SecureSession:
         public: true
+
+    Symfony\Component\HttpFoundation\Session\SessionInterface:
+        class:  Symfony\Component\HttpFoundation\Session\Session
+        public: true

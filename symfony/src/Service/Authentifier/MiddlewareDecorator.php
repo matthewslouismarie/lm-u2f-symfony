@@ -93,17 +93,18 @@ class MiddlewareDecorator
             ->config
             ->getBoolSetting(Setting::ALLOW_U2F_LOGIN)
         ;
-
+        $nU2fKeys = $this
+            ->config
+            ->getIntSetting(Setting::N_U2F_KEYS_LOGIN)
+        ;
+        $u2fChallenges = [];
+        for ($i = 0; $i < $nU2fKeys; $i++) {
+            $u2fChallenges[] = U2fChallenge::class;
+        }
         if ($pwdLoginAllowed && $u2fLoginAllowed) {
-            return [
-                CredentialChallenge::class,
-                U2fChallenge::class,
-            ];
+            return array_merge([CredentialChallenge::class], $u2fChallenges);
         } elseif ($u2fLoginAllowed) {
-            return [
-                ExistingUsernameChallenge::class,
-                U2fChallenge::class,
-            ];
+            return array_merge([ExistingUsernameChallenge::class], $u2fChallenges);
         } elseif ($pwdLoginAllowed) {
             return [
                 CredentialChallenge::class,

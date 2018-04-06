@@ -9,6 +9,8 @@ use ReflectionClass;
  */
 class Setting
 {
+    const N_U2F_KEYS_LOGIN = "N_U2F_KEYS_LOGIN";
+
     const N_U2F_KEYS_REG = "N_U2F_KEYS_REG";
 
     const N_U2F_KEYS_POST_AUTH = "N_U2F_KEYS_POST_AUTH";

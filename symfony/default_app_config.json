@@ -1,4 +1,5 @@
 {
+    "N_U2F_KEYS_LOGIN": 1,
     "N_U2F_KEYS_REG": 1,
     "N_U2F_KEYS_POST_AUTH": 3,
     "ALLOW_U2F_LOGIN": true,

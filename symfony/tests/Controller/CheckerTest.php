@@ -3,9 +3,9 @@
 namespace App\Tests\Controller;
 
 use App\DataStructure\TransitingDataManager;
-use App\Model\ArrayObject;
-use App\Model\Integer;
-use App\Model\StringObject;
+use LM\Common\Model\ArrayObject;
+use LM\Common\Model\IntegerObject;
+use LM\Common\Model\StringObject;
 use App\Model\TransitingData;
 use App\Tests\TestCaseTemplate;
 

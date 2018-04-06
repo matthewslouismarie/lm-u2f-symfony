@@ -4,8 +4,8 @@ namespace App\Controller\IdentityChecker;
 
 use App\DataStructure\TransitingDataManager;
 use App\Exception\IdentityChecker\StartedIdentityCheckException;
-use App\Model\ArrayObject;
-use App\Model\Integer;
+use LM\Common\Model\ArrayObject;
+use LM\Common\Model\IntegerObject;
 use App\Model\TransitingData;
 use App\Service\AuthenticationManager;
 use App\Service\SecureSession;

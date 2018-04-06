@@ -4,9 +4,9 @@ namespace App\Security;
 
 use App\DataStructure\TransitingDataManager;
 use App\Entity\Member;
-use App\Model\ArrayObject;
-use App\Model\BooleanObject;
-use App\Model\StringObject;
+use LM\Common\Model\ArrayObject;
+use LM\Common\Model\BooleanObject;
+use LM\Common\Model\StringObject;
 use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
 use App\Service\AuthenticationManager;

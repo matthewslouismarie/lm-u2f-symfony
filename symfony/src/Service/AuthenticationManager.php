@@ -9,11 +9,11 @@ use App\Exception\IdentityChecker\BeingProcessedException;
 use App\Exception\IdentityChecker\InvalidCheckerException;
 use App\Exception\IdentityChecker\StartedIdentityCheckException;
 use App\Exception\IdentityChecker\ProcessedException;
-use App\Model\ArrayObject;
-use App\Model\BooleanObject;
+use LM\Common\Model\ArrayObject;
+use LM\Common\Model\BooleanObject;
 use App\Model\IdentityVerificationRequest;
-use App\Model\Integer;
-use App\Model\StringObject;
+use LM\Common\Model\IntegerObject;
+use LM\Common\Model\StringObject;
 use App\Model\TransitingData;
 use App\Service\AppConfigManager;
 use App\Service\SecureSession;
@@ -211,11 +211,11 @@ class AuthenticationManager
             ->add(new TransitingData(
                 'checkers',
                 $routeName,
-                new ArrayObject($checkers)))
+                new ArrayObject($checkers, 'string')))
             ->add(new TransitingData(
                 'additional_data',
                 $routeName,
-                new ArrayObject($additionalData)))
+                new ArrayObject($additionalData, 'null')))
             ->add(new TransitingData(
                 'is_processed',
                 $routeName,

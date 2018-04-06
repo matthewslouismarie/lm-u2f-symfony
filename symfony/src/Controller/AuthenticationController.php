@@ -10,7 +10,7 @@ use App\FormModel\CredentialAuthenticationSubmission;
 use App\FormModel\LoginRequest;
 use App\Form\UserConfirmationType;
 use App\Model\AuthorizationRequest;
-use App\Model\BooleanObject;
+use LM\Common\Model\BooleanObject;
 use App\Model\GrantedAuthorization;
 use App\Repository\U2fTokenRepository;
 use App\Repository\MemberRepository;

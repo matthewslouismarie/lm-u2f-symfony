@@ -2,9 +2,12 @@
 
 namespace App\Tests;
 
+use App\DataFixtures\MembersFixture;
 use App\Enum\Setting;
 use App\Tests\TestCaseTemplate;
 use App\Tests\LoginTrait;
+use LM\Authentifier\Model\AuthenticationProcess;
+use LM\Authentifier\Model\RequestDatum;
 use LM\Common\Model\BooleanObject;
 
 class LoginTest extends TestCaseTemplate
@@ -20,6 +23,7 @@ class LoginTest extends TestCaseTemplate
             ->getAppConfigManager()
             ->set(Setting::ALLOW_U2F_LOGIN, true)
             ->set(Setting::ALLOW_PWD_LOGIN, false)
+            ->set(Setting::N_U2F_KEYS_LOGIN, 1)
         ;
         $this->doGet("/not-authenticated/login");
         $this->assertIsRedirect();
@@ -46,12 +50,11 @@ class LoginTest extends TestCaseTemplate
 
     public function testLoginWithTwoU2fKeys()
     {
-        $nU2fKeysLogin = 2;
         $this
             ->getAppConfigManager()
             ->set(Setting::ALLOW_U2F_LOGIN, true)
             ->set(Setting::ALLOW_PWD_LOGIN, false)
-            ->set(Setting::N_U2F_KEYS_LOGIN, $nU2fKeysLogin)
+            ->set(Setting::N_U2F_KEYS_LOGIN, 2)
         ;
         $this->doGet("/not-authenticated/login");
         $this->followRedirect();
@@ -59,14 +62,41 @@ class LoginTest extends TestCaseTemplate
             ->get("App\Service\Form\Filler\ExistingUsernameFiller")
             ->fillForm($this->getCrawler(), "louis"))
         ;
-        for ($i = 0; $i < $nU2fKeysLogin; $i++) {
-            $this->submit($this
-                ->get('App\Service\Form\Filler\U2fAuthenticationFiller')
-                ->fillForm($this->getCrawler(), $this->getUriLastPart()))
-            ;
-        }
-        $this->followRedirect();
-        $this->assertTrue($this->isAuthenticatedFully());
+        $this->assertSame(
+            0,
+            $this
+                ->getSecureSession()
+                ->getObject($this->getUriLastPart(), AuthenticationProcess::class)
+                ->getDataManager()
+                ->get(RequestDatum::KEY_PROPERTY, "used_u2f_key_public_keys")
+                ->getOnlyValue()
+                ->get(RequestDatum::VALUE_PROPERTY, ArrayObject::class)
+                ->getSize())
+        ;
+        $this->submit($this
+            ->get('App\Service\Form\Filler\U2fAuthenticationFiller')
+            ->fillForm($this->getCrawler(), $this->getUriLastPart()))
+        ;
+        $this->assertSame(
+            1,
+            $this
+                ->getSecureSession()
+                ->getObject($this->getUriLastPart(), AuthenticationProcess::class)
+                ->getDataManager()
+                ->get(RequestDatum::KEY_PROPERTY, "used_u2f_key_public_keys")
+                ->getOnlyValue()
+                ->get(RequestDatum::VALUE_PROPERTY, ArrayObject::class)
+                ->getSize())
+        ;
+        $this->submit($this
+            ->get('App\Service\Form\Filler\U2fAuthenticationFiller')
+            ->fillForm($this->getCrawler(), $this->getUriLastPart()))
+        ;
+        $this->assertContains('The U2F key is not recognised.', $this
+            ->getClient()
+            ->getResponse()
+            ->getContent())
+        ;
     }
 
     public function testCredentialLogin()

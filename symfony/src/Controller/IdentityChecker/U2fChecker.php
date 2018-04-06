@@ -52,7 +52,7 @@ class U2fChecker extends AbstractController
             ;
 
             $usedU2fKeyIdsTdm = $tdm
-                ->getBy('key', 'used_u2f_key_ids')
+                ->getBy('key', 'used_u2f_key_public_keys')
             ;
             $usedU2fKeyIds = (0 === $usedU2fKeyIdsTdm->getSize()) ? [] : $usedU2fKeyIdsTdm
                 ->getOnlyValue()
@@ -91,7 +91,7 @@ class U2fChecker extends AbstractController
                                 'ic_u2f',
                                 new Integer($checkerIndex + 1)))
                             ->replaceByKey(new TransitingData(
-                                'used_u2f_key_ids',
+                                'used_u2f_key_public_keys',
                                 'ic_u2f',
                                 new ArrayObject($usedU2fKeyIds))),
                         TransitingDataManager::class)

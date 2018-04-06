@@ -11,6 +11,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class MembersFixture extends Fixture
 {
+    const N_U2F_KEYS = 3;
+
     private $encoder;
 
     public function __construct(UserPasswordEncoderInterface $encoder)

@@ -24,17 +24,23 @@ class U2fAuthenticationMocker
         $this->cycles = [
             $this->getFirstU2fAuthenticationCycle(),
         ];
-        $this->currentIndex = 0;
+        $this->currentIndex = -1;
     }
 
     public function getNewCycle(): U2fAuthenticationCycle
     {
+        $this->currentIndex = $this->currentIndex + 1;
         $this
             ->repo
             ->resetCounters()
         ;
 
-        return $this->cycles[$this->currentIndex++];
+        return $this->cycles[$this->currentIndex];
+    }
+
+    public function rollBack(): void
+    {
+        --$this->currentIndex;
     }
 
     private function getFirstU2fAuthenticationCycle(): U2fAuthenticationCycle

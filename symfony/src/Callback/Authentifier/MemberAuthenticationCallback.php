@@ -5,6 +5,7 @@ namespace App\Callback\Authentifier;
 use App\Security\Token\AuthenticationToken;
 use App\Service\SecureSession;
 use LM\Authentifier\Model\AuthenticationProcess;
+use LM\Authentifier\Model\AuthentifierResponse;
 use LM\Authentifier\Model\IAuthenticationCallback;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -13,6 +14,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Router;
 
+/**
+ * @todo Make immutable?
+ */
 class MemberAuthenticationCallback implements IAuthenticationCallback
 {
     private $container;
@@ -20,7 +24,7 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
     /**
      * @todo Probably not a good way of implementing authentication.
      */
-    public function filterSuccessResponse(AuthenticationProcess $authProcess, ResponseInterface $response): ResponseInterface
+    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
         $sid = $this
             ->container
@@ -36,12 +40,18 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
         ;
 
         $psr7Factory = new DiactorosFactory();
-        return $psr7Factory->createResponse($redirectResponse);
+        return new AuthentifierResponse(
+            $authProcess,
+            $psr7Factory->createResponse($redirectResponse))
+        ;
     }
 
-    public function filterFailureResponse(AuthenticationProcess $authProcess, ResponseInterface $response): ResponseInterface
+    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
-        return $response;
+        return new AuthentifierResponse(
+            $authProcess,
+            $psr7Factory->createResponse(new Response('')))
+        ;
     }
 
     public function wakeUp(PsrContainerInterface $container): void

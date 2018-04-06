@@ -10,12 +10,12 @@ class ExistingUsernameFiller
 {
     public function fillForm(Crawler $crawler, string $username): Form
     {
-        $button = $crawler->selectButton('existing_username[submit]');
+        $button = $crawler->selectButton('form[submit]');
         if (0 === $button->count()) {
             throw new NonexistentNodeException();
         }
         $form = $button->form([
-            'existing_username[username]' => $username,
+            'form[username]' => $username,
         ]);
 
         return $form;

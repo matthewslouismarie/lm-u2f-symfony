@@ -4,10 +4,12 @@ namespace App\Tests\Controller;
 
 use App\Tests\SecurityStrategyTrait;
 use App\Tests\TestCaseTemplate;
+use App\Tests\LoginTrait;
 
 class AuthenticationTest extends TestCaseTemplate
 {
     use SecurityStrategyTrait;
+    use LoginTrait;
 
     public function testCorrectU2fAuthentication()
     {

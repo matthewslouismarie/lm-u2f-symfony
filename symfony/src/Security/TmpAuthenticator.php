@@ -8,6 +8,7 @@ use App\Model\ArrayObject;
 use App\Model\BooleanObject;
 use App\Model\StringObject;
 use App\Repository\U2fTokenRepository;
+use App\Security\MemberAuthenticator;
 use App\Security\Token\AuthenticationToken;
 use App\Service\AppConfigManager;
 use App\Service\AuthenticationManager;
@@ -104,6 +105,11 @@ class TmpAuthenticator extends AbstractFormLoginAuthenticator
             ->secureSession
             ->remove($request->get("sid"))
         ;
+        $this
+            ->secureSession
+            ->setObject(MemberAuthenticator::JUST_LOGGED_IN, new BooleanObject(true), BooleanObject::class)
+        ;
+
         return new RedirectResponse($this->router->generate('post_authentication'));        
     }
 

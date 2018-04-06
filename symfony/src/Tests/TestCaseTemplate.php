@@ -182,14 +182,6 @@ abstract class TestCaseTemplate extends DbWebTestCase
         ;
     }
 
-    public function isAuthenticatedFully(): bool
-    {
-        return $this
-            ->get('security.authorization_checker')
-            ->isGranted('IS_AUTHENTICATED_FULLY')
-        ;
-    }
-
     public function isRedirect(): bool
     {
         return $this

@@ -50,13 +50,13 @@ class U2fAuthenticationFiller
                 AuthenticationProcess::class
             )
         ;
-        $formNode = $crawler->filter("[name=\"u2f_authentication\"]");
+        $formNode = $crawler->filter("[name=\"form\"]");
         if (0 === $formNode->count()) {
             throw new NonexistentNodeException();
         }
 
         return $formNode->form([
-            'u2f_authentication[u2fTokenResponse]' => $cycle->getResponse(),
+            'form[u2fTokenResponse]' => $cycle->getResponse(),
         ]);
     }
 }

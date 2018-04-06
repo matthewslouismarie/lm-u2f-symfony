@@ -5,6 +5,7 @@ namespace App\Service\Authentifier;
 use App\Repository\MemberRepository;
 use App\Repository\U2fTokenRepository;
 use LM\Authentifier\Configuration\IApplicationConfiguration;
+use LM\Authentifier\Model\IMember;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -58,6 +59,13 @@ class Configuration implements IApplicationConfiguration
     public function getContainer(): PsrContainerInterface
     {
         return $this->container;
+    }
+
+    public function getMember(string $username): IMember
+    {
+        return $this->memberRepo->findOneBy([
+            'username' => $username,
+        ]);
     }
 
     public function getTokenStorage(): TokenStorageInterface

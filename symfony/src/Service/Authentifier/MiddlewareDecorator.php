@@ -2,9 +2,12 @@
 
 namespace App\Service\Authentifier;
 
+use App\Enum\Setting;
+use App\Service\AppConfigManager;
 use App\Service\Authentifier\Configuration;
 use App\Service\SecureSession;
 use LM\Authentifier\Controller\AuthenticationKernel;
+use LM\Authentifier\Challenge\CredentialChallenge;
 use LM\Authentifier\Challenge\ExistingUsernameChallenge;
 use LM\Authentifier\Challenge\U2fChallenge;
 use LM\Authentifier\Model\AuthenticationProcess;
@@ -15,10 +18,16 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
+use UnexpectedValueException;
 
+/**
+ * @todo Not really a decorator.
+ */
 class MiddlewareDecorator
 {
     private $authProcessFactory;
+
+    private $appConfig;
 
     private $config;
 
@@ -28,11 +37,13 @@ class MiddlewareDecorator
 
     public function __construct(
         AuthenticationProcessFactory $authProcessFactory,
-        Configuration $config,
+        Configuration $appConfig,
+        AppConfigManager $config,
         RouterInterface $router,
         SecureSession $secureSession)
     {
         $this->authProcessFactory = $authProcessFactory;
+        $this->appConfig = $appConfig;
         $this->config = $config;
         $this->router = $router;
         $this->secureSession = $secureSession;
@@ -44,7 +55,7 @@ class MiddlewareDecorator
         string $routeName,
         ?string $sid = null)
     {
-        $authKernel = new AuthenticationKernel($this->config);
+        $authKernel = new AuthenticationKernel($this->appConfig);
         $diactorosFactory = new DiactorosFactory();
         $httpFoundationFactory = new HttpFoundationFactory();
         $psrHttpRequest = $diactorosFactory->createRequest($httpRequest);
@@ -52,10 +63,7 @@ class MiddlewareDecorator
             $authProcess = $this
                 ->authProcessFactory
                 ->createAnonymousU2fProcess(
-                    [
-                        ExistingUsernameChallenge::class,
-                        U2fChallenge::class,
-                    ],
+                    $this->getChallenges(),
                     $callback)
             ;
             $sid = $this->secureSession->storeObject($authProcess, AuthenticationProcess::class);
@@ -72,6 +80,36 @@ class MiddlewareDecorator
             $this->secureSession->setObject($sid, $authentifierResponse->getProcess(), AuthenticationProcess::class);
 
             return $httpFoundationFactory->createResponse($authentifierResponse->getHttpResponse());
+        }
+    }
+
+    public function getChallenges()
+    {
+        $pwdLoginAllowed = $this
+            ->config
+            ->getBoolSetting(Setting::ALLOW_PWD_LOGIN)
+        ;
+        $u2fLoginAllowed = $this
+            ->config
+            ->getBoolSetting(Setting::ALLOW_U2F_LOGIN)
+        ;
+
+        if ($pwdLoginAllowed && $u2fLoginAllowed) {
+            return [
+                CredentialChallenge::class,
+                U2fChallenge::class,
+            ];
+        } elseif ($u2fLoginAllowed) {
+            return [
+                ExistingUsernameChallenge::class,
+                U2fChallenge::class,
+            ];
+        } elseif ($pwdLoginAllowed) {
+            return [
+                CredentialChallenge::class,
+            ];
+        } else {
+            throw new UnexpectedValueException();
         }
     }
 }

@@ -5,13 +5,14 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Serializable;
 use Symfony\Component\Security\Core\User\UserInterface;
+use LM\Authentifier\Model\IMember;
 
 /**
  * @todo Make immutable.
  *
  * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
  */
-class Member implements UserInterface, Serializable
+class Member implements IMember, UserInterface, Serializable
 {
     /**
      * @ORM\Id
@@ -57,6 +58,11 @@ class Member implements UserInterface, Serializable
     }
 
     public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function getHashedPassword(): string
     {
         return $this->password;
     }

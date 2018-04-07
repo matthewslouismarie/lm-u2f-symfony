@@ -119,6 +119,15 @@ abstract class TestCaseTemplate extends DbWebTestCase
         ;
     }
 
+    public function getResponseContent(): string
+    {
+        return $this
+            ->getClient()
+            ->getResponse()
+            ->getContent()
+        ;
+    }
+
     public function getSecureSession(): SecureSession
     {
         return $this

@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Router;
+use Twig_Environment;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 
 /**
  * @todo Make immutable?
@@ -29,40 +31,33 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
      */
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
-        $sid = $this
-            ->container
-            ->get(SecureSession::class)
-            ->storeObject(new AuthenticationToken($authProcess->getUsername()), AuthenticationToken::class)
-        ;
-        $redirectResponse = new RedirectResponse($this
-            ->container
-            ->get("router")
-            ->generate("tmp_authentication_processing", [
-                "sid" => $sid,
-            ]))
-        ;
-
-        $user = $this
-            ->container
-            ->get('doctrine')
-            ->getManager()
-            ->getRepository(Member::class)
-            ->findOneBy([
-                'username' => $authProcess->getUsername(),
-            ])
-        ;
-
         $this
             ->container
             ->get(LoginForcer::class)
-            ->logUserIn(new Request(), $user)
+            ->logUserIn(new Request(), $this
+                ->container
+                ->get('doctrine')
+                ->getManager()
+                ->getRepository(Member::class)
+                ->findOneBy([
+                    'username' => $authProcess->getUsername(),
+                ]))
+        ;
+
+        $httpResponse = $this
+            ->container
+            ->get('twig')
+            ->render('messages/success.html.twig', [
+                'pageTitle' => 'Successful login',
+                'message' => 'You logged in successfully.'
+            ])
         ;
 
         $psr7Factory = new DiactorosFactory();
 
         return new AuthentifierResponse(
             $authProcess,
-            $psr7Factory->createResponse(new Response('golle')))
+            $psr7Factory->createResponse(new Response($httpResponse)))
         ;
     }
 

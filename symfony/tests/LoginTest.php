@@ -45,6 +45,7 @@ class LoginTest extends TestCaseTemplate
             ->fillForm($this->getCrawler(), $this->getUriLastPart()))
         ;
         $this->assertTrue($this->isAuthenticatedFully());
+        $this->assertContains('You logged in successfully.', $this->getResponseContent());
     }
 
     public function testLoginWithTwoU2fKeys()
@@ -113,5 +114,6 @@ class LoginTest extends TestCaseTemplate
             ->fillForm($this->getCrawler(), "hello", "louis"))
         ;
         $this->assertTrue($this->isAuthenticatedFully());
+        $this->assertContains('You logged in successfully.', $this->getResponseContent());
     }
 }

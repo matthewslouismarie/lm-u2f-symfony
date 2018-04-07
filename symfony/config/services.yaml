@@ -37,3 +37,9 @@ services:
     Symfony\Component\HttpFoundation\Session\SessionInterface:
         class:  Symfony\Component\HttpFoundation\Session\Session
         public: true
+
+    Symfony\Component\HttpFoundation\RequestStack:
+        public: true
+
+    App\Service\LoginForcer:
+        public: true

@@ -44,7 +44,6 @@ class LoginTest extends TestCaseTemplate
             ->get('App\Service\Form\Filler\U2fAuthenticationFiller')
             ->fillForm($this->getCrawler(), $this->getUriLastPart()))
         ;
-        $this->followRedirect();
         $this->assertTrue($this->isAuthenticatedFully());
     }
 
@@ -113,7 +112,6 @@ class LoginTest extends TestCaseTemplate
             ->get("App\Service\Form\Filler\CredentialAuthenticationFiller")
             ->fillForm($this->getCrawler(), "hello", "louis"))
         ;
-        $this->followRedirect();
         $this->assertTrue($this->isAuthenticatedFully());
     }
 }

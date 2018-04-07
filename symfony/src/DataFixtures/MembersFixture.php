@@ -13,6 +13,10 @@ class MembersFixture extends Fixture
 {
     const N_U2F_KEYS = 3;
 
+    const PASSWORD = 'hello';
+
+    const USERNAME = 'louis';
+
     private $encoder;
 
     public function __construct(UserPasswordEncoderInterface $encoder)
@@ -22,8 +26,8 @@ class MembersFixture extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $member = new Member(null, 'louis', ['ROLE_ADMIN']);
-        $encoded = $this->encoder->encodePassword($member, 'hello');
+        $member = new Member(null, self::USERNAME, ['ROLE_ADMIN']);
+        $encoded = $this->encoder->encodePassword($member, self::PASSWORD);
         $member->setPassword($encoded);
         $manager->persist($member);
 

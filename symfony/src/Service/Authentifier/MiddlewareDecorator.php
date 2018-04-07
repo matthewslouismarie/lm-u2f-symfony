@@ -50,38 +50,45 @@ class MiddlewareDecorator
         $this->secureSession = $secureSession;
     }
 
-    public function processRequest(
+    public function createProcess(
         IAuthenticationCallback $callback,
-        Request $httpRequest,
         string $routeName,
-        ?string $sid = null): Response
+        string $loginSpecification = null): Response
+    {
+        $authProcess = $this
+            ->authProcessFactory
+            ->createAnonymousU2fProcess(
+                $this->getChallenges(),
+                $callback)
+        ;
+        $sid = $this
+            ->secureSession
+            ->storeObject(
+                $authProcess,
+                AuthenticationProcess::class)
+        ;
+
+        return new RedirectResponse($this
+            ->router
+            ->generate($routeName, [
+                "sid" => $sid,
+            ]))
+        ;
+    }
+
+    public function updateProcess(
+        Request $httpRequest,
+        string $sid)
     {
         $authKernel = new AuthenticationKernel($this->appConfig);
         $diactorosFactory = new DiactorosFactory();
         $httpFoundationFactory = new HttpFoundationFactory();
         $psrHttpRequest = $diactorosFactory->createRequest($httpRequest);
-        if (null === $sid) {
-            $authProcess = $this
-                ->authProcessFactory
-                ->createAnonymousU2fProcess(
-                    $this->getChallenges(),
-                    $callback)
-            ;
-            $sid = $this->secureSession->storeObject($authProcess, AuthenticationProcess::class);
+        $authProcess = $this->secureSession->getAndRemoveObject($sid, AuthenticationProcess::class);
+        $authentifierResponse = $authKernel->processHttpRequest($psrHttpRequest, $authProcess);
+        $this->secureSession->setObject($sid, $authentifierResponse->getProcess(), AuthenticationProcess::class);
 
-            return new RedirectResponse($this
-                ->router
-                ->generate($routeName, [
-                    "sid" => $sid,
-                ]))
-            ;
-        } else {
-            $authProcess = $this->secureSession->getAndRemoveObject($sid, AuthenticationProcess::class);
-            $authentifierResponse = $authKernel->processHttpRequest($psrHttpRequest, $authProcess);
-            $this->secureSession->setObject($sid, $authentifierResponse->getProcess(), AuthenticationProcess::class);
-
-            return $httpFoundationFactory->createResponse($authentifierResponse->getHttpResponse());
-        }
+        return $httpFoundationFactory->createResponse($authentifierResponse->getHttpResponse());
     }
 
     public function getChallenges()

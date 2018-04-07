@@ -47,11 +47,14 @@ class LoginController extends AbstractController
         MiddlewareDecorator $decorator,
         Request $httpRequest)
     {
-        return $decorator->processRequest(
-            $callback,
-            $httpRequest,
-            "login",
-            $sid)
-        ;
+        if (null === $sid) {
+            return $decorator->createProcess(
+                $callback,
+                "login",
+                'MEDIUM_SECURITY')
+            ;
+        } else {
+            return $decorator->updateProcess($httpRequest, $sid);
+        }
     }
 }

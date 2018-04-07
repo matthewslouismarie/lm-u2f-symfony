@@ -17,6 +17,7 @@ use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use UnexpectedValueException;
 
@@ -53,7 +54,7 @@ class MiddlewareDecorator
         IAuthenticationCallback $callback,
         Request $httpRequest,
         string $routeName,
-        ?string $sid = null)
+        ?string $sid = null): Response
     {
         $authKernel = new AuthenticationKernel($this->appConfig);
         $diactorosFactory = new DiactorosFactory();

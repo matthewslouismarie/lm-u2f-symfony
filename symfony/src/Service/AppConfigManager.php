@@ -87,7 +87,17 @@ class AppConfigManager
     /**
      * @todo Use a more specific exception.
      */
-    public function set(string $id, Serializable $value): self
+    public function set(string $id, $value): self
+    {
+        $this->appConfigRepo->set($id, $value);
+
+        return $this;
+    }
+
+    /**
+     * @todo Use a more specific exception.
+     */
+    public function setObject(string $id, Serializable $value): self
     {
         $this->appConfigRepo->set($id, serialize($value));
 

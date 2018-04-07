@@ -15,9 +15,9 @@ class GlobalConfigTest extends TestCaseTemplate
     {
         $config = $this->getAppConfigManager();
         $config
-            ->set('key0', new StringObject('value0'))
-            ->set('key1', new IntegerObject(5))
-            ->set('key2', new ArrayObject([new StringObject('hi'), new StringObject('yo')], StringObject::class))
+            ->setObject('key0', new StringObject('value0'))
+            ->setObject('key1', new IntegerObject(5))
+            ->setObject('key2', new ArrayObject([new StringObject('hi'), new StringObject('yo')], StringObject::class))
         ;
         $this->assertEquals(
             'value0',

@@ -43,3 +43,6 @@ services:
 
     App\Service\LoginForcer:
         public: true
+
+    App\Callback\Authentifier\MemberAuthenticationCallback:
+        public: true

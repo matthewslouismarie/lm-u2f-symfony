@@ -37,6 +37,8 @@ class Setting
 
     const PARTICIPANT_ID = "PARTICIPANT_ID";
 
+    const LOGIN_SPECIFICATIONS = "LOGIN_SPECIFICATIONS";
+
     public static function getKeys(): array
     {
         $reflection = new ReflectionClass(__CLASS__);

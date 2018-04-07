@@ -13,6 +13,7 @@ use LM\Authentifier\Challenge\U2fChallenge;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Factory\AuthenticationProcessFactory;
 use LM\Authentifier\Model\IAuthenticationCallback;
+use LM\Common\Model\ArrayObject;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -55,10 +56,17 @@ class MiddlewareDecorator
         string $routeName,
         string $loginSpecification = null): Response
     {
+        $loginSpecification = 'MEDIUM_SECURITY';
+        $challenges = $this
+            ->config
+            ->getSetting(Setting::LOGIN_SPECIFICATIONS, ArrayObject::class)
+            ->get($loginSpecification, ArrayObject::class)
+            ->toArray('string')
+        ;
         $authProcess = $this
             ->authProcessFactory
             ->createAnonymousU2fProcess(
-                $this->getChallenges(),
+                $challenges,
                 $callback)
         ;
         $sid = $this

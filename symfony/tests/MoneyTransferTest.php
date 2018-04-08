@@ -42,16 +42,17 @@ class MoneyTransferTest extends TestCaseTemplate
 
     public function testMoneyTransferU2f()
     {
-        $this->activateU2fSecurityStrategy();
         $this->login();
+        $this->activateU2fSecurityStrategy();
 
         $this->doGet('/authenticated/transfer-money');
         $this->submit($this
                 ->get('App\Service\Form\Filler\UserConfirmationFiller')
                 ->fillForm($this->getCrawler()))
         ;
+        $this->followRedirect();
         $this->submit($this
-            ->get('App\Service\Form\Filler\U2fAuthenticationFiller1')
+            ->get('App\Service\Form\Filler\U2fAuthenticationFiller')
             ->fillForm($this->getCrawler(), $this->getUriLastPart()))
         ;
         $this->assertContains(

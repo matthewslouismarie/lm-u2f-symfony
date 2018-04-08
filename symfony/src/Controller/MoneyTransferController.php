@@ -11,6 +11,7 @@ use App\Exception\IdentityChecker\ProcessedException;
 use App\Form\UserConfirmationType;
 use App\Service\AuthenticationManager;
 use App\Service\Authentifier\MiddlewareDecorator;
+use App\Service\ChallengeSpecification;
 use App\Service\SecureSession;
 use LM\Authentifier\Challenge\CredentialChallenge;
 use LM\Authentifier\Challenge\PasswordChallenge;
@@ -34,6 +35,7 @@ class MoneyTransferController extends AbstractController
      */
     public function transferMoney(
         string $sid = null,
+        ChallengeSpecification $challengeSpecification,
         MiddlewareDecorator $decorator,
         MoneyTransferCallback $callback,
         Request $httpRequest)
@@ -46,9 +48,7 @@ class MoneyTransferController extends AbstractController
                 return $decorator->createProcess(
                     $callback,
                     $httpRequest->get('_route'),
-                    new ArrayObject([
-                        PasswordChallenge::class,
-                    ], 'string'),
+                    $challengeSpecification->getChallenges(),
                     $this->getUser()->getUsername());
             }
 

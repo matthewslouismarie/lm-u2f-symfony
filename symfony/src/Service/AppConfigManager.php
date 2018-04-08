@@ -79,10 +79,12 @@ class AppConfigManager
     public function getSetting(string $id, string $expectedType)
     {
         $value = $this->get($id);
-        $this->checkType($value, $expectedType);
         if ($this->isClassName($expectedType)) {
-            return unserialize($value);
+            $unserialized = unserialize($value);
+            $this->checkType($unserialized, $expectedType);
+            return $unserialized;
         } else {
+            $this->checkType($value, $expectedType);
             return $value;
         }
     }

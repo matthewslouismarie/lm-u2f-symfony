@@ -9,19 +9,21 @@ use ReflectionClass;
  */
 class Setting
 {
-    const N_U2F_KEYS_LOGIN = "N_U2F_KEYS_LOGIN";
-
-    const N_U2F_KEYS_REG = "N_U2F_KEYS_REG";
-
-    const N_U2F_KEYS_POST_AUTH = "N_U2F_KEYS_POST_AUTH";
+    const ALLOW_MEMBER_TO_MANAGE_U2F_KEYS = "ALLOW_MEMBER_TO_MANAGE_U2F_KEYS";
 
     const ALLOW_PWD_LOGIN = "ALLOW_PWD_LOGIN";
 
     const ALLOW_U2F_LOGIN = "ALLOW_U2F_LOGIN";
 
-    const SECURITY_STRATEGY = "SECURITY_STRATEGY";
+    const LOGIN_SPECIFICATIONS = "LOGIN_SPECIFICATIONS";
 
-    const ALLOW_MEMBER_TO_MANAGE_U2F_KEYS = "ALLOW_MEMBER_TO_MANAGE_U2F_KEYS";
+    const N_U2F_KEYS_LOGIN = "N_U2F_KEYS_LOGIN";
+
+    const N_U2F_KEYS_POST_AUTH = "N_U2F_KEYS_POST_AUTH";
+
+    const N_U2F_KEYS_REG = "N_U2F_KEYS_REG";
+
+    const PARTICIPANT_ID = "PARTICIPANT_ID";
 
     const PWD_MIN_LENGTH = "PWD_MIN_LENGTH";
 
@@ -33,11 +35,25 @@ class Setting
 
     const PWD_ENFORCE_MIN_LENGTH = "PWD_ENFORCE_MIN_LENGTH";
 
+    const SEC_HIGH_PWD = 'sec_high_pwd';
+
+    const SEC_HIGH_U2F = 'sec_high_u2f';
+
+    const SEC_HIGH_U2F_N = 'sec_high_u2f_n';
+
+    const SEC_HIGH_BOTH = 'sec_high_both';
+
+    const SEC_MEDM_PWD = 'sec_medm_pwd';
+
+    const SEC_MEDM_U2F = 'sec_medm_u2f';
+
+    const SEC_MEDM_U2F_N = 'sec_medm_u2f_n';
+
+    const SEC_MEDM_BOTH = 'sec_medm_both';
+
+    const SECURITY_STRATEGY = "SECURITY_STRATEGY";
+
     const USER_STUDY_MODE_ACTIVE = 'IS_USER_STUDY_MODE_ACTIVE';
-
-    const PARTICIPANT_ID = "PARTICIPANT_ID";
-
-    const LOGIN_SPECIFICATIONS = "LOGIN_SPECIFICATIONS";
 
     public static function getKeys(): array
     {

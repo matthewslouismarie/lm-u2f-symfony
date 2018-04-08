@@ -5,6 +5,7 @@ namespace App\Tests;
 use App\Enum\SecurityStrategy;
 use App\Enum\Setting;
 use App\Service\AppConfigManager;
+use App\Service\Form\Filler\ChallengeSpecificationFiller;
 use App\Service\Form\Filler\PasswordConfigFiller;
 use App\Service\Form\Filler\U2fConfigFiller;
 use App\Service\Form\Filler\UserStudyConfigFiller;
@@ -179,5 +180,52 @@ class AdminDashboardTest extends TestCaseTemplate
             $pwdSettings['requireUppercaseLetters'],
             $config->getBoolSetting(Setting::PWD_UPPERCASE))
         ;
+    }
+
+    public function testChallengeSpecificationPanel()
+    {
+        $this->logIn();
+        $newSettings = [
+            Setting::SEC_HIGH_PWD => true,
+            Setting::SEC_HIGH_U2F => true,
+            Setting::SEC_HIGH_U2F_N => 2,
+            Setting::SEC_HIGH_BOTH => true,
+            Setting::SEC_MEDM_PWD => false,
+            Setting::SEC_MEDM_U2F => true,
+            Setting::SEC_MEDM_U2F_N => 1,
+            Setting::SEC_MEDM_BOTH => false,
+        ];
+        $this->doGet('/admin/challenge-specification');
+        $this->submit($this
+            ->get(ChallengeSpecificationFiller::class)
+            ->fillForm($this->getCrawler(), $newSettings))
+        ;
+        $config = $this->getAppConfigManager();
+        foreach ($newSettings as $key => $newSetting) {
+            $this->assertSame(
+                $config->getSetting($key, gettype($newSetting)),
+                $newSetting)
+            ;
+        }
+        $settings2 = [
+            Setting::SEC_HIGH_PWD => false,
+            Setting::SEC_HIGH_U2F => false,
+            Setting::SEC_HIGH_U2F_N => 3,
+            Setting::SEC_HIGH_BOTH => false,
+            Setting::SEC_MEDM_PWD => true,
+            Setting::SEC_MEDM_U2F => false,
+            Setting::SEC_MEDM_U2F_N => 0,
+            Setting::SEC_MEDM_BOTH => true,
+        ];
+        $this->submit($this
+            ->get(ChallengeSpecificationFiller::class)
+            ->fillForm($this->getCrawler(), $settings2))
+        ;
+        foreach ($settings2 as $key => $setting) {
+            $this->assertSame(
+                $config->getSetting($key, gettype($setting)),
+                $setting)
+            ;
+        }
     }
 }

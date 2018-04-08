@@ -12,5 +12,13 @@
     "PWD_UPPERCASE": true,
     "PWD_ENFORCE_MIN_LENGTH": true,
     "IS_USER_STUDY_MODE_ACTIVE": false,
-    "PARTICIPANT_ID": "Undefined"
+    "PARTICIPANT_ID": "Undefined",
+    "sec_high_pwd": true,
+    "sec_high_u2f": true,
+    "sec_high_u2f_n": 1,
+    "sec_high_both": true,
+    "sec_medm_pwd": true,
+    "sec_medm_u2f": true,
+    "sec_medm_u2f_n": 1,
+    "sec_medm_both": false
 }

@@ -14,14 +14,14 @@ class AppSettingRepository extends ServiceEntityRepository
         parent::__construct($registry, AppSetting::class);
     }
 
-    public function set(string $id, string $value): void
+    public function set(string $id, $value): void
     {
         $em = $this->getEntityManager();
         $appSetting = $this->find($id);
         if (null === $appSetting) {
-            $em->persist(new AppSetting($id, $value));
+            $em->persist(new AppSetting($id, serialize($value)));
         } else {
-            $appSetting->setValue($value);
+            $appSetting->setValue(serialize($value));
         }
         $em->flush();
     }
@@ -29,11 +29,11 @@ class AppSettingRepository extends ServiceEntityRepository
     /**
      * @todo Use more specific exception.
      */
-    public function get(string $id): ?string
+    public function get(string $id)
     {
         $appSetting = $this->find($id);
         if (null !== $appSetting) {
-            return $appSetting->getValue();
+            return unserialize($appSetting->getValue());
         } else {
             return $appSetting;
         }

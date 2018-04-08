@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
+use App\Form\ChallengeSpecificationType;
 use App\Form\ConfigImportType;
-use App\Enum\Setting;
 use App\Form\PwdConfigType;
 use App\Form\SecurityStrategyType;
+use App\Enum\Setting;
 use App\Form\U2fConfigType;
 use App\Form\UserStudyConfigType;
 use App\FormModel\ConfigImportSubmission;
@@ -235,6 +236,31 @@ class AdminDashboardController extends AbstractController
             $config->fromJson($submission->jsonConfig);
         }
         return $this->render('admin/import.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route(
+     *  "/admin/challenge-specification",
+     *  name="admin_challenge_specification")
+     */
+    public function setChallengeSpecification(
+        AppConfigManager $config,
+        Request $httpRequest)
+    {
+        $form = $this->createForm(ChallengeSpecificationType::class);
+
+        $form->handleRequest($httpRequest);
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($form->all() as $field) {
+                if ('submit' !== $field->getName()) {
+                    $config->set($field->getName(), $field->getData());
+                }
+            }
+        }
+
+        return $this->render('admin/challenge_specification.html.twig', [
             'form' => $form->createView(),
         ]);
     }

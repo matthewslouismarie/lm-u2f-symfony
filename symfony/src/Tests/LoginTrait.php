@@ -15,6 +15,9 @@ trait LoginTrait
         ;
     }
 
+    /**
+     * @todo Shouldn't change settings.
+     */
     public function login()
     {
         $this

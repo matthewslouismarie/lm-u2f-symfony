@@ -4,26 +4,18 @@ namespace App\Controller;
 
 use App\Callback\Authentifier\PasswordUpdateCallback;
 use App\Callback\Authentifier\AccountDeletionCallback;
-use App\DataStructure\TransitingDataManager;
-use App\Entity\U2fToken;
 use App\Enum\Setting;
-use App\Exception\IdentityChecker\ProcessedException;
 use App\Form\PasswordUpdateType;
 use App\Form\UserConfirmationType;
 use App\FormModel\PasswordUpdateSubmission;
 use App\Service\AppConfigManager;
-use App\Service\AuthenticationManager;
 use App\Service\Authentifier\MiddlewareDecorator;
-use App\Service\SecureSession;
+use App\Service\ChallengeSpecification;
 use LM\Authentifier\Challenge\CredentialChallenge;
 use LM\Common\Model\ArrayObject;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @todo Add Controller suffix.
@@ -52,6 +44,7 @@ class MemberAccount extends AbstractController
      */
     public function updatePassword(
         string $sid = null,
+        ChallengeSpecification $challengeSpecification,
         Request $httpRequest,
         MiddlewareDecorator $decorator)
     {
@@ -65,9 +58,9 @@ class MemberAccount extends AbstractController
                 return $decorator->createProcess(
                     $callback,
                     $httpRequest->get('_route'),
-                    new ArrayObject([
-                        CredentialChallenge::class,
-                    ], 'string'));
+                    $challengeSpecification->getChallenges(),
+                    $this->getUser()->getUsername())
+                ;
             }
 
             return $this->render('change_password.html.twig', [

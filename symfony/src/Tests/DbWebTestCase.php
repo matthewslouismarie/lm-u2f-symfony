@@ -2,11 +2,12 @@
 
 namespace App\Tests;
 
-use Doctrine\ORM\Tools\SchemaTool;
+use App\DataFixtures\AppFixture;
+use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 
 /**
  * @todo Should be able to automatically load all fixtures.
@@ -28,7 +29,7 @@ abstract class DbWebTestCase extends WebTestCase
         $this->schemaTool = new SchemaTool($om);
         $this->schemaTool->createSchema($this->metadatas);
         $fl = new SymfonyFixturesLoader($container);
-        $fl->addFixtures(array($container->get('App\DataFixtures\MembersFixture')));
+        $fl->addFixtures(array($container->get(AppFixture::class)));
         $fixtures = $fl->getFixtures();
         $purger = new ORMPurger($om);
         $executor = new ORMExecutor($om, $purger);

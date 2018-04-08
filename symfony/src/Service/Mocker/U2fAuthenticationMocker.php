@@ -8,7 +8,7 @@ use App\Repository\U2fTokenRepository;
 use Firehed\U2F\SignRequest;
 
 /**
- * Only works for the user louis.
+ * Only works for the user ADMIN defined in the AppFixture class.
  */
 class U2fAuthenticationMocker
 {

@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\DataFixtures\AppFixture;
 use App\Service\Form\Filler\ValidPasswordFiller;
 use App\Tests\SecurityStrategyTrait;
 use App\Tests\TestCaseTemplate;
@@ -25,11 +26,11 @@ class MoneyTransferTest extends TestCaseTemplate
         $this->followRedirect();
         $this->submit($this
             ->get(ValidPasswordFiller::class)
-            ->fillForm($this->getCrawler(), 'hell'))
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD.'blablabla'))
         ;
         $this->submit($this
             ->get(ValidPasswordFiller::class)
-            ->fillForm($this->getCrawler(), 'hello'))
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD))
         ;
         $this->assertContains(
             'success',

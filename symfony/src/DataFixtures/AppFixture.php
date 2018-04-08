@@ -9,13 +9,13 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class MembersFixture extends Fixture
+class AppFixture extends Fixture
 {
     const N_U2F_KEYS = 3;
 
-    const PASSWORD = 'hello';
+    const ADMIN_PASSWORD = 'hello';
 
-    const USERNAME = 'louis';
+    const ADMIN_USERNAME = 'louis';
 
     private $encoder;
 
@@ -26,8 +26,8 @@ class MembersFixture extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $member = new Member(null, self::USERNAME, ['ROLE_ADMIN']);
-        $encoded = $this->encoder->encodePassword($member, self::PASSWORD);
+        $member = new Member(null, self::ADMIN_USERNAME, ['ROLE_ADMIN']);
+        $encoded = $this->encoder->encodePassword($member, self::ADMIN_PASSWORD);
         $member->setPassword($encoded);
         $manager->persist($member);
 

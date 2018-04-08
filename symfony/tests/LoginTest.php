@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use App\DataFixtures\MembersFixture;
+use App\DataFixtures\AppFixture;
 use App\Enum\Setting;
 use App\Tests\TestCaseTemplate;
 use App\Tests\LoginTrait;
@@ -34,11 +34,11 @@ class LoginTest extends TestCaseTemplate
         $this->followRedirect();
         $this->submit($this
             ->get("App\Service\Form\Filler\ExistingUsernameFiller")
-            ->fillForm($this->getCrawler(), "lous"))
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_USERNAME.'eui'))
         ;
         $this->submit($this
             ->get("App\Service\Form\Filler\ExistingUsernameFiller")
-            ->fillForm($this->getCrawler(), "louis"))
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_USERNAME))
         ;
         $this->assertNotContains(
             'This form should not contain extra fields.',
@@ -64,7 +64,7 @@ class LoginTest extends TestCaseTemplate
         $this->followRedirect();
         $this->submit($this
             ->get("App\Service\Form\Filler\ExistingUsernameFiller")
-            ->fillForm($this->getCrawler(), "louis"))
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_USERNAME))
         ;
         $this->assertSame(
             0,
@@ -115,7 +115,7 @@ class LoginTest extends TestCaseTemplate
         $this->followRedirect();
         $this->submit($this
             ->get("App\Service\Form\Filler\CredentialAuthenticationFiller")
-            ->fillForm($this->getCrawler(), "hello", "louis"))
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD, AppFixture::ADMIN_USERNAME))
         ;
         $this->assertTrue($this->isAuthenticatedFully());
         $this->assertContains('You logged in successfully.', $this->getResponseContent());

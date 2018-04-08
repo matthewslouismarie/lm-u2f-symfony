@@ -2,10 +2,8 @@
 
 namespace App\Tests;
 
-use App\DataFixtures\MembersFixture;
-use App\Entity\Member;
 use App\Enum\Setting;
-use Symfony\Component\HttpFoundation\Request;
+use App\Service\Form\Filler\CredentialAuthenticationFiller;
 
 trait LoginTrait
 {
@@ -27,7 +25,16 @@ trait LoginTrait
         $this->doGet("/not-authenticated/login/pwd");
         $this->followRedirect();
         $this->submit($this
-            ->get("App\Service\Form\Filler\CredentialAuthenticationFiller")
+            ->get(CredentialAuthenticationFiller::class)
+            ->fillForm($this->getCrawler(), "hello", "louis"))
+        ;
+    }
+
+    public function performHighSecurityIdCheck()
+    {
+        $this->followRedirect();
+        $this->submit($this
+            ->get(CredentialAuthenticationFiller::class)
             ->fillForm($this->getCrawler(), "hello", "louis"))
         ;
     }

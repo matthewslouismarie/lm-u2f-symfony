@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
 use App\Entity\U2fToken;
-use App\Enum\Setting;
-use App\Service\AppConfigManager;
 use App\Tests\TestCaseTemplate;
 
-class U2fKeyManagementTest extends TestCaseTemplate
+class U2fDeviceManagementTest extends TestCaseTemplate
 {
-    use AuthenticationTrait;
+    use LoginTrait;
 
     public function testManagementPage()
     {
-        $this->u2fAuthenticate();
+        $this->login();
         $this->doGet('/authenticated/manage-u2f-keys');
 
         $member = $this->getLoggedInMember();
@@ -29,9 +27,9 @@ class U2fKeyManagementTest extends TestCaseTemplate
         );
     }
 
-    public function testKeyReset()
+    public function testDeviceRemoval()
     {
-        $this->u2fAuthenticate();
+        $this->login();
         $member = $this->getLoggedInMember();
         $u2fTokens = $this
             ->get('doctrine')
@@ -52,7 +50,6 @@ class U2fKeyManagementTest extends TestCaseTemplate
             ->getUserConfirmationFiller()
             ->fillForm($this->getCrawler()))
         ;
-        $this->followRedirect();
         $this->performHighSecurityIdCheck();
         $newNOfU2fKeys = count($this
             ->get('doctrine')
@@ -64,16 +61,5 @@ class U2fKeyManagementTest extends TestCaseTemplate
             $originalNOfU2fKeys - 1,
             $newNOfU2fKeys)
         ;
-        $requiredNKeys = $this
-            ->get('App\Service\AppConfigManager')
-            ->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH)
-        ;
-        if ($newNOfU2fKeys < $requiredNKeys) {
-            $this->doGet('/');
-            $this->assertContains(
-                'you need to register',
-                $this->getCrawler()->text()
-            );  
-        }
     }
 }

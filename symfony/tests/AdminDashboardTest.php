@@ -1,35 +1,35 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
 use App\Enum\SecurityStrategy;
 use App\Enum\Setting;
 use App\Service\AppConfigManager;
-use App\Tests\TestCaseTemplate;
-use App\Tests\Controller\AuthenticationTrait;
+use App\Service\Form\Filler\PasswordConfigFiller;
+use App\Service\Form\Filler\U2fConfigFiller;
+use App\Service\Form\Filler\UserStudyConfigFiller;
 
 class AdminDashboardTest extends TestCaseTemplate
 {
-    use AdminDashboardTrait;
-    use AuthenticationTrait;
+    use LoginTrait;
 
     public function testAdmin()
     {
         $this->doGet('/admin');
         $this->assertEquals(302, $this->getHttpStatusCode());
-        $this->u2fAuthenticate();
+        $this->login();
         $this->doGet('/admin');
         $this->assertEquals(200, $this->getHttpStatusCode());        
     }
 
     public function testAdminOptions()
     {
-        $this->u2fAuthenticate();
+        $this->login();
         $this->doGet('/admin/registration');
         $this->submit($this
-            ->get('App\Service\Form\Filler\U2fConfigFiller')
-            ->fillForm($this->getCrawler(), true, 2, 3, false)
-        );
+            ->get(U2fConfigFiller::class)
+            ->fillForm($this->getCrawler(), true, 2, 3, false))
+        ;
         $this->assertEquals(
             true,
             $this
@@ -69,7 +69,7 @@ class AdminDashboardTest extends TestCaseTemplate
 
     public function testSecurityMode()
     {
-        $this->u2fAuthenticate();
+        $this->login();
         $this->doGet('/admin/security-strategy');
         $button = $this
             ->getCrawler()
@@ -97,10 +97,10 @@ class AdminDashboardTest extends TestCaseTemplate
 
     public function testUserStudy()
     {
-        $this->u2fAuthenticate();
+        $this->login();
         $this->doGet('/admin/user-study');
         $this->submit($this
-            ->get('App\Service\Form\Filler\UserStudyConfigFiller')
+            ->get(UserStudyConfigFiller::class)
             ->fillForm($this->getCrawler(), true, 'P0'))
         ;
         $this->assertEquals(
@@ -116,7 +116,7 @@ class AdminDashboardTest extends TestCaseTemplate
                 ->getStringSetting(Setting::PARTICIPANT_ID))
         ;
         $this->submit($this
-            ->get('App\Service\Form\Filler\UserStudyConfigFiller')
+            ->get(UserStudyConfigFiller::class)
             ->fillForm($this->getCrawler(), true, null))
         ;
         $this->assertEquals(
@@ -131,6 +131,53 @@ class AdminDashboardTest extends TestCaseTemplate
                 ->getClient()
                 ->getResponse()
                 ->getContent())
+        ;
+    }
+
+
+    private function changePwdSettings(array $pwdSettings)
+    {
+        $config = $this->getAppConfigManager();
+        $this->login();
+        $this->doGet('/admin/password');
+        $this->submit($this
+            ->get(PasswordConfigFiller::class)
+            ->fillForm(
+                $this->getCrawler(),
+                $pwdSettings['minimumLength'],
+                $pwdSettings['enforceMinLength'],
+                $pwdSettings['requireNumbers'],
+                $pwdSettings['requireSpecialCharacters'],
+                $pwdSettings['requireUppercaseLetters']))
+        ;
+
+        $this->assertEquals(
+            $pwdSettings['enforceMinLength'],
+            $this
+                ->getAppConfigManager()
+                ->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH))
+                ;
+
+        $this->assertEquals(
+            $pwdSettings['minimumLength'],
+            $this
+                ->getAppConfigManager()
+                ->getIntSetting(Setting::PWD_MIN_LENGTH))
+        ;
+
+        $this->assertEquals(
+            $pwdSettings['requireNumbers'],
+            $config->getBoolSetting(Setting::PWD_NUMBERS))
+        ;
+
+        $this->assertEquals(
+            $pwdSettings['requireSpecialCharacters'],
+            $config->getBoolSetting(Setting::PWD_SPECIAL_CHARS))
+        ;
+
+        $this->assertEquals(
+            $pwdSettings['requireUppercaseLetters'],
+            $config->getBoolSetting(Setting::PWD_UPPERCASE))
         ;
     }
 }

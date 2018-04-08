@@ -29,7 +29,7 @@ class LoginTest extends TestCaseTemplate
             ->set(Setting::ALLOW_PWD_LOGIN, false)
             ->set(Setting::N_U2F_KEYS_LOGIN, 1)
         ;
-        $this->doGet("/not-authenticated/login");
+        $this->doGet("/not-authenticated/login/u2f");
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->submit($this
@@ -110,7 +110,7 @@ class LoginTest extends TestCaseTemplate
             ->set(Setting::ALLOW_PWD_LOGIN, true)
             ->set(Setting::ALLOW_U2F_LOGIN, false)
         ;
-        $this->doGet("/not-authenticated/pwd-authenticate");
+        $this->doGet("/not-authenticated/login/pwd");
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->submit($this

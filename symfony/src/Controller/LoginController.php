@@ -63,7 +63,7 @@ class LoginController extends AbstractController
 
     /**
      * @Route(
-     *  "/not-authenticated/login/{sid}",
+     *  "/not-authenticated/login/u2f/{sid}",
      *  name="login_u2f")
      */
     public function login(
@@ -114,7 +114,7 @@ class LoginController extends AbstractController
 
     /**
      * @Route(
-     *  "/not-authenticated/pwd-authenticate/{sid}",
+     *  "/not-authenticated/login/pwd/{sid}",
      *  name="login_pwd")
      */
     public function pwdLogin(

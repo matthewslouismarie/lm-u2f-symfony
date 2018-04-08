@@ -3,31 +3,15 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Callback\Authentifier\MoneyTransferCallback;
-use App\Exception\IdentityChecker\ProcessedException;
 use App\Form\UserConfirmationType;
-use App\Service\AuthenticationManager;
 use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\ChallengeSpecification;
-use App\Service\SecureSession;
-use LM\Authentifier\Challenge\CredentialChallenge;
-use LM\Authentifier\Challenge\PasswordChallenge;
-use LM\Authentifier\Challenge\U2fChallenge;
-use LM\Common\Model\ArrayObject;
 
 class MoneyTransferController extends AbstractController
 {
-    private $requestManager;
-
-    public function __construct(
-        AuthenticationManager $requestManager)
-    {
-        $this->requestManager = $requestManager;
-    }
-
     /**
      * @Route(
      *  "/authenticated/transfer-money/{sid}",

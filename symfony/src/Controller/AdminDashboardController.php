@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\PageMetric;
 use App\Form\ConfigImportType;
 use App\Enum\Setting;
 use App\Form\PwdConfigType;

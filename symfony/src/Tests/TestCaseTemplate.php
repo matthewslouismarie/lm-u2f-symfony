@@ -4,7 +4,6 @@ namespace App\Tests;
 
 use App\Entity\Member;
 use App\Service\AppConfigManager;
-use App\Service\AuthenticationManager;
 use App\Service\Form\Filler\U2fAuthenticationFiller1;
 use App\Service\Form\Filler\UserConfirmationFiller;
 use App\Service\SecureSession;
@@ -86,14 +85,6 @@ abstract class TestCaseTemplate extends DbWebTestCase
             ->getClient()
             ->getResponse()
             ->getStatusCode()
-        ;
-    }
-
-    public function getIdentityRequestManager(): AuthenticationManager
-    {
-        return $this
-            ->getContainer()
-            ->get('App\Service\AuthenticationManager')
         ;
     }
 

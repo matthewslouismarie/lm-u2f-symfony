@@ -16,12 +16,7 @@ security:
             provider: our_db_provider
             logout:
                 path: /authenticated/logout
-            guard:
-                authenticators:
-                    - App\Security\MemberAuthenticator
-                    - App\Security\TmpAuthenticator
-                entry_point: App\Security\MemberAuthenticator
-            access_denied_handler: App\Security\AccessDeniedHandler
+            # access_denied_handler: App\Security\AccessDeniedHandler
     access_control:
         -
             path: ^/admin(/.*)?$

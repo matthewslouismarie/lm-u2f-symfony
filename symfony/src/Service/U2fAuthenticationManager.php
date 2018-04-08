@@ -9,6 +9,9 @@ use App\FormModel\U2fAuthenticationRequest;
 use Doctrine\Common\Persistence\ObjectManager;
 use Firehed\U2F\SignResponse;
 
+/**
+ * @todo Delete.
+ */
 class U2fAuthenticationManager
 {
     private $em;

@@ -2,23 +2,13 @@
 
 namespace App\Callback\Authentifier;
 
-use App\Entity\Member;
 use App\Entity\U2fToken;
-use App\Service\LoginForcer;
-use App\Security\Token\AuthenticationToken;
-use App\Service\SecureSession;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
 use LM\Authentifier\Model\IAuthenticationCallback;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Router;
-use Twig_Environment;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 
 class U2fDeviceRemovalCallback implements IAuthenticationCallback
 {

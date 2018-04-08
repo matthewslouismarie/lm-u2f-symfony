@@ -3,15 +3,12 @@
 namespace App\Controller;
 
 use App\Callback\Authentifier\U2fDeviceRemovalCallback;
-use App\DataStructure\TransitingDataManager;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
 use App\Form\UserConfirmationType;
 use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
-use App\Service\AuthenticationManager;
 use App\Service\Authentifier\MiddlewareDecorator;
-use App\Service\SecureSession;
 use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Challenge\CredentialChallenge;
 use LM\Common\Model\ArrayObject;

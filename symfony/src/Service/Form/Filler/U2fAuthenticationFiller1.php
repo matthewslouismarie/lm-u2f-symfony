@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
 /**
- * @todo Rename to U2fAuthenticationFiller?
+ * @todo Delete.
  */
 class U2fAuthenticationFiller1
 {

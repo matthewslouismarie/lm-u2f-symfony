@@ -1,29 +1,30 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
 use App\Entity\U2fToken;
+use App\Service\Form\Filler\U2fDeviceRegistrationFiller;
 use App\Tests\TestCaseTemplate;
-use App\Tests\Controller\AuthenticationTrait;
+use App\Tests\LoginTrait;
 
-class U2fRegistrationTest extends TestCaseTemplate
+class U2fDeviceRegistrationTest extends TestCaseTemplate
 {
-    use AuthenticationTrait;
+    use LoginTrait;
 
-    public function testU2fRegistration()
+    public function testU2fDeviceRegistration()
     {
-        $this->u2fAuthenticate();
+        $this->login();
         $u2fTokenRepository = $this
             ->getObjectManager()
             ->getRepository(U2fToken::class);
         $nU2fKeys = count(
             $u2fTokenRepository->getU2fTokens($this->getLoggedInMember())
         );
-        $this->doGet('/authenticated/register-u2f-key');
+        $this->doGet('/authenticated/register-u2f-device');
         $this->followRedirect();
         $this->submit(
             $this
-                ->get('App\Service\Form\Filler\U2fKeyRegistrationFiller')
+                ->get(U2fDeviceRegistrationFiller::class)
                 ->fillForm($this->getCrawler(), $this->getUriLastPart())
         );
         $this->assertEquals(

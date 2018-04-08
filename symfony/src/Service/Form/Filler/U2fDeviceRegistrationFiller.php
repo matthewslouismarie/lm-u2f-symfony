@@ -10,7 +10,7 @@ use App\Service\SecureSession;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
-class U2fKeyRegistrationFiller
+class U2fDeviceRegistrationFiller
 {
     private $mocker;
 

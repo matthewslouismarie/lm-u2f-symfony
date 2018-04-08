@@ -13,7 +13,7 @@ use App\Service\AuthenticationManager;
 use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\SecureSession;
 use LM\Authentifier\Challenge\CredentialChallenge;
-use LM\Authentifier\Challenge\ExistingUsernameChallenge;
+use LM\Authentifier\Challenge\PasswordChallenge;
 use LM\Authentifier\Challenge\U2fChallenge;
 use LM\Common\Model\ArrayObject;
 
@@ -47,8 +47,9 @@ class MoneyTransferController extends AbstractController
                     $callback,
                     $httpRequest->get('_route'),
                     new ArrayObject([
-                        CredentialChallenge::class,
-                    ], 'string'));
+                        PasswordChallenge::class,
+                    ], 'string'),
+                    $this->getUser()->getUsername());
             }
 
             return $this->render('transfer_money.html.twig', [

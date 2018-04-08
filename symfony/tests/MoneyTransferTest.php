@@ -1,38 +1,36 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
-use App\Tests\Controller\AuthenticationTrait;
+use App\Service\Form\Filler\ValidPasswordFiller;
 use App\Tests\SecurityStrategyTrait;
 use App\Tests\TestCaseTemplate;
+use App\Service\Form\Filler\UserConfirmationFiller;
 
 class MoneyTransferTest extends TestCaseTemplate
 {
-    use AuthenticationTrait;
+    use LoginTrait;
     use SecurityStrategyTrait;
 
     public function testMoneyTransferPwd()
     {
         $this->activatePwdSecurityStrategy();
-        $this->pwdAuthenticate();
+        $this->login();
 
         $this->doGet('/authenticated/transfer-money');
         $this->submit($this
-                ->get('App\Service\Form\Filler\UserConfirmationFiller')
+                ->get(UserConfirmationFiller::class)
                 ->fillForm($this->getCrawler()))
         ;
         $this->followRedirect();
-        $this->followRedirect();
         $this->submit($this
-            ->get('App\Service\Form\Filler\ValidPasswordFiller')
+            ->get(ValidPasswordFiller::class)
             ->fillForm($this->getCrawler(), 'hell'))
         ;
-        $this->assertFalse($this->isRedirect());
         $this->submit($this
-            ->get('App\Service\Form\Filler\ValidPasswordFiller')
+            ->get(ValidPasswordFiller::class)
             ->fillForm($this->getCrawler(), 'hello'))
         ;
-        $this->followRedirect();
         $this->assertContains(
             'success',
             $this
@@ -45,20 +43,17 @@ class MoneyTransferTest extends TestCaseTemplate
     public function testMoneyTransferU2f()
     {
         $this->activateU2fSecurityStrategy();
-        $this->u2fAuthenticate();
+        $this->login();
 
         $this->doGet('/authenticated/transfer-money');
         $this->submit($this
                 ->get('App\Service\Form\Filler\UserConfirmationFiller')
                 ->fillForm($this->getCrawler()))
         ;
-        $this->followRedirect();
-        $this->followRedirect();
         $this->submit($this
             ->get('App\Service\Form\Filler\U2fAuthenticationFiller1')
             ->fillForm($this->getCrawler(), $this->getUriLastPart()))
         ;
-        $this->followRedirect();
         $this->assertContains(
             'success',
             $this

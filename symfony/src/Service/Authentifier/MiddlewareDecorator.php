@@ -57,14 +57,16 @@ class MiddlewareDecorator
     public function createProcess(
         IAuthenticationCallback $callback,
         string $routeName,
-        ArrayObject $challenges): Response
+        ArrayObject $challenges,
+        ?string $username = null): Response
     {
         $challengesArray = $challenges->toArray('string');
         $authProcess = $this
             ->authProcessFactory
-            ->createAnonymousU2fProcess(
+            ->createProcess(
                 $challengesArray,
-                $callback)
+                $callback,
+                $username)
         ;
         $sid = $this
             ->secureSession

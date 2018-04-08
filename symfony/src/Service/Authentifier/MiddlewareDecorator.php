@@ -51,22 +51,19 @@ class MiddlewareDecorator
         $this->secureSession = $secureSession;
     }
 
+    /**
+     * @challenges is temp
+     */
     public function createProcess(
         IAuthenticationCallback $callback,
         string $routeName,
-        string $loginSpecification = null): Response
+        ArrayObject $challenges): Response
     {
-        $loginSpecification = 'MEDIUM_SECURITY';
-        $challenges = $this
-            ->config
-            ->getSetting(Setting::LOGIN_SPECIFICATIONS, ArrayObject::class)
-            ->get($loginSpecification, ArrayObject::class)
-            ->toArray('string')
-        ;
+        $challengesArray = $challenges->toArray('string');
         $authProcess = $this
             ->authProcessFactory
             ->createAnonymousU2fProcess(
-                $challenges,
+                $challengesArray,
                 $callback)
         ;
         $sid = $this

@@ -13,6 +13,7 @@ use LM\Common\Model\BooleanObject;
 use LM\Authentifier\Challenge\CredentialChallenge;
 use LM\Authentifier\Challenge\ExistingUsernameChallenge;
 use LM\Authentifier\Challenge\U2fChallenge;
+
 class LoginTest extends TestCaseTemplate
 {
     use LoginTrait;
@@ -27,11 +28,6 @@ class LoginTest extends TestCaseTemplate
             ->set(Setting::ALLOW_U2F_LOGIN, true)
             ->set(Setting::ALLOW_PWD_LOGIN, false)
             ->set(Setting::N_U2F_KEYS_LOGIN, 1)
-            ->setObject(Setting::LOGIN_SPECIFICATIONS, new ArrayObject([
-                'MEDIUM_SECURITY' => new ArrayObject([
-                    ExistingUsernameChallenge::class,
-                    U2fChallenge::class,
-                ], 'string')], ArrayObject::class))
         ;
         $this->doGet("/not-authenticated/login");
         $this->assertIsRedirect();
@@ -63,14 +59,8 @@ class LoginTest extends TestCaseTemplate
             ->set(Setting::ALLOW_U2F_LOGIN, true)
             ->set(Setting::ALLOW_PWD_LOGIN, false)
             ->set(Setting::N_U2F_KEYS_LOGIN, 2)
-            ->setObject(Setting::LOGIN_SPECIFICATIONS, new ArrayObject([
-                'MEDIUM_SECURITY' => new ArrayObject([
-                    ExistingUsernameChallenge::class,
-                    U2fChallenge::class,
-                    U2fChallenge::class,
-                ], 'string')], ArrayObject::class))
         ;
-        $this->doGet("/not-authenticated/login");
+        $this->doGet("/not-authenticated/tmp-login");
         $this->followRedirect();
         $this->submit($this
             ->get("App\Service\Form\Filler\ExistingUsernameFiller")
@@ -119,12 +109,8 @@ class LoginTest extends TestCaseTemplate
             ->getAppConfigManager()
             ->set(Setting::ALLOW_PWD_LOGIN, true)
             ->set(Setting::ALLOW_U2F_LOGIN, false)
-            ->setObject(Setting::LOGIN_SPECIFICATIONS, new ArrayObject([
-                'MEDIUM_SECURITY' => new ArrayObject([
-                    CredentialChallenge::class,
-                ], 'string')], ArrayObject::class))
         ;
-        $this->doGet("/not-authenticated/login");
+        $this->doGet("/not-authenticated/pwd-authenticate");
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->submit($this

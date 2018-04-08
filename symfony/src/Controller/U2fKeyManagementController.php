@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Callback\Authentifier\U2fDeviceRemovalCallback;
 use App\DataStructure\TransitingDataManager;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
@@ -9,13 +10,15 @@ use App\Form\UserConfirmationType;
 use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
 use App\Service\AuthenticationManager;
+use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\SecureSession;
 use Doctrine\ORM\EntityManagerInterface;
+use LM\Authentifier\Challenge\CredentialChallenge;
+use LM\Common\Model\ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class U2fKeyManagementController extends AbstractController
 {
@@ -42,34 +45,32 @@ class U2fKeyManagementController extends AbstractController
 
     /**
      * @Route(
-     *  "/authenticated/confirm-u2f-key-reset/{u2fKeySlug}",
+     *  "/authenticated/confirm-u2f-device-removal/{u2fKeySlug}",
      *  name="confirm_u2f_key_reset")
      */
-    public function confirmU2fKeyReset(
+    public function confirmU2fDeviceRemoval(
         string $u2fKeySlug,
-        AppConfigManager $config,
-        Request $httpRequest,
-        AuthenticationManager $idRequestManager)
+        EntityManagerInterface $em,
+        MiddlewareDecorator $decorator,
+        Request $httpRequest)
     {
-        if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
-            return new RedirectResponse($this->generateUrl('member_account'));
-        }
         $form = $this->createForm(UserConfirmationType::class);
+
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
-            
-            $idRequest = $idRequestManager->create(
-                'confirm_u2f_key_reset',
-                [
-                    'ic_u2f',
-                    'reset_u2f_key',
-                ],
-                [
-                    'u2fKeySlug' => $u2fKeySlug,
+            $u2fRegistration = $em
+                ->getRepository(U2fToken::class)
+                ->findOneBy([
+                    'name' => $u2fKeySlug,
                 ])
             ;
-
-            return new RedirectResponse($idRequest->getUrl());
+            $callback = new U2fDeviceRemovalCallback($u2fRegistration);
+            return $decorator->createProcess(
+                $callback,
+                'remove_u2f_device',
+                new ArrayObject([
+                    CredentialChallenge::class,
+                ], 'string'));
         }
 
         return $this->render('confirm_u2f_key_reset.html.twig', [
@@ -79,37 +80,15 @@ class U2fKeyManagementController extends AbstractController
 
     /**
      * @Route(
-     *  "/authenticated/reset-u2f-key/{sid}",
-     *  name="reset_u2f_key")
+     *  "/authenticated/remove-u2f-device/{sid}",
+     *  name="remove_u2f_device")
      */
-    public function resetU2fKey(
+    public function removeU2fDevice(
         string $sid,
-        AppConfigManager $config,
         EntityManagerInterface $em,
-        Request $httpRequest,
-        AuthenticationManager $idRequestManager,
-        TokenStorageInterface $tokenStorage,
-        U2fTokenRepository $u2fTokenRepo)
+        MiddlewareDecorator $decorator,
+        Request $httpRequest)
     {
-        if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
-            return new RedirectResponse($this->generateUrl('member_account'));
-        }
-        $tdm = $idRequestManager->achieveOperation($sid, 'reset_u2f_key');
-        $u2fKeySlug = $idRequestManager->getAdditionalData($tdm)['u2fKeySlug'];
-        $u2fTokenRepo->removeU2fToken($this->getUser(), $u2fKeySlug);
-
-        $nU2fKeys = count($em
-            ->getRepository(U2fToken::class)
-            ->getU2fTokens($this->getUser())
-        );
-        $requiredNU2fKeys = $config
-            ->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH)
-        ;
-
-        return $this->render('u2f_key_removed.html.twig', [
-            'u2fKeySlug' => $u2fKeySlug,
-            'nU2fKeys' => $nU2fKeys,
-            'requiredNU2fKeys' => $requiredNU2fKeys,
-        ]);
+        return $decorator->updateProcess($httpRequest, $sid);
     }
 }

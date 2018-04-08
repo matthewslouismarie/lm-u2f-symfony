@@ -6,10 +6,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Callback\Authentifier\MoneyTransferCallback;
 use App\Exception\IdentityChecker\ProcessedException;
 use App\Form\UserConfirmationType;
 use App\Service\AuthenticationManager;
+use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\SecureSession;
+use LM\Authentifier\Challenge\CredentialChallenge;
+use LM\Authentifier\Challenge\ExistingUsernameChallenge;
+use LM\Authentifier\Challenge\U2fChallenge;
+use LM\Common\Model\ArrayObject;
 
 class MoneyTransferController extends AbstractController
 {
@@ -23,49 +29,33 @@ class MoneyTransferController extends AbstractController
 
     /**
      * @Route(
-     *  "/authenticated/transfer-money",
+     *  "/authenticated/transfer-money/{sid}",
      *  name="transfer_money")
      */
-    public function transferMoney(Request $httpRequest)
+    public function transferMoney(
+        string $sid = null,
+        MiddlewareDecorator $decorator,
+        MoneyTransferCallback $callback,
+        Request $httpRequest)
     {
-        $form = $this->createForm(UserConfirmationType::class);
+        if (null === $sid) {
+            $form = $this->createForm(UserConfirmationType::class);
 
-        $form->handleRequest($httpRequest);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $req = $this
-                ->requestManager
-                ->createHighSecurityAuthenticationProcess(
-                    'transfer_money',
-                    'complete_money_transfer')
-            ;
+            $form->handleRequest($httpRequest);
+            if ($form->isSubmitted() && $form->isValid()) {
+                return $decorator->createProcess(
+                    $callback,
+                    $httpRequest->get('_route'),
+                    new ArrayObject([
+                        CredentialChallenge::class,
+                    ], 'string'));
+            }
 
-            return new RedirectResponse($req->getUrl());
-        }
-
-        return $this->render('transfer_money.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route(
-     *  "/authenticated/complete-money-transfer/{sid}",
-     *  name="complete_money_transfer")
-     */
-    public function completeMoneyTransfer(string $sid)
-    {
-        try {
-            $tdm = $this
-                ->requestManager
-                ->achieveOperation($sid, 'complete_money_transfer')
-            ;
-
-            return $this->render('messages/success.html.twig', [
-                "pageTitle" => "Successful money transfer",
-                "message" => "The transfer was made successfully."
+            return $this->render('transfer_money.html.twig', [
+                'form' => $form->createView(),
             ]);
-        } catch (ProcessedException $e) {
-            return $this->render("messages/unspecified_error.html.twig");
+        } else {
+            return $decorator->updateProcess($httpRequest, $sid);
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Callback\Authentifier;
 
 use App\Entity\Member;
+use App\Entity\U2fToken;
 use App\Service\LoginForcer;
 use App\Security\Token\AuthenticationToken;
 use App\Service\SecureSession;
@@ -19,42 +20,45 @@ use Symfony\Component\Routing\Router;
 use Twig_Environment;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 
-/**
- * @todo Make immutable?
- */
-class MemberAuthenticationCallback implements IAuthenticationCallback
+class U2fDeviceRemovalCallback implements IAuthenticationCallback
 {
-    private $container;
+    private $entityManager;
+
+    private $psr7Factory;
+
+    private $twig;
+
+    private $u2fRegistration;
+
+    public function __construct(U2fToken $u2fRegistration)
+    {
+        $this->u2fRegistration = $u2fRegistration;
+    }
 
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
         $this
-            ->container
-            ->get(LoginForcer::class)
-            ->logUserIn(new Request(), $this
-                ->container
-                ->get('doctrine')
-                ->getManager()
-                ->getRepository(Member::class)
-                ->findOneBy([
-                    'username' => $authProcess->getUsername(),
-                ]))
+            ->entityManager
+            ->remove($this->u2fRegistration)
+        ;
+        $this
+            ->entityManager
+            ->flush()
         ;
 
         $httpResponse = $this
-            ->container
-            ->get('twig')
+            ->twig
             ->render('messages/success.html.twig', [
-                'pageTitle' => 'Successful login',
-                'message' => 'You logged in successfully.'
+                'pageTitle' => 'Successful Removal of U2F Device',
+                'message' => 'They U2F Device was successfully removed from your account.',
             ])
         ;
 
-        $psr7Factory = new DiactorosFactory();
-
         return new AuthentifierResponse(
             $authProcess,
-            $psr7Factory->createResponse(new Response($httpResponse)))
+            $this
+                ->psr7Factory
+                ->createResponse(new Response($httpResponse)))
         ;
     }
 
@@ -68,15 +72,30 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
 
     public function wakeUp(PsrContainerInterface $container): void
     {
-        $this->container = $container;
+        $this->psr7Factory = new DiactorosFactory();
+        $this->twig = $container->get('twig');
+        $this->u2fRegistration = $container
+            ->get('doctrine')
+            ->getManager()
+            ->merge($this->u2fRegistration)
+        ;
+        $this->entityManager = $container
+            ->get('doctrine')
+            ->getManager()
+        ;
+
     }
 
     public function serialize()
     {
-        return serialize([]);
+        return serialize([
+            $this->u2fRegistration,
+        ]);
     }
 
     public function unserialize($serialized)
     {
+        list(
+            $this->u2fRegistration) = unserialize($serialized);
     }
 }

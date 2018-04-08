@@ -5,10 +5,10 @@
 {% block body %}
 <ul class="choice-list -two"
   ><li class="choice">
-    <a class="link" href="{{ path('pwd_authenticate') }}">Login using password</a>
+    <a class="link" href="{{ path('login_pwd') }}">Login using password</a>
   </li
   ><li class="choice">
-    <a class="link" href="{{ path('authenticate') }}">Login using U2F key</a>
+    <a class="link" href="{{ path('login_u2f') }}">Login using U2F key</a>
   </li
 ></ul>
 {% endblock %}

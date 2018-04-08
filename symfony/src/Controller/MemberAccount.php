@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Callback\Authentifier\PasswordUpdateCallback;
+use App\Callback\Authentifier\AccountDeletionCallback;
 use App\DataStructure\TransitingDataManager;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
@@ -11,7 +13,10 @@ use App\Form\UserConfirmationType;
 use App\FormModel\PasswordUpdateSubmission;
 use App\Service\AppConfigManager;
 use App\Service\AuthenticationManager;
+use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\SecureSession;
+use LM\Authentifier\Challenge\CredentialChallenge;
+use LM\Common\Model\ArrayObject;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -42,116 +47,67 @@ class MemberAccount extends AbstractController
 
     /**
      * @Route(
-     *  "/authenticated/change-password",
+     *  "/authenticated/change-password/{sid}",
      *  name="change_password")
      */
     public function updatePassword(
-        Request $request,
-        AuthenticationManager $requestManager)
+        string $sid = null,
+        Request $httpRequest,
+        MiddlewareDecorator $decorator)
     {
-        $submission = new PasswordUpdateSubmission();
-        $form = $this->createForm(PasswordUpdateType::class, $submission);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $identityRequest = $requestManager->create(
-                'change_password',
-                [
-                    'ic_u2f',
-                    'process_password_update',
-                ],
-                [
-                    'new_password' => $submission->getPassword(),
-                ])
-            ;
+        if (null === $sid) {
+            $submission = new PasswordUpdateSubmission();
+            $form = $this->createForm(PasswordUpdateType::class, $submission);
+            $form->handleRequest($httpRequest);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $callback = new PasswordUpdateCallback($submission->getPassword());
 
-            return new RedirectResponse($identityRequest->getUrl());
-        }
+                return $decorator->createProcess(
+                    $callback,
+                    $httpRequest->get('_route'),
+                    new ArrayObject([
+                        CredentialChallenge::class,
+                    ], 'string'));
+            }
 
-        return $this->render('change_password.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route(
-     *  "/authenticated/process-password-update/{sid}",
-     *  name="process_password_update")
-     */
-    public function processPasswordUpdate(
-        string $sid,
-        EntityManagerInterface $em,
-        AuthenticationManager $requestManager,
-        SecureSession $secureSession,
-        UserPasswordEncoderInterface $encoder)
-    {
-        try {
-            $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-            $requestManager->assertSuccessful($tdm);
-            $requestManager->assertNotProcessed($tdm);
-            $hashedPassword = $encoder->encodePassword(
-                $this->getUser(),
-                $requestManager->getAdditionalData($tdm)['new_password']
-            );
-            $this->getUser()->setPassword($hashedPassword);
-            $em->persist($this->getUser());
-            $em->flush();
-            $secureSession->setObject(
-                $sid,
-                $requestManager->setAsProcessed($tdm, 'process_password_update'),
-                TransitingDataManager::class
-            );
-    
-            return $this->render('messages/success.html.twig', [
-                "pageTitle" => "Your password was updated",
-                "message" => "Your password was successfully updated."
+            return $this->render('change_password.html.twig', [
+                'form' => $form->createView(),
             ]);
-        } catch (ProcessedException $e) {
-            return $this->render("messages/unspecified_error.html.twig");
+        } else {
+            return $decorator->updateProcess($httpRequest, $sid);
         }
     }
 
     /**
      * @Route(
-     *  "/authenticated/my-account/delete-account",
+     *  "/authenticated/my-account/delete-account/{sid}",
      *  name="delete_account")
      */
     public function deleteAccount(
-        AuthenticationManager $AuthenticationProcessManager,
-        Request $httpRequest)
+        string $sid = null,
+        Request $httpRequest,
+        MiddlewareDecorator $decorator)
     {
-        $form = $this->createForm(UserConfirmationType::class);
+        if (null === $sid) {
+            $form = $this->createForm(UserConfirmationType::class);
 
-        $form->handleRequest($httpRequest);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $request = $AuthenticationProcessManager->createHighSecurityAuthenticationProcess(
-                'delete_account',
-                'process_account_deletion')
-            ;
+            $form->handleRequest($httpRequest);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $callback = new AccountDeletionCallback($this->getUser());
 
-            return new RedirectResponse($request->getUrl());
+                return $decorator->createProcess(
+                    $callback,
+                    $httpRequest->get('_route'),
+                    new ArrayObject([
+                        CredentialChallenge::class,
+                    ], 'string'));
+            }
+
+            return $this->render('delete_account.html.twig', [
+                'form' => $form->createView(),
+            ]);
+        } else {
+            return $decorator->updateProcess($httpRequest, $sid);            
         }
-
-        return $this->render('delete_account.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @todo Delete user account.
-     * @todo Real logging out.
-     *
-     * @Route(
-     *  "/authenticated/process-account-deletion/{sid}",
-     *  name="process_account_deletion")
-     */
-    public function processAccountDeletion(
-        string $sid,
-        AuthenticationManager $AuthenticationProcessManager,
-        TokenStorageInterface $tokenStorage)
-    {
-        $tdm = $AuthenticationProcessManager->achieveOperation($sid, 'process_account_deletion');
-        $tokenStorage->setToken(null);
-
-        return $this->render('successful_account_deletion.html.twig');
     }
 }

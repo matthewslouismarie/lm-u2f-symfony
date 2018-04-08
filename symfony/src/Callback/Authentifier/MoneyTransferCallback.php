@@ -19,34 +19,18 @@ use Symfony\Component\Routing\Router;
 use Twig_Environment;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 
-/**
- * @todo Make immutable?
- */
-class MemberAuthenticationCallback implements IAuthenticationCallback
+class MoneyTransferCallback implements IAuthenticationCallback
 {
     private $container;
 
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
-        $this
-            ->container
-            ->get(LoginForcer::class)
-            ->logUserIn(new Request(), $this
-                ->container
-                ->get('doctrine')
-                ->getManager()
-                ->getRepository(Member::class)
-                ->findOneBy([
-                    'username' => $authProcess->getUsername(),
-                ]))
-        ;
-
         $httpResponse = $this
             ->container
             ->get('twig')
             ->render('messages/success.html.twig', [
-                'pageTitle' => 'Successful login',
-                'message' => 'You logged in successfully.'
+                'pageTitle' => 'Successful money transfer',
+                'message' => 'You successfully transferred money.'
             ])
         ;
 

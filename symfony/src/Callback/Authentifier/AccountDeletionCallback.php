@@ -19,34 +19,37 @@ use Symfony\Component\Routing\Router;
 use Twig_Environment;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 
-/**
- * @todo Make immutable?
- */
-class MemberAuthenticationCallback implements IAuthenticationCallback
+class AccountDeletionCallback implements IAuthenticationCallback
 {
-    private $container;
+    private $member;
 
+    public function __construct(Member $member)
+    {
+        $this->member = $member;
+    }
+
+    /**
+     * @todo @security The currently logged in user's password is changed. If
+     * an attacker logs in and initiates the process, then lets the victim log
+     * in, the attacker will then be able to achieve the process changing the
+     * victim's password.
+     */
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
-        $this
+        $em = $this
             ->container
-            ->get(LoginForcer::class)
-            ->logUserIn(new Request(), $this
-                ->container
-                ->get('doctrine')
-                ->getManager()
-                ->getRepository(Member::class)
-                ->findOneBy([
-                    'username' => $authProcess->getUsername(),
-                ]))
+            ->get('doctrine')
+            ->getManager()
         ;
+        $em->remove($this->member);
+        $em->flush();
 
         $httpResponse = $this
             ->container
             ->get('twig')
             ->render('messages/success.html.twig', [
-                'pageTitle' => 'Successful login',
-                'message' => 'You logged in successfully.'
+                'pageTitle' => 'Successful account deletion',
+                'message' => 'Your account was successfully deleted.'
             ])
         ;
 
@@ -68,15 +71,24 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
 
     public function wakeUp(PsrContainerInterface $container): void
     {
+        $this->member = $container
+            ->get('doctrine')
+            ->getManager()
+            ->merge($this->member)
+        ;
         $this->container = $container;
     }
 
     public function serialize()
     {
-        return serialize([]);
+        return serialize([
+            $this->member,
+        ]);
     }
 
     public function unserialize($serialized)
     {
+        list(
+            $this->member) = unserialize($serialized);
     }
 }

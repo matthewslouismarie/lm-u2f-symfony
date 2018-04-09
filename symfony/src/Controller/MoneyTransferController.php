@@ -32,7 +32,7 @@ class MoneyTransferController extends AbstractController
                 return $decorator->createProcess(
                     $callback,
                     $httpRequest->get('_route'),
-                    $challengeSpecification->getChallenges(),
+                    $challengeSpecification->getChallenges($this->getUser()->getUsername()),
                     $this->getUser()->getUsername());
             }
 

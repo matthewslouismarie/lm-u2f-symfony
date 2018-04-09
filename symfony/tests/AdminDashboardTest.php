@@ -83,7 +83,7 @@ class AdminDashboardTest extends TestCaseTemplate
             SecurityStrategy::U2F,
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(Setting::SECURITY_STRATEGY))
+                ->getSetting(Setting::SECURITY_STRATEGY, 'string'))
         ;
         $this->submit($button->form([
             'security_strategy[securityStrategyId]' => SecurityStrategy::PWD,
@@ -92,7 +92,7 @@ class AdminDashboardTest extends TestCaseTemplate
             SecurityStrategy::PWD,
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(Setting::SECURITY_STRATEGY))
+                ->getSetting(Setting::SECURITY_STRATEGY, 'string'))
         ;
     }
 

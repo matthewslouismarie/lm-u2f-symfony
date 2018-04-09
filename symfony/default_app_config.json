@@ -4,7 +4,7 @@
     "N_U2F_KEYS_POST_AUTH": 3,
     "ALLOW_U2F_LOGIN": true,
     "ALLOW_PWD_LOGIN": true,
-    "SECURITY_STRATEGY": 0,
+    "SECURITY_STRATEGY": "U2F",
     "ALLOW_MEMBER_TO_MANAGE_U2F_KEYS": true,
     "PWD_MIN_LENGTH": null,
     "PWD_NUMBERS": true,

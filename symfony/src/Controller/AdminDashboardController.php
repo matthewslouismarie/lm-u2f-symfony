@@ -133,7 +133,7 @@ class AdminDashboardController extends AbstractController
         Request $httpRequest)
     {
         $submission = new SecurityStrategySubmission(
-            $config->getIntSetting(Setting::SECURITY_STRATEGY)
+            $config->getSetting(Setting::SECURITY_STRATEGY, 'string')
         );
         $form = $this
             ->createForm(SecurityStrategyType::class, $submission)

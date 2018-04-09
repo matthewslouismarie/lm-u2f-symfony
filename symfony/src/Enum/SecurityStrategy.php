@@ -9,9 +9,9 @@ use ReflectionClass;
  */
 class SecurityStrategy
 {
-    const U2F = 0;
+    const U2F = 'U2F';
 
-    const PWD = 1;
+    const PWD = 'PWD';
 
     public static function getIds(): array
     {

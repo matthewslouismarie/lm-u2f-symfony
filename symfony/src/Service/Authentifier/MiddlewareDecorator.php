@@ -98,6 +98,9 @@ class MiddlewareDecorator
         return $httpFoundationFactory->createResponse($authentifierResponse->getHttpResponse());
     }
 
+    /**
+     * @todo Delete.
+     */
     public function getChallenges()
     {
         $pwdLoginAllowed = $this

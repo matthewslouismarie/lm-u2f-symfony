@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class SecurityStrategySubmission
 {
     /**
-     * @Assert\Type("int")
+     * @Assert\NotBlank()
      */
     public $securityStrategyId;
 

@@ -110,7 +110,13 @@ class LoginTest extends TestCaseTemplate
             ->set(Setting::ALLOW_PWD_LOGIN, true)
             ->set(Setting::ALLOW_U2F_LOGIN, false)
         ;
-        $this->doGet("/not-authenticated/login/pwd");
+        $this->doGet("/not-authenticated/choose-authenticate");
+        $this->assertIsRedirect();
+        $this->followRedirect();
+        $this->assertSame(
+            'http://localhost/not-authenticated/login/pwd',
+            $this->getUri())
+        ;
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->submit($this

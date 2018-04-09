@@ -104,7 +104,7 @@ class AppConfigManager
      */
     public function setObject(string $id, Serializable $value): self
     {
-        $this->appConfigRepo->set($id, serialize($value));
+        $this->appConfigRepo->set($id, $value);
 
         return $this;
     }

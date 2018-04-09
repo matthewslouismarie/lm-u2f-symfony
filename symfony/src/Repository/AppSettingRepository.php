@@ -19,9 +19,9 @@ class AppSettingRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         $appSetting = $this->find($id);
         if (null === $appSetting) {
-            $em->persist(new AppSetting($id, serialize($value)));
+            $em->persist(new AppSetting($id, $value));
         } else {
-            $appSetting->setValue(serialize($value));
+            $appSetting->setValue($value);
         }
         $em->flush();
     }
@@ -33,9 +33,9 @@ class AppSettingRepository extends ServiceEntityRepository
     {
         $appSetting = $this->find($id);
         if (null !== $appSetting) {
-            return unserialize($appSetting->getValue());
+            return $appSetting->getValue();
         } else {
-            return $appSetting;
+            return null;
         }
     }
 }

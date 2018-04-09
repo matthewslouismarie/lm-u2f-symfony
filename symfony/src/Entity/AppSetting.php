@@ -23,10 +23,10 @@ class AppSetting
      */
     private $value;
 
-    public function __construct(string $id, string $value)
+    public function __construct(string $id, $unserializedValue)
     {
         $this->id = $id;
-        $this->value = $value;
+        $this->value = serialize($unserializedValue);
     }
 
     public function getId(): string
@@ -34,13 +34,13 @@ class AppSetting
         return $this->id;
     }
  
-    public function getValue(): string
+    public function getValue()
     {
-        return $this->value;
+        return unserialize($this->value);
     }
 
-    public function setValue(string $value): void
+    public function setValue($unserializedValue): void
     {
-        $this->value = $value;
+        $this->value = serialize($unserializedValue);
     }
 }

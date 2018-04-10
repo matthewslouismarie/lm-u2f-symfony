@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class U2fService
 {
-    public const N_U2F_TOKENS_PER_MEMBER = 3;
+    const N_U2F_TOKENS_PER_MEMBER = 3;
 
     private $appId;
 

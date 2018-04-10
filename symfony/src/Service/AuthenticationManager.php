@@ -30,11 +30,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class AuthenticationManager
 {
-    public const NOT_PROCESSED = 0;
+    const NOT_PROCESSED = 0;
 
-    public const BEING_PROCESSED = 1;
+    const BEING_PROCESSED = 1;
 
-    public const PROCESSED = 2;
+    const PROCESSED = 2;
 
     private $config;
 

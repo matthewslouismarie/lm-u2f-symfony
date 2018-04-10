@@ -5,6 +5,7 @@ namespace App\Validator\Constraints;
 use App\Enum\Setting;
 use App\Exception\InvalidPasswordException;
 use App\Service\AppConfigManager;
+use App\Service\PasswordValidator;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -12,9 +13,14 @@ class ValidNewPasswordValidator extends ConstraintValidator
 {
     private $config;
 
-    public function __construct(AppConfigManager $config)
+    private $pwdValidator;
+
+    public function __construct(
+        AppConfigManager $config,
+        PasswordValidator $pwdValidator)
     {
         $this->config = $config;
+        $this->pwdValidator = $pwdValidator;
     }
 
     /**
@@ -40,14 +46,8 @@ class ValidNewPasswordValidator extends ConstraintValidator
             }
         }
         if (true === $this->config->getBoolSetting(Setting::PWD_SPECIAL_CHARS)) {
-            switch (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $password)) {
-                case 0:
+            if (false === $this->pwdValidator->hasSpecialChars($password)) {
                     $this->addError('Your password needs to contain special characters', $password);
-                    break;
-
-                case false:
-                    throw new Exception();
-                    break;
             }
         }
         if (true === $this->config->getBoolSetting(Setting::PWD_UPPERCASE)) {

@@ -102,7 +102,7 @@ class MemberRegistrationController extends AbstractController
         $minLength = $config->getIntSetting(Setting::PWD_MIN_LENGTH);
         $specialChars = $config->getBoolSetting(Setting::PWD_SPECIAL_CHARS);
         $numbers = $config->getBoolSetting(Setting::PWD_NUMBERS);
-        $capitalLetters = $config->getBoolSetting(Setting::PWD_UPPERCASE);
+        $uppercaseLetters = $config->getBoolSetting(Setting::PWD_UPPERCASE);
 
         return $this->render('registration/username_and_password.html.twig', [
             'form' => $form->createView(),
@@ -110,7 +110,7 @@ class MemberRegistrationController extends AbstractController
             "minLength" => $minLength,
             "specialChars" => $specialChars,
             "numbers" => $numbers,
-            "capitalLetters" => $capitalLetters,
+            "uppercaseLetters" => $uppercaseLetters,
         ]);
     }
 

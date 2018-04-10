@@ -2,7 +2,7 @@
 
 namespace App\EventSubscriber;
 
-use App\Controller\U2fKeyRegistrationController;
+use App\Controller\U2fDeviceRegistrationController;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
 use App\Service\AppConfigManager;
@@ -57,7 +57,7 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
 
         if (null !== $this->token &&
             $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY') &&
-            !is_a($controller[0], U2fKeyRegistrationController::class)) {
+            !is_a($controller[0], U2fDeviceRegistrationController::class)) {
             $nU2fTokens = count($this
                 ->em
                 ->getRepository(U2fToken::class)

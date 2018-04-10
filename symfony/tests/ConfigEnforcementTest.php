@@ -11,6 +11,8 @@ class ConfigEnforcementTest extends TestCaseTemplate
 {
     use LoginTrait;
 
+    const U2F_REG_NEEDED_MSG = 'Before being able to use the website again, you need to register 1 new U2F key(s).';
+
     public function testDeviceRemoval()
     {
         $this->login();
@@ -42,5 +44,40 @@ class ConfigEnforcementTest extends TestCaseTemplate
                 $this->getCrawler()->text()
             );
         }
+    }
+
+    public function testMinU2fDeviceN()
+    {
+        $this->login();
+        $em = $this
+            ->get('doctrine')
+            ->getManager()
+        ;
+        $nU2fRegistrations = $em
+            ->getRepository(U2fToken::class)
+            ->count([
+                'member' => $this->getLoggedInMember(),
+            ])
+        ;
+        $this
+            ->get(AppConfigmanager::class)
+            ->set(Setting::N_U2F_KEYS_POST_AUTH, $nU2fRegistrations + 1)
+        ;
+        $this->doGet('/');
+        $this->assertContains(
+            self::U2F_REG_NEEDED_MSG,
+            $this
+                ->getClient()
+                ->getResponse()
+                ->getContent())
+        ;
+        $this->doGet('/authenticated/register-u2f-device');
+        $this->assertNotContains(
+            self::U2F_REG_NEEDED_MSG,
+            $this
+                ->getClient()
+                ->getResponse()
+                ->getContent())
+        ;
     }
 }

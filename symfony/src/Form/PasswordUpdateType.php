@@ -14,8 +14,12 @@ class PasswordUpdateType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('password', PasswordType::class)
-            ->add('passwordConfirmation', PasswordType::class)
+            ->add('password', PasswordType::class, [
+                'label' => 'New password',
+            ])
+            ->add('passwordConfirmation', PasswordType::class, [
+                'label' => 'New password confirmation',
+            ])
             ->add('submit', SubmitType::class)
         ;
     }

@@ -5,7 +5,8 @@ namespace App\Enum;
 use ReflectionClass;
 
 /**
- * @todo Rename to SettingKey?
+ * @todo Find a way to define the setting id, its default value and its type in
+ * the same place.
  */
 class Setting
 {

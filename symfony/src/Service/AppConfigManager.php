@@ -3,11 +3,11 @@
 namespace App\Service;
 
 use App\Enum\Setting;
+use App\Exception\NonexistentSettingException;
 use App\Repository\AppSettingRepository;
 use Exception;
 use LM\Common\Type\TypeCheckerTrait;
 use Serializable;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @todo Could use a DataManager structure.
@@ -17,37 +17,27 @@ class AppConfigManager
 {
     use TypeCheckerTrait;
 
-    const CONFIG_FILENAME = 'app_config.json';
-    const DEFAULT_CONFIG_FILENAME = 'default_app_config.json';
-
-    private $defaultConfigArray;
     private $appConfigRepo;
 
     /**
      * @todo More specific exception.
      */
-    public function __construct(
-        AppSettingRepository $appConfigRepo,
-        ContainerInterface $container)
+    public function __construct(AppSettingRepository $appConfigRepo)
     {
         $this->appConfigRepo = $appConfigRepo;
-        $defaultConfigStr = file_get_contents(
-            $container->getParameter('kernel.project_dir').'/'.self::DEFAULT_CONFIG_FILENAME)
-        ;
-        $defaultConfigArray = json_decode($defaultConfigStr, true);
-        if (JSON_ERROR_NONE === json_last_error()) {
-            $this->defaultConfigArray = $defaultConfigArray;
-        } else {
-            throw new Exception();
-        }
     }
 
-    /**
-     * @todo Remove.
-     */
     public function get(string $id)
     {
-        return $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
+        $appSetting = $this
+            ->appConfigRepo
+            ->find($id)
+        ;
+        if (null === $appSetting) {
+            throw new NonexistentSettingException();
+        }
+
+        return $appSetting->getValue();
     }
 
     /**
@@ -55,8 +45,7 @@ class AppConfigManager
      */
     public function getBoolSetting($id): bool
     {
-        $valueStr = $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
-        return (bool) $valueStr;
+        return $this->getSetting($id, 'boolean');
     }
 
     /**
@@ -64,8 +53,7 @@ class AppConfigManager
      */
     public function getIntSetting($id): int
     {
-        $valueStr = $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
-        return intval($valueStr);
+        return $this->getSetting($id, 'integer');
     }
 
     /**
@@ -73,24 +61,20 @@ class AppConfigManager
      */
     public function getStringSetting($id): string
     {
-        return $this->appConfigRepo->get($id) ?? $this->defaultConfigArray[$id];
+        return $this->getSetting($id, 'string');
     }
 
     public function getSetting(string $id, string $expectedType)
     {
         $value = $this->get($id);
-        if ($this->isClassName($expectedType)) {
-            $unserialized = unserialize($value);
-            $this->checkType($unserialized, $expectedType);
-            return $unserialized;
-        } else {
-            $this->checkType($value, $expectedType);
-            return $value;
-        }
+        $this->checkType($value, $expectedType);
+
+        return $value;
     }
 
     /**
      * @todo Use a more specific exception.
+     * @todo Remove?
      */
     public function set(string $id, $value): self
     {

@@ -35,7 +35,7 @@ class AdminDashboardTest extends TestCaseTemplate
             true,
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(Setting::ALLOW_U2F_LOGIN))
+                ->getBoolSetting(Setting::ALLOW_U2F_LOGIN))
         ;
         $this->assertEquals(
             2,

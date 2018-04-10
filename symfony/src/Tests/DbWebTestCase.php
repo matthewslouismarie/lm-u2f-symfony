@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\DataFixtures\AppFixture;
+use App\DataFixtures\ConfigFixture;
 use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -29,7 +30,10 @@ abstract class DbWebTestCase extends WebTestCase
         $this->schemaTool = new SchemaTool($om);
         $this->schemaTool->createSchema($this->metadatas);
         $fl = new SymfonyFixturesLoader($container);
-        $fl->addFixtures(array($container->get(AppFixture::class)));
+        $fl->addFixtures([
+            $container->get(AppFixture::class),
+            $container->get(ConfigFixture::class),
+        ]);
         $fixtures = $fl->getFixtures();
         $purger = new ORMPurger($om);
         $executor = new ORMExecutor($om, $purger);

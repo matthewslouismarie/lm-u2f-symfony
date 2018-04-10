@@ -21,11 +21,11 @@ trait LoginTrait
     {
         $allowPwdLogin = $this
             ->getAppConfigManager()
-            ->getBoolSetting(Setting::ALLOW_PWD_LOGIN)
+            ->getSetting(Setting::ALLOW_PWD_LOGIN, 'boolean')
         ;
         $allowU2fLogin = $this
             ->getAppConfigManager()
-            ->getBoolSetting(Setting::ALLOW_U2F_LOGIN, true)
+            ->getSetting(Setting::ALLOW_U2F_LOGIN, 'boolean')
         ;
         if ($allowPwdLogin) {
             $this->doGet("/not-authenticated/login/pwd");

@@ -50,7 +50,7 @@ class AdminDashboardController extends AbstractController
         Request $httpRequest)
     {
         $submission = new PwdConfigSubmission(
-            $config->getIntSetting(Setting::ALLOW_PWD_LOGIN),
+            $config->getBoolSetting(Setting::ALLOW_PWD_LOGIN),
             $config->getIntSetting(Setting::PWD_MIN_LENGTH),
             $config->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH),
             $config->getBoolSetting(Setting::PWD_NUMBERS),
@@ -89,10 +89,10 @@ class AdminDashboardController extends AbstractController
         Request $httpRequest)
     {
         $submission = new U2fConfigSubmission(
-            $appConfigManager->getBoolSetting(Setting::ALLOW_U2F_LOGIN),
-            $appConfigManager->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH),
-            $appConfigManager->getIntSetting(Setting::N_U2F_KEYS_REG),
-            $appConfigManager->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)
+            $appConfigManager->getSetting(Setting::ALLOW_U2F_LOGIN, 'boolean'),
+            $appConfigManager->getSetting(Setting::N_U2F_KEYS_POST_AUTH, 'integer'),
+            $appConfigManager->getSetting(Setting::N_U2F_KEYS_REG, 'integer'),
+            $appConfigManager->getSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS, 'boolean')
         );
         $form = $this
             ->createForm(U2fConfigType::class, $submission)

@@ -39,7 +39,7 @@ class MemberRegistrationController extends AbstractController
     public function __construct(AppConfigManager $appConfigManager)
     {
         $this->nU2fKeys = $appConfigManager
-            ->getIntSetting(Setting::N_U2F_KEYS_REG)
+            ->getSetting(Setting::N_U2F_KEYS_REG, 'integer')
         ;
     }
 

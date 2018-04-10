@@ -2,7 +2,6 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
-    u2f.app_id: 'https://172.16.238.10'
 
 services:
     # default configuration for services in *this* file

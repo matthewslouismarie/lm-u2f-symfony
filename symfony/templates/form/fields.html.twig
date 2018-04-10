@@ -1,6 +1,21 @@
 {% extends 'form_div_layout.html.twig' %}
 
 {%- block form_errors -%}
+  {%- if errors|length > 0 -%}
+    {%- if form is rootform -%}
+    <div class="form-row">
+    {%- endif -%}
+    <div class="form-error-list">
+        <ul class="list">
+            {%- for error in errors -%}
+                <li class="item">{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+      </div>
+      {%- if form is rootform -%}
+    </div>
+    {%- endif -%}
+  {%- endif -%}
 {%- endblock -%}
 
 {# @todo: overwrite form_errors, form_widget and form_label #}

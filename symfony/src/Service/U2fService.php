@@ -16,7 +16,7 @@ class U2fService
         ContainerInterface $container,
         KernelInterface $kernel)
     {
-        $this->appId = file_get_contents($kernel->getProjectDir().'/app_id');
+        $this->appId = file($kernel->getProjectDir().'/app_id', FILE_IGNORE_NEW_LINES)[0];
     }
 
     public function getServer(): Server

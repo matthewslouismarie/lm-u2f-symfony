@@ -42,7 +42,7 @@ class Configuration implements IApplicationConfiguration
         MemberRepository $memberRepo,
         U2fTokenRepository $u2fTokenRepo)
     {
-        $this->appId = file_get_contents($kernel->getProjectDir().'/app_id');
+        $this->appId = file($kernel->getProjectDir().'/app_id', FILE_IGNORE_NEW_LINES)[0];
         $this->assetPackage = $assetPackage;
         $this->container = $container;
         $this->kernel = $kernel;

@@ -9,5 +9,4 @@ use Symfony\Component\Validator\Constraint;
  */
 class ValidNewPassword extends Constraint
 {
-    public $message = 'Either your username or your password is incorrect.';
 }

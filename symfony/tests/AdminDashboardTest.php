@@ -9,6 +9,7 @@ use App\Service\Form\Filler\ChallengeSpecificationFiller;
 use App\Service\Form\Filler\PasswordConfigFiller;
 use App\Service\Form\Filler\U2fConfigFiller;
 use App\Service\Form\Filler\UserStudyConfigFiller;
+use LM\Common\Enum\Scalar;
 
 class AdminDashboardTest extends TestCaseTemplate
 {
@@ -83,7 +84,7 @@ class AdminDashboardTest extends TestCaseTemplate
             SecurityStrategy::U2F,
             $this
                 ->getAppConfigManager()
-                ->getSetting(Setting::SECURITY_STRATEGY, 'string'))
+                ->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR))
         ;
         $this->submit($button->form([
             'security_strategy[securityStrategyId]' => SecurityStrategy::PWD,
@@ -92,7 +93,7 @@ class AdminDashboardTest extends TestCaseTemplate
             SecurityStrategy::PWD,
             $this
                 ->getAppConfigManager()
-                ->getSetting(Setting::SECURITY_STRATEGY, 'string'))
+                ->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR))
         ;
     }
 

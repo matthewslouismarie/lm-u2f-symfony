@@ -6,6 +6,7 @@ use App\Callback\Authentifier\MemberAuthenticationCallback;
 use App\Enum\Setting;
 use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\AppConfigManager;
+use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -55,7 +56,7 @@ class LoginController extends AbstractController
                 new ArrayObject([
                     ExistingUsernameChallenge::class,
                     U2fChallenge::class,
-                ], 'string'))
+                ], Scalar::_STR))
             ;
         } else {
             return $decorator->updateProcess($httpRequest, $sid);
@@ -81,7 +82,7 @@ class LoginController extends AbstractController
                     ExistingUsernameChallenge::class,
                     U2fChallenge::class,
                     U2fChallenge::class,
-                ], 'string'))
+                ], Scalar::_STR))
             ;
         } else {
             return $decorator->updateProcess($httpRequest, $sid);
@@ -105,7 +106,7 @@ class LoginController extends AbstractController
                 $httpRequest->get('_route'),
                 new ArrayObject([
                     CredentialChallenge::class,
-                ], 'string'))
+                ], Scalar::_STR))
             ;
         } else {
             return $decorator->updateProcess($httpRequest, $sid);

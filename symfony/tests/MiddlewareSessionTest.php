@@ -5,6 +5,7 @@ namespace App\Tests;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\DataManager;
 use LM\Authentifier\Model\RequestDatum;
+use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use LM\Common\Model\StringObject;
 
@@ -20,7 +21,7 @@ class MiddlewareSessionTest extends TestCaseTemplate
         ];
         $dataManager = new DataManager([
             new RequestDatum("used_u2f_key_public_keys", new ArrayObject([], StringObject::class)),
-            new RequestDatum("challenges", new ArrayObject($authentifiers, "string")),
+            new RequestDatum("challenges", new ArrayObject($authentifiers, Scalar::_STR)),
         ]);
         $authenticationProcess = new AuthenticationProcess($dataManager);
         $challenges = $authenticationProcess->getChallenges();

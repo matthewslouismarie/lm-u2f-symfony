@@ -12,6 +12,7 @@ use App\Service\AppConfigManager;
 use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\ChallengeSpecification;
 use LM\Authentifier\Challenge\CredentialChallenge;
+use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -93,7 +94,7 @@ class MemberAccount extends AbstractController
                     $httpRequest->get('_route'),
                     new ArrayObject([
                         CredentialChallenge::class,
-                    ], 'string'));
+                    ], Scalar::_STR));
             }
 
             return $this->render('delete_account.html.twig', [

@@ -11,6 +11,7 @@ use App\Service\AppConfigManager;
 use App\Service\Authentifier\MiddlewareDecorator;
 use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Challenge\CredentialChallenge;
+use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -67,7 +68,7 @@ class U2fKeyManagementController extends AbstractController
                 'remove_u2f_device',
                 new ArrayObject([
                     CredentialChallenge::class,
-                ], 'string'));
+                ], Scalar::_STR));
         }
 
         return $this->render('confirm_u2f_key_reset.html.twig', [

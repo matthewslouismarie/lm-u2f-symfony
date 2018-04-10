@@ -6,6 +6,7 @@ use App\Enum\Setting;
 use App\DataFixtures\AppFixture;
 use App\Service\Form\Filler\CredentialAuthenticationFiller;
 use App\Service\Form\Filler\U2fAuthenticationFiller;
+use LM\Common\Enum\Scalar;
 
 trait LoginTrait
 {
@@ -21,11 +22,11 @@ trait LoginTrait
     {
         $allowPwdLogin = $this
             ->getAppConfigManager()
-            ->getSetting(Setting::ALLOW_PWD_LOGIN, 'boolean')
+            ->getSetting(Setting::ALLOW_PWD_LOGIN, Scalar::_BOOL)
         ;
         $allowU2fLogin = $this
             ->getAppConfigManager()
-            ->getSetting(Setting::ALLOW_U2F_LOGIN, 'boolean')
+            ->getSetting(Setting::ALLOW_U2F_LOGIN, Scalar::_BOOL)
         ;
         if ($allowPwdLogin) {
             $this->doGet("/not-authenticated/login/pwd");

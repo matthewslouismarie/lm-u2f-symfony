@@ -13,6 +13,7 @@ use LM\Authentifier\Challenge\U2fChallenge;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Factory\AuthenticationProcessFactory;
 use LM\Authentifier\Model\IAuthenticationCallback;
+use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -60,7 +61,7 @@ class MiddlewareDecorator
         ArrayObject $challenges,
         ?string $username = null): Response
     {
-        $challengesArray = $challenges->toArray('string');
+        $challengesArray = $challenges->toArray(Scalar::_STR);
         $authProcess = $this
             ->authProcessFactory
             ->createProcess(

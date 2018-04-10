@@ -16,6 +16,7 @@ use App\FormModel\U2fConfigSubmission;
 use App\FormModel\UserStudyConfigSubmission;
 use App\Repository\PageMetricRepository;
 use App\Service\AppConfigManager;
+use LM\Common\Enum\Scalar;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -89,10 +90,10 @@ class AdminDashboardController extends AbstractController
         Request $httpRequest)
     {
         $submission = new U2fConfigSubmission(
-            $appConfigManager->getSetting(Setting::ALLOW_U2F_LOGIN, 'boolean'),
-            $appConfigManager->getSetting(Setting::N_U2F_KEYS_POST_AUTH, 'integer'),
-            $appConfigManager->getSetting(Setting::N_U2F_KEYS_REG, 'integer'),
-            $appConfigManager->getSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS, 'boolean')
+            $appConfigManager->getSetting(Setting::ALLOW_U2F_LOGIN, Scalar::_BOOL),
+            $appConfigManager->getSetting(Setting::N_U2F_KEYS_POST_AUTH, Scalar::_INT),
+            $appConfigManager->getSetting(Setting::N_U2F_KEYS_REG, Scalar::_INT),
+            $appConfigManager->getSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS, Scalar::_BOOL)
         );
         $form = $this
             ->createForm(U2fConfigType::class, $submission)
@@ -133,7 +134,7 @@ class AdminDashboardController extends AbstractController
         Request $httpRequest)
     {
         $submission = new SecurityStrategySubmission(
-            $config->getSetting(Setting::SECURITY_STRATEGY, 'string')
+            $config->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR)
         );
         $form = $this
             ->createForm(SecurityStrategyType::class, $submission)

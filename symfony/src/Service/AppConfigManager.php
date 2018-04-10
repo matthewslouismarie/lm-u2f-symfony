@@ -6,6 +6,7 @@ use App\Enum\Setting;
 use App\Exception\NonexistentSettingException;
 use App\Repository\AppSettingRepository;
 use Exception;
+use LM\Common\Enum\Scalar;
 use LM\Common\Type\TypeCheckerTrait;
 use Serializable;
 
@@ -45,7 +46,7 @@ class AppConfigManager
      */
     public function getBoolSetting($id): bool
     {
-        return $this->getSetting($id, 'boolean');
+        return $this->getSetting($id, Scalar::_BOOL);
     }
 
     /**
@@ -53,7 +54,7 @@ class AppConfigManager
      */
     public function getIntSetting($id): int
     {
-        return $this->getSetting($id, 'integer');
+        return $this->getSetting($id, Scalar::_INT);
     }
 
     /**
@@ -61,7 +62,7 @@ class AppConfigManager
      */
     public function getStringSetting($id): string
     {
-        return $this->getSetting($id, 'string');
+        return $this->getSetting($id, Scalar::_STR);
     }
 
     public function getSetting(string $id, string $expectedType)

@@ -9,6 +9,7 @@ use App\Exception\IdentityChecker\BeingProcessedException;
 use App\Exception\IdentityChecker\InvalidCheckerException;
 use App\Exception\IdentityChecker\StartedIdentityCheckException;
 use App\Exception\IdentityChecker\ProcessedException;
+use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use LM\Common\Model\BooleanObject;
 use App\Model\IdentityVerificationRequest;
@@ -211,7 +212,7 @@ class AuthenticationManager
             ->add(new TransitingData(
                 'checkers',
                 $routeName,
-                new ArrayObject($checkers, 'string')))
+                new ArrayObject($checkers, Scalar::_STR)))
             ->add(new TransitingData(
                 'additional_data',
                 $routeName,

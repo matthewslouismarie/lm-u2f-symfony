@@ -21,6 +21,7 @@ use Firehed\U2F\ClientErrorException;
 use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 use Firehed\U2F\Registration;
+use LM\Common\Enum\Scalar;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormError;
@@ -39,7 +40,7 @@ class MemberRegistrationController extends AbstractController
     public function __construct(AppConfigManager $appConfigManager)
     {
         $this->nU2fKeys = $appConfigManager
-            ->getSetting(Setting::N_U2F_KEYS_REG, 'integer')
+            ->getSetting(Setting::N_U2F_KEYS_REG, Scalar::_INT)
         ;
     }
 

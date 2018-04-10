@@ -4,45 +4,39 @@ namespace App\Callback\Authentifier;
 
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
-use LM\Authentifier\Model\IAuthenticationCallback;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 
-class MoneyTransferCallback implements IAuthenticationCallback
+class MoneyTransferCallback extends AbstractCallback
 {
-    private $container;
+    private $psr7Factory;
+
+    private $twig;
 
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
         $httpResponse = $this
-            ->container
-            ->get('twig')
+            ->twig
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Successful money transfer',
                 'message' => 'You successfully transferred money.'
             ])
         ;
 
-        $psr7Factory = new DiactorosFactory();
-
         return new AuthentifierResponse(
             $authProcess,
-            $psr7Factory->createResponse(new Response($httpResponse)))
+            $this
+                ->psr7Factory
+                ->createResponse(new Response($httpResponse)))
         ;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    public function wakeUp(ContainerInterface $container): void
     {
-        return new AuthentifierResponse(
-            $authProcess,
-            $psr7Factory->createResponse(new Response('')))
-        ;
-    }
-
-    public function wakeUp(PsrContainerInterface $container): void
-    {
-        $this->container = $container;
+        parent::wakeUp($container);
+        $this->psr7Factory = new DiactorosFactory();
+        $this->twig = $container->get('twig');
     }
 
     public function serialize()

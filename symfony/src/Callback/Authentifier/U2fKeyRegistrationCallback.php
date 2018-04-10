@@ -5,14 +5,12 @@ namespace App\Callback\Authentifier;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
 use LM\Authentifier\Model\IAuthenticationCallback;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 
-class U2fKeyRegistrationCallback implements IAuthenticationCallback
+class U2fKeyRegistrationCallback extends AbstractCallback
 {
-    private $container;
-
     private $newPassword;
 
     public function __construct(string $newPassword)
@@ -29,14 +27,14 @@ class U2fKeyRegistrationCallback implements IAuthenticationCallback
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
         $member = $this
-            ->container
+            ->getContainer()
             ->get('security.token_storage')
             ->getToken()
             ->getUser()
         ;
 
         $hashedPassword = $this
-            ->container
+            ->getContainer()
             ->get('security.password_encoder')
             ->encodePassword(
             $member,
@@ -44,7 +42,7 @@ class U2fKeyRegistrationCallback implements IAuthenticationCallback
         );
         $member->setPassword($hashedPassword);
         $em = $this
-            ->container
+            ->getContainer()
             ->get('doctrine')
             ->getManager()
         ;
@@ -52,7 +50,7 @@ class U2fKeyRegistrationCallback implements IAuthenticationCallback
         $em->flush();
 
         $httpResponse = $this
-            ->container
+            ->getContainer()
             ->get('twig')
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Password update successful',
@@ -68,17 +66,9 @@ class U2fKeyRegistrationCallback implements IAuthenticationCallback
         ;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    public function wakeUp(ContainerInterface $container): void
     {
-        return new AuthentifierResponse(
-            $authProcess,
-            $psr7Factory->createResponse(new Response('')))
-        ;
-    }
-
-    public function wakeUp(PsrContainerInterface $container): void
-    {
-        $this->container = $container;
+        parent::wakeUp($container);
     }
 
     public function serialize()

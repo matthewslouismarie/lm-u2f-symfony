@@ -6,11 +6,11 @@ use App\Entity\Member;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
 use LM\Authentifier\Model\IAuthenticationCallback;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 
-class AccountDeletionCallback implements IAuthenticationCallback
+class AccountDeletionCallback extends AbstractCallback
 {
     private $member;
 
@@ -28,7 +28,7 @@ class AccountDeletionCallback implements IAuthenticationCallback
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
         $em = $this
-            ->container
+            ->getContainer()
             ->get('doctrine')
             ->getManager()
         ;
@@ -36,7 +36,7 @@ class AccountDeletionCallback implements IAuthenticationCallback
         $em->flush();
 
         $httpResponse = $this
-            ->container
+            ->getContainer()
             ->get('twig')
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Successful account deletion',
@@ -52,22 +52,14 @@ class AccountDeletionCallback implements IAuthenticationCallback
         ;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    public function wakeUp(ContainerInterface $container): void
     {
-        return new AuthentifierResponse(
-            $authProcess,
-            $psr7Factory->createResponse(new Response('')))
-        ;
-    }
-
-    public function wakeUp(PsrContainerInterface $container): void
-    {
+        parent::wakeUp($container);
         $this->member = $container
             ->get('doctrine')
             ->getManager()
             ->merge($this->member)
         ;
-        $this->container = $container;
     }
 
     public function serialize()

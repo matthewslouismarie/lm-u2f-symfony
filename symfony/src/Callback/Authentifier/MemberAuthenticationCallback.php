@@ -7,7 +7,7 @@ use App\Service\LoginForcer;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
 use LM\Authentifier\Model\IAuthenticationCallback;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,17 +15,15 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @todo Make immutable?
  */
-class MemberAuthenticationCallback implements IAuthenticationCallback
+class MemberAuthenticationCallback extends AbstractCallback
 {
-    private $container;
-
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
         $this
-            ->container
+            ->getContainer()
             ->get(LoginForcer::class)
             ->logUserIn(new Request(), $this
-                ->container
+                ->getContainer()
                 ->get('doctrine')
                 ->getManager()
                 ->getRepository(Member::class)
@@ -35,7 +33,7 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
         ;
 
         $httpResponse = $this
-            ->container
+            ->getContainer()
             ->get('twig')
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Successful login',
@@ -51,17 +49,9 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
         ;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    public function wakeUp(ContainerInterface $container): void
     {
-        return new AuthentifierResponse(
-            $authProcess,
-            $psr7Factory->createResponse(new Response('')))
-        ;
-    }
-
-    public function wakeUp(PsrContainerInterface $container): void
-    {
-        $this->container = $container;
+        parent::wakeUp($container);
     }
 
     public function serialize()

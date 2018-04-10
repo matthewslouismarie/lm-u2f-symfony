@@ -127,15 +127,7 @@ class AdminDashboardTest extends TestCaseTemplate
                 ->getAppConfigManager()
                 ->getStringSetting(Setting::PARTICIPANT_ID))
         ;
-        $this->assertContains(
-            "You must provide",
-            $this
-                ->getClient()
-                ->getResponse()
-                ->getContent())
-        ;
     }
-
 
     private function changePwdSettings(array $pwdSettings)
     {

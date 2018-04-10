@@ -6,11 +6,11 @@ use App\Entity\U2fToken;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
 use LM\Authentifier\Model\IAuthenticationCallback;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 
-class U2fDeviceRemovalCallback implements IAuthenticationCallback
+class U2fDeviceRemovalCallback extends AbstractCallback
 {
     private $entityManager;
 
@@ -52,16 +52,9 @@ class U2fDeviceRemovalCallback implements IAuthenticationCallback
         ;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    public function wakeUp(ContainerInterface $container): void
     {
-        return new AuthentifierResponse(
-            $authProcess,
-            $psr7Factory->createResponse(new Response('')))
-        ;
-    }
-
-    public function wakeUp(PsrContainerInterface $container): void
-    {
+        parent::wakeUp($container);
         $this->psr7Factory = new DiactorosFactory();
         $this->twig = $container->get('twig');
         $this->u2fRegistration = $container
@@ -73,7 +66,6 @@ class U2fDeviceRemovalCallback implements IAuthenticationCallback
             ->get('doctrine')
             ->getManager()
         ;
-
     }
 
     public function serialize()

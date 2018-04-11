@@ -3,8 +3,6 @@
 namespace App\Service;
 
 use Firehed\U2F\Server;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 class U2fService
 {
@@ -12,11 +10,9 @@ class U2fService
 
     private $appId;
 
-    public function __construct(
-        ContainerInterface $container,
-        KernelInterface $kernel)
+    public function __construct(AppIdReader $appIdReader)
     {
-        $this->appId = file($kernel->getProjectDir().'/app_id', FILE_IGNORE_NEW_LINES)[0];
+        $this->appId = $appIdReader->getAppId();
     }
 
     public function getServer(): Server

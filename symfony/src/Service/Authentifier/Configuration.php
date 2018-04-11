@@ -4,6 +4,7 @@ namespace App\Service\Authentifier;
 
 use App\Repository\MemberRepository;
 use App\Repository\U2fTokenRepository;
+use App\Service\AppIdReader;
 use LM\Authentifier\Configuration\IApplicationConfiguration;
 use LM\Authentifier\Model\IMember;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
@@ -34,6 +35,7 @@ class Configuration implements IApplicationConfiguration
     private $tokenStorage;
 
     public function __construct(
+        AppIdReader $appIdReader,
         Packages $assetPackage,
         ContainerInterface $container,
         KernelInterface $kernel,
@@ -42,7 +44,7 @@ class Configuration implements IApplicationConfiguration
         MemberRepository $memberRepo,
         U2fTokenRepository $u2fTokenRepo)
     {
-        $this->appId = file($kernel->getProjectDir().'/app_id', FILE_IGNORE_NEW_LINES)[0];
+        $this->appId = $appIdReader->getAppId();
         $this->assetPackage = $assetPackage;
         $this->container = $container;
         $this->kernel = $kernel;

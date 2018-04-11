@@ -6,21 +6,26 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class AppIdReader
 {
-    private $projectDir;
+    private $appId;
+
+    private $appIdDist;
 
     public function __construct(KernelInterface $kernel)
     {
-        $this->projectDir = $kernel->getProjectDir();
+        $this->appId = $kernel->getProjectDir().'/app_id';
+        $this->appIdDist = $kernel->getProjectDir().'/app_id.dist';
     }
 
     public function getAppId(): string
     {
-        $appId = file($this->projectDir.'/app_id', FILE_IGNORE_NEW_LINES);
-        if (false !== $appId) {
-            return $appId[0];
+        if (is_readable($this->appId)) {
+            $appIdContent = file($this->appId, FILE_IGNORE_NEW_LINES);
+
+            return $appIdContent[0];
         } else {
-            $appIdDist = file($this->projectDir.'/app_id.dist', FILE_IGNORE_NEW_LINES);
-            return $appIdDist[0];
+            $appIdDistContent = file($this->appIdDist, FILE_IGNORE_NEW_LINES);
+
+            return $appIdDistContent[0];
         }
     }
 }

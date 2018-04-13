@@ -31,7 +31,7 @@ class ChallengeSpecification
                 ], Scalar::_STR);
             } else {
                 return new ArrayObject([
-                    ExistingUsernameChallenge::class,
+                    CredentialChallenge::class,
                     U2fChallenge::class,
                 ], Scalar::_STR);
             }
@@ -39,6 +39,7 @@ class ChallengeSpecification
             switch ($this->config->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR)) {
                 case SecurityStrategy::U2F:
                     return new ArrayObject([
+                        PasswordChallenge::class,
                         U2fChallenge::class,
                     ], Scalar::_STR);
                     break;

@@ -54,7 +54,7 @@ class LoginController extends AbstractController
                 $callback,
                 $httpRequest->get('_route'),
                 new ArrayObject([
-                    ExistingUsernameChallenge::class,
+                    CredentialChallenge::class,
                     U2fChallenge::class,
                 ], Scalar::_STR))
             ;

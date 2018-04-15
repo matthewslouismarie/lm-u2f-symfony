@@ -6,15 +6,15 @@ services:
 before_install:
   - sudo service mysql stop
   - docker-compose up --build -d
-  - docker exec lmu2fsymfony_apache sudo chmod 777 -R .
-  - docker exec lmu2fsymfony_apache composer install
-  - docker exec lmu2fsymfony_apache npm install
-  - docker exec lmu2fsymfony_apache bin/console doctrine:database:create
-  - docker exec lmu2fsymfony_apache bin/console doctrine:schema:create
-  - docker exec lmu2fsymfony_apache bin/console doctrine:fixtures:load
+  - docker exec security_comparator_apache sudo chmod 777 -R .
+  - docker exec security_comparator_apache composer install
+  - docker exec security_comparator_apache npm install
+  - docker exec security_comparator_apache bin/console doctrine:database:create
+  - docker exec security_comparator_apache bin/console doctrine:schema:create
+  - docker exec security_comparator_apache bin/console doctrine:fixtures:load
 
 script:
-  - docker exec lmu2fsymfony_apache bin/phpunit
+  - docker exec security_comparator_apache bin/phpunit
 
 after_script:
   - docker-compose down

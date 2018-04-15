@@ -3,7 +3,6 @@ services:
   apache:
     build: docker-apache
     container_name: security_comparator_apache
-    image: security_comparator_apache
     links:
       - mariadb
     ports:

@@ -6,6 +6,7 @@ services:
 before_install:
   - sudo service mysql stop
   - docker-compose up --build -d
+  - docker exec security_comparator_apache sudo chown -cR louis: .
   - docker exec security_comparator_apache composer install
   - docker exec security_comparator_apache npm install
   - docker exec security_comparator_apache bin/console doctrine:database:create

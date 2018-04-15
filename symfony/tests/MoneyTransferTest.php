@@ -24,14 +24,7 @@ class MoneyTransferTest extends TestCaseTemplate
                 ->fillForm($this->getCrawler()))
         ;
         $this->followRedirect();
-        $this->submit($this
-            ->get(ValidPasswordFiller::class)
-            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD.'blablabla'))
-        ;
-        $this->submit($this
-            ->get(ValidPasswordFiller::class)
-            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD))
-        ;
+        $this->authenticateAsAdmin();
         $this->assertContains(
             'success',
             $this
@@ -52,10 +45,7 @@ class MoneyTransferTest extends TestCaseTemplate
                 ->fillForm($this->getCrawler()))
         ;
         $this->followRedirect();
-        $this->submit($this
-            ->get('App\Service\Form\Filler\U2fAuthenticationFiller')
-            ->fillForm($this->getCrawler(), $this->getUriLastPart()))
-        ;
+        $this->authenticateAsAdmin();
         $this->assertContains(
             'success',
             $this

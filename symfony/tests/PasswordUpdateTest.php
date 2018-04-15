@@ -26,11 +26,7 @@ class PasswordUpdateTest extends TestCaseTemplate
                 ->fillForm($this->getCrawler(), self::NEW_PASSWORD)
         );
         $this->followRedirect();
-        $this->submit(
-            $this
-                ->get(U2fAuthenticationFiller::class)
-                ->fillForm($this->getCrawler(), $this->getUriLastPart())
-        );
+        $this->authenticateAsAdmin();
         $this->assertTrue(
             $this
                 ->get(PasswordHasher::class)

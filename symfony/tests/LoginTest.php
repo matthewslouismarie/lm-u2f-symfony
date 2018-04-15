@@ -3,7 +3,11 @@
 namespace App\Tests;
 
 use App\DataFixtures\AppFixture;
+use App\Enum\SecurityStrategy;
 use App\Enum\Setting;
+use App\Service\Form\Filler\CredentialAuthenticationFiller;
+use App\Service\Form\Filler\ExistingUsernameFiller;
+use App\Service\Form\Filler\U2fAuthenticationFiller;
 use App\Tests\TestCaseTemplate;
 use App\Tests\LoginTrait;
 use LM\Authentifier\Model\AuthenticationProcess;
@@ -27,25 +31,26 @@ class LoginTest extends TestCaseTemplate
             ->getAppConfigManager()
             ->set(Setting::ALLOW_U2F_LOGIN, true)
             ->set(Setting::ALLOW_PWD_LOGIN, false)
+            ->set(Setting::SECURITY_STRATEGY, SecurityStrategy::U2F)
             ->set(Setting::N_U2F_KEYS_LOGIN, 1)
         ;
         $this->doGet("/not-authenticated/login/u2f");
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->submit($this
-            ->get("App\Service\Form\Filler\ExistingUsernameFiller")
-            ->fillForm($this->getCrawler(), AppFixture::ADMIN_USERNAME.'eui'))
+            ->get(CredentialAuthenticationFiller::class)
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD, AppFixture::ADMIN_USERNAME.'eui'))
         ;
         $this->submit($this
-            ->get("App\Service\Form\Filler\ExistingUsernameFiller")
-            ->fillForm($this->getCrawler(), AppFixture::ADMIN_USERNAME))
+            ->get(CredentialAuthenticationFiller::class)
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD, AppFixture::ADMIN_USERNAME))
         ;
         $this->assertNotContains(
             'This form should not contain extra fields.',
             $this->getClient()->getResponse()->getContent())
         ;
         $this->submit($this
-            ->get('App\Service\Form\Filler\U2fAuthenticationFiller')
+            ->get(U2fAuthenticationFiller::class)
             ->fillForm($this->getCrawler(), $this->getUriLastPart()))
         ;
         $this->assertTrue($this->isAuthenticatedFully());
@@ -63,7 +68,7 @@ class LoginTest extends TestCaseTemplate
         $this->doGet("/not-authenticated/tmp-login");
         $this->followRedirect();
         $this->submit($this
-            ->get("App\Service\Form\Filler\ExistingUsernameFiller")
+            ->get(ExistingUsernameFiller::class)
             ->fillForm($this->getCrawler(), AppFixture::ADMIN_USERNAME))
         ;
         $this->assertSame(
@@ -78,7 +83,7 @@ class LoginTest extends TestCaseTemplate
                 ->getSize())
         ;
         $this->submit($this
-            ->get('App\Service\Form\Filler\U2fAuthenticationFiller')
+            ->get(U2fAuthenticationFiller::class)
             ->fillForm($this->getCrawler(), $this->getUriLastPart()))
         ;
         $this->assertSame(
@@ -93,7 +98,7 @@ class LoginTest extends TestCaseTemplate
                 ->getSize())
         ;
         $this->submit($this
-            ->get('App\Service\Form\Filler\U2fAuthenticationFiller')
+            ->get(U2fAuthenticationFiller::class)
             ->fillForm($this->getCrawler(), $this->getUriLastPart()))
         ;
         $this->assertContains('The U2F key is not recognised.', $this
@@ -120,7 +125,7 @@ class LoginTest extends TestCaseTemplate
         $this->assertIsRedirect();
         $this->followRedirect();
         $this->submit($this
-            ->get("App\Service\Form\Filler\CredentialAuthenticationFiller")
+            ->get(CredentialAuthenticationFiller::class)
             ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD, AppFixture::ADMIN_USERNAME))
         ;
         $this->assertTrue($this->isAuthenticatedFully());

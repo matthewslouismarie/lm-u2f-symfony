@@ -49,4 +49,7 @@ RUN sudo npm install -g grunt-cli
 # Set working directory
 WORKDIR /var/www/html/symfony
 
+# Set CHOWN
+RUN sudo chown -cR louis: .
+
 CMD sudo apache2-foreground

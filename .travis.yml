@@ -15,6 +15,3 @@ before_install:
 
 script:
   - docker exec security_comparator_apache bin/phpunit
-
-after_script:
-  - docker-compose down

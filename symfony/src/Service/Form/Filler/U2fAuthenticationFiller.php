@@ -7,7 +7,6 @@ use App\Service\Mocker\U2fAuthenticationMocker;
 use App\Service\SecureSession;
 use Firehed\U2F\SignRequest;
 use LM\Authentifier\Model\AuthenticationProcess;
-use LM\Authentifier\Model\RequestDatum;
 use LM\Common\Model\ArrayObject;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
@@ -38,7 +37,7 @@ class U2fAuthenticationFiller
             ->setObject(
                 $sid,
                 new AuthenticationProcess(
-                    $process->getDataManager()
+                    $process->getTypedMap()
                         ->set(
                             'u2f_sign_requests',
                             new ArrayObject($cycle->getRequest()->getSignRequests(), SignRequest::class),

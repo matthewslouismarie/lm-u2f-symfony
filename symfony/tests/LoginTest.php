@@ -9,7 +9,6 @@ use App\Service\Form\Filler\CredentialAuthenticationFiller;
 use App\Service\Form\Filler\ExistingUsernameFiller;
 use App\Service\Form\Filler\U2fAuthenticationFiller;
 use LM\Authentifier\Model\AuthenticationProcess;
-use LM\Authentifier\Model\RequestDatum;
 use LM\Common\Model\ArrayObject;
 
 class LoginTest extends TestCaseTemplate
@@ -70,7 +69,7 @@ class LoginTest extends TestCaseTemplate
             $this
                 ->getSecureSession()
                 ->getObject($this->getUriLastPart(), AuthenticationProcess::class)
-                ->getDataManager()
+                ->getTypedMap()
                 ->get('used_u2f_key_public_keys', ArrayObject::class)
                 ->getSize())
         ;
@@ -83,7 +82,7 @@ class LoginTest extends TestCaseTemplate
             $this
                 ->getSecureSession()
                 ->getObject($this->getUriLastPart(), AuthenticationProcess::class)
-                ->getDataManager()
+                ->getTypedMap()
                 ->get('used_u2f_key_public_keys', ArrayObject::class)
                 ->getSize())
         ;

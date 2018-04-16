@@ -25,7 +25,7 @@ class U2fRegistrationFiller
         $this->secureSession = $secureSession;
     }
 
-    public function fillForm(Crawler $crawler, string $sid, int $keyNo): Form
+    public function fillForm(Crawler $crawler, string $sid): Form
     {
         $cycle = $this->mocker->getNewCycle();
         $tdm = $this

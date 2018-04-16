@@ -39,14 +39,10 @@ class U2fAuthenticationFiller
                 $sid,
                 new AuthenticationProcess(
                     $process->getDataManager()
-                        ->replace(
-                            new RequestDatum(
-                                'u2f_sign_requests',
-                                new ArrayObject($cycle->getRequest()->getSignRequests(), SignRequest::class)
-                            ),
-                            RequestDatum::KEY_PROPERTY),
-                    $process->getStatus(),
-                    $process->getCallback()),
+                        ->set(
+                            'u2f_sign_requests',
+                            new ArrayObject($cycle->getRequest()->getSignRequests(), SignRequest::class),
+                            ArrayObject::class)),
                 AuthenticationProcess::class
             )
         ;

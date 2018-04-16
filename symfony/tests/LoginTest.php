@@ -71,9 +71,7 @@ class LoginTest extends TestCaseTemplate
                 ->getSecureSession()
                 ->getObject($this->getUriLastPart(), AuthenticationProcess::class)
                 ->getDataManager()
-                ->get(RequestDatum::KEY_PROPERTY, "used_u2f_key_public_keys")
-                ->getOnlyValue()
-                ->get(RequestDatum::VALUE_PROPERTY, ArrayObject::class)
+                ->get('used_u2f_key_public_keys', ArrayObject::class)
                 ->getSize())
         ;
         $this->submit($this
@@ -86,9 +84,7 @@ class LoginTest extends TestCaseTemplate
                 ->getSecureSession()
                 ->getObject($this->getUriLastPart(), AuthenticationProcess::class)
                 ->getDataManager()
-                ->get(RequestDatum::KEY_PROPERTY, "used_u2f_key_public_keys")
-                ->getOnlyValue()
-                ->get(RequestDatum::VALUE_PROPERTY, ArrayObject::class)
+                ->get('used_u2f_key_public_keys', ArrayObject::class)
                 ->getSize())
         ;
         $this->submit($this

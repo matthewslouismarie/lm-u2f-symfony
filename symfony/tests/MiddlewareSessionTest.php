@@ -3,7 +3,7 @@
 namespace App\Tests;
 
 use LM\Authentifier\Model\AuthenticationProcess;
-use LM\Authentifier\Model\DataManager;
+use LM\Common\DataStructure\TypedMap;
 use LM\Authentifier\Model\RequestDatum;
 use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
@@ -19,9 +19,9 @@ class MiddlewareSessionTest extends TestCaseTemplate
             ExistingUsernameChallenge::class,
             U2fChallenge::class,
         ];
-        $dataManager = new DataManager([
-            new RequestDatum("used_u2f_key_public_keys", new ArrayObject([], StringObject::class)),
-            new RequestDatum("challenges", new ArrayObject($authentifiers, Scalar::_STR)),
+        $dataManager = new TypedMap([
+            'used_u2f_key_public_keys' => new ArrayObject([], StringObject::class),
+            'challenges' => new ArrayObject($authentifiers, Scalar::_STR),
         ]);
         $authenticationProcess = new AuthenticationProcess($dataManager);
         $challenges = $authenticationProcess->getChallenges();
@@ -29,9 +29,7 @@ class MiddlewareSessionTest extends TestCaseTemplate
         $sid = $session->storeObject(
             new AuthenticationProcess($authenticationProcess
                 ->getDataManager()
-                ->replace(
-                    new RequestDatum("challenges", $challenges),
-                    RequestDatum::KEY_PROPERTY)),
+                ->set('challenges', $challenges, ArrayObject::class)),
             AuthenticationProcess::class)
         ;
         $unserializedProcess = $session->getObject($sid, AuthenticationProcess::class);

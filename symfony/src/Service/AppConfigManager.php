@@ -11,7 +11,6 @@ use LM\Common\Type\TypeCheckerTrait;
 use Serializable;
 
 /**
- * @todo Could use a DataManager structure.
  * @todo Rename to GlobalConfig.
  */
 class AppConfigManager

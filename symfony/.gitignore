@@ -19,3 +19,4 @@
 /app_id
 /public/*.min.css.map
 /.matthewslouismarie
+/.php_cs.cache

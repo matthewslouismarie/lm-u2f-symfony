@@ -4,9 +4,7 @@ namespace App\Service;
 
 use App\Enum\SecurityStrategy;
 use App\Enum\Setting;
-use App\Service\AppConfigManager;
 use LM\Authentifier\Challenge\CredentialChallenge;
-use LM\Authentifier\Challenge\ExistingUsernameChallenge;
 use LM\Authentifier\Challenge\PasswordChallenge;
 use LM\Authentifier\Challenge\U2fChallenge;
 use LM\Common\Enum\Scalar;

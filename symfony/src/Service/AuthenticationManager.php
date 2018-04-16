@@ -11,19 +11,13 @@ use App\Exception\IdentityChecker\StartedIdentityCheckException;
 use App\Exception\IdentityChecker\ProcessedException;
 use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
-use LM\Common\Model\BooleanObject;
 use App\Model\IdentityVerificationRequest;
-use LM\Common\Model\IntegerObject;
 use LM\Common\Model\StringObject;
 use App\Model\TransitingData;
-use App\Service\AppConfigManager;
-use App\Service\SecureSession;
-use App\Repository\U2fTokenRepository;
 use Exception;
 use UnexpectedValueException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @todo Delete.

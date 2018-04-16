@@ -3,7 +3,6 @@
 namespace App\Tests;
 
 use App\Entity\U2fToken;
-use App\Tests\TestCaseTemplate;
 
 class U2fDeviceManagementTest extends TestCaseTemplate
 {

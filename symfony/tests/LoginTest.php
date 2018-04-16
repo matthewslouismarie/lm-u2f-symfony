@@ -8,15 +8,9 @@ use App\Enum\Setting;
 use App\Service\Form\Filler\CredentialAuthenticationFiller;
 use App\Service\Form\Filler\ExistingUsernameFiller;
 use App\Service\Form\Filler\U2fAuthenticationFiller;
-use App\Tests\TestCaseTemplate;
-use App\Tests\LoginTrait;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\RequestDatum;
 use LM\Common\Model\ArrayObject;
-use LM\Common\Model\BooleanObject;
-use LM\Authentifier\Challenge\CredentialChallenge;
-use LM\Authentifier\Challenge\ExistingUsernameChallenge;
-use LM\Authentifier\Challenge\U2fChallenge;
 
 class LoginTest extends TestCaseTemplate
 {

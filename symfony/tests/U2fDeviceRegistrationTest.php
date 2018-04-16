@@ -4,8 +4,6 @@ namespace App\Tests;
 
 use App\Entity\U2fToken;
 use App\Service\Form\Filler\U2fDeviceRegistrationFiller;
-use App\Tests\TestCaseTemplate;
-use App\Tests\LoginTrait;
 
 class U2fDeviceRegistrationTest extends TestCaseTemplate
 {

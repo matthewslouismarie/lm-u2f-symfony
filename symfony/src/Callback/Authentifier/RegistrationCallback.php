@@ -2,19 +2,15 @@
 
 namespace App\Callback\Authentifier;
 
-use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Factory\MemberFactory;
-use App\Service\LoginForcer;
 use DateTimeImmutable;
 use LM\Authentifier\Enum\Persistence\Operation;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
-use LM\Authentifier\Model\IAuthenticationCallback;
 use LM\Authentifier\Model\IU2fRegistration;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationCallback extends AbstractCallback

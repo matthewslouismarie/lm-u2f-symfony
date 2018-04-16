@@ -13,7 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Twig_Environment;
-use Twig_Function;
 use UnexpectedValueException;
 
 /**

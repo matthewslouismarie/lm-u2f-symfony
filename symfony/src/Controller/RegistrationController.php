@@ -3,14 +3,11 @@
 namespace App\Controller;
 
 use App\Callback\Authentifier\RegistrationCallback;
-use App\Enum\Setting;
 use App\Service\Authentifier\MiddlewareDecorator;
-use App\Service\AppConfigManager;
 use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use LM\Authentifier\Challenge\CredentialRegistrationChallenge;
 use LM\Authentifier\Challenge\U2fRegistrationChallenge;

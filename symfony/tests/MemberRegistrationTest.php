@@ -2,13 +2,9 @@
 
 namespace App\Tests;
 
-use App\Controller\MemberRegistrationController;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
-use App\Tests\TestCaseTemplate;
-use App\Tests\SecurityStrategyTrait;
-use App\Service\AppConfigManager;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {

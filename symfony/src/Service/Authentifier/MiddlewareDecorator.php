@@ -4,7 +4,6 @@ namespace App\Service\Authentifier;
 
 use App\Enum\Setting;
 use App\Service\AppConfigManager;
-use App\Service\Authentifier\Configuration;
 use App\Service\SecureSession;
 use LM\Authentifier\Controller\AuthenticationKernel;
 use LM\Authentifier\Challenge\CredentialChallenge;

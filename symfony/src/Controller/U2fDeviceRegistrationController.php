@@ -8,7 +8,6 @@ use App\Enum\Setting;
 use App\Form\NewU2fRegistrationType;
 use App\FormModel\NewU2fRegistrationSubmission;
 use App\Model\TransitingData;
-use App\Model\U2fRegistrationRequest;
 use App\Service\AppConfigManager;
 use App\Service\SecureSession;
 use App\Service\U2fRegistrationManager;

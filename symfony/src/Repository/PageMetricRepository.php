@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\PageMetric;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Exception;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class PageMetricRepository extends ServiceEntityRepository

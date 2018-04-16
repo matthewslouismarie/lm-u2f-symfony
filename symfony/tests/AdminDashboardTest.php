@@ -4,7 +4,6 @@ namespace App\Tests;
 
 use App\Enum\SecurityStrategy;
 use App\Enum\Setting;
-use App\Service\AppConfigManager;
 use App\Service\Form\Filler\ChallengeSpecificationFiller;
 use App\Service\Form\Filler\PasswordConfigFiller;
 use App\Service\Form\Filler\U2fConfigFiller;

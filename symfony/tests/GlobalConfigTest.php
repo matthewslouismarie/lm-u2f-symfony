@@ -2,8 +2,6 @@
 
 namespace App\Tests;
 
-use App\Service\AppConfigManager;
-use App\Tests\TestCaseTemplate;
 use InvalidArgumentException;
 use LM\Common\Model\ArrayObject;
 use LM\Common\Model\IntegerObject;

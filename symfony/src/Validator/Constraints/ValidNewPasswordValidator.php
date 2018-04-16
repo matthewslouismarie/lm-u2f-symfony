@@ -3,7 +3,6 @@
 namespace App\Validator\Constraints;
 
 use App\Enum\Setting;
-use App\Exception\InvalidPasswordException;
 use App\Service\AppConfigManager;
 use App\Service\PasswordValidator;
 use Symfony\Component\Validator\Constraint;

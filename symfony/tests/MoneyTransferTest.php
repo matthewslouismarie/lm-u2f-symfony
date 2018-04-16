@@ -2,10 +2,6 @@
 
 namespace App\Tests;
 
-use App\DataFixtures\AppFixture;
-use App\Service\Form\Filler\ValidPasswordFiller;
-use App\Tests\SecurityStrategyTrait;
-use App\Tests\TestCaseTemplate;
 use App\Service\Form\Filler\UserConfirmationFiller;
 
 class MoneyTransferTest extends TestCaseTemplate

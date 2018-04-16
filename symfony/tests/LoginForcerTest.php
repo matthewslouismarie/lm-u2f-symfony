@@ -4,13 +4,7 @@ namespace App\Tests;
 
 use App\DataFixtures\AppFixture;
 use App\Entity\Member;
-use App\Enum\Setting;
 use App\Service\LoginForcer;
-use App\Tests\LoginTrait;
-use App\Tests\TestCaseTemplate;
-use LM\Authentifier\Model\AuthenticationProcess;
-use LM\Authentifier\Model\RequestDatum;
-use LM\Common\Model\BooleanObject;
 use Symfony\Component\HttpFoundation\Request;
 
 class LoginForcerTest extends TestCaseTemplate

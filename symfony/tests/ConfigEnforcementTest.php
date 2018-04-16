@@ -5,7 +5,6 @@ namespace App\Tests;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
 use App\Service\AppConfigManager;
-use App\Tests\TestCaseTemplate;
 
 class ConfigEnforcementTest extends TestCaseTemplate
 {

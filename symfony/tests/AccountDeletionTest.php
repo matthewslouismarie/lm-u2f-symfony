@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-use App\Tests\TestCaseTemplate;
 
 /**
  * @todo Temporarily disabled.

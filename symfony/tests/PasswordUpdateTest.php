@@ -4,9 +4,6 @@ namespace App\Tests;
 
 use App\Service\Adaptor\PasswordHasher;
 use App\Service\Form\Filler\PasswordUpdateFiller;
-use App\Service\Form\Filler\U2fAuthenticationFiller;
-use App\Tests\TestCaseTemplate;
-use App\Tests\SecurityStrategyTrait;
 
 class PasswordUpdateTest extends TestCaseTemplate
 {

@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Member;
+use LM\Authentifier\Model\IMember;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class MemberFactory
@@ -25,6 +26,20 @@ class MemberFactory
         $member->setPassword($hashed);
 
         return $member;
+    }
+
+    public function createFrom(IMember $member): Member
+    {
+        $newMember = new Member(
+            null,
+            $member->getUsername(),
+            [
+                'ROLE_USER',
+            ])
+        ;
+        $newMember->setPassword($member->getHashedPassword());
+
+        return $newMember;
     }
 
     public function setPassword(Member &$member, string $password): void

@@ -47,6 +47,9 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
         $this->twig = $twig;
     }
 
+    /**
+     * @todo Why is findBy(['member' => $this->token->getUser()]) not working?
+     */
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
@@ -61,8 +64,8 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
             $nU2fTokens = count($this
                 ->em
                 ->getRepository(U2fToken::class)
-                ->findBy(['member' => $this->token->getUser()])
-            );
+                ->getRegistrationsFromUsername($this->token->getUser()->getUsername()))
+            ;
             $nU2fTokensRequired = $this
                 ->config
                 ->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH)

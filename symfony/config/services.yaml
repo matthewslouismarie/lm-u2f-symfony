@@ -45,3 +45,6 @@ services:
 
     App\Callback\Authentifier\MemberAuthenticationCallback:
         public: true
+
+    App\Factory\MemberFactory:
+        public: true

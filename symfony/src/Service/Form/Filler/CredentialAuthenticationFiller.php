@@ -13,8 +13,8 @@ class CredentialAuthenticationFiller
     public function fillForm(
         Crawler $crawler,
         string $password,
-        string $username): Form
-    {
+        string $username
+    ): Form {
         $button = $crawler->selectButton(self::FORM_NAME.'[submit]');
         if (0 === $button->count()) {
             throw new NonexistentNodeException();

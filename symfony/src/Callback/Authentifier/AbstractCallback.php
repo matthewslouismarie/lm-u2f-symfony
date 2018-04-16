@@ -26,7 +26,8 @@ abstract class AbstractCallback implements IAuthenticationCallback
 
         return new AuthentifierResponse(
             $authProcess,
-            (new DiactorosFactory())->createResponse(new Response($html)))
+            (new DiactorosFactory())->createResponse(new Response($html))
+        )
         ;
     }
 

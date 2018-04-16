@@ -50,8 +50,8 @@ class PageMetric
         string $participantId,
         string $type,
         string $localPath,
-        ?int $id = null)
-    {
+        ?int $id = null
+    ) {
         $this->microtime = $microtime;
         $this->participantId = $participantId;
         $this->type = $type;

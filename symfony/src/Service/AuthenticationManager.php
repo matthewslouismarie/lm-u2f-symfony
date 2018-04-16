@@ -42,8 +42,8 @@ class AuthenticationManager
         AppConfigManager $config,
         RouterInterface $router,
         SecureSession $secureSession,
-        TokenStorageInterface $tokenStorage)
-    {
+        TokenStorageInterface $tokenStorage
+    ) {
         $this->config = $config;
         $this->router = $router;
         $this->secureSession = $secureSession;
@@ -89,7 +89,7 @@ class AuthenticationManager
             ->getValue(Integer::class)
             ->toInteger()
         ;
-        if ($tdmStatus !== self::NOT_PROCESSED)  {
+        if ($tdmStatus !== self::NOT_PROCESSED) {
             if ($tdmStatus === self::BEING_PROCESSED) {
                 throw new BeingProcessedException();
             } elseif ($tdmStatus === self::PROCESSED) {
@@ -145,8 +145,8 @@ class AuthenticationManager
     public function createHighSecurityAuthenticationProcess(
         string $callerRouteName,
         string $calleeRouteName,
-        array $additionalData = []): IdentityVerificationRequest
-    {
+        array $additionalData = []
+    ): IdentityVerificationRequest {
         switch ($this->config->getIntSetting(Setting::SECURITY_STRATEGY)) {
             case SecurityStrategy::U2F:
                 return $this->create(
@@ -155,7 +155,8 @@ class AuthenticationManager
                         'ic_u2f',
                         $calleeRouteName,
                     ],
-                    $additionalData)
+                    $additionalData
+                )
                 ;
 
             case SecurityStrategy::PWD:
@@ -165,7 +166,8 @@ class AuthenticationManager
                         'ic_password',
                         $calleeRouteName,
                     ],
-                    $additionalData)
+                    $additionalData
+                )
                 ;
 
             default:
@@ -180,8 +182,8 @@ class AuthenticationManager
     public function create(
         string $routeName,
         array $checkers,
-        array $additionalData = []): IdentityVerificationRequest
-    {
+        array $additionalData = []
+    ): IdentityVerificationRequest {
         $tdm = $this->createTdm($additionalData, $checkers, $routeName);
         $sid = $this
             ->secureSession
@@ -200,17 +202,19 @@ class AuthenticationManager
     private function createDefaultTdm(
         array $additionalData,
         array $checkers,
-        string $routeName)
-    {
+        string $routeName
+    ) {
         return (new TransitingDataManager())
             ->add(new TransitingData(
                 'checkers',
                 $routeName,
-                new ArrayObject($checkers, Scalar::_STR)))
+                new ArrayObject($checkers, Scalar::_STR)
+            ))
             ->add(new TransitingData(
                 'additional_data',
                 $routeName,
-                new ArrayObject($additionalData, 'null')))
+                new ArrayObject($additionalData, 'null')
+            ))
             ->add(new TransitingData(
                 'is_processed',
                 $routeName,
@@ -222,8 +226,8 @@ class AuthenticationManager
     private function createTdm(
         array $additionalData,
         array $checkers,
-        string $routeName)
-    {
+        string $routeName
+    ) {
         if (false === in_array('ic_username', $checkers, true) &&
             false === in_array('ic_credential', $checkers, true)) {
             return $this
@@ -235,7 +239,8 @@ class AuthenticationManager
                         ->tokenStorage
                         ->getToken()
                         ->getUser()
-                        ->getUsername())))
+                        ->getUsername())
+                ))
             ;
         } else {
             return $this->createDefaultTdm($additionalData, $checkers, $routeName);
@@ -274,12 +279,10 @@ class AuthenticationManager
                 ->getValue(ArrayObject::class)
                 ->toArray()
             ;
-        }
-        catch (UnexpectedValueException $e) {
+        } catch (UnexpectedValueException $e) {
             return false;
         }
-        foreach ($checkers as $checker)
-        {
+        foreach ($checkers as $checker) {
             try {
                 $valids = $tdm
                     ->getBy('route', $checker)
@@ -287,7 +290,7 @@ class AuthenticationManager
                     ->toArray()
                 ;
             } catch (UnexpectedValueException $e) {
-               return false;
+                return false;
             }
             foreach ($valids as $valid) {
                 if (true !== $valid->toBoolean()) {

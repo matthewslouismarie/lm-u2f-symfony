@@ -41,8 +41,8 @@ class Configuration implements IApplicationConfiguration
         TokenStorageInterface $tokenStorage,
         Twig_Environment $twig,
         MemberRepository $memberRepo,
-        U2fTokenRepository $u2fTokenRepo)
-    {
+        U2fTokenRepository $u2fTokenRepo
+    ) {
         $this->appId = $appIdReader->getAppId();
         $this->assetPackage = $assetPackage;
         $this->container = $container;

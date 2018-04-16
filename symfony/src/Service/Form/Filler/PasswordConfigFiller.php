@@ -14,8 +14,8 @@ class PasswordConfigFiller
         bool $enforceMinimumLength,
         bool $requireNumbers,
         bool $requireSpecialCharacters,
-        bool $requireUppercaseLetters): Form
-    {
+        bool $requireUppercaseLetters
+    ): Form {
         $button = $crawler->selectButton('pwd_config[submit]');
         if (0 === $button->count()) {
             throw new NonexistentNodeException();

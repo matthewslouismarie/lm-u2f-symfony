@@ -12,8 +12,8 @@ class ValidPasswordFiller
 
     public function fillForm(
         Crawler $crawler,
-        string $password): Form
-    {
+        string $password
+    ): Form {
         $button = $crawler->selectButton(self::FORM_NAME.'[submit]');
         if (0 === $button->count()) {
             throw new NonexistentNodeException();

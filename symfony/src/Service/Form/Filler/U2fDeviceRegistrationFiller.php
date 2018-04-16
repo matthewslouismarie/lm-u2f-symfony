@@ -18,8 +18,8 @@ class U2fDeviceRegistrationFiller
 
     public function __construct(
         U2fRegistrationMocker $mocker,
-        SecureSession $secureSession)
-    {
+        SecureSession $secureSession
+    ) {
         $this->mocker = $mocker;
         $this->secureSession = $secureSession;
     }

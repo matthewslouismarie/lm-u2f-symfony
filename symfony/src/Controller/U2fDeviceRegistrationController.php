@@ -33,13 +33,12 @@ class U2fDeviceRegistrationController extends AbstractController
         SecureSession $secureSession,
         EntityManagerInterface $em,
         Request $httpRequest,
-        U2fRegistrationManager $u2fRegistrationManager)
-    {
+        U2fRegistrationManager $u2fRegistrationManager
+    ) {
         if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
             return new RedirectResponse($this->generateUrl('member_account'));
         }
         if (null === $sid) {
-            
             $sid = $secureSession->storeObject(
                 new TransitingDataManager(),
                 TransitingDataManager::class
@@ -81,10 +80,12 @@ class U2fDeviceRegistrationController extends AbstractController
                 $registrations = $em
                     ->getRepository(U2fToken::class)
                     ->getMemberRegistrations(
-                        $this->getUser())
+                        $this->getUser()
+                    )
                 ;
                 $u2fRegistrationRequest = $u2fRegistrationManager->generate(
-                    $registrations)
+                    $registrations
+                )
                 ;
                 $secureSession->setObject(
                     $sid,
@@ -102,8 +103,7 @@ class U2fDeviceRegistrationController extends AbstractController
                     'request_json' => $u2fRegistrationRequest->getRequestAsJson(),
                     'sign_requests' => $u2fRegistrationRequest->getSignRequests(),
                 ]);
-            }
-            catch (ClientErrorException $e) {
+            } catch (ClientErrorException $e) {
                 return $this->render('registration/errors/u2f_timeout.html.twig', [
                     'sid' => $sid,
                 ]);

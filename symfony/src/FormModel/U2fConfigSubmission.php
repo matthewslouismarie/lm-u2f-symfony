@@ -32,8 +32,8 @@ class U2fConfigSubmission
         ?bool $allowU2fLogin = null,
         ?int $nU2fKeysPostAuth = null,
         ?int $nU2fKeysReg = null,
-        ?bool $allowMemberToManageU2fKeys = null)
-    {
+        ?bool $allowMemberToManageU2fKeys = null
+    ) {
         $this->allowU2fLogin = $allowU2fLogin;
         $this->nU2fKeysPostAuth = $nU2fKeysPostAuth;
         $this->nU2fKeysReg = $nU2fKeysReg;

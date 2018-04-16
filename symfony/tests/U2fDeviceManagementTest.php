@@ -58,7 +58,8 @@ class U2fDeviceManagementTest extends TestCaseTemplate
         ;
         $this->assertEquals(
             $originalNOfU2fKeys - 1,
-            $newNOfU2fKeys)
+            $newNOfU2fKeys
+        )
         ;
     }
 }

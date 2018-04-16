@@ -15,8 +15,8 @@ class MemberRepository extends ServiceEntityRepository
 
     public function __construct(
         RegistryInterface $registry,
-        UserPasswordEncoderInterface $upEncoder)
-    {
+        UserPasswordEncoderInterface $upEncoder
+    ) {
         parent::__construct($registry, Member::class);
         $this->upEncoder = $upEncoder;
     }

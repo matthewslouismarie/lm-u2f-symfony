@@ -19,8 +19,8 @@ class MemberFactory
         ?int $id,
         string $username,
         string $password,
-        array $roles)
-    {
+        array $roles
+    ) {
         $member = new Member($id, $username, $roles);
         $hashed = $this->hasher->encodePassword($member, $password);
         $member->setPassword($hashed);
@@ -35,7 +35,8 @@ class MemberFactory
             $member->getUsername(),
             [
                 'ROLE_USER',
-            ])
+            ]
+        )
         ;
         $newMember->setPassword($member->getHashedPassword());
 

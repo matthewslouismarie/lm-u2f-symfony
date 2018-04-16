@@ -38,8 +38,8 @@ class UserPerformancesCollector implements EventSubscriberInterface
     public function __construct(
         AppConfigManager $config,
         EntityManagerInterface $entityManager,
-        SessionInterface $session)
-    {
+        SessionInterface $session
+    ) {
         $this->config = $config;
         $this->entityManager = $entityManager;
         $this->session = $session;
@@ -49,13 +49,13 @@ class UserPerformancesCollector implements EventSubscriberInterface
     {
         $microtimeFloat = microtime(true);
         $uri = $event->getRequest()->getPathInfo();
-        if ($this->isRequestMonitored($event))
-        {
+        if ($this->isRequestMonitored($event)) {
             $pageMetric = new PageMetric(
                 $microtimeFloat,
                 $this->config->getStringSetting(Setting::PARTICIPANT_ID),
                 PageMetric::REQUEST,
-                $uri)
+                $uri
+            )
             ;
             $this
                 ->entityManager
@@ -72,13 +72,13 @@ class UserPerformancesCollector implements EventSubscriberInterface
     {
         $microtimeFloat = microtime(true);
         $uri = $event->getRequest()->getPathInfo();
-        if ($this->isRequestMonitored($event))
-        {
+        if ($this->isRequestMonitored($event)) {
             $pageMetric = new PageMetric(
                 $microtimeFloat,
                 $this->config->getStringSetting(Setting::PARTICIPANT_ID),
                 PageMetric::RESPONSE,
-                $uri)
+                $uri
+            )
             ;
             $this
                 ->entityManager

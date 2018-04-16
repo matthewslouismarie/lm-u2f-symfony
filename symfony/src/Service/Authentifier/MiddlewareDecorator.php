@@ -42,8 +42,8 @@ class MiddlewareDecorator
         Configuration $appConfig,
         AppConfigManager $config,
         RouterInterface $router,
-        SecureSession $secureSession)
-    {
+        SecureSession $secureSession
+    ) {
         $this->authProcessFactory = $authProcessFactory;
         $this->appConfig = $appConfig;
         $this->config = $config;
@@ -58,21 +58,23 @@ class MiddlewareDecorator
         IAuthenticationCallback $callback,
         string $routeName,
         ArrayObject $challenges,
-        ?string $username = null): Response
-    {
+        ?string $username = null
+    ): Response {
         $challengesArray = $challenges->toArray(Scalar::_STR);
         $authProcess = $this
             ->authProcessFactory
             ->createProcess(
                 $challengesArray,
                 $callback,
-                $username)
+                $username
+            )
         ;
         $sid = $this
             ->secureSession
             ->storeObject(
                 $authProcess,
-                AuthenticationProcess::class)
+                AuthenticationProcess::class
+            )
         ;
 
         return new RedirectResponse($this
@@ -85,8 +87,8 @@ class MiddlewareDecorator
 
     public function updateProcess(
         Request $httpRequest,
-        string $sid)
-    {
+        string $sid
+    ) {
         $authKernel = new AuthenticationKernel($this->appConfig);
         $diactorosFactory = new DiactorosFactory();
         $httpFoundationFactory = new HttpFoundationFactory();

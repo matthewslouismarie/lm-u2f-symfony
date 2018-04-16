@@ -23,8 +23,8 @@ class RegistrationController extends AbstractController
         string $sid = null,
         RegistrationCallback $callback,
         MiddlewareDecorator $decorator,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         if (null === $sid) {
             return $decorator->createProcess(
                 $callback,
@@ -32,7 +32,8 @@ class RegistrationController extends AbstractController
                 new ArrayObject([
                     CredentialRegistrationChallenge::class,
                     U2fRegistrationChallenge::class
-                ], Scalar::_STR))
+                ], Scalar::_STR)
+            )
             ;
         } else {
             return $decorator->updateProcess($httpRequest, $sid);

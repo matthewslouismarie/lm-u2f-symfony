@@ -40,7 +40,8 @@ class LoginTest extends TestCaseTemplate
         ;
         $this->assertNotContains(
             'This form should not contain extra fields.',
-            $this->getClient()->getResponse()->getContent())
+            $this->getClient()->getResponse()->getContent()
+        )
         ;
         $this->submit($this
             ->get(U2fAuthenticationFiller::class)
@@ -71,7 +72,8 @@ class LoginTest extends TestCaseTemplate
                 ->getObject($this->getUriLastPart(), AuthenticationProcess::class)
                 ->getTypedMap()
                 ->get('used_u2f_key_public_keys', ArrayObject::class)
-                ->getSize())
+                ->getSize()
+        )
         ;
         $this->submit($this
             ->get(U2fAuthenticationFiller::class)
@@ -84,7 +86,8 @@ class LoginTest extends TestCaseTemplate
                 ->getObject($this->getUriLastPart(), AuthenticationProcess::class)
                 ->getTypedMap()
                 ->get('used_u2f_key_public_keys', ArrayObject::class)
-                ->getSize())
+                ->getSize()
+        )
         ;
         $this->submit($this
             ->get(U2fAuthenticationFiller::class)
@@ -109,7 +112,8 @@ class LoginTest extends TestCaseTemplate
         $this->followRedirect();
         $this->assertSame(
             'http://localhost/not-authenticated/login/pwd',
-            $this->getUri())
+            $this->getUri()
+        )
         ;
         $this->assertIsRedirect();
         $this->followRedirect();

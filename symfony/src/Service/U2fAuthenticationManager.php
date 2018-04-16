@@ -23,8 +23,8 @@ class U2fAuthenticationManager
     public function __construct(
         ObjectManager $em,
         U2fService $u2fService,
-        SecureSession $session)
-    {
+        SecureSession $session
+    ) {
         $this->em = $em;
         $this->u2fService = $u2fService;
         $this->session = $session;
@@ -32,8 +32,8 @@ class U2fAuthenticationManager
 
     public function generate(
         string $username,
-        array $idsToExclude = []): U2fAuthenticationRequest
-    {
+        array $idsToExclude = []
+    ): U2fAuthenticationRequest {
         $member = $this
             ->em
             ->getRepository(Member::class)
@@ -68,8 +68,8 @@ class U2fAuthenticationManager
     public function processResponse(
         U2fAuthenticationRequest $u2fAuthenticationProcess,
         string $username,
-        string $u2fTokenResponse): int
-    {
+        string $u2fTokenResponse
+    ): int {
         $server = $this
             ->u2fService
             ->getServer()
@@ -109,8 +109,8 @@ class U2fAuthenticationManager
 
     private function getAuthenticatorId(
         array $sign_requests,
-        string $challenge): string
-    {
+        string $challenge
+    ): string {
         foreach ($sign_requests as $authenticator_id => $sign_request) {
             if ($sign_request->getChallenge() === $challenge) {
                 return $authenticator_id;

@@ -26,7 +26,8 @@ class MoneyTransferTest extends TestCaseTemplate
             $this
                 ->getClient()
                 ->getResponse()
-                ->getContent())
+                ->getContent()
+        )
         ;
     }
 
@@ -47,7 +48,8 @@ class MoneyTransferTest extends TestCaseTemplate
             $this
                 ->getClient()
                 ->getResponse()
-                ->getContent())
+                ->getContent()
+        )
         ;
     }
 }

@@ -66,8 +66,8 @@ class U2fToken
         Member $member,
         \DateTimeImmutable $registrationDateTime,
         string $publicKey,
-        string $name)
-    {
+        string $name
+    ) {
         $this->id = $id;
         $this->attestation = $attestation;
         $this->counter = $counter;

@@ -21,8 +21,8 @@ class NewU2fRegistrationSubmission implements Serializable
 
     public function __construct(
         ?string $u2fKeyName = null,
-        ?string $u2fTokenResponse = null)
-    {
+        ?string $u2fTokenResponse = null
+    ) {
         $this->u2fKeyName = $u2fKeyName;
         $this->u2fTokenResponse = $u2fTokenResponse;
     }

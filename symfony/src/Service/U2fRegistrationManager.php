@@ -35,8 +35,8 @@ class U2fRegistrationManager
         Member $member,
         DateTimeImmutable $registration_date_time,
         RegisterRequest $request,
-        string $u2fKeyName): U2fToken
-    {
+        string $u2fKeyName
+    ): U2fToken {
         $server = $this
             ->u2f
             ->getServer()

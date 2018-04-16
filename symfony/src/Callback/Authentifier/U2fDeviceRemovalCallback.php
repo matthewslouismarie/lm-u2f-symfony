@@ -47,7 +47,8 @@ class U2fDeviceRemovalCallback extends AbstractCallback
             $authProcess,
             $this
                 ->psr7Factory
-                ->createResponse(new Response($httpResponse)))
+                ->createResponse(new Response($httpResponse))
+        )
         ;
     }
 

@@ -12,8 +12,8 @@ class U2fAuthenticationCycle
 
     public function __construct(
         U2fAuthenticationRequest $request,
-        string $response)
-    {
+        string $response
+    ) {
         $this->request = $request;
         $this->response = $response;
     }

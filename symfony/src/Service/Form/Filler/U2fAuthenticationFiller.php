@@ -19,8 +19,8 @@ class U2fAuthenticationFiller
 
     public function __construct(
         U2fAuthenticationMocker $mocker,
-        SecureSession $secureSession)
-    {
+        SecureSession $secureSession
+    ) {
         $this->mocker = $mocker;
         $this->secureSession = $secureSession;
     }
@@ -41,7 +41,9 @@ class U2fAuthenticationFiller
                         ->set(
                             'u2f_sign_requests',
                             new ArrayObject($cycle->getRequest()->getSignRequests(), SignRequest::class),
-                            ArrayObject::class)),
+                            ArrayObject::class
+                        )
+                ),
                 AuthenticationProcess::class
             )
         ;

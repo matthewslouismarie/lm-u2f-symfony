@@ -47,8 +47,8 @@ class PwdConfigSubmission
         ?bool $enforceMinimumLength = null,
         ?bool $requireNumbers = null,
         ?bool $requireSpecialCharacters = null,
-        ?bool $requireUppercaseLetters = null)
-    {
+        ?bool $requireUppercaseLetters = null
+    ) {
         $this->allowPwdAuthentication = $allowPwdAuthentication;
         $this->minimumLength = $minimumLength;
         $this->enforceMinimumLength = $enforceMinimumLength;

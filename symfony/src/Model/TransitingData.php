@@ -17,8 +17,8 @@ class TransitingData
     public function __construct(
         string $key,
         string $route,
-        Serializable $value)
-    {
+        Serializable $value
+    ) {
         $this->key = $key;
         $this->route = $route;
         $this->value = $value;

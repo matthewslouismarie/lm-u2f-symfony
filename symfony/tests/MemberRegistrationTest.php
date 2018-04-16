@@ -51,7 +51,8 @@ class MemberRegistrationTest extends TestCaseTemplate
             $this
                 ->getAppConfigManager()
                 ->getIntSetting(Setting::N_U2F_KEYS_REG),
-            count($u2fTokens))
+            count($u2fTokens)
+        )
         ;
 
         foreach ($u2fTokens as $u2fToken) {

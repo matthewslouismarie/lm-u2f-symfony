@@ -20,7 +20,7 @@ class AdminDashboardTest extends TestCaseTemplate
         $this->assertEquals(500, $this->getHttpStatusCode());
         $this->login();
         $this->doGet('/admin');
-        $this->assertEquals(200, $this->getHttpStatusCode());        
+        $this->assertEquals(200, $this->getHttpStatusCode());
     }
 
     public function testAdminOptions()
@@ -35,25 +35,29 @@ class AdminDashboardTest extends TestCaseTemplate
             true,
             $this
                 ->getAppConfigManager()
-                ->getBoolSetting(Setting::ALLOW_U2F_LOGIN))
+                ->getBoolSetting(Setting::ALLOW_U2F_LOGIN)
+        )
         ;
         $this->assertEquals(
             2,
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH))
+                ->getIntSetting(Setting::N_U2F_KEYS_POST_AUTH)
+        )
         ;
         $this->assertEquals(
             3,
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(Setting::N_U2F_KEYS_REG))
+                ->getIntSetting(Setting::N_U2F_KEYS_REG)
+        )
         ;
         $this->assertEquals(
             false,
             $this
                 ->getAppConfigManager()
-                ->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS))
+                ->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)
+        )
         ;
     }
 
@@ -83,7 +87,8 @@ class AdminDashboardTest extends TestCaseTemplate
             SecurityStrategy::U2F,
             $this
                 ->getAppConfigManager()
-                ->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR))
+                ->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR)
+        )
         ;
         $this->submit($button->form([
             'security_strategy[securityStrategyId]' => SecurityStrategy::PWD,
@@ -92,7 +97,8 @@ class AdminDashboardTest extends TestCaseTemplate
             SecurityStrategy::PWD,
             $this
                 ->getAppConfigManager()
-                ->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR))
+                ->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR)
+        )
         ;
     }
 
@@ -108,13 +114,15 @@ class AdminDashboardTest extends TestCaseTemplate
             true,
             $this
                 ->getAppConfigManager()
-                ->getBoolSetting(Setting::USER_STUDY_MODE_ACTIVE))
+                ->getBoolSetting(Setting::USER_STUDY_MODE_ACTIVE)
+        )
         ;
         $this->assertEquals(
             "P0",
             $this
                 ->getAppConfigManager()
-                ->getStringSetting(Setting::PARTICIPANT_ID))
+                ->getStringSetting(Setting::PARTICIPANT_ID)
+        )
         ;
         $this->submit($this
             ->get(UserStudyConfigFiller::class)
@@ -124,7 +132,8 @@ class AdminDashboardTest extends TestCaseTemplate
             "P0",
             $this
                 ->getAppConfigManager()
-                ->getStringSetting(Setting::PARTICIPANT_ID))
+                ->getStringSetting(Setting::PARTICIPANT_ID)
+        )
         ;
     }
 
@@ -141,36 +150,42 @@ class AdminDashboardTest extends TestCaseTemplate
                 $pwdSettings['enforceMinLength'],
                 $pwdSettings['requireNumbers'],
                 $pwdSettings['requireSpecialCharacters'],
-                $pwdSettings['requireUppercaseLetters']))
+                $pwdSettings['requireUppercaseLetters']
+            ))
         ;
 
         $this->assertEquals(
             $pwdSettings['enforceMinLength'],
             $this
                 ->getAppConfigManager()
-                ->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH))
+                ->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH)
+        )
                 ;
 
         $this->assertEquals(
             $pwdSettings['minimumLength'],
             $this
                 ->getAppConfigManager()
-                ->getIntSetting(Setting::PWD_MIN_LENGTH))
+                ->getIntSetting(Setting::PWD_MIN_LENGTH)
+        )
         ;
 
         $this->assertEquals(
             $pwdSettings['requireNumbers'],
-            $config->getBoolSetting(Setting::PWD_NUMBERS))
+            $config->getBoolSetting(Setting::PWD_NUMBERS)
+        )
         ;
 
         $this->assertEquals(
             $pwdSettings['requireSpecialCharacters'],
-            $config->getBoolSetting(Setting::PWD_SPECIAL_CHARS))
+            $config->getBoolSetting(Setting::PWD_SPECIAL_CHARS)
+        )
         ;
 
         $this->assertEquals(
             $pwdSettings['requireUppercaseLetters'],
-            $config->getBoolSetting(Setting::PWD_UPPERCASE))
+            $config->getBoolSetting(Setting::PWD_UPPERCASE)
+        )
         ;
     }
 
@@ -196,7 +211,8 @@ class AdminDashboardTest extends TestCaseTemplate
         foreach ($newSettings as $key => $newSetting) {
             $this->assertSame(
                 $config->getSetting($key, gettype($newSetting)),
-                $newSetting)
+                $newSetting
+            )
             ;
         }
         $settings2 = [
@@ -216,7 +232,8 @@ class AdminDashboardTest extends TestCaseTemplate
         foreach ($settings2 as $key => $setting) {
             $this->assertSame(
                 $config->getSetting($key, gettype($setting)),
-                $setting)
+                $setting
+            )
             ;
         }
     }

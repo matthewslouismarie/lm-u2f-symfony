@@ -21,8 +21,8 @@ class U2fAuthenticationFiller1
 
     public function __construct(
         U2fAuthenticationMocker $mocker,
-        SecureSession $secureSession)
-    {
+        SecureSession $secureSession
+    ) {
         $this->mocker = $mocker;
         $this->secureSession = $secureSession;
     }
@@ -45,7 +45,8 @@ class U2fAuthenticationFiller1
                             'u2f_authentication_request',
                             'ic_u2f',
                             $cycle->getRequest()
-                        )),
+                        )
+                    ),
                 TransitingDataManager::class
             )
         ;

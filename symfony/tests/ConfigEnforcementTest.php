@@ -68,7 +68,8 @@ class ConfigEnforcementTest extends TestCaseTemplate
             $this
                 ->getClient()
                 ->getResponse()
-                ->getContent())
+                ->getContent()
+        )
         ;
         $this->doGet('/authenticated/register-u2f-device');
         $this->assertNotContains(
@@ -76,7 +77,8 @@ class ConfigEnforcementTest extends TestCaseTemplate
             $this
                 ->getClient()
                 ->getResponse()
-                ->getContent())
+                ->getContent()
+        )
         ;
     }
 }

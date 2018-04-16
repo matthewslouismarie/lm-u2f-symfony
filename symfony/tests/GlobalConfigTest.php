@@ -19,15 +19,17 @@ class GlobalConfigTest extends TestCaseTemplate
         ;
         $this->assertEquals(
             'value0',
-            $config->getSetting('key0', StringObject::class)->toString());
+            $config->getSetting('key0', StringObject::class)->toString()
+        );
         $this->assertEquals(
             new IntegerObject(5),
-            $config->getSetting('key1', IntegerObject::class));
+            $config->getSetting('key1', IntegerObject::class)
+        );
         $this->assertEquals(
             new ArrayObject([new StringObject('hi'), new StringObject('yo')], StringObject::class),
-            $config->getSetting('key2', ArrayObject::class));
+            $config->getSetting('key2', ArrayObject::class)
+        );
         $this->expectException(InvalidArgumentException::class);
         $config->getSetting('key1', ArrayObject::class);
-        
     }
 }

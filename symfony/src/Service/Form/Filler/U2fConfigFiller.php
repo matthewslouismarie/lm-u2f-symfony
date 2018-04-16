@@ -13,8 +13,8 @@ class U2fConfigFiller
         bool $allowU2fLogin,
         int $nU2fKeysPostAuth,
         int $nU2fKeysReg,
-        bool $allowMemberToManageU2fKeys): Form
-    {
+        bool $allowMemberToManageU2fKeys
+    ): Form {
         $button = $crawler->selectButton('u2f_config[submit]');
         if (0 === $button->count()) {
             throw new NonexistentNodeException();

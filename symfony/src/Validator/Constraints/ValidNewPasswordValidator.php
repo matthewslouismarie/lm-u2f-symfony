@@ -16,8 +16,8 @@ class ValidNewPasswordValidator extends ConstraintValidator
 
     public function __construct(
         AppConfigManager $config,
-        PasswordValidator $pwdValidator)
-    {
+        PasswordValidator $pwdValidator
+    ) {
         $this->config = $config;
         $this->pwdValidator = $pwdValidator;
     }
@@ -46,7 +46,7 @@ class ValidNewPasswordValidator extends ConstraintValidator
         }
         if (true === $this->config->getBoolSetting(Setting::PWD_SPECIAL_CHARS)) {
             if (false === $this->pwdValidator->hasSpecialChars($password)) {
-                    $this->addError('Your password needs to contain special characters', $password);
+                $this->addError('Your password needs to contain special characters', $password);
             }
         }
         if (true === $this->config->getBoolSetting(Setting::PWD_UPPERCASE)) {

@@ -13,7 +13,9 @@ class UriHelper
      */
     public function __construct(RequestStack $requestStack)
     {
-        $this->uriArray = explode("/", $requestStack
+        $this->uriArray = explode(
+            "/",
+            $requestStack
             ->getCurrentRequest()
             ->getUri()
         );

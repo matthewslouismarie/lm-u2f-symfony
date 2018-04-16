@@ -28,8 +28,7 @@ class RegistrationCallback extends AbstractCallback
             ->getManager()
         ;
         $em->persist($member);
-        foreach ($authProcess->getPersistOperations() as $operation)
-        {
+        foreach ($authProcess->getPersistOperations() as $operation) {
             if ($operation->getType()->is(new Operation(Operation::CREATE))) {
                 $object = $operation->getObject();
                 if (is_a($object, IU2fRegistration::class)) {
@@ -41,7 +40,8 @@ class RegistrationCallback extends AbstractCallback
                         $member,
                         new DateTimeImmutable(),
                         base64_encode($object->getPublicKeyBinary()),
-                        'Unnamed'.microtime())
+                        'Unnamed'.microtime()
+                    )
                     ;
                     $em->persist($u2fToken);
                 }
@@ -61,7 +61,8 @@ class RegistrationCallback extends AbstractCallback
 
         return new AuthentifierResponse(
             $authProcess,
-            $psr7Factory->createResponse(new Response($httpResponse)))
+            $psr7Factory->createResponse(new Response($httpResponse))
+        )
         ;
     }
 

@@ -19,8 +19,8 @@ class LoginForcer
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
-        EventDispatcherInterface $eventDispatcher)
-    {
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->tokenStorage = $tokenStorage;
         $this->eventDispatcher = $eventDispatcher;
     }

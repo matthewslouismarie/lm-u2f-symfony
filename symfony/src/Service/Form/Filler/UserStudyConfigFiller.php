@@ -13,8 +13,8 @@ class UserStudyConfigFiller
     public function fillForm(
         Crawler $crawler,
         bool $isUserStudyModeActive,
-        ?string $participantId): Form
-    {
+        ?string $participantId
+    ): Form {
         $button = $crawler->selectButton(self::FORM_ID."[submit]");
         if (0 === $button->count()) {
             throw new NonexistentNodeException();

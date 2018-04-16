@@ -18,8 +18,8 @@ class U2fTokenRepository extends ServiceEntityRepository
 
     public function __construct(
         ObjectManager $om,
-        RegistryInterface $registry)
-    {
+        RegistryInterface $registry
+    ) {
         parent::__construct($registry, U2fToken::class);
         $this->om = $om;
     }

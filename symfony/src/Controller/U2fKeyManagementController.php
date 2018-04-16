@@ -29,8 +29,8 @@ class U2fKeyManagementController extends AbstractController
      */
     public function manageU2fKeys(
         AppConfigManager $config,
-        U2fTokenRepository $u2fTokenRepo)
-    {
+        U2fTokenRepository $u2fTokenRepo
+    ) {
         if (false === $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS)) {
             return new RedirectResponse($this->generateUrl('member_account'));
         }
@@ -50,8 +50,8 @@ class U2fKeyManagementController extends AbstractController
         string $u2fKeySlug,
         EntityManagerInterface $em,
         MiddlewareDecorator $decorator,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         $form = $this->createForm(UserConfirmationType::class);
 
         $form->handleRequest($httpRequest);
@@ -68,7 +68,8 @@ class U2fKeyManagementController extends AbstractController
                 'remove_u2f_device',
                 new ArrayObject([
                     CredentialChallenge::class,
-                ], Scalar::_STR));
+                ], Scalar::_STR)
+            );
         }
 
         return $this->render('confirm_u2f_key_reset.html.twig', [
@@ -85,8 +86,8 @@ class U2fKeyManagementController extends AbstractController
         string $sid,
         EntityManagerInterface $em,
         MiddlewareDecorator $decorator,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         return $decorator->updateProcess($httpRequest, $sid);
     }
 }

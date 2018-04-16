@@ -24,8 +24,8 @@ class PasswordUpdateSubmission
 
     public function __construct(
         ?string $password = null,
-        ?string $passwordConfirmation = null)
-    {
+        ?string $passwordConfirmation = null
+    ) {
         $this->password = $password;
         $this->passwordConfirmation = $passwordConfirmation;
     }

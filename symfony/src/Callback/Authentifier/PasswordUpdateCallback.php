@@ -61,7 +61,8 @@ class PasswordUpdateCallback extends AbstractCallback
 
         return new AuthentifierResponse(
             $authProcess,
-            $psr7Factory->createResponse(new Response($httpResponse)))
+            $psr7Factory->createResponse(new Response($httpResponse))
+        )
         ;
     }
 

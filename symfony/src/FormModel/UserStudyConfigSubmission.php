@@ -24,8 +24,8 @@ class UserStudyConfigSubmission
 
     public function __construct(
         ?bool $isUserStudyModeActive = null,
-        ?string $participantId = null)
-    {
+        ?string $participantId = null
+    ) {
         $this->isUserStudyModeActive = $isUserStudyModeActive;
         $this->participantId = $participantId;
     }

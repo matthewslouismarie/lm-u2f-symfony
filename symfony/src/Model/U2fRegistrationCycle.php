@@ -12,8 +12,8 @@ class U2fRegistrationCycle
 
     public function __construct(
         RegisterRequest $request,
-        string $stringResponse)
-    {
+        string $stringResponse
+    ) {
         $this->request = $request;
         $this->stringResponse = $stringResponse;
     }

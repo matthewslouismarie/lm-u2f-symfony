@@ -72,8 +72,8 @@ class MemberRegistrationController extends AbstractController
         AppConfigManager $config,
         Request $request,
         SecureSession $secureSession,
-        string $sid): Response
-    {
+        string $sid
+    ): Response {
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
         $submission = new CredentialRegistrationSubmission();
         $form = $this->createForm(
@@ -92,7 +92,8 @@ class MemberRegistrationController extends AbstractController
                 TransitingDataManager::class
             );
 
-            return new RedirectResponse($this
+            return new RedirectResponse(
+                $this
                 ->generateUrl('registration_u2f_key', [
                     'sid' => $sid,
                 ])
@@ -129,8 +130,8 @@ class MemberRegistrationController extends AbstractController
         SecureSession $secureSession,
         U2fRegistrationManager $service,
         U2fService $u2fService,
-        string $sid): Response
-    {
+        string $sid
+    ): Response {
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
         $server = $u2fService->getServer();
 
@@ -239,8 +240,8 @@ class MemberRegistrationController extends AbstractController
         string $sid,
         SecureSession $secureSession,
         U2fRegistrationManager $u2fRegistrationManager,
-        Request $request): Response
-    {
+        Request $request
+    ): Response {
         try {
             $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
             $credential = $tdm
@@ -297,8 +298,8 @@ class MemberRegistrationController extends AbstractController
     public function resetRegistration(
         Request $request,
         SecureSession $secureSession,
-        string $sid): Response
-    {
+        string $sid
+    ): Response {
         $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
         $form = $this->createForm(UserConfirmationType::class);
 

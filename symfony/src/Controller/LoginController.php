@@ -47,8 +47,8 @@ class LoginController extends AbstractController
         string $sid = null,
         MemberAuthenticationCallback $callback,
         MiddlewareDecorator $decorator,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         if (null === $sid) {
             return $decorator->createProcess(
                 $callback,
@@ -56,7 +56,8 @@ class LoginController extends AbstractController
                 new ArrayObject([
                     CredentialChallenge::class,
                     U2fChallenge::class,
-                ], Scalar::_STR))
+                ], Scalar::_STR)
+            )
             ;
         } else {
             return $decorator->updateProcess($httpRequest, $sid);
@@ -72,8 +73,8 @@ class LoginController extends AbstractController
         string $sid = null,
         MemberAuthenticationCallback $callback,
         MiddlewareDecorator $decorator,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         if (null === $sid) {
             return $decorator->createProcess(
                 $callback,
@@ -82,7 +83,8 @@ class LoginController extends AbstractController
                     ExistingUsernameChallenge::class,
                     U2fChallenge::class,
                     U2fChallenge::class,
-                ], Scalar::_STR))
+                ], Scalar::_STR)
+            )
             ;
         } else {
             return $decorator->updateProcess($httpRequest, $sid);
@@ -98,15 +100,16 @@ class LoginController extends AbstractController
         string $sid = null,
         MemberAuthenticationCallback $callback,
         MiddlewareDecorator $decorator,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         if (null === $sid) {
             return $decorator->createProcess(
                 $callback,
                 $httpRequest->get('_route'),
                 new ArrayObject([
                     CredentialChallenge::class,
-                ], Scalar::_STR))
+                ], Scalar::_STR)
+            )
             ;
         } else {
             return $decorator->updateProcess($httpRequest, $sid);

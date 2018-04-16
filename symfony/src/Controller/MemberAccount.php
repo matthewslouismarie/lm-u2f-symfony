@@ -34,7 +34,7 @@ class MemberAccount extends AbstractController
         $allowMemberToManageU2fKeys = $config->getBoolSetting(Setting::ALLOW_MEMBER_TO_MANAGE_U2F_KEYS);
 
         return $this->render('member_account.html.twig', [
-            'allow_member_to_manage_u2f_keys' => $allowMemberToManageU2fKeys,            
+            'allow_member_to_manage_u2f_keys' => $allowMemberToManageU2fKeys,
         ]);
     }
 
@@ -47,8 +47,8 @@ class MemberAccount extends AbstractController
         string $sid = null,
         ChallengeSpecification $challengeSpecification,
         Request $httpRequest,
-        MiddlewareDecorator $decorator)
-    {
+        MiddlewareDecorator $decorator
+    ) {
         if (null === $sid) {
             $submission = new PasswordUpdateSubmission();
             $form = $this->createForm(PasswordUpdateType::class, $submission);
@@ -60,7 +60,8 @@ class MemberAccount extends AbstractController
                     $callback,
                     $httpRequest->get('_route'),
                     $challengeSpecification->getChallenges($this->getUser()->getUsername()),
-                    $this->getUser()->getUsername())
+                    $this->getUser()->getUsername()
+                )
                 ;
             }
 
@@ -80,8 +81,8 @@ class MemberAccount extends AbstractController
     public function deleteAccount(
         string $sid = null,
         Request $httpRequest,
-        MiddlewareDecorator $decorator)
-    {
+        MiddlewareDecorator $decorator
+    ) {
         if (null === $sid) {
             $form = $this->createForm(UserConfirmationType::class);
 
@@ -94,14 +95,15 @@ class MemberAccount extends AbstractController
                     $httpRequest->get('_route'),
                     new ArrayObject([
                         CredentialChallenge::class,
-                    ], Scalar::_STR));
+                    ], Scalar::_STR)
+                );
             }
 
             return $this->render('delete_account.html.twig', [
                 'form' => $form->createView(),
             ]);
         } else {
-            return $decorator->updateProcess($httpRequest, $sid);            
+            return $decorator->updateProcess($httpRequest, $sid);
         }
     }
 }

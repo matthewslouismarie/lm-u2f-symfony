@@ -29,11 +29,13 @@ class MiddlewareSessionTest extends TestCaseTemplate
             new AuthenticationProcess($authenticationProcess
                 ->getTypedMap()
                 ->set('challenges', $challenges, ArrayObject::class)),
-            AuthenticationProcess::class)
+            AuthenticationProcess::class
+        )
         ;
         $unserializedProcess = $session->getObject($sid, AuthenticationProcess::class);
         $this->assertSame(
             U2fChallenge::class,
-            $unserializedProcess->getCurrentChallenge());
+            $unserializedProcess->getCurrentChallenge()
+        );
     }
 }

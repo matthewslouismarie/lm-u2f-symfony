@@ -36,8 +36,8 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
         RouterInterface $router,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $token,
-        Twig_Environment $twig)
-    {
+        Twig_Environment $twig
+    ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->config = $config;
         $this->em = $em;
@@ -71,7 +71,7 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
             ;
             // echo("\n  Requis: {$nU2fTokensRequired} contre ".count($u2fTokens)."\n");
             if ($nU2fTokens < $nU2fTokensRequired) {
-                $event->setController(function() use ($nU2fTokens, $nU2fTokensRequired) {
+                $event->setController(function () use ($nU2fTokens, $nU2fTokensRequired) {
                     return new Response($this->twig->render('new_u2f_key_needed.html.twig', [
                         'nU2fTokens' => $nU2fTokens,
                         'nU2fTokensRequired' => $nU2fTokensRequired,

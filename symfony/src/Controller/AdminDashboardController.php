@@ -48,15 +48,16 @@ class AdminDashboardController extends AbstractController
      */
     public function getPasswordPanel(
         AppConfigManager $config,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         $submission = new PwdConfigSubmission(
             $config->getBoolSetting(Setting::ALLOW_PWD_LOGIN),
             $config->getIntSetting(Setting::PWD_MIN_LENGTH),
             $config->getBoolSetting(Setting::PWD_ENFORCE_MIN_LENGTH),
             $config->getBoolSetting(Setting::PWD_NUMBERS),
             $config->getBoolSetting(Setting::PWD_SPECIAL_CHARS),
-            $config->getBoolSetting(Setting::PWD_UPPERCASE))
+            $config->getBoolSetting(Setting::PWD_UPPERCASE)
+        )
         ;
         $form = $this
             ->createForm(PwdConfigType::class, $submission)
@@ -87,8 +88,8 @@ class AdminDashboardController extends AbstractController
      */
     public function getRegistrationPanel(
         AppConfigManager $appConfigManager,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         $submission = new U2fConfigSubmission(
             $appConfigManager->getSetting(Setting::ALLOW_U2F_LOGIN, Scalar::_BOOL),
             $appConfigManager->getSetting(Setting::N_U2F_KEYS_POST_AUTH, Scalar::_INT),
@@ -131,8 +132,8 @@ class AdminDashboardController extends AbstractController
      */
     public function processSecurityStrategyPage(
         AppConfigManager $config,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         $submission = new SecurityStrategySubmission(
             $config->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR)
         );
@@ -158,8 +159,8 @@ class AdminDashboardController extends AbstractController
      */
     public function configureUserStudy(
         AppConfigManager $config,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         $submission = new UserStudyConfigSubmission(
             $config->getBoolSetting(Setting::USER_STUDY_MODE_ACTIVE),
             $config->getStringSetting(Setting::PARTICIPANT_ID)
@@ -170,12 +171,14 @@ class AdminDashboardController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $config->set(
                 Setting::USER_STUDY_MODE_ACTIVE,
-                $submission->isUserStudyModeActive)
+                $submission->isUserStudyModeActive
+            )
             ;
             if (true !== empty($submission->participantId)) {
                 $config->set(
                     Setting::PARTICIPANT_ID,
-                    $submission->participantId)
+                    $submission->participantId
+                )
                 ;
             }
         }
@@ -193,8 +196,8 @@ class AdminDashboardController extends AbstractController
     public function metrics(
         string $participantId,
         AppConfigManager $config,
-        PageMetricRepository $repository)
-    {
+        PageMetricRepository $repository
+    ) {
         $metrics = $repository->getArray($participantId);
         $participantIds = $repository->getParticipantIdsExcept($participantId);
 
@@ -248,8 +251,8 @@ class AdminDashboardController extends AbstractController
      */
     public function setChallengeSpecification(
         AppConfigManager $config,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         $form = $this->createForm(ChallengeSpecificationType::class);
 
         $form->handleRequest($httpRequest);

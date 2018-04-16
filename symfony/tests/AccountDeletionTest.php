@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-
 /**
  * @todo Temporarily disabled.
  */
@@ -13,7 +12,7 @@ class AccountDeletionTest extends TestCaseTemplate
     public function testAccountDeletion()
     {
         $this->assertTrue(true);
-    //     $this->u2fAuthenticate();
+        //     $this->u2fAuthenticate();
     //     $this->doGet('/authenticated/my-account/delete-account');
     //     $this->assertContains(
     //         'Do you really want to delete your account?',

@@ -22,8 +22,8 @@ class MoneyTransferController extends AbstractController
         ChallengeSpecification $challengeSpecification,
         MiddlewareDecorator $decorator,
         MoneyTransferCallback $callback,
-        Request $httpRequest)
-    {
+        Request $httpRequest
+    ) {
         if (null === $sid) {
             $form = $this->createForm(UserConfirmationType::class);
 
@@ -33,7 +33,8 @@ class MoneyTransferController extends AbstractController
                     $callback,
                     $httpRequest->get('_route'),
                     $challengeSpecification->getChallenges($this->getUser()->getUsername()),
-                    $this->getUser()->getUsername());
+                    $this->getUser()->getUsername()
+                );
             }
 
             return $this->render('transfer_money.html.twig', [

@@ -34,8 +34,8 @@ class SecureSession
     public function storeTypedArray(
         array $array,
         string $class,
-        string $sid): void
-    {
+        string $sid
+    ): void {
         foreach ($array as $item) {
             if (!is_a($item, $class)) {
                 throw new InvalidArgumentException();

@@ -63,7 +63,7 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
             $nU2fTokens = count($this
                 ->em
                 ->getRepository(U2fToken::class)
-                ->getRegistrationsFromUsername($this->token->getUser()->getUsername()))
+                ->findByUsername($this->token->getUser()->getUsername()))
             ;
             $nU2fTokensRequired = $this
                 ->config

@@ -4,7 +4,6 @@ namespace App\Model;
 
 use InvalidArgumentException;
 use UnexpectedValueException;
-use Serializable;
 
 class TransitingData
 {
@@ -17,7 +16,7 @@ class TransitingData
     public function __construct(
         string $key,
         string $route,
-        Serializable $value
+        $value
     ) {
         $this->key = $key;
         $this->route = $route;
@@ -39,7 +38,7 @@ class TransitingData
         return $this->route;
     }
 
-    public function getValue(string $class): Serializable
+    public function getValue(string $class)
     {
         if (get_class($this->value) === $class) {
             return $this->value;

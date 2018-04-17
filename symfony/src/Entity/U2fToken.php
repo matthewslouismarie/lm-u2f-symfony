@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LM\Authentifier\Model\IU2fRegistration;
 
 /**
  * @ORM\Table(
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * )
  * @ORM\Entity(repositoryClass="App\Repository\U2fTokenRepository")
  */
-class U2fToken
+class U2fToken implements IU2fRegistration
 {
     /**
      * @ORM\Id
@@ -83,6 +84,11 @@ class U2fToken
         return $this->attestation;
     }
 
+    public function getAttestationCertificateBinary(): string
+    {
+        return base64_decode($this->attestation);
+    }
+
     public function getCounter(): int
     {
         return $this->counter;
@@ -96,6 +102,11 @@ class U2fToken
     public function getKeyHandle(): string
     {
         return $this->keyHandle;
+    }
+
+    public function getKeyHandleBinary(): string
+    {
+        return base64_decode($this->keyHandle);
     }
 
     public function getRegistrationDateTime(): \DateTimeImmutable
@@ -113,6 +124,11 @@ class U2fToken
         return $this->publicKey;
     }
 
+    public function getPublicKeyBinary(): string
+    {
+        return base64_decode($this->publicKey);
+    }
+
     public function getU2fKeyName(): string
     {
         return $this->name;
@@ -121,5 +137,32 @@ class U2fToken
     public function setCounter(int $counter): void
     {
         $this->counter = $counter;
+    }
+
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->attestation,
+            $this->counter,
+            $this->keyHandle,
+            $this->member,
+            $this->name,
+            $this->publicKey,
+            $this->registrationDateTime,
+        ]);
+    }
+
+    public function unserialize($serialized)
+    {
+        list(
+            $this->id,
+            $this->attestation,
+            $this->counter,
+            $this->keyHandle,
+            $this->member,
+            $this->name,
+            $this->publicKey,
+            $this->registrationDateTime) = unserialize($serialized);
     }
 }

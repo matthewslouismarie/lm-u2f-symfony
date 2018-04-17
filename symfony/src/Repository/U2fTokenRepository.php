@@ -40,7 +40,7 @@ class U2fTokenRepository extends ServiceEntityRepository
         return $registrations;
     }
 
-    public function getRegistrationsFromUsername(string $username): array
+    public function findByUsername(string $username): array
     {
         $member = $this
             ->om
@@ -49,18 +49,10 @@ class U2fTokenRepository extends ServiceEntityRepository
                 "username" => $username,
             ])
         ;
-        $u2f_tokens = $this->getU2fTokens($member);
-        $registrations = array();
-        foreach ($u2f_tokens as $tkn) {
-            $registration = new Registration();
-            $registration->setCounter($tkn->getCounter());
-            $registration->setAttestationCertificate($tkn->getAttestation());
-            $registration->setPublicKey(base64_decode($tkn->getPublicKey()));
-            $registration->setKeyHandle(base64_decode($tkn->getKeyHandle()));
-            $registrations[$tkn->getId()] = $registration;
-        }
 
-        return $registrations;
+        return $this->findBy([
+            'member' => $member,
+        ]);
     }
 
     public function getExcept(Member $member, array $ids)
@@ -78,6 +70,9 @@ class U2fTokenRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @todo Delete?
+     */
     public function getU2fTokens(Member $member): array
     {
         return $this->findBy(['member' => $member]);

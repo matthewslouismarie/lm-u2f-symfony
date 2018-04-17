@@ -71,6 +71,9 @@
     "doctrine/orm": {
         "version": "v2.6.0"
     },
+    "firehed/u2f": {
+        "version": "dev-master"
+    },
     "guzzlehttp/psr7": {
         "version": "1.4.2"
     },
@@ -81,12 +84,6 @@
         "version": "2.4.0"
     },
     "matthewslouismarie/auth-abstractor": {
-        "version": "dev-master"
-    },
-    "matthewslouismarie/lm-u2f": {
-        "version": "dev-master"
-    },
-    "matthewslouismarie/lm-web-framework": {
         "version": "dev-master"
     },
     "monolog/monolog": {

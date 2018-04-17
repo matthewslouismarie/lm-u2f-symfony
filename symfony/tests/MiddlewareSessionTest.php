@@ -19,7 +19,6 @@ class MiddlewareSessionTest extends TestCaseTemplate
             U2fChallenge::class,
         ];
         $typedMap = new TypedMap([
-            'used_u2f_key_public_keys' => new ArrayObject([], StringObject::class),
             'challenges' => new ArrayObject($authentifiers, Scalar::_STR),
         ]);
         $authenticationProcess = new AuthenticationProcess($typedMap);

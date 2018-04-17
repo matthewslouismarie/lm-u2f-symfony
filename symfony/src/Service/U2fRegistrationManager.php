@@ -9,6 +9,9 @@ use DateTimeImmutable;
 use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 
+/**
+ * @todo Delete.
+ */
 class U2fRegistrationManager
 {
     private $u2f;

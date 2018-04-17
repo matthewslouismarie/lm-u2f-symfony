@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7a0149da4f3ca2e383a7936fec527e6",
+    "content-hash": "35b831d75e1048421bea24876b0dd9a6",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -981,6 +981,59 @@
             "time": "2017-12-20T00:38:15+00:00"
         },
         {
+            "name": "firehed/u2f",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Firehed/u2f-php.git",
+                "reference": "8438a88472d68f0e9a8ee1281c5b0a44e297c051"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Firehed/u2f-php/zipball/8438a88472d68f0e9a8ee1281c5b0a44e297c051",
+                "reference": "8438a88472d68f0e9a8ee1281c5b0a44e297c051",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "firehed/arctools": "^1",
+                "phpunit/phpunit": "^5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firehed\\U2F\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eric Stern",
+                    "email": "eric@ericstern.com"
+                }
+            ],
+            "description": "A library providing U2F authentication",
+            "homepage": "https://github.com/Firehed/u2f-php",
+            "keywords": [
+                "Authentication",
+                "MFA",
+                "auth",
+                "security",
+                "u2f",
+                "yubico",
+                "yubikey"
+            ],
+            "time": "2018-02-12T03:47:39+00:00"
+        },
+        {
             "name": "jdorn/sql-formatter",
             "version": "v1.2.17",
             "source": {
@@ -1094,10 +1147,10 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthewslouismarie/auth-abstractor.git",
-                "reference": "dc06487351bebed2545e18478c0aa06c9b001f9c"
+                "reference": "0aea362028f4c05b25eb3b281cfd8cc21fbb71b3"
             },
             "require": {
-                "matthewslouismarie/lm-u2f": "dev-master",
+                "firehed/u2f": "dev-master",
                 "php-di/php-di": "^6.0",
                 "psr/container": "^1.0",
                 "psr/http-message": "^1.0",
@@ -1120,43 +1173,7 @@
                     "LM\\": "src/LM"
                 }
             },
-            "time": "2018-04-15T16:07:00+00:00"
-        },
-        {
-            "name": "matthewslouismarie/lm-u2f",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/matthewslouismarie/lm-u2f.git",
-                "reference": "b0931bab7817df3327901ca36cb4664562fa8f05"
-            },
-            "require": {
-                "matthewslouismarie/lm-web-framework": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "LM\\U2F\\": "",
-                    "Firehed\\U2F\\": "src/"
-                }
-            },
-            "time": "2018-01-27T18:36:29+00:00"
-        },
-        {
-            "name": "matthewslouismarie/lm-web-framework",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/matthewslouismarie/lm-web-framework",
-                "reference": "54b925828652df9c8783c9d46d9c12eaa348a830"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "LM\\": "classes/LM/"
-                }
-            },
-            "time": "2017-12-08T16:15:44+00:00"
+            "time": "2018-04-16T22:50:18+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -5563,7 +5580,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "matthewslouismarie/auth-abstractor": 20,
-        "matthewslouismarie/lm-u2f": 20,
         "symfony/lts": 20
     },
     "prefer-stable": true,

@@ -3,16 +3,18 @@
 namespace App\Service\Form\Filler;
 
 use App\Controller\MemberRegistrationController;
-use App\DataStructure\TransitingDataManager;
 use App\Exception\NonexistentNodeException;
-use App\Model\TransitingData;
 use App\Service\Mocker\U2fRegistrationMocker;
 use App\Service\SecureSession;
+use LM\Authentifier\Model\AuthenticationProcess;
+use LM\Authentifier\Model\U2fRegistrationRequest;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
 class U2fRegistrationFiller
 {
+    const FORM_NAME = 'form';
+
     private $mocker;
 
     private $secureSession;
@@ -28,31 +30,31 @@ class U2fRegistrationFiller
     public function fillForm(Crawler $crawler, string $sid): Form
     {
         $cycle = $this->mocker->getNewCycle();
-        $tdm = $this
+        $typedMap = $this
             ->secureSession
-            ->getObject($sid, TransitingDataManager::class)
-            ->replaceByKey(new TransitingData(
-                MemberRegistrationController::U2F_REG_REQUEST_KEY,
-                'registration_u2f_key',
-                $cycle->getRequest()
-            ))
+            ->getObject($sid, AuthenticationProcess::class)
+            ->getTypedMap()
+            ->set(
+                'current_u2f_registration_request',
+                new U2fRegistrationRequest($cycle->getRequest(), 'useless in testing'),
+                U2fRegistrationRequest::class
+            )
         ;
         $this
             ->secureSession
             ->setObject(
                 $sid,
-                $tdm,
-                TransitingDataManager::class
+                new AuthenticationProcess($typedMap),
+                AuthenticationProcess::class
             )
         ;
 
-        $formNode = $crawler->filter("[name=\"new_u2f_registration\"]");
+        $formNode = $crawler->filter('[name="'.self::FORM_NAME.'"]');
         if (0 === $formNode->count()) {
             throw new NonexistentNodeException();
         }
         $form = $formNode->form([
-            'new_u2f_registration[u2fTokenResponse]' => $cycle->getResponse(),
-            'new_u2f_registration[u2fKeyName]' => 'a random name',
+            self::FORM_NAME.'[u2fDeviceResponse]' => $cycle->getResponse(),
         ]);
 
         return $form;

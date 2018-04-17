@@ -5,6 +5,9 @@ namespace App\Model;
 use App\FormModel\ISubmission;
 use Firehed\U2F\RegisterRequest;
 
+/**
+ * @todo Delete.
+ */
 class U2fRegistrationRequest implements ISubmission
 {
     private $request;

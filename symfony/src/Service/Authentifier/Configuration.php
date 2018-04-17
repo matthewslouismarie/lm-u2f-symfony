@@ -93,7 +93,7 @@ class Configuration implements IApplicationConfiguration
     {
         return $this
             ->u2fTokenRepo
-            ->getRegistrationsFromUsername($username)
+            ->findByUsername($username)
         ;
     }
 

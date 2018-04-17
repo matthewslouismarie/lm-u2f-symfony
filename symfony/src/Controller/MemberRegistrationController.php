@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Callback\Authentifier\RegistrationCallback;
 use App\DataStructure\TransitingDataManager;
 use App\Enum\Setting;
 use App\Factory\MemberFactory;
@@ -12,6 +13,7 @@ use App\FormModel\CredentialRegistrationSubmission;
 use App\FormModel\NewU2fRegistrationSubmission;
 use App\Model\TransitingData;
 use App\Service\AppConfigManager;
+use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\SecureSession;
 use App\Service\U2fRegistrationManager;
 use App\Service\U2fService;
@@ -21,7 +23,10 @@ use Firehed\U2F\ClientErrorException;
 use Firehed\U2F\RegisterRequest;
 use Firehed\U2F\RegisterResponse;
 use Firehed\U2F\Registration;
+use LM\Authentifier\Challenge\CredentialRegistrationChallenge;
+use LM\Authentifier\Challenge\U2fRegistrationChallenge;
 use LM\Common\Enum\Scalar;
+use LM\Common\Model\ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormError;
@@ -46,19 +51,28 @@ class MemberRegistrationController extends AbstractController
 
     /**
      * @Route(
-     *  "/not-authenticated/registration/start",
-     *  name="registration_start",
-     *  methods={"GET"})
+     *  "/not-authenticated/registration/{sid}",
+     *  name="registration")
      */
-    public function fetchStartPage(SecureSession $secureSession): Response
-    {
-        $tdm = new TransitingDataManager();
-        $sid = $secureSession->storeObject($tdm, TransitingDataManager::class);
-        $url = $this->generateUrl('member_registration', [
-            'sid' => $sid,
-        ]);
-
-        return new RedirectResponse($url);
+    public function register(
+        string $sid = null,
+        RegistrationCallback $callback,
+        MiddlewareDecorator $decorator,
+        Request $httpRequest
+    ) {
+        if (null === $sid) {
+            return $decorator->createProcess(
+                $callback,
+                $httpRequest->get('_route'),
+                new ArrayObject([
+                    CredentialRegistrationChallenge::class,
+                    U2fRegistrationChallenge::class
+                ], Scalar::_STR)
+            )
+            ;
+        } else {
+            return $decorator->updateProcess($httpRequest, $sid);
+        }
     }
 
     /**
@@ -288,30 +302,5 @@ class MemberRegistrationController extends AbstractController
         } catch (UnexpectedValueException $e) {
             return $this->render("messages/unspecified_error.html.twig");
         }
-    }
-
-    /**
-     * @Route(
-     *  "/not-authenticated/registration/reset/{sid}",
-     *  name="registration_reset")
-     */
-    public function resetRegistration(
-        Request $request,
-        SecureSession $secureSession,
-        string $sid
-    ): Response {
-        $tdm = $secureSession->getObject($sid, TransitingDataManager::class);
-        $form = $this->createForm(UserConfirmationType::class);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $secureSession->deleteObject($sid, TransitingDataManager::class);
-
-            return $this->render('registration/successful_reset.html.twig');
-        }
-
-        return $this->render('registration/reset.html.twig', [
-            'form' => $form->createView(),
-        ]);
     }
 }

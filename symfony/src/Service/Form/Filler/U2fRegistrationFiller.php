@@ -36,7 +36,7 @@ class U2fRegistrationFiller
             ->getTypedMap()
             ->set(
                 'current_u2f_registration_request',
-                new U2fRegistrationRequest($cycle->getRequest(), 'useless in testing'),
+                new U2fRegistrationRequest($cycle->getRequest()),
                 U2fRegistrationRequest::class
             )
         ;

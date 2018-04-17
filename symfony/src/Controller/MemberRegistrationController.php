@@ -56,18 +56,27 @@ class MemberRegistrationController extends AbstractController
      */
     public function register(
         string $sid = null,
+        AppConfigManager $localConfig,
         RegistrationCallback $callback,
         MiddlewareDecorator $decorator,
         Request $httpRequest
     ) {
         if (null === $sid) {
+            $challenges = [
+                CredentialRegistrationChallenge::class,
+            ];
+            $nU2fDevices = $localConfig->getSetting(
+                Setting::N_U2F_KEYS_REG,
+                Scalar::_INT
+            );
+            for ($i = 0; $i < $nU2fDevices; $i++) {
+                $challenges[] = U2fRegistrationChallenge::class;
+            }
+
             return $decorator->createProcess(
                 $callback,
                 $httpRequest->get('_route'),
-                new ArrayObject([
-                    CredentialRegistrationChallenge::class,
-                    U2fRegistrationChallenge::class
-                ], Scalar::_STR)
+                new ArrayObject($challenges, Scalar::_STR)
             )
             ;
         } else {

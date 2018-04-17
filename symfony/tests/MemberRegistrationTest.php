@@ -5,17 +5,27 @@ namespace App\Tests;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
+use App\Service\AppConfigManager;
 use App\Service\Form\Filler\CredentialRegistrationFiller;
 use App\Service\Form\Filler\U2fRegistrationFiller;
 use App\Service\Form\Filler\UserConfirmationFiller;
+use LM\Common\Enum\Scalar;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {
     use SecurityStrategyTrait;
 
-    public function testCorrectRegistrationU2f(): void
+    public function testRegistration()
     {
-        $this->activateU2fSecurityStrategy();
+        $this->register(1, 'user1');
+        $this->register(2, 'user2');
+    }
+
+    private function register(int $nU2fDevices, string $username): void
+    {
+        $this->activateU2fSecurityStrategy($nU2fDevices);
+
+        var_dump($this->get(AppConfigManager::class)->getSetting(Setting::N_U2F_KEYS_REG, Scalar::_INT));
 
         $this->doGet('/not-authenticated/registration');
         $this->assertIsRedirect();
@@ -23,17 +33,21 @@ class MemberRegistrationTest extends TestCaseTemplate
         $this->assertEquals(200, $this->getHttpStatusCode());
         $filler = $this->get(CredentialRegistrationFiller::class);
         $this->submit(
-            $filler->fillForm($this->getCrawler(), 'pwd', 'pwd', 'chat')
+            $filler->fillForm($this->getCrawler(), 'pwd', 'pwd', $username)
         );
 
         $filler = $this->get(U2fRegistrationFiller::class);
-        $sid = $this->getUriLastPart();
-        $form = $filler->fillForm($this->getCrawler(), $sid);
-        $this->submit($form);
+        for ($i = 0; $i < $nU2fDevices; $i++) {
+            $form = $filler->fillForm(
+                $this->getCrawler(),
+                $this->getUriLastPart()
+            );
+            $this->submit($form);
+        }
         $member = $this
             ->getObjectManager()
             ->getRepository(Member::class)
-            ->getMember('chat')
+            ->getMember($username)
         ;
         $this->assertNotNull($member);
         $u2fTokens = $this

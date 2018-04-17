@@ -25,11 +25,11 @@ trait SecurityStrategyTrait
         ;
     }
 
-    public function activateU2fSecurityStrategy()
+    public function activateU2fSecurityStrategy(int $nU2fDevices = 1)
     {
         $this
             ->getAppConfigManager()
-            ->set(Setting::N_U2F_KEYS_REG, 1)
+            ->set(Setting::N_U2F_KEYS_REG, $nU2fDevices)
             ->set(Setting::N_U2F_KEYS_POST_AUTH, 1)
             ->set(Setting::ALLOW_PWD_LOGIN, false)
             ->set(Setting::ALLOW_U2F_LOGIN, true)

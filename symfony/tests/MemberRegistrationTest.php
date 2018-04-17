@@ -25,8 +25,6 @@ class MemberRegistrationTest extends TestCaseTemplate
     {
         $this->activateU2fSecurityStrategy($nU2fDevices);
 
-        var_dump($this->get(AppConfigManager::class)->getSetting(Setting::N_U2F_KEYS_REG, Scalar::_INT));
-
         $this->doGet('/not-authenticated/registration');
         $this->assertIsRedirect();
         $this->followRedirect();

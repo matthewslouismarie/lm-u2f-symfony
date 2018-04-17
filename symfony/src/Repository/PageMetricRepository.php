@@ -39,7 +39,6 @@ class PageMetricRepository extends ServiceEntityRepository
         $participantIds = [];
 
         foreach ($pageMetrics as $currentPageMetric) {
-            // var_dump($currentPageMetric->getParticipantId());
             if ($participantIdToExclude !== $currentPageMetric->getParticipantId()
             && false === in_array($currentPageMetric->getParticipantId(), $participantIds, true)) {
                 $participantIds[] = $currentPageMetric->getParticipantId();

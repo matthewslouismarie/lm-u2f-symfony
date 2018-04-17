@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "35b831d75e1048421bea24876b0dd9a6",
+    "content-hash": "435ecb4f2413b43a566d9b213aceacf1",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -1147,7 +1147,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthewslouismarie/auth-abstractor.git",
-                "reference": "0aea362028f4c05b25eb3b281cfd8cc21fbb71b3"
+                "reference": "14e185d8792a583adc861987db950c5c26c3a949"
             },
             "require": {
                 "firehed/u2f": "dev-master",
@@ -1173,7 +1173,7 @@
                     "LM\\": "src/LM"
                 }
             },
-            "time": "2018-04-16T22:50:18+00:00"
+            "time": "2018-04-17T11:14:40+00:00"
         },
         {
             "name": "monolog/monolog",

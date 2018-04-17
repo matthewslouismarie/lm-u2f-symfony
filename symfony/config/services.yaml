@@ -48,3 +48,6 @@ services:
 
     App\Factory\MemberFactory:
         public: true
+
+    App\Factory\U2fRegistrationFactory:
+        public: true

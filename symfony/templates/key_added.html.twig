@@ -6,6 +6,6 @@
 <p class="success-message">The key was successfully added.</p>
 {% if nU2fTokens < nU2fTokensRequired %}
 <p>You still need to add {{ nU2fTokensRequired - nU2fTokens }} more U2F key(s).</p>
-<p><a href="{{ path('register_u2f_device') }}">Click here to do so</a>.</p>
+<p><a href="{{ path('add_u2f_device') }}">Click here to do so</a>.</p>
 {% endif %}
 {% endblock %}

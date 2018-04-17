@@ -2,58 +2,50 @@
 
 namespace App\Callback\Authentifier;
 
+use App\Factory\U2fRegistrationFactory;
+use LM\Authentifier\Enum\Persistence\Operation;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
+use LM\Authentifier\Model\IU2fRegistration;
+use LM\Common\Model\ArrayObject;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 
-class U2fKeyRegistrationCallback extends AbstractCallback
+class U2fDeviceRegistrationCallback extends AbstractCallback
 {
-    private $newPassword;
-
-    public function __construct(string $newPassword)
-    {
-        $this->newPassword = $newPassword;
-    }
-
-    /**
-     * @todo @security The currently logged in user's password is changed. If
-     * an attacker logs in and initiates the process, then lets the victim log
-     * in, the attacker will then be able to achieve the process changing the
-     * victim's password.
-     */
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
+        $em = $this
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager()
+        ;
         $member = $this
             ->getContainer()
             ->get('security.token_storage')
             ->getToken()
             ->getUser()
         ;
-
-        $hashedPassword = $this
-            ->getContainer()
-            ->get('security.password_encoder')
-            ->encodePassword(
-            $member,
-            $this->newPassword
-        );
-        $member->setPassword($hashedPassword);
-        $em = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager()
-        ;
         $em->persist($member);
+        $u2fRegistrationFactory = $this
+            ->getContainer()
+            ->get(U2fRegistrationFactory::class)
+        ;
+        foreach ($authProcess->getPersistOperations() as $operation) {
+            $entity = $operation->getObject();
+            if ($operation->getType()->is(new Operation(Operation::CREATE)) && is_a($entity, IU2fRegistration::class)) {
+                $em->persist($u2fRegistrationFactory->toEntity($operation->getObject()));
+            }
+        }
         $em->flush();
 
         $httpResponse = $this
             ->getContainer()
             ->get('twig')
             ->render('messages/success.html.twig', [
-                'pageTitle' => 'Password update successful',
-                'message' => 'You successfully updated your password.'
+                'pageTitle' => 'U2F device added successfully',
+                'message' => 'The U2F was successfully registered to your account.',
             ])
         ;
 
@@ -73,14 +65,10 @@ class U2fKeyRegistrationCallback extends AbstractCallback
 
     public function serialize()
     {
-        return serialize([
-            $this->newPassword,
-        ]);
+        return '';
     }
 
     public function unserialize($serialized)
     {
-        list(
-            $this->newPassword) = unserialize($serialized);
     }
 }

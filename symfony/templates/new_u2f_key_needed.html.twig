@@ -5,5 +5,5 @@
 {% block body %}
 <p>You only have {{ nU2fTokens }} keys associated with your account, and you need to have at least {{ nU2fTokensRequired }}.</p>
 <p>Before being able to use the website again, you need to register {{ nU2fTokensRequired - nU2fTokens }} new U2F key(s).</p>
-<p><a href="{{ path('register_u2f_device') }}">Click here to do so</a>.</p>
+<p><a href="{{ path('add_u2f_device') }}">Click here to do so</a>.</p>
 {% endblock %}

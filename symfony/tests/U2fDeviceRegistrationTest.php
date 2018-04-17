@@ -18,13 +18,14 @@ class U2fDeviceRegistrationTest extends TestCaseTemplate
         $nU2fKeys = count(
             $u2fTokenRepository->getU2fTokens($this->getLoggedInMember())
         );
-        $this->doGet('/authenticated/register-u2f-device');
+        $this->doGet('/authenticated/add-u2f-device');
         $this->followRedirect();
         $this->submit(
             $this
                 ->get(U2fDeviceRegistrationFiller::class)
                 ->fillForm($this->getCrawler(), $this->getUriLastPart())
         );
+        $this->debugResponse();
         $this->assertEquals(
             $nU2fKeys + 1,
             count(

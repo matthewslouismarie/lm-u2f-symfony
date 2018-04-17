@@ -4,19 +4,13 @@ namespace App\Callback\Authentifier;
 
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
+use LM\Common\Enum\Scalar;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 
 class PasswordUpdateCallback extends AbstractCallback
 {
-    private $newPassword;
-
-    public function __construct(string $newPassword)
-    {
-        $this->newPassword = $newPassword;
-    }
-
     /**
      * @todo @security The currently logged in user's password is changed. If
      * an attacker logs in and initiates the process, then lets the victim log
@@ -25,6 +19,10 @@ class PasswordUpdateCallback extends AbstractCallback
      */
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
+        $hashOfNewPassword = $authProcess
+            ->getTypedMap()
+            ->get('new_password', Scalar::_STR)
+        ;
         $member = $this
             ->getContainer()
             ->get('security.token_storage')
@@ -32,14 +30,7 @@ class PasswordUpdateCallback extends AbstractCallback
             ->getUser()
         ;
 
-        $hashedPassword = $this
-            ->getContainer()
-            ->get('security.password_encoder')
-            ->encodePassword(
-            $member,
-            $this->newPassword
-        );
-        $member->setPassword($hashedPassword);
+        $member->setPassword($hashOfNewPassword);
         $em = $this
             ->getContainer()
             ->get('doctrine')
@@ -73,14 +64,10 @@ class PasswordUpdateCallback extends AbstractCallback
 
     public function serialize()
     {
-        return serialize([
-            $this->newPassword,
-        ]);
+        return '';
     }
 
     public function unserialize($serialized)
     {
-        list(
-            $this->newPassword) = unserialize($serialized);
     }
 }

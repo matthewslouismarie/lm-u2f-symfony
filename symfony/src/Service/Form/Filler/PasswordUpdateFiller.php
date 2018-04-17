@@ -8,16 +8,18 @@ use Symfony\Component\DomCrawler\Form;
 
 class PasswordUpdateFiller
 {
+    const FORM_NAME = 'form';
+
     public function fillForm(Crawler $crawler, string $password): Form
     {
-        $button = $crawler->selectButton('password_update[submit]');
+        $button = $crawler->selectButton(self::FORM_NAME.'[submit]');
         if (0 === $button->count()) {
             throw new NonexistentNodeException();
         }
 
         return $button->form([
-            'password_update[password]' => $password,
-            'password_update[passwordConfirmation]' => $password,
+            self::FORM_NAME.'[password][first]' => $password,
+            self::FORM_NAME.'[password][second]' => $password,
         ]);
     }
 }

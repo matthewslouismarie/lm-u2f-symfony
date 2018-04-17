@@ -12,6 +12,8 @@ use App\Service\AppConfigManager;
 use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\ChallengeSpecification;
 use LM\Authentifier\Challenge\CredentialChallenge;
+use LM\Authentifier\Challenge\PasswordChallenge;
+use LM\Authentifier\Challenge\PasswordUpdateChallenge;
 use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,33 +43,25 @@ class MemberAccount extends AbstractController
     /**
      * @Route(
      *  "/authenticated/change-password/{sid}",
-     *  name="change_password")
+     *  name="password_update")
      */
     public function updatePassword(
         string $sid = null,
-        ChallengeSpecification $challengeSpecification,
-        Request $httpRequest,
-        MiddlewareDecorator $decorator
+        PasswordUpdateCallback $callback,
+        MiddlewareDecorator $decorator,
+        Request $httpRequest
     ) {
         if (null === $sid) {
-            $submission = new PasswordUpdateSubmission();
-            $form = $this->createForm(PasswordUpdateType::class, $submission);
-            $form->handleRequest($httpRequest);
-            if ($form->isSubmitted() && $form->isValid()) {
-                $callback = new PasswordUpdateCallback($submission->getPassword());
-
-                return $decorator->createProcess(
-                    $callback,
-                    $httpRequest->get('_route'),
-                    $challengeSpecification->getChallenges($this->getUser()->getUsername()),
-                    $this->getUser()->getUsername()
-                )
-                ;
-            }
-
-            return $this->render('change_password.html.twig', [
-                'form' => $form->createView(),
-            ]);
+            return $decorator->createProcess(
+                $callback,
+                $httpRequest->get('_route'),
+                new ArrayObject([
+                    PasswordUpdateChallenge::class,
+                    PasswordChallenge::class,
+                ], Scalar::_STR),
+                $this->getUser()->getUsername()
+            )
+            ;
         } else {
             return $decorator->updateProcess($httpRequest, $sid);
         }

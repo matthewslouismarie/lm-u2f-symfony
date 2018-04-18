@@ -25,7 +25,7 @@ class U2fAuthenticationFiller
         $this->secureSession = $secureSession;
     }
 
-    public function fillForm(Crawler $crawler, string $sid): Form
+    public function fillForm(Crawler $crawler, string $sid, bool $valid = true): Form
     {
         $cycle = $this->mocker->getNewCycle();
         $process = $this
@@ -52,8 +52,14 @@ class U2fAuthenticationFiller
             throw new NonexistentNodeException();
         }
 
-        return $formNode->form([
-            'form[u2fTokenResponse]' => $cycle->getResponse(),
-        ]);
+        if (true === $valid) {
+            return $formNode->form([
+                'form[u2fTokenResponse]' => $cycle->getResponse(),
+            ]);
+        } else {
+            return $formNode->form([
+                'form[u2fTokenResponse]' => microtime(),
+            ]);
+        }
     }
 }

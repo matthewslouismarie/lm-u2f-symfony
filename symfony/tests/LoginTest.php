@@ -15,9 +15,6 @@ class LoginTest extends TestCaseTemplate
 {
     use LoginTrait;
 
-    /**
-     * @todo Test with incorrect username, U2F responses, CSRF tokens.
-     */
     public function testLogin()
     {
         $this
@@ -32,14 +29,24 @@ class LoginTest extends TestCaseTemplate
         $this->followRedirect();
         $this->submit($this
             ->get(CredentialAuthenticationFiller::class)
-            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD, AppFixture::ADMIN_USERNAME.'eui'))
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD.'lol', AppFixture::ADMIN_USERNAME.'eui'))
         ;
+        $this->assertContains('Invalid credentials', $this->getResponseContent());
         $this->submit($this
             ->get(CredentialAuthenticationFiller::class)
             ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD, AppFixture::ADMIN_USERNAME))
         ;
         $this->assertNotContains(
             'This form should not contain extra fields.',
+            $this->getClient()->getResponse()->getContent()
+        )
+        ;
+        $this->submit($this
+            ->get(U2fAuthenticationFiller::class)
+            ->fillForm($this->getCrawler(), $this->getUriLastPart(), false))
+        ;
+        $this->assertNotContains(
+            'There was an error. Please try again.',
             $this->getClient()->getResponse()->getContent()
         )
         ;
@@ -63,8 +70,14 @@ class LoginTest extends TestCaseTemplate
         $this->followRedirect();
         $this->submit($this
             ->get(ExistingUsernameFiller::class)
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_USERNAME.'euieu'))
+        ;
+        $this->assertContains('The username is invalid.', $this->getResponseContent());
+        $this->submit($this
+            ->get(ExistingUsernameFiller::class)
             ->fillForm($this->getCrawler(), AppFixture::ADMIN_USERNAME))
         ;
+        
         $this->assertSame(
             0,
             $this
@@ -117,6 +130,11 @@ class LoginTest extends TestCaseTemplate
         ;
         $this->assertIsRedirect();
         $this->followRedirect();
+        $this->submit($this
+            ->get(CredentialAuthenticationFiller::class)
+            ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD, AppFixture::ADMIN_USERNAME.'eiueui'))
+        ;
+        $this->assertContains('Invalid credentials', $this->getResponseContent());
         $this->submit($this
             ->get(CredentialAuthenticationFiller::class)
             ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD, AppFixture::ADMIN_USERNAME))

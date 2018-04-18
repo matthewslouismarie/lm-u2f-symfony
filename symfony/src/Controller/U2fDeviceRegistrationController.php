@@ -11,6 +11,7 @@ use App\FormModel\NewU2fRegistrationSubmission;
 use App\Model\TransitingData;
 use App\Service\AppConfigManager;
 use App\Service\Authentifier\MiddlewareDecorator;
+use App\Service\ChallengeSpecification;
 use App\Service\SecureSession;
 use App\Service\U2fRegistrationManager;
 use DateTimeImmutable;
@@ -35,6 +36,7 @@ class U2fDeviceRegistrationController extends AbstractController
      */
     public function addU2fDevice(
         string $sid = null,
+        ChallengeSpecification $cs,
         U2fDeviceRegistrationCallback $callback,
         MiddlewareDecorator $decorator,
         Request $httpRequest
@@ -43,9 +45,13 @@ class U2fDeviceRegistrationController extends AbstractController
             return $decorator->createProcess(
                 $callback,
                 $httpRequest->get('_route'),
-                new ArrayObject([
-                    U2fRegistrationChallenge::class,
-                ], Scalar::_STR)
+                $cs->getChallenges(
+                    $this->getUser()->getUsername(),
+                    [
+                        U2fRegistrationChallenge::class,
+                    ]
+                ),
+                $this->getUser()->getUsername()
             )
             ;
         } else {

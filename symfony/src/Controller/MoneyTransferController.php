@@ -19,7 +19,7 @@ class MoneyTransferController extends AbstractController
      */
     public function transferMoney(
         string $sid = null,
-        ChallengeSpecification $challengeSpecification,
+        ChallengeSpecification $cs,
         MiddlewareDecorator $decorator,
         MoneyTransferCallback $callback,
         Request $httpRequest
@@ -32,7 +32,7 @@ class MoneyTransferController extends AbstractController
                 return $decorator->createProcess(
                     $callback,
                     $httpRequest->get('_route'),
-                    $challengeSpecification->getChallenges($this->getUser()->getUsername()),
+                    $cs->getChallenges($this->getUser()->getUsername()),
                     $this->getUser()->getUsername()
                 );
             }

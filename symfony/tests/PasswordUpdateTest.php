@@ -22,18 +22,13 @@ class PasswordUpdateTest extends TestCaseTemplate
         $this->login();
         $this->activateU2fSecurityStrategy();
         $this->doGet('/authenticated/change-password');
-        $this->followRedirect();
-        $this->debugResponse();        
+        $this->followRedirect();     
         $this->submit(
             $this
                 ->get(PasswordUpdateFiller::class)
                 ->fillForm($this->getCrawler(), self::NEW_PASSWORD)
         );
-        $this->submit(
-            $this
-                ->get(ValidPasswordFiller::class)
-                ->fillForm($this->getCrawler(), AppFixture::ADMIN_PASSWORD)
-        );
+        $this->authenticateAsAdmin();
 
         $this->assertTrue(
             $this

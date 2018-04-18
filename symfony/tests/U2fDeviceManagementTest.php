@@ -20,7 +20,6 @@ class U2fDeviceManagementTest extends TestCaseTemplate
             ->getRepository(U2fToken::class)
             ->getU2fTokens($member)
         ;
-        $this->debugResponse();
         $this->assertEquals(
             count($u2fTokens),
             $this->getCrawler()->filter('.item-list > .item')->count()
@@ -50,7 +49,8 @@ class U2fDeviceManagementTest extends TestCaseTemplate
             ->getUserConfirmationFiller()
             ->fillForm($this->getCrawler()))
         ;
-        $this->performHighSecurityIdCheck();
+        $this->followRedirect();
+        $this->authenticateAsAdmin();
         $newNOfU2fKeys = count($this
             ->get('doctrine')
             ->getManager()

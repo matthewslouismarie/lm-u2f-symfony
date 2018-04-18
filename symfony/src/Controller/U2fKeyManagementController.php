@@ -9,6 +9,7 @@ use App\Form\UserConfirmationType;
 use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
 use App\Service\Authentifier\MiddlewareDecorator;
+use App\Service\ChallengeSpecification;
 use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Challenge\CredentialChallenge;
 use LM\Common\Enum\Scalar;
@@ -48,8 +49,9 @@ class U2fKeyManagementController extends AbstractController
      */
     public function confirmU2fDeviceRemoval(
         string $u2fKeySlug,
-        EntityManagerInterface $em,
+        ChallengeSpecification $cs,
         MiddlewareDecorator $decorator,
+        EntityManagerInterface $em,
         Request $httpRequest
     ) {
         $form = $this->createForm(UserConfirmationType::class);
@@ -66,9 +68,8 @@ class U2fKeyManagementController extends AbstractController
             return $decorator->createProcess(
                 $callback,
                 'remove_u2f_device',
-                new ArrayObject([
-                    CredentialChallenge::class,
-                ], Scalar::_STR)
+                $cs->getChallenges($this->getUser()->getUsername()),
+                $this->getUser()->getUsername()
             );
         }
 

@@ -20,37 +20,35 @@ class ChallengeSpecification
         $this->config = $config;
     }
 
-    public function getChallenges(?string $username = null): ArrayObject
+    public function getChallenges(
+        ?string $username = null,
+        array $additionalChallenges = []): ArrayObject
     {
+        $challenges = $additionalChallenges;
+
         if (null === $username) {
             if ($this->config->getBoolSetting(Setting::ALLOW_PWD_LOGIN)) {
-                return new ArrayObject([
-                    CredentialChallenge::class,
-                ], Scalar::_STR);
+                $challenges[] = CredentialChallenge::class;
             } else {
-                return new ArrayObject([
-                    CredentialChallenge::class,
-                    U2fChallenge::class,
-                ], Scalar::_STR);
+                $challenges[] = CredentialChallenge::class;
+                $challenges[] = U2fChallenge::class;
             }
         } else {
             switch ($this->config->getSetting(Setting::SECURITY_STRATEGY, Scalar::_STR)) {
                 case SecurityStrategy::U2F:
-                    return new ArrayObject([
-                        PasswordChallenge::class,
-                        U2fChallenge::class,
-                    ], Scalar::_STR);
+                    $challenges[] = PasswordChallenge::class;
+                    $challenges[] = U2fChallenge::class;
                     break;
 
                 case SecurityStrategy::PWD:
-                    return new ArrayObject([
-                        PasswordChallenge::class,
-                    ], Scalar::_STR);
+                    $challenges[] = PasswordChallenge::class;
                     break;
 
                 default:
                     throw new UnexpectedValueException();
             }
         }
+
+        return new ArrayObject($challenges, Scalar::_STR);
     }
 }

@@ -48,6 +48,7 @@ class MemberAccount extends AbstractController
     public function updatePassword(
         string $sid = null,
         PasswordUpdateCallback $callback,
+        ChallengeSpecification $cs,
         MiddlewareDecorator $decorator,
         Request $httpRequest
     ) {
@@ -55,10 +56,12 @@ class MemberAccount extends AbstractController
             return $decorator->createProcess(
                 $callback,
                 $httpRequest->get('_route'),
-                new ArrayObject([
-                    PasswordUpdateChallenge::class,
-                    PasswordChallenge::class,
-                ], Scalar::_STR),
+                $cs->getChallenges(
+                    $this->getUser()->getUsername(),
+                    [
+                        PasswordUpdateChallenge::class,
+                    ]
+                ),
                 $this->getUser()->getUsername(),
                 20
             )
@@ -75,6 +78,7 @@ class MemberAccount extends AbstractController
      */
     public function deleteAccount(
         string $sid = null,
+        ChallengeSpecification $cs,
         Request $httpRequest,
         MiddlewareDecorator $decorator
     ) {
@@ -88,9 +92,8 @@ class MemberAccount extends AbstractController
                 return $decorator->createProcess(
                     $callback,
                     $httpRequest->get('_route'),
-                    new ArrayObject([
-                        CredentialChallenge::class,
-                    ], Scalar::_STR)
+                    $cs->getChallenges($this->getUser()->getUsername()),
+                    $this->getUser()->getUsername()
                 );
             }
 

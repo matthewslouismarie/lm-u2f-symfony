@@ -25,7 +25,7 @@ class U2fDeviceRegistrationTest extends TestCaseTemplate
                 ->get(U2fDeviceRegistrationFiller::class)
                 ->fillForm($this->getCrawler(), $this->getUriLastPart())
         );
-        $this->debugResponse();
+        $this->authenticateAsAdmin();
         $this->assertEquals(
             $nU2fKeys + 1,
             count(

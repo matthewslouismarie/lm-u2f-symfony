@@ -22,9 +22,10 @@ class ChallengeSpecification
 
     public function getChallenges(
         ?string $username = null,
-        array $additionalChallenges = []): ArrayObject
+        array $preChallenges = [],
+        array $postChallenges = []): ArrayObject
     {
-        $challenges = $additionalChallenges;
+        $challenges = $preChallenges;
 
         if (null === $username) {
             if ($this->config->getBoolSetting(Setting::ALLOW_PWD_LOGIN)) {
@@ -48,6 +49,7 @@ class ChallengeSpecification
                     throw new UnexpectedValueException();
             }
         }
+        $challenges = array_merge($challenges, $postChallenges);
 
         return new ArrayObject($challenges, Scalar::_STR);
     }

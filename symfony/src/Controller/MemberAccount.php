@@ -58,9 +58,10 @@ class MemberAccount extends AbstractController
                 $httpRequest->get('_route'),
                 $cs->getChallenges(
                     $this->getUser()->getUsername(),
+                    [],
                     [
                         PasswordUpdateChallenge::class,
-                    ]
+                    ]                        
                 ),
                 $this->getUser()->getUsername(),
                 20

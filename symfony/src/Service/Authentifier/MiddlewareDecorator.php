@@ -58,7 +58,8 @@ class MiddlewareDecorator
         IAuthenticationCallback $callback,
         string $routeName,
         ArrayObject $challenges,
-        ?string $username = null
+        ?string $username = null,
+        ?int $maxNFailedAttempts = 3
     ): Response {
         $challengesArray = $challenges->toArray(Scalar::_STR);
         $authProcess = $this
@@ -66,7 +67,10 @@ class MiddlewareDecorator
             ->createProcess(
                 $challengesArray,
                 $callback,
-                $username
+                [
+                    'username' => $username,
+                    'max_n_failed_attempts' => $maxNFailedAttempts,
+                ]
             )
         ;
         $sid = $this

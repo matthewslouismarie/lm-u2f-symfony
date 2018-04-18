@@ -2,11 +2,14 @@
 
 namespace App\Service\Authentifier;
 
+use App\Enum\Setting;
 use App\Repository\MemberRepository;
 use App\Repository\U2fTokenRepository;
+use App\Service\AppConfigManager;
 use App\Service\AppIdReader;
 use LM\Authentifier\Configuration\IApplicationConfiguration;
 use LM\Authentifier\Model\IMember;
+use LM\Common\Enum\Scalar;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -25,6 +28,8 @@ class Configuration implements IApplicationConfiguration
 
     private $appId;
 
+    private $config;
+
     private $container;
 
     private $kernel;
@@ -35,6 +40,7 @@ class Configuration implements IApplicationConfiguration
 
     public function __construct(
         AppIdReader $appIdReader,
+        AppConfigManager $config,
         Packages $assetPackage,
         ContainerInterface $container,
         KernelInterface $kernel,
@@ -45,6 +51,7 @@ class Configuration implements IApplicationConfiguration
     ) {
         $this->appId = $appIdReader->getAppId();
         $this->assetPackage = $assetPackage;
+        $this->config = $config;
         $this->container = $container;
         $this->kernel = $kernel;
         $this->memberRepo = $memberRepo;
@@ -82,6 +89,17 @@ class Configuration implements IApplicationConfiguration
         return $this->memberRepo->findOneBy([
             'username' => $username,
         ]);
+    }
+
+    public function getPwdSettings(): array
+    {
+        return [
+            'min_length' => $this->config->getSetting(Setting::PWD_MIN_LENGTH, Scalar::_INT),
+            'enforce_min_length' => $this->config->getSetting(Setting::PWD_ENFORCE_MIN_LENGTH, Scalar::_BOOL),
+            'uppercase' => $this->config->getSetting(Setting::PWD_UPPERCASE, Scalar::_BOOL),
+            'special_chars' => $this->config->getSetting(Setting::PWD_SPECIAL_CHARS, Scalar::_BOOL),
+            'numbers' => $this->config->getSetting(Setting::PWD_NUMBERS, Scalar::_BOOL),
+        ];
     }
 
     public function getTokenStorage(): TokenStorageInterface

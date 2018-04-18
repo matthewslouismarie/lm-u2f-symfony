@@ -59,7 +59,8 @@ class MemberAccount extends AbstractController
                     PasswordUpdateChallenge::class,
                     PasswordChallenge::class,
                 ], Scalar::_STR),
-                $this->getUser()->getUsername()
+                $this->getUser()->getUsername(),
+                20
             )
             ;
         } else {

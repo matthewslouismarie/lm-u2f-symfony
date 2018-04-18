@@ -1147,10 +1147,11 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthewslouismarie/auth-abstractor.git",
-                "reference": "59b89bd1caa339c8188c13935c4eb4314ca5a2b4"
+                "reference": "6498114a9b0b57a01a3b7f69c6683c7da57b2124"
             },
             "require": {
                 "firehed/u2f": "dev-master",
+                "php": ">=7.1.0",
                 "php-di/php-di": "^6.0",
                 "psr/container": "^1.0",
                 "psr/http-message": "^1.0",
@@ -1173,7 +1174,23 @@
                     "LM\\": "src/LM"
                 }
             },
-            "time": "2018-04-18T13:45:13+00:00"
+            "authors": [
+                {
+                    "name": "Louis-Marie Matthews",
+                    "email": "matthewslouismarie@gmail.com",
+                    "homepage": "https://matthewslouismarie.fr",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Complete abstracton of credential and U2F authentication",
+            "homepage": "https://github.com/matthewslouismarie/auth-abstractor",
+            "keywords": [
+                "U2F",
+                "authentication",
+                "middleware",
+                "password"
+            ],
+            "time": "2018-04-18T20:02:12+00:00"
         },
         {
             "name": "monolog/monolog",

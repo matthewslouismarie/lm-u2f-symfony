@@ -4,6 +4,7 @@ namespace App\Callback\Authentifier;
 
 use App\Entity\U2fToken;
 use App\Factory\MemberFactory;
+use App\Factory\U2fRegistrationFactory;
 use DateTimeImmutable;
 use LM\Authentifier\Enum\Persistence\Operation;
 use LM\Authentifier\Model\AuthenticationProcess;
@@ -32,16 +33,10 @@ class RegistrationCallback extends AbstractCallback
             if ($operation->getType()->is(new Operation(Operation::CREATE))) {
                 $object = $operation->getObject();
                 if (is_a($object, IU2fRegistration::class)) {
-                    $u2fToken = new U2fToken(
-                        null,
-                        base64_encode($object->getAttestationCertificateBinary()),
-                        $object->getCounter(),
-                        base64_encode($object->getKeyHandleBinary()),
-                        $member,
-                        new DateTimeImmutable(),
-                        base64_encode($object->getPublicKeyBinary()),
-                        'Unnamed'.microtime()
-                    )
+                    $u2fToken = $this
+                        ->getContainer()
+                        ->get(U2fRegistrationFactory::class)
+                        ->toEntity($object, $member)
                     ;
                     $em->persist($u2fToken);
                 }

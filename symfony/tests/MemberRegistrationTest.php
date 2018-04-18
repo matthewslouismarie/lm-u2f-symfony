@@ -17,8 +17,8 @@ class MemberRegistrationTest extends TestCaseTemplate
 
     public function testRegistration()
     {
-        $this->register(1, 'user1');
         $this->register(2, 'user2');
+        $this->register(1, 'user1');
     }
 
     private function register(int $nU2fDevices, string $username): void

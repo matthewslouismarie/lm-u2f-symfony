@@ -79,14 +79,9 @@ class U2fToken implements IU2fRegistration
         $this->name = $name;
     }
 
-    public function getAttestation(): string
+    public function getAttestationCertificate(): string
     {
         return $this->attestation;
-    }
-
-    public function getAttestationCertificateBinary(): string
-    {
-        return base64_decode($this->attestation);
     }
 
     public function getCounter(): int
@@ -104,11 +99,6 @@ class U2fToken implements IU2fRegistration
         return $this->keyHandle;
     }
 
-    public function getKeyHandleBinary(): string
-    {
-        return base64_decode($this->keyHandle);
-    }
-
     public function getRegistrationDateTime(): \DateTimeImmutable
     {
         return $this->registrationDateTime;
@@ -122,11 +112,6 @@ class U2fToken implements IU2fRegistration
     public function getPublicKey(): string
     {
         return $this->publicKey;
-    }
-
-    public function getPublicKeyBinary(): string
-    {
-        return base64_decode($this->publicKey);
     }
 
     public function getU2fKeyName(): string

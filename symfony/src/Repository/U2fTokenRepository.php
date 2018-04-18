@@ -24,6 +24,9 @@ class U2fTokenRepository extends ServiceEntityRepository
         $this->om = $om;
     }
 
+    /**
+     * @todo Delete.
+     */
     public function getMemberRegistrations(Member $member): array
     {
         $u2f_tokens = $this->getU2fTokens($member);
@@ -31,7 +34,7 @@ class U2fTokenRepository extends ServiceEntityRepository
         foreach ($u2f_tokens as $tkn) {
             $registration = new Registration();
             $registration->setCounter($tkn->getCounter());
-            $registration->setAttestationCertificate($tkn->getAttestation());
+            $registration->setAttestationCertificate($tkn->getAttestationCertificate());
             $registration->setPublicKey(base64_decode($tkn->getPublicKey()));
             $registration->setKeyHandle(base64_decode($tkn->getKeyHandle()));
             $registrations[$tkn->getId()] = $registration;
@@ -84,18 +87,16 @@ class U2fTokenRepository extends ServiceEntityRepository
             $registration = $persistOperation->getObject();
             $tkn = $this
                 ->findOneBy([
-                    "publicKey" => base64_encode($registration->getPublicKey()),
+                    "publicKey" => $registration->getPublicKey(),
                 ])
             ;
             // if (1 !== count($tkn)) {
             //     throw new UnexpectedValueException();
             // }
             $counter = $registration->getCounter();
-            $attestation = base64_encode(
-                $registration->getAttestationCertificateBinary()
-            );
-            $publicKey = base64_encode($registration->getPublicKey());
-            $keyHandle = base64_encode($registration->getKeyHandleBinary());
+            $attestation = $registration->getAttestationCertificate();
+            $publicKey = $registration->getPublicKey();
+            $keyHandle = $registration->getKeyHandle();
             $newTkn = new U2fToken(
                 null,
                 $attestation,

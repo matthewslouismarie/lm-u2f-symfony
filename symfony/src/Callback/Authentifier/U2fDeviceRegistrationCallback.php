@@ -35,7 +35,7 @@ class U2fDeviceRegistrationCallback extends AbstractCallback
         foreach ($authProcess->getPersistOperations() as $operation) {
             $entity = $operation->getObject();
             if ($operation->getType()->is(new Operation(Operation::CREATE)) && is_a($entity, IU2fRegistration::class)) {
-                $em->persist($u2fRegistrationFactory->toEntity($operation->getObject()));
+                $em->persist($u2fRegistrationFactory->toEntity($operation->getObject(), $member));
             }
         }
         $em->flush();

@@ -22,7 +22,7 @@ class U2fTokenTest extends TestCaseTemplate
         );
         $u2fToken = $this
             ->get(U2fRegistrationFactory::class)
-            ->toEntity($u2fReg)
+            ->toEntity($u2fReg, $this->getLoggedInMember())
         ;
         $this->assertSame(
             $u2fReg->getAttestationCertificate(),

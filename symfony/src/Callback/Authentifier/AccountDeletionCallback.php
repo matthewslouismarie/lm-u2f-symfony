@@ -3,6 +3,7 @@
 namespace App\Callback\Authentifier;
 
 use App\Entity\Member;
+use App\Entity\U2fToken;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
 use Psr\Container\ContainerInterface;
@@ -18,12 +19,6 @@ class AccountDeletionCallback extends AbstractCallback
         $this->member = $member;
     }
 
-    /**
-     * @todo @security The currently logged in user's password is changed. If
-     * an attacker logs in and initiates the process, then lets the victim log
-     * in, the attacker will then be able to achieve the process changing the
-     * victim's password.
-     */
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
         $em = $this
@@ -31,8 +26,26 @@ class AccountDeletionCallback extends AbstractCallback
             ->get('doctrine')
             ->getManager()
         ;
+        $u2fTokens = $em
+            ->getRepository(U2fToken::class)
+            ->findByUsername($this->member->getUsername())
+        ;
+        foreach ($u2fTokens as $u2fToken) {
+            $em->remove($u2fToken);
+        }
         $em->remove($this->member);
         $em->flush();
+
+        $this
+            ->getContainer()
+            ->get('security.token_storage')
+            ->setToken(null)
+        ;
+        $this
+            ->getContainer()
+            ->get('session')
+            ->invalidate()
+        ;
 
         $httpResponse = $this
             ->getContainer()

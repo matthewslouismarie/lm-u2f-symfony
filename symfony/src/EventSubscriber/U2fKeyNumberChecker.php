@@ -26,24 +26,27 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
 
     private $router;
 
-    private $twig;
-
     private $token;
+
+    private $tokenS;
+
+    private $twig;
 
     public function __construct(
         AppConfigManager $config,
         EntityManagerInterface $em,
         RouterInterface $router,
         AuthorizationCheckerInterface $authorizationChecker,
-        TokenStorageInterface $token,
+        TokenStorageInterface $tokenS,
         Twig_Environment $twig
     ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->config = $config;
         $this->em = $em;
         $this->router = $router;
-        $this->token = $token->getToken();
+        $this->token = $tokenS->getToken();
         $this->twig = $twig;
+        $this->tokenS = $tokenS;
     }
 
     /**
@@ -57,7 +60,7 @@ class U2fKeyNumberChecker implements EventSubscriberInterface
             return;
         }
 
-        if (null !== $this->token &&
+        if (null !== $this->tokenS->getToken() && null !== $this->token &&
             $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY') &&
             !is_a($controller[0], U2fDeviceRegistrationController::class)) {
             $nU2fTokens = count($this

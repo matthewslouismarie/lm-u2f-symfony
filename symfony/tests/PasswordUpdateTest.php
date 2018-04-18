@@ -14,9 +14,6 @@ class PasswordUpdateTest extends TestCaseTemplate
 
     const NEW_PASSWORD = 'new password';
 
-    /**
-     * @todo Method to authenticate!
-     */
     public function testPasswordUpdate()
     {
         $this->login();

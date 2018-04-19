@@ -1147,7 +1147,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthewslouismarie/auth-abstractor.git",
-                "reference": "1d80d30cb5c2422a05969b8dba2845ff039f62ee"
+                "reference": "9b3a149421e761008bfdce6925cf5a3798b1f79c"
             },
             "require": {
                 "firehed/u2f": "dev-master",
@@ -1163,6 +1163,7 @@
                 "symfony/security-csrf": "^4.0",
                 "symfony/translation": "^4.0",
                 "symfony/twig-bridge": "^4.0",
+                "symfony/validator": "^4.0",
                 "twig/twig": "^2.0"
             },
             "require-dev": {
@@ -1171,7 +1172,8 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "LM\\": "src/LM"
+                    "LM\\": "src/LM",
+                    "Tests\\LM\\": "tests"
                 }
             },
             "authors": [
@@ -1190,7 +1192,7 @@
                 "middleware",
                 "password"
             ],
-            "time": "2018-04-18T22:08:27+00:00"
+            "time": "2018-04-19T14:24:59+00:00"
         },
         {
             "name": "monolog/monolog",

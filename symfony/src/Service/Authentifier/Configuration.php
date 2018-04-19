@@ -84,6 +84,11 @@ class Configuration implements IApplicationConfiguration
         return null;
     }
 
+    public function getLibDir(): string
+    {
+        return $this->kernel->getProjectDir().'/vendor/matthewslouismarie/auth-abstractor';
+    }
+
     public function getMember(string $username): IMember
     {
         return $this->memberRepo->findOneBy([

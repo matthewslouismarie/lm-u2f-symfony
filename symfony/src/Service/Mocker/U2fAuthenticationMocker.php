@@ -48,15 +48,15 @@ class U2fAuthenticationMocker
         $firstSignRequest = new SignRequest();
         $firstSignRequest->setAppId('https://172.16.238.10');
         $firstSignRequest->setChallenge('KqTb617wX6WfO3Q9gcMPjA');
-        $firstSignRequest->setKeyHandle(base64_decode('v8IplXz0zSQUXVYjvSWNcP/70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg=='));
+        $firstSignRequest->setKeyHandle(base64_decode('v8IplXz0zSQUXVYjvSWNcP/70AamVDoaROr1UcREnWaARrRABftdhhaKTFsYTgOj5CH6BUYxztAN9qrU3WcBZg==', true));
         $secondSignRequest = new SignRequest();
         $secondSignRequest->setAppId('https://172.16.238.10');
         $secondSignRequest->setChallenge('X1aKfzxWjSgevLKZt9qXqQ');
-        $secondSignRequest->setKeyHandle(base64_decode('SlhahqO2AGMqu1KZwwVVFgLhkUaOwcuWRWVn1ITLmeq/V38yn1kfANGGrZCVl8qZSm8UF8qgyp8bGEWAVKWe1g=='));
+        $secondSignRequest->setKeyHandle(base64_decode('SlhahqO2AGMqu1KZwwVVFgLhkUaOwcuWRWVn1ITLmeq/V38yn1kfANGGrZCVl8qZSm8UF8qgyp8bGEWAVKWe1g==', true));
         $thirdSignRequest = new SignRequest();
         $thirdSignRequest->setAppId('https://172.16.238.10');
         $thirdSignRequest->setChallenge('o3AwKL6B46r_UqeB0Yt7yQ');
-        $thirdSignRequest->setKeyHandle(base64_decode('jAbhu+BM8X6tJs6w1YdTesNRq4GvgH9e+U8E/duqEELytOqk6pXC6n5HsGi/yMQTPkoMaU9WkaNVyEk00SElWA=='));
+        $thirdSignRequest->setKeyHandle(base64_decode('jAbhu+BM8X6tJs6w1YdTesNRq4GvgH9e+U8E/duqEELytOqk6pXC6n5HsGi/yMQTPkoMaU9WkaNVyEk00SElWA==', true));
         $signRequests = [
             1 => $firstSignRequest,
             2 => $secondSignRequest,

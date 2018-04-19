@@ -18,7 +18,7 @@ class SecurityStrategyType extends AbstractType
                 'choices' => [
                     'Password' => SecurityStrategy::PWD,
                     'U2F' => SecurityStrategy::U2F,
-                ]
+                ],
             ])
         ;
     }

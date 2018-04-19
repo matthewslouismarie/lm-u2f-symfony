@@ -2,7 +2,6 @@
 
 namespace App\Service\Form\Filler;
 
-use App\Controller\MemberRegistrationController;
 use App\Exception\NonexistentNodeException;
 use App\Service\Mocker\U2fRegistrationMocker;
 use App\Service\SecureSession;

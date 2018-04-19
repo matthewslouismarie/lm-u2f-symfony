@@ -20,7 +20,7 @@ class MoneyTransferCallback extends AbstractCallback
             ->twig
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Successful money transfer',
-                'message' => 'You successfully transferred money.'
+                'message' => 'You successfully transferred money.',
             ])
         ;
 

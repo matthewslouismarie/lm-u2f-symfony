@@ -20,7 +20,7 @@ class UserStudyConfigType extends AbstractType
                     'Yes' => true,
                     'No' => false,
                 ],
-                'label' => 'Activate User Study mode?'
+                'label' => 'Activate User Study mode?',
             ])
             ->add('participantId', TextType::class, [
                 'required' => false,

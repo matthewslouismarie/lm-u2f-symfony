@@ -2,8 +2,6 @@
 
 namespace App\Tests;
 
-use App\DataFixtures\AppFixture;
-use App\Service\Form\Filler\ValidPasswordFiller;
 use App\Service\Adaptor\PasswordHasher;
 use App\Service\Form\Filler\PasswordUpdateFiller;
 
@@ -19,7 +17,7 @@ class PasswordUpdateTest extends TestCaseTemplate
         $this->login();
         $this->activateU2fSecurityStrategy();
         $this->doGet('/authenticated/change-password');
-        $this->followRedirect();     
+        $this->followRedirect();
         $this->authenticateAsAdmin();
         $this->submit(
             $this

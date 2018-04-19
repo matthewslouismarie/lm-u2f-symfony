@@ -5,17 +5,11 @@ namespace App\Controller;
 use App\Callback\Authentifier\PasswordUpdateCallback;
 use App\Callback\Authentifier\AccountDeletionCallback;
 use App\Enum\Setting;
-use App\Form\PasswordUpdateType;
 use App\Form\UserConfirmationType;
-use App\FormModel\PasswordUpdateSubmission;
 use App\Service\AppConfigManager;
 use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\ChallengeSpecification;
-use LM\Authentifier\Challenge\CredentialChallenge;
-use LM\Authentifier\Challenge\PasswordChallenge;
 use LM\Authentifier\Challenge\PasswordUpdateChallenge;
-use LM\Common\Enum\Scalar;
-use LM\Common\Model\ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,7 +55,7 @@ class MemberAccount extends AbstractController
                     [],
                     [
                         PasswordUpdateChallenge::class,
-                    ]                        
+                    ]
                 ),
                 $this->getUser()->getUsername(),
                 20

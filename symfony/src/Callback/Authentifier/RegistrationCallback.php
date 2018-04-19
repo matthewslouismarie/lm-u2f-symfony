@@ -2,10 +2,8 @@
 
 namespace App\Callback\Authentifier;
 
-use App\Entity\U2fToken;
 use App\Factory\MemberFactory;
 use App\Factory\U2fRegistrationFactory;
-use DateTimeImmutable;
 use LM\Authentifier\Enum\Persistence\Operation;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;

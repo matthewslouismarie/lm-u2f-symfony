@@ -23,8 +23,8 @@ class ChallengeSpecification
     public function getChallenges(
         ?string $username = null,
         array $preChallenges = [],
-        array $postChallenges = []): ArrayObject
-    {
+        array $postChallenges = []
+    ): ArrayObject {
         $challenges = $preChallenges;
 
         if (null === $username) {

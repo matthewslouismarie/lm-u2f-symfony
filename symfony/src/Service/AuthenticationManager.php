@@ -89,10 +89,10 @@ class AuthenticationManager
             ->getValue(Integer::class)
             ->toInteger()
         ;
-        if ($tdmStatus !== self::NOT_PROCESSED) {
-            if ($tdmStatus === self::BEING_PROCESSED) {
+        if (self::NOT_PROCESSED !== $tdmStatus) {
+            if (self::BEING_PROCESSED === $tdmStatus) {
                 throw new BeingProcessedException();
-            } elseif ($tdmStatus === self::PROCESSED) {
+            } elseif (self::PROCESSED === $tdmStatus) {
                 throw new ProcessedException();
             }
             throw new VerificationStatusException();

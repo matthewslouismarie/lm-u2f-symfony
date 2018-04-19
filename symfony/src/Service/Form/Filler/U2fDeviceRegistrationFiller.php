@@ -2,9 +2,7 @@
 
 namespace App\Service\Form\Filler;
 
-use App\DataStructure\TransitingDataManager;
 use App\Exception\NonexistentNodeException;
-use App\Model\TransitingData;
 use App\Service\Mocker\U2fRegistrationMocker;
 use App\Service\SecureSession;
 use LM\Authentifier\Model\AuthenticationProcess;

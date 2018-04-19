@@ -16,7 +16,7 @@ class PwdConfigType extends AbstractType
         $builder
             ->add("allowPwdAuthentication", CheckboxType::class, [
                 "required" => false,
-                "label" => "Allow password login?"
+                "label" => "Allow password login?",
             ])
             ->add('minimumLength', IntegerType::class, [
                 'empty_data' => null,

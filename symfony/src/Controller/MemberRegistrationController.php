@@ -8,7 +8,6 @@ use App\Enum\Setting;
 use App\Factory\MemberFactory;
 use App\Form\CredentialRegistrationType;
 use App\Form\NewU2fRegistrationType;
-use App\Form\UserConfirmationType;
 use App\FormModel\CredentialRegistrationSubmission;
 use App\FormModel\NewU2fRegistrationSubmission;
 use App\Model\TransitingData;

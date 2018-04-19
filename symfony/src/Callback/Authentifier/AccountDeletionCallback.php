@@ -52,7 +52,7 @@ class AccountDeletionCallback extends AbstractCallback
             ->get('twig')
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Successful account deletion',
-                'message' => 'Your account was successfully deleted.'
+                'message' => 'Your account was successfully deleted.',
             ])
         ;
 

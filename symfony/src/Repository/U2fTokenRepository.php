@@ -35,8 +35,8 @@ class U2fTokenRepository extends ServiceEntityRepository
             $registration = new Registration();
             $registration->setCounter($tkn->getCounter());
             $registration->setAttestationCertificate($tkn->getAttestationCertificate());
-            $registration->setPublicKey(base64_decode($tkn->getPublicKey()));
-            $registration->setKeyHandle(base64_decode($tkn->getKeyHandle()));
+            $registration->setPublicKey(base64_decode($tkn->getPublicKey(), true));
+            $registration->setKeyHandle(base64_decode($tkn->getKeyHandle(), true));
             $registrations[$tkn->getId()] = $registration;
         }
 

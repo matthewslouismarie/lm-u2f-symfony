@@ -5,11 +5,8 @@ namespace App\Tests;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use App\Enum\Setting;
-use App\Service\AppConfigManager;
 use App\Service\Form\Filler\CredentialRegistrationFiller;
 use App\Service\Form\Filler\U2fRegistrationFiller;
-use App\Service\Form\Filler\UserConfirmationFiller;
-use LM\Common\Enum\Scalar;
 
 class MemberRegistrationTest extends TestCaseTemplate
 {

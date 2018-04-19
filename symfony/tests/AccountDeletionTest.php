@@ -11,7 +11,8 @@ class AccountDeletionTest extends TestCaseTemplate
 
     public function testAccountDeletion()
     {
-        $this->assertNotNull($this
+        $this->assertNotNull(
+            $this
             ->getObjectManager()
             ->getRepository(Member::class)
             ->findOneBy([
@@ -23,7 +24,8 @@ class AccountDeletionTest extends TestCaseTemplate
         $this->doGet('/authenticated/my-account/delete-account');
         $this->assertContains(
             'Do you really want to delete your account?',
-            $this->getClient()->getResponse()->getContent())
+            $this->getClient()->getResponse()->getContent()
+        )
         ;
         $this->submit($this
             ->get('App\Service\Form\Filler\UserConfirmationFiller')
@@ -31,7 +33,8 @@ class AccountDeletionTest extends TestCaseTemplate
         ;
         $this->followRedirect();
         $this->authenticateAsAdmin();
-        $this->assertNull($this
+        $this->assertNull(
+            $this
             ->getObjectManager()
             ->getRepository(Member::class)
             ->findOneBy([

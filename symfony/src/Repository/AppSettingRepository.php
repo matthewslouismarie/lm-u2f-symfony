@@ -35,7 +35,7 @@ class AppSettingRepository extends ServiceEntityRepository
         if (null !== $appSetting) {
             return $appSetting->getValue();
         } else {
-            return null;
+            return;
         }
     }
 }

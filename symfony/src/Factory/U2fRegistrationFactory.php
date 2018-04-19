@@ -6,7 +6,6 @@ use App\Entity\Member;
 use App\Entity\U2fToken;
 use DateTimeImmutable;
 use LM\Authentifier\Model\IU2fRegistration;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class U2fRegistrationFactory
 {

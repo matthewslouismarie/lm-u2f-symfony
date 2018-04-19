@@ -3,7 +3,6 @@
 namespace App\Tests;
 
 use App\Factory\U2fRegistrationFactory;
-use LM\Authentifier\Model\IU2fRegistration;
 use LM\Authentifier\Implementation\U2fRegistration;
 
 class U2fTokenTest extends TestCaseTemplate

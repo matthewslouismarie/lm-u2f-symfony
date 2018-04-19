@@ -44,7 +44,7 @@ class PasswordUpdateCallback extends AbstractCallback
             ->get('twig')
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Password update successful',
-                'message' => 'You successfully updated your password.'
+                'message' => 'You successfully updated your password.',
             ])
         ;
 

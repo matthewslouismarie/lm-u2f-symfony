@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Adaptor;
 
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;

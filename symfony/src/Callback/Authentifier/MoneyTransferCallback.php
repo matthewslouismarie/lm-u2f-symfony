@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Callback\Authentifier;
 
 use LM\Authentifier\Model\AuthenticationProcess;

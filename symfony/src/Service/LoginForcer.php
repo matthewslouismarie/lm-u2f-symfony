@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -15,6 +17,7 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 class LoginForcer
 {
     private $eventDispatcher;
+
     private $tokenStorage;
 
     public function __construct(

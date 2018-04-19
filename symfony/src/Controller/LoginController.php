@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Callback\Authentifier\MemberAuthenticationCallback;
@@ -18,7 +20,6 @@ use LM\Authentifier\Challenge\U2fChallenge;
 
 class LoginController extends AbstractController
 {
-
     /**
      * @Route(
      *  "/not-authenticated/choose-authenticate",
@@ -125,7 +126,6 @@ class LoginController extends AbstractController
     public function unauthenticate(Request $request)
     {
     }
-
 
     /**
      * @Route(

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Member;
@@ -27,8 +29,8 @@ class MemberRepository extends ServiceEntityRepository
     public function getMember(?string $username): Member
     {
         $member = $this->findOneBy([
-                'username' => $username,
-            ])
+            'username' => $username,
+        ])
         ;
         if (null === $member) {
             throw new NonexistentMemberException();

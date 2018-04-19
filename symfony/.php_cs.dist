@@ -16,6 +16,12 @@ return PhpCsFixer\Config::create()
         'space_after_semicolon' => true,
         'single_blank_line_before_namespace' => true,
         'simplified_null_return' => true,
+        'align_multiline_comment' => true,
+        'array_indentation' => true,
+        'blank_line_after_opening_tag' => true,
+        'class_attributes_separation' => true,
+        'date_time_immutable' => true,
+        'declare_strict_types' => true,
     ])
     ->setFinder($finder)
 ;

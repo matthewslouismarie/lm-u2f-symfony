@@ -192,6 +192,25 @@ class AdminDashboardController extends AbstractController
 
     /**
      * @Route(
+     *  "/admin/user-metrics-csv/{pid}",
+     *  name="admin_metrics_csv")
+     */
+    public function downloadMetrics(
+        PageMetricRepository $repo,
+        string $pid)
+    {
+        $body = "Page Title,Redirection,Time (s),URL";
+        $pages = $repo->getArray($pid);
+        foreach ($pages as $page) {
+            $isRedirection = $page['isRedirection'] ? 'true' : 'false';
+            $body .= "\n{$page['pageTitle']},{$isRedirection},{$page['timeSpent']},{$page['localPath']}";
+        }
+
+        return new Response($body);
+    }
+
+    /**
+     * @Route(
      *  "/admin/metrics/{participantId}",
      *  name="admin_metrics")
      */

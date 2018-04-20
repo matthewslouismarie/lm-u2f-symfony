@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\PageMetric;
-use Cocur\Slugify\SlugifyInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -13,14 +12,9 @@ class PageMetricRepository extends ServiceEntityRepository
 {
     private $crawler;
 
-    private $slugifier;
-
-    public function __construct(
-        RegistryInterface $registry,
-        SlugifyInterface $slugifier
-    ) {
+    public function __construct(RegistryInterface $registry)
+    {
         parent::__construct($registry, PageMetric::class);
-        $this->slugifier = $slugifier;
     }
 
     /**
@@ -32,6 +26,7 @@ class PageMetricRepository extends ServiceEntityRepository
         $pageMetrics = $this->findBy([
             "participantId" => $participantId,
         ]);
+        var_dump($pageMetrics);
         $nResponseMetrics = count($pageMetrics) - 1;
         for ($i = 0; $i < $nResponseMetrics; ++$i) {
             if (PageMetric::RESPONSE === $pageMetrics[$i]->getType() &&
@@ -50,13 +45,7 @@ class PageMetricRepository extends ServiceEntityRepository
 
     public function getParticipantSlugs(): array
     {
-        return array_map(
-            [
-                $this->slugifier,
-                'slugify'
-            ],
-            $this->getParticipantIdsExcept()
-        );
+        return $this->getParticipantIdsExcept();
     }
 
     public function getParticipantIdsExcept(?string $participantIdToExclude = null): array

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * @Entity(repositoryClass="App\Repository\PageMetricRepository")
@@ -44,6 +45,7 @@ class PageMetric
 
     /**
      * @Column()
+     * @Regex("/^([a-z0-9]|((?!^)-(?<!$)))+$/")
      */
     private $participantId;
 

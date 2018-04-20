@@ -103,6 +103,9 @@ abstract class TestCaseTemplate extends DbWebTestCase
         }
     }
 
+    /**
+     * @todo Rename to getManager()
+     */
     public function getObjectManager(): ObjectManager
     {
         return $this

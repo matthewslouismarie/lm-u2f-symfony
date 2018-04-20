@@ -26,11 +26,21 @@ class PageMetric
     private $id;
 
     /**
+     * @Column(nullable=true, type="boolean")
+     */
+    private $isRedirection;
+
+    /**
      * @todo Check local setting is using decimal point.
      *
      * @Column(type="float")
      */
     private $microtime;
+
+    /**
+     * @Column(nullable=true)
+     */
+    private $pageTitle;
 
     /**
      * @Column()
@@ -48,17 +58,21 @@ class PageMetric
     private $localPath;
 
     public function __construct(
+        ?int $id = null,
+        ?bool $isRedirection,
         float $microtime,
+        ?string $pageTitle,
         string $participantId,
         string $type,
-        string $localPath,
-        ?int $id = null
+        string $localPath
     ) {
+        $this->id = $id;
+        $this->isRedirection = $isRedirection;
         $this->microtime = $microtime;
+        $this->pageTitle = $pageTitle;
         $this->participantId = $participantId;
         $this->type = $type;
         $this->localPath = $localPath;
-        $this->id = $id;
     }
 
     public function getId(): int
@@ -69,6 +83,11 @@ class PageMetric
     public function getMicrotime(): float
     {
         return $this->microtime;
+    }
+
+    public function getPageTitle(): ?string
+    {
+        return $this->pageTitle;
     }
 
     public function getParticipantId(): string
@@ -84,5 +103,10 @@ class PageMetric
     public function getLocalPath(): string
     {
         return $this->localPath;
+    }
+
+    public function isRedirection(): ?bool
+    {
+        return $this->isRedirection;
     }
 }

@@ -9,6 +9,7 @@ use App\Entity\PageMetric;
 use App\Enum\Setting;
 use App\Service\AppConfigManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -53,7 +54,10 @@ class UserPerformancesCollector implements EventSubscriberInterface
         $uri = $event->getRequest()->getPathInfo();
         if ($this->isRequestMonitored($event)) {
             $pageMetric = new PageMetric(
+                null,
+                null,
                 $microtimeFloat,
+                null,
                 $this->config->getStringSetting(Setting::PARTICIPANT_ID),
                 PageMetric::REQUEST,
                 $uri
@@ -70,13 +74,23 @@ class UserPerformancesCollector implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @todo Should validate HTML document before, and check the title is the
+     * good one.
+     */
     public function onRequestEnd(PostResponseEvent $event)
     {
         $microtimeFloat = microtime(true);
         $uri = $event->getRequest()->getPathInfo();
+        $crawler = new Crawler();
+        $crawler->addHTMLContent($event->getResponse()->getContent());
+        $pageTitle = $crawler->filterXPath('//html/head')->text();
         if ($this->isRequestMonitored($event)) {
             $pageMetric = new PageMetric(
+                null,
+                $event->getResponse()->isRedirection(),
                 $microtimeFloat,
+                $pageTitle,
                 $this->config->getStringSetting(Setting::PARTICIPANT_ID),
                 PageMetric::RESPONSE,
                 $uri

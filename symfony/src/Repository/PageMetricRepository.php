@@ -11,6 +11,8 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class PageMetricRepository extends ServiceEntityRepository
 {
+    private $crawler;
+
     private $slugifier;
 
     public function __construct(
@@ -21,6 +23,9 @@ class PageMetricRepository extends ServiceEntityRepository
         $this->slugifier = $slugifier;
     }
 
+    /**
+     * @todo Refactor
+     */
     public function getArray(string $participantId): array
     {
         $timeSpentArray = [];
@@ -32,8 +37,10 @@ class PageMetricRepository extends ServiceEntityRepository
             if (PageMetric::RESPONSE === $pageMetrics[$i]->getType() &&
             PageMetric::REQUEST === $pageMetrics[$i + 1]->getType()) {
                 $timeSpentArray[] = [
-                    'timeSpent' => $pageMetrics[$i + 1]->getMicrotime() - $pageMetrics[$i]->getMicrotime(),
+                    'isRedirection' => $pageMetrics[$i]->isRedirection(),
                     'localPath' => $pageMetrics[$i]->getLocalPath(),
+                    'pageTitle' => $pageMetrics[$i]->getPageTitle(),
+                    'timeSpent' => $pageMetrics[$i + 1]->getMicrotime() - $pageMetrics[$i]->getMicrotime(),
                 ];
             }
         }

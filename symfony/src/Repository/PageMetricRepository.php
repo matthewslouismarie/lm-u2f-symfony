@@ -35,7 +35,12 @@ class PageMetricRepository extends ServiceEntityRepository
         return $timeSpentArray;
     }
 
-    public function getParticipantIdsExcept(string $participantIdToExclude): array
+    public function getParticipantIds(): array
+    {
+        return $this->getParticipantIdsExcept();
+    }
+
+    public function getParticipantIdsExcept(?string $participantIdToExclude = null): array
     {
         $pageMetrics = $this->findAll();
         $participantIds = [];

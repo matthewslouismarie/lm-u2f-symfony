@@ -6,6 +6,7 @@ namespace App\Tests;
 
 use App\DataFixtures\AppFixture;
 use App\DataFixtures\ConfigFixture;
+use App\DataFixtures\UserPerformanceFixture;
 use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -35,6 +36,7 @@ abstract class DbWebTestCase extends WebTestCase
         $fl->addFixtures([
             $container->get(AppFixture::class),
             $container->get(ConfigFixture::class),
+            $container->get(UserPerformanceFixture::class),
         ]);
         $fixtures = $fl->getFixtures();
         $purger = new ORMPurger($om);

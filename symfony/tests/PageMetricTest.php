@@ -5,10 +5,13 @@ namespace App\Tests;
 use App\Entity\PageMetric;
 use App\Enum\Setting;
 use App\Service\AppConfigManager;
+use InvalidArgumentException;
 use LM\Common\Enum\Scalar;
 
 class PageMetricTest extends TestCaseTemplate
 {
+    use LoginTrait;
+
     private $manager;
 
     public function setUp()
@@ -65,5 +68,12 @@ class PageMetricTest extends TestCaseTemplate
             true,
             $pageMetric['isRedirection']
         );
+    }
+
+    public function testNonHtmlPage()
+    {
+        $this->login();
+        $this->doGet('/admin/export');
+        $this->assertSame(200, $this->getHttpStatusCode());
     }
 }

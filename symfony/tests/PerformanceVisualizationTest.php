@@ -8,13 +8,18 @@ class PerformanceVisualizationTest extends TestCaseTemplate
 {
     use LoginTrait;
 
+    const SLUG_REGEX = '/^([a-z0-9]|((?!^)-(?<!$)))+$/';
+
     public function testCsvExport()
     {
         $this->login();
-        $participantIds = $this
+        $participantSlugs = $this
             ->get(PageMetricRepository::class)
-            ->getParticipantIds()
+            ->getParticipantSlugs()
         ;
-        $this->assertGreaterThan(0, count($participantIds));
+        $this->assertGreaterThan(0, count($participantSlugs));
+        foreach ($participantSlugs as $slug) {
+            $this->assertRegExp(self::SLUG_REGEX, $slug);
+        }
     }
 }

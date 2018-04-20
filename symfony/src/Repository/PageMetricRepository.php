@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\PageMetric;
+use Cocur\Slugify\SlugifyInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class PageMetricRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
+    private $slugifier;
+
+    public function __construct(
+        RegistryInterface $registry,
+        SlugifyInterface $slugifier
+    ) {
         parent::__construct($registry, PageMetric::class);
+        $this->slugifier = $slugifier;
     }
 
     public function getArray(string $participantId): array
@@ -35,9 +41,15 @@ class PageMetricRepository extends ServiceEntityRepository
         return $timeSpentArray;
     }
 
-    public function getParticipantIds(): array
+    public function getParticipantSlugs(): array
     {
-        return $this->getParticipantIdsExcept();
+        return array_map(
+            [
+                $this->slugifier,
+                'slugify'
+            ],
+            $this->getParticipantIdsExcept()
+        );
     }
 
     public function getParticipantIdsExcept(?string $participantIdToExclude = null): array

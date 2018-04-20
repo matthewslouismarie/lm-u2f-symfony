@@ -20,7 +20,7 @@ class PageMetricRepository extends ServiceEntityRepository
     /**
      * @todo Refactor
      */
-    public function getArray(string $participantId): array
+    public function getArray(string $participantId, bool $includeRedirections = true): array
     {
         $timeSpentArray = [];
         $pageMetrics = $this->findBy([
@@ -30,12 +30,20 @@ class PageMetricRepository extends ServiceEntityRepository
         for ($i = 0; $i < $nResponseMetrics; ++$i) {
             if (PageMetric::RESPONSE === $pageMetrics[$i]->getType() &&
             PageMetric::REQUEST === $pageMetrics[$i + 1]->getType()) {
-                $timeSpentArray[] = [
-                    'isRedirection' => $pageMetrics[$i]->isRedirection(),
-                    'localPath' => $pageMetrics[$i]->getLocalPath(),
-                    'pageTitle' => $pageMetrics[$i]->getPageTitle(),
-                    'timeSpent' => $pageMetrics[$i + 1]->getMicrotime() - $pageMetrics[$i]->getMicrotime(),
-                ];
+                if ($includeRedirections) {
+                    $timeSpentArray[] = [
+                        'isRedirection' => $pageMetrics[$i]->isRedirection(),
+                        'localPath' => $pageMetrics[$i]->getLocalPath(),
+                        'pageTitle' => $pageMetrics[$i]->getPageTitle(),
+                        'timeSpent' => $pageMetrics[$i + 1]->getMicrotime() - $pageMetrics[$i]->getMicrotime(),
+                    ];
+                } elseif (!$pageMetrics[$i]->isRedirection()) {
+                     $timeSpentArray[] = [
+                        'localPath' => $pageMetrics[$i]->getLocalPath(),
+                        'pageTitle' => $pageMetrics[$i]->getPageTitle(),
+                        'timeSpent' => $pageMetrics[$i + 1]->getMicrotime() - $pageMetrics[$i]->getMicrotime(),
+                    ];
+                }
             }
         }
 

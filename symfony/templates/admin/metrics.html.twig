@@ -9,6 +9,7 @@
 <p>You can switch to: {% for id in participantIds %}<a href="{{ path("admin_metrics", {"participantId": id}) }}">{{ id }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.</p>
 <ul>
   <li><a download href="{{ path('admin_metrics_csv', {pid: participantId}) }}">Download the CSV file</a></li>
+  <li><a download href="{{ path('admin_metrics_csv', {pid: participantId, incRedirectsStr: 'no-redirects'}) }}">Download the CSV file without redirections</a></li>
 </ul>
 {%- endif -%}
 <div class="table-container">

@@ -194,18 +194,24 @@ class AdminDashboardController extends AbstractController
      * @todo Set filename.
      * 
      * @Route(
-     *  "/admin/user-metrics-csv/{pid}",
+     *  "/admin/user-metrics-csv/{pid}/{incRedirectsStr}",
      *  name="admin_metrics_csv")
      */
     public function downloadMetrics(
+        string $incRedirectsStr = 'inc-redirects',
         PageMetricRepository $repo,
         string $pid)
     {
-        $body = "Page Title,Redirection,Time (s),URL";
-        $pages = $repo->getArray($pid);
+        $incRedirects = 'inc-redirects' === $incRedirectsStr;
+        $body = $incRedirects ? "Page Title,Redirection,Time (s),URL" : "Page Title,Time (s),URL";
+        $pages = $repo->getArray($pid, $incRedirects);
         foreach ($pages as $page) {
-            $isRedirection = $page['isRedirection'] ? 'true' : 'false';
-            $body .= "\n{$page['pageTitle']},{$isRedirection},{$page['timeSpent']},{$page['localPath']}";
+            $body .= "\n{$page['pageTitle']}";
+            if ($incRedirects) {
+                $isRedirection = $page['isRedirection'] ? 'true' : 'false';
+                $body .= ",{$isRedirection}";
+            }
+            $body .= ",{$page['timeSpent']},{$page['localPath']}";
         }
 
         return new Response($body, 200, [

@@ -61,4 +61,40 @@ class PerformanceVisualizationTest extends TestCaseTemplate
             }
         }
     }
+
+    public function testCsvExportWithoutRedirections()
+    {
+        $this->login();
+        $participantSlugs = $this
+            ->get(PageMetricRepository::class)
+            ->getParticipantSlugs()
+        ;
+        $this->doGet('/admin/user-metrics-csv/'.$participantSlugs[0].'/no-redirects');
+        $lines = str_getcsv($this->getResponseContent(), "\n");
+
+        $this->assertSame(
+            count($this
+                ->getObjectManager()
+                ->getRepository(PageMetric::class)
+                ->getArray($participantSlugs[0], false)
+            ),
+            count($lines) - 1
+        );
+
+        foreach ($lines as $no => $line) {
+            $row = str_getcsv($line, ',');
+            if (0 === $no) {
+                $this->assertSame(
+                    [
+                        'Page Title',
+                        'Time (s)',
+                        'URL',
+                    ],
+                    $row
+                );
+            } else {
+                $this->assertTrue(is_numeric($row[1]));
+            }
+        }
+    }
 }

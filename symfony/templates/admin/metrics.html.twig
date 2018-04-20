@@ -7,6 +7,9 @@
 <p>You are viewing participant {{participantId}}'s metrics.</p>
 {%- if participantIds|length > 0 -%}
 <p>You can switch to: {% for id in participantIds %}<a href="{{ path("admin_metrics", {"participantId": id}) }}">{{ id }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.</p>
+<ul>
+  <li><a download href="{{ path('admin_metrics_csv', {pid: participantId}) }}">Download the CSV file</a></li>
+</ul>
 {%- endif -%}
 <div class="table-container">
   <table class="standard-table">

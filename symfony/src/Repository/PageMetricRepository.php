@@ -26,7 +26,6 @@ class PageMetricRepository extends ServiceEntityRepository
         $pageMetrics = $this->findBy([
             "participantId" => $participantId,
         ]);
-        var_dump($pageMetrics);
         $nResponseMetrics = count($pageMetrics) - 1;
         for ($i = 0; $i < $nResponseMetrics; ++$i) {
             if (PageMetric::RESPONSE === $pageMetrics[$i]->getType() &&

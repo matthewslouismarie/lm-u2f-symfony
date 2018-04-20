@@ -191,6 +191,8 @@ class AdminDashboardController extends AbstractController
     }
 
     /**
+     * @todo Set filename.
+     * 
      * @Route(
      *  "/admin/user-metrics-csv/{pid}",
      *  name="admin_metrics_csv")
@@ -206,7 +208,9 @@ class AdminDashboardController extends AbstractController
             $body .= "\n{$page['pageTitle']},{$isRedirection},{$page['timeSpent']},{$page['localPath']}";
         }
 
-        return new Response($body);
+        return new Response($body, 200, [
+            'Content-Type' => 'text/csv',
+        ]);
     }
 
     /**

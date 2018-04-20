@@ -54,3 +54,7 @@ services:
 
     Cocur\Slugify\SlugifyInterface:
         class: Cocur\Slugify\Slugify
+
+    # @todo Should be ant interface
+    Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory:
+        class: Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory

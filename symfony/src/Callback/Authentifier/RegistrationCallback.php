@@ -6,6 +6,7 @@ namespace App\Callback\Authentifier;
 
 use App\Factory\MemberFactory;
 use App\Factory\U2fRegistrationFactory;
+use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Enum\Persistence\Operation;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
@@ -13,41 +14,73 @@ use LM\Authentifier\Model\IU2fRegistration;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Twig_Environment;
 
 class RegistrationCallback extends AbstractCallback
 {
+    private $failureClosure;
+
+    private $manager;
+
+    private $memberFactory;
+
+    private $psr7Factory;
+
+    private $twig;
+
+    private $u2fRegistrationFactory;
+
+    public function __construct(
+        EntityManagerInterface $manager,
+        FailureClosure $failureClosure,
+        MemberFactory $memberFactory,
+        Twig_Environment $twig,
+        U2fRegistrationFactory $u2fRegistrationFactory
+    ) {
+        $this->failureClosure = $failureClosure;
+        $this->manager = $manager;
+        $this->memberFactory = $memberFactory;
+        $this->psr7Factory = new DiactorosFactory();
+        $this->twig = $twig;
+        $this->u2fRegistrationFactory = $u2fRegistrationFactory;
+    }
+
+    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    {
+        return ($this->failureClosure)($authProcess);
+    }
+
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
         $member = $this
-            ->getContainer()
-            ->get(MemberFactory::class)
+            ->memberFactory
             ->createFrom($authProcess->getMember())
         ;
-        $em = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager()
+        $this
+            ->manager
+            ->persist($member)
         ;
-        $em->persist($member);
         foreach ($authProcess->getPersistOperations() as $operation) {
             if ($operation->getType()->is(new Operation(Operation::CREATE))) {
                 $object = $operation->getObject();
                 if (is_a($object, IU2fRegistration::class)) {
                     $u2fToken = $this
-                        ->getContainer()
-                        ->get(U2fRegistrationFactory::class)
+                        ->u2fRegistrationFactory
                         ->toEntity($object, $member)
                     ;
-                    $em->persist($u2fToken);
+                    $this
+                        ->manager
+                        ->persist($u2fToken);
                 }
             }
         }
-        $em->flush();
-        $psr7Factory = new DiactorosFactory();
+        $this
+            ->manager
+            ->flush()
+        ;
 
         $httpResponse = $this
-            ->getContainer()
-            ->get('twig')
+            ->twig
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Successful account creation',
                 'message' => 'Your account was successfully created.',
@@ -56,22 +89,10 @@ class RegistrationCallback extends AbstractCallback
 
         return new AuthentifierResponse(
             $authProcess,
-            $psr7Factory->createResponse(new Response($httpResponse))
+            $this
+                ->psr7Factory
+                ->createResponse(new Response($httpResponse))
         )
         ;
-    }
-
-    public function wakeUp(ContainerInterface $container): void
-    {
-        parent::wakeUp($container);
-    }
-
-    public function serialize()
-    {
-        return serialize([]);
-    }
-
-    public function unserialize($serialized)
-    {
     }
 }

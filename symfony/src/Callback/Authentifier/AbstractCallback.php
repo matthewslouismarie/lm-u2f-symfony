@@ -10,10 +10,17 @@ use LM\Authentifier\Model\IAuthenticationCallback;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Twig_Environment;
 
 abstract class AbstractCallback implements IAuthenticationCallback
 {
-    private $container;
+    private $twig;
+
+    public function __construct(Twig_Environment $twig)
+    {
+        $this->twig = $twig;
+        $this->psr7Factory = new DiactorosFactory();
+    }
 
     public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
@@ -28,18 +35,10 @@ abstract class AbstractCallback implements IAuthenticationCallback
 
         return new AuthentifierResponse(
             $authProcess,
-            (new DiactorosFactory())->createResponse(new Response($html))
+            $this
+                ->psr7Factory
+                ->createResponse(new Response($html))
         )
         ;
-    }
-
-    public function getContainer(): ContainerInterface
-    {
-        return $this->container;
-    }
-
-    public function wakeUp(ContainerInterface $container): void
-    {
-        $this->container = $container;
     }
 }

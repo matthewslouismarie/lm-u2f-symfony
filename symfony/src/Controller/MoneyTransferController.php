@@ -32,7 +32,6 @@ class MoneyTransferController extends AbstractController
             $form->handleRequest($httpRequest);
             if ($form->isSubmitted() && $form->isValid()) {
                 return $decorator->createProcess(
-                    $callback,
                     $httpRequest->get('_route'),
                     $cs->getChallenges($this->getUser()->getUsername()),
                     $this->getUser()->getUsername()
@@ -43,7 +42,7 @@ class MoneyTransferController extends AbstractController
                 'form' => $form->createView(),
             ]);
         } else {
-            return $decorator->updateProcess($httpRequest, $sid);
+            return $decorator->updateProcess($httpRequest, $sid, $callback);
         }
     }
 }

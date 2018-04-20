@@ -55,24 +55,25 @@ class MiddlewareDecorator
 
     /**
      * @challenges is temp
+     * @todo Should additionalData be stored within the authentication process?
      */
     public function createProcess(
-        IAuthenticationCallback $callback,
         string $routeName,
         ArrayObject $challenges,
         ?string $username = null,
-        ?int $maxNFailedAttempts = 3
+        ?int $maxNFailedAttempts = 3,
+        array $additionalData = []
     ): Response {
         $challengesArray = $challenges->toArray(Scalar::_STR);
         $authProcess = $this
             ->authProcessFactory
             ->createProcess(
                 $challengesArray,
-                $callback,
                 [
                     'username' => $username,
                     'max_n_failed_attempts' => $maxNFailedAttempts,
-                ]
+                ],
+                $additionalData
             )
         ;
         $sid = $this
@@ -93,14 +94,15 @@ class MiddlewareDecorator
 
     public function updateProcess(
         Request $httpRequest,
-        string $sid
+        string $sid,
+        IAuthenticationCallback $callback
     ) {
         $authKernel = new AuthenticationKernel($this->appConfig);
         $diactorosFactory = new DiactorosFactory();
         $httpFoundationFactory = new HttpFoundationFactory();
         $psrHttpRequest = $diactorosFactory->createRequest($httpRequest);
         $authProcess = $this->secureSession->getAndRemoveObject($sid, AuthenticationProcess::class);
-        $authentifierResponse = $authKernel->processHttpRequest($psrHttpRequest, $authProcess);
+        $authentifierResponse = $authKernel->processHttpRequest($psrHttpRequest, $authProcess, $callback);
         $this->secureSession->setObject($sid, $authentifierResponse->getProcess(), AuthenticationProcess::class);
 
         return $httpFoundationFactory->createResponse($authentifierResponse->getHttpResponse());

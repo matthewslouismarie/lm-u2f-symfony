@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class U2fDeviceRegistrationController extends AbstractController
 {
     /**
+     * @todo (security) Member should be defined when auth process is started.
+     *
      * @Route(
      *  "/authenticated/add-u2f-device/{sid}",
      *  name="add_u2f_device")
@@ -28,7 +30,6 @@ class U2fDeviceRegistrationController extends AbstractController
     ) {
         if (null === $sid) {
             return $decorator->createProcess(
-                $callback,
                 $httpRequest->get('_route'),
                 $cs->getChallenges(
                     $this->getUser()->getUsername(),
@@ -40,7 +41,9 @@ class U2fDeviceRegistrationController extends AbstractController
             )
             ;
         } else {
-            return $decorator->updateProcess($httpRequest, $sid);
+            $callback->setMember($this->getUser());
+
+            return $decorator->updateProcess($httpRequest, $sid, $callback);
         }
     }
 }

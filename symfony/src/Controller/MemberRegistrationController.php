@@ -75,13 +75,12 @@ class MemberRegistrationController extends AbstractController
             }
 
             return $decorator->createProcess(
-                $callback,
                 $httpRequest->get('_route'),
                 new ArrayObject($challenges, Scalar::_STR)
             )
             ;
         } else {
-            return $decorator->updateProcess($httpRequest, $sid);
+            return $decorator->updateProcess($httpRequest, $sid, $callback);
         }
     }
 

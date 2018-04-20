@@ -12,7 +12,9 @@ use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
 use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\ChallengeSpecification;
+use App\Service\SecureSession;
 use Doctrine\ORM\EntityManagerInterface;
+use LM\Authentifier\Model\AuthenticationProcess;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,12 +65,14 @@ class U2fKeyManagementController extends AbstractController
                     'name' => $u2fKeySlug,
                 ])
             ;
-            $callback = new U2fDeviceRemovalCallback($u2fRegistration);
             return $decorator->createProcess(
-                $callback,
                 'remove_u2f_device',
                 $cs->getChallenges($this->getUser()->getUsername()),
-                $this->getUser()->getUsername()
+                $this->getUser()->getUsername(),
+                3,
+                [
+                    'c_u2fRegistration' => $u2fRegistration,
+                ]
             );
         }
 
@@ -83,11 +87,19 @@ class U2fKeyManagementController extends AbstractController
      *  name="remove_u2f_device")
      */
     public function removeU2fDevice(
+        U2fDeviceRemovalCallback $callback,
         string $sid,
-        EntityManagerInterface $em,
         MiddlewareDecorator $decorator,
+        SecureSession $session,
         Request $httpRequest
     ) {
-        return $decorator->updateProcess($httpRequest, $sid);
+        $u2fRegistration = $session
+            ->getObject($sid, AuthenticationProcess::class)
+            ->getTypedMap()
+            ->get('c_u2fRegistration', U2fToken::class)
+        ;
+        $callback->setU2fRegistration($u2fRegistration);
+
+        return $decorator->updateProcess($httpRequest, $sid, $callback);
     }
 }

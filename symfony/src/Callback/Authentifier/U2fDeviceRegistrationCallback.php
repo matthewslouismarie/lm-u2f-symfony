@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Callback\Authentifier;
 
+use App\Entity\Member;
 use App\Factory\U2fRegistrationFactory;
+use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Enum\Persistence\Operation;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
@@ -12,64 +14,80 @@ use LM\Authentifier\Model\IU2fRegistration;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Twig_Environment;
 
 class U2fDeviceRegistrationCallback extends AbstractCallback
 {
+    private $failureClosure;
+
+    private $manager;
+
+    private $member;
+
+    private $psr7Factory;
+
+    private $twig;
+
+    private $u2fRegistrationFactory;
+
+    public function __construct(
+        EntityManagerInterface $manager,
+        FailureClosure $failureClosure,
+        Twig_Environment $twig,
+        U2fRegistrationFactory $u2fRegistrationFactory
+    ) {
+        $this->failureClosure = $failureClosure;
+        $this->manager = $manager;
+        $this->psr7Factory = new DiactorosFactory();
+        $this->twig = $twig;
+        $this->u2fRegistrationFactory = $u2fRegistrationFactory;
+    }
+    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    {
+        return ($this->failureClosure)($authProcess);
+    }
+
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
-        $em = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager()
-        ;
-        $member = $this
-            ->getContainer()
-            ->get('security.token_storage')
-            ->getToken()
-            ->getUser()
-        ;
-        $em->persist($member);
-        $u2fRegistrationFactory = $this
-            ->getContainer()
-            ->get(U2fRegistrationFactory::class)
+        $this
+            ->manager
+            ->persist($this->member)
         ;
         foreach ($authProcess->getPersistOperations() as $operation) {
             $entity = $operation->getObject();
             if ($operation->getType()->is(new Operation(Operation::CREATE)) && is_a($entity, IU2fRegistration::class)) {
-                $em->persist($u2fRegistrationFactory->toEntity($operation->getObject(), $member));
+                $this
+                    ->manager
+                    ->persist($this->u2fRegistrationFactory->toEntity($operation->getObject(), $this->member));
             }
         }
-        $em->flush();
+        $this
+            ->manager
+            ->flush();
 
         $httpResponse = $this
-            ->getContainer()
-            ->get('twig')
+            ->twig
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'U2F device added successfully',
                 'message' => 'The U2F was successfully registered to your account.',
             ])
         ;
 
-        $psr7Factory = new DiactorosFactory();
-
         return new AuthentifierResponse(
             $authProcess,
-            $psr7Factory->createResponse(new Response($httpResponse))
+            $this
+                ->psr7Factory
+                ->createResponse(new Response($httpResponse))
         )
         ;
     }
 
-    public function wakeUp(ContainerInterface $container): void
+    /**
+     * @todo Make immutable.
+     */
+    public function setMember(Member $member)
     {
-        parent::wakeUp($container);
+        $this->member = $member;
     }
 
-    public function serialize()
-    {
-        return '';
-    }
-
-    public function unserialize($serialized)
-    {
-    }
 }

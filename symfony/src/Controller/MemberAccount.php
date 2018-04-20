@@ -50,7 +50,6 @@ class MemberAccount extends AbstractController
     ) {
         if (null === $sid) {
             return $decorator->createProcess(
-                $callback,
                 $httpRequest->get('_route'),
                 $cs->getChallenges(
                     $this->getUser()->getUsername(),
@@ -64,7 +63,7 @@ class MemberAccount extends AbstractController
             )
             ;
         } else {
-            return $decorator->updateProcess($httpRequest, $sid);
+            return $decorator->updateProcess($httpRequest, $sid, $callback);
         }
     }
 
@@ -87,7 +86,6 @@ class MemberAccount extends AbstractController
                 $callback = new AccountDeletionCallback($this->getUser());
 
                 return $decorator->createProcess(
-                    $callback,
                     $httpRequest->get('_route'),
                     $cs->getChallenges($this->getUser()->getUsername()),
                     $this->getUser()->getUsername()
@@ -98,7 +96,7 @@ class MemberAccount extends AbstractController
                 'form' => $form->createView(),
             ]);
         } else {
-            return $decorator->updateProcess($httpRequest, $sid);
+            return $decorator->updateProcess($httpRequest, $sid, $callback);
         }
     }
 }

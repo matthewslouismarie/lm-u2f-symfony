@@ -14,11 +14,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AccountDeletionCallback extends AbstractCallback
 {
+    private $failureClosure;
+
     private $member;
 
-    public function __construct(Member $member)
+    public function __construct(FailureClosure $failureClosure, Member $member)
     {
+        $this->failureClosure = $failureClosure;
         $this->member = $member;
+    }
+
+    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    {
+        return ($this->failureClosure)($authProcess);
     }
 
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
@@ -65,28 +73,5 @@ class AccountDeletionCallback extends AbstractCallback
             $psr7Factory->createResponse(new Response($httpResponse))
         )
         ;
-    }
-
-    public function wakeUp(ContainerInterface $container): void
-    {
-        parent::wakeUp($container);
-        $this->member = $container
-            ->get('doctrine')
-            ->getManager()
-            ->merge($this->member)
-        ;
-    }
-
-    public function serialize()
-    {
-        return serialize([
-            $this->member,
-        ]);
-    }
-
-    public function unserialize($serialized)
-    {
-        list(
-            $this->member) = unserialize($serialized);
     }
 }

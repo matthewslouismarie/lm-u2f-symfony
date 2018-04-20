@@ -9,12 +9,29 @@ use LM\Authentifier\Model\AuthentifierResponse;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Twig_Environment;
 
 class MoneyTransferCallback extends AbstractCallback
 {
+    private $failureClosure;
+
     private $psr7Factory;
 
     private $twig;
+
+    public function __construct(
+        FailureClosure $failureClosure,
+        Twig_Environment $twig
+    ) {
+        $this->failureClosure = $failureClosure;
+        $this->psr7Factory = new DiactorosFactory();
+        $this->twig = $twig;
+    }
+
+    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    {
+        return ($this->failureClosure)($authProcess);
+    }
 
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
@@ -33,21 +50,5 @@ class MoneyTransferCallback extends AbstractCallback
                 ->createResponse(new Response($httpResponse))
         )
         ;
-    }
-
-    public function wakeUp(ContainerInterface $container): void
-    {
-        parent::wakeUp($container);
-        $this->psr7Factory = new DiactorosFactory();
-        $this->twig = $container->get('twig');
-    }
-
-    public function serialize()
-    {
-        return serialize([]);
-    }
-
-    public function unserialize($serialized)
-    {
     }
 }

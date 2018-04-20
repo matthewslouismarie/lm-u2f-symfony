@@ -4,17 +4,48 @@ declare(strict_types=1);
 
 namespace App\Callback\Authentifier;
 
+use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
 use LM\Common\Enum\Scalar;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Twig_Environment;
 
 class PasswordUpdateCallback extends AbstractCallback
 {
+    private $failureClosure;
+
+    private $manager;
+
+    private $psr7Factory;
+
+    private $tokenStorageInterface;
+
+    private $twig;
+
+    public function __construct(
+        EntityManagerInterface $manager,
+        FailureClosure $failureClosure,
+        TokenStorageInterface $tokenStorage,
+        Twig_Environment $twig
+    ) {
+        $this->failureClosure = $failureClosure;
+        $this->manager = $manager;
+        $this->psr7Factory = new DiactorosFactory();
+        $this->tokenStorage = $tokenStorage;
+        $this->twig = $twig;
+    }
+
+    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    {
+        return ($this->failureClosure)($authProcess);
+    }
+
     /**
-     * @todo @security The currently logged in user's password is changed. If
+     * @todo (security) The currently logged in user's password is changed. If
      * an attacker logs in and initiates the process, then lets the victim log
      * in, the attacker will then be able to achieve the process changing the
      * victim's password.
@@ -26,50 +57,34 @@ class PasswordUpdateCallback extends AbstractCallback
             ->get('new_password', Scalar::_STR)
         ;
         $member = $this
-            ->getContainer()
-            ->get('security.token_storage')
+            ->tokenStorage
             ->getToken()
             ->getUser()
         ;
 
         $member->setPassword($hashOfNewPassword);
-        $em = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager()
-        ;
-        $em->persist($member);
-        $em->flush();
+
+        $this
+            ->manager
+            ->persist($member);
+        $this
+            ->manager
+            ->flush();
 
         $httpResponse = $this
-            ->getContainer()
-            ->get('twig')
+            ->twig
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Password update successful',
                 'message' => 'You successfully updated your password.',
             ])
         ;
 
-        $psr7Factory = new DiactorosFactory();
-
         return new AuthentifierResponse(
             $authProcess,
-            $psr7Factory->createResponse(new Response($httpResponse))
+            $this
+                ->psr7Factory
+                ->createResponse(new Response($httpResponse))
         )
         ;
-    }
-
-    public function wakeUp(ContainerInterface $container): void
-    {
-        parent::wakeUp($container);
-    }
-
-    public function serialize()
-    {
-        return '';
-    }
-
-    public function unserialize($serialized)
-    {
     }
 }

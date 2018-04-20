@@ -5,15 +5,19 @@ declare(strict_types=1);
 namespace App\Callback\Authentifier;
 
 use App\Entity\U2fToken;
+use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Twig_Environment;
 
 class U2fDeviceRemovalCallback extends AbstractCallback
 {
-    private $entityManager;
+    private $failureClosure;
+
+    private $manager;
 
     private $psr7Factory;
 
@@ -21,19 +25,34 @@ class U2fDeviceRemovalCallback extends AbstractCallback
 
     private $u2fRegistration;
 
-    public function __construct(U2fToken $u2fRegistration)
+    public function __construct(
+        FailureClosure $failureClosure,
+        EntityManagerInterface $manager,
+        Twig_Environment $twig
+    ) {
+        $this->failureClosure = $failureClosure;
+        $this->manager = $manager;
+        $this->psr7Factory = new DiactorosFactory();
+        $this->twig = $twig;
+    }
+
+    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
-        $this->u2fRegistration = $u2fRegistration;
+        return ($this->failureClosure)($authProcess);
     }
 
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
-        $this
-            ->entityManager
-            ->remove($this->u2fRegistration)
+        $u2fRegistration = $this
+            ->manager
+            ->merge($this->u2fRegistration)
         ;
         $this
-            ->entityManager
+            ->manager
+            ->remove($u2fRegistration)
+        ;
+        $this
+            ->manager
             ->flush()
         ;
 
@@ -54,32 +73,11 @@ class U2fDeviceRemovalCallback extends AbstractCallback
         ;
     }
 
-    public function wakeUp(ContainerInterface $container): void
+    /**
+     * @todo Make immutable.
+     */
+    public function setU2fRegistration(U2fToken $u2fRegistration)
     {
-        parent::wakeUp($container);
-        $this->psr7Factory = new DiactorosFactory();
-        $this->twig = $container->get('twig');
-        $this->u2fRegistration = $container
-            ->get('doctrine')
-            ->getManager()
-            ->merge($this->u2fRegistration)
-        ;
-        $this->entityManager = $container
-            ->get('doctrine')
-            ->getManager()
-        ;
-    }
-
-    public function serialize()
-    {
-        return serialize([
-            $this->u2fRegistration,
-        ]);
-    }
-
-    public function unserialize($serialized)
-    {
-        list(
-            $this->u2fRegistration) = unserialize($serialized);
+        $this->u2fRegistration = $u2fRegistration;
     }
 }

@@ -6,22 +6,45 @@ namespace App\Callback\Authentifier;
 
 use App\Entity\Member;
 use App\Entity\U2fToken;
+use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Twig_Environment;
 
 class AccountDeletionCallback extends AbstractCallback
 {
     private $failureClosure;
 
+    private $manager;
+
     private $member;
 
-    public function __construct(FailureClosure $failureClosure, Member $member)
-    {
+    private $psr7Factory;
+
+    private $session;
+
+    private $tokenStorage;
+
+    private $twig;
+
+    public function __construct(
+        FailureClosure $failureClosure,
+        EntityManagerInterface $manager,
+        SessionInterface $session,
+        TokenStorageInterface $tokenStorage,
+        Twig_Environment $twig
+    ) {
         $this->failureClosure = $failureClosure;
-        $this->member = $member;
+        $this->manager = $manager;
+        $this->psr7Factory = new DiactorosFactory();
+        $this->session = $session;
+        $this->tokenStorage = $tokenStorage;
+        $this->twig = $twig;
     }
 
     public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
@@ -31,47 +54,46 @@ class AccountDeletionCallback extends AbstractCallback
 
     public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
-        $em = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager()
-        ;
-        $u2fTokens = $em
+        $u2fTokens = $this
+            ->manager
             ->getRepository(U2fToken::class)
             ->findByUsername($this->member->getUsername())
         ;
         foreach ($u2fTokens as $u2fToken) {
-            $em->remove($u2fToken);
+            $this->manager->remove($u2fToken);
         }
-        $em->remove($this->member);
-        $em->flush();
+        $this->manager->remove($this->member);
+        $this->manager->flush();
 
         $this
-            ->getContainer()
-            ->get('security.token_storage')
+            ->tokenStorage
             ->setToken(null)
         ;
         $this
-            ->getContainer()
-            ->get('session')
+            ->session
             ->invalidate()
         ;
 
         $httpResponse = $this
-            ->getContainer()
-            ->get('twig')
+            ->twig
             ->render('messages/success.html.twig', [
                 'pageTitle' => 'Successful account deletion',
                 'message' => 'Your account was successfully deleted.',
             ])
         ;
-
-        $psr7Factory = new DiactorosFactory();
-
         return new AuthentifierResponse(
             $authProcess,
-            $psr7Factory->createResponse(new Response($httpResponse))
-        )
-        ;
+            $this
+                ->psr7Factory
+                ->createResponse(new Response($httpResponse))
+        );
+    }
+
+    /**
+     * @todo Make immutable.
+     */
+    public function setMember(Member $member)
+    {
+        $this->member = $member;
     }
 }

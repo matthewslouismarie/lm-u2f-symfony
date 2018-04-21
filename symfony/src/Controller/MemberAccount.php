@@ -73,6 +73,7 @@ class MemberAccount extends AbstractController
      *  name="delete_account")
      */
     public function deleteAccount(
+        AccountDeletionCallback $callback,
         string $sid = null,
         ChallengeSpecification $cs,
         Request $httpRequest,
@@ -83,7 +84,6 @@ class MemberAccount extends AbstractController
 
             $form->handleRequest($httpRequest);
             if ($form->isSubmitted() && $form->isValid()) {
-                $callback = new AccountDeletionCallback($this->getUser());
 
                 return $decorator->createProcess(
                     $httpRequest->get('_route'),
@@ -96,6 +96,8 @@ class MemberAccount extends AbstractController
                 'form' => $form->createView(),
             ]);
         } else {
+            $callback->setMember($this->getUser());
+
             return $decorator->updateProcess($httpRequest, $sid, $callback);
         }
     }

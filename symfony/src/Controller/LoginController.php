@@ -94,7 +94,7 @@ class LoginController extends AbstractController
                         $httpResponse = $twig
                             ->render('messages/success.html.twig', [
                                 'pageTitle' => 'Successful login',
-                                'message' => 'You logged in successfully!',
+                                'message' => 'You logged in successfully.',
                             ])
                         ;
 

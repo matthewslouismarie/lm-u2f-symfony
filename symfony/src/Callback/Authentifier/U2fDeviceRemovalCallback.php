@@ -8,12 +8,12 @@ use App\Entity\U2fToken;
 use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
-use Psr\Container\ContainerInterface;
+use LM\Authentifier\Model\IAuthenticationCallback;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
 
-class U2fDeviceRemovalCallback extends AbstractCallback
+class U2fDeviceRemovalCallback implements IAuthenticationCallback
 {
     private $failureClosure;
 

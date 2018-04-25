@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests;
 
 use App\Entity\PageMetric;
 use App\Enum\Setting;
 use App\Service\AppConfigManager;
-use InvalidArgumentException;
 use LM\Common\Enum\Scalar;
 
 class PageMetricTest extends TestCaseTemplate

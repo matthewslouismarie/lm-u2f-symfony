@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Callback\Authentifier;
 
+use LM\Authentifier\Model\IAuthenticationCallback;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
-use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
 
-class MoneyTransferCallback extends AbstractCallback
+class MoneyTransferCallback implements IAuthenticationCallback
 {
     private $failureClosure;
 

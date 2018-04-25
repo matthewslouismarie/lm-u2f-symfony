@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests;
 
 use App\Repository\PageMetricRepository;
@@ -35,7 +37,8 @@ class PerformanceVisualizationTest extends TestCaseTemplate
         $lines = str_getcsv($this->getResponseContent(), "\n");
 
         $this->assertSame(
-            count($this
+            count(
+                $this
                 ->getObjectManager()
                 ->getRepository(PageMetric::class)
                 ->getArray($participantSlugs[0])
@@ -73,7 +76,8 @@ class PerformanceVisualizationTest extends TestCaseTemplate
         $lines = str_getcsv($this->getResponseContent(), "\n");
 
         $this->assertSame(
-            count($this
+            count(
+                $this
                 ->getObjectManager()
                 ->getRepository(PageMetric::class)
                 ->getArray($participantSlugs[0], false)

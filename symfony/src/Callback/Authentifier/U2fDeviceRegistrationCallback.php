@@ -10,13 +10,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Enum\Persistence\Operation;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
+use LM\Authentifier\Model\IAuthenticationCallback;
 use LM\Authentifier\Model\IU2fRegistration;
-use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
 
-class U2fDeviceRegistrationCallback extends AbstractCallback
+class U2fDeviceRegistrationCallback implements IAuthenticationCallback
 {
     private $failureClosure;
 
@@ -42,6 +42,7 @@ class U2fDeviceRegistrationCallback extends AbstractCallback
         $this->twig = $twig;
         $this->u2fRegistrationFactory = $u2fRegistrationFactory;
     }
+
     public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
     {
         return ($this->failureClosure)($authProcess);
@@ -89,5 +90,4 @@ class U2fDeviceRegistrationCallback extends AbstractCallback
     {
         $this->member = $member;
     }
-
 }

@@ -198,8 +198,8 @@ class AdminDashboardController extends AbstractController
     public function downloadMetrics(
         string $incRedirectsStr = 'inc-redirects',
         PageMetricRepository $repo,
-        string $pid)
-    {
+        string $pid
+    ) {
         $incRedirects = 'inc-redirects' === $incRedirectsStr;
         $body = $incRedirects ? "Page Title,Redirection,Time (s),URL" : "Page Title,Time (s),URL";
         $pages = $repo->getArray($pid, $incRedirects);

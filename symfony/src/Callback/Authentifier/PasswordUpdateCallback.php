@@ -7,14 +7,14 @@ namespace App\Callback\Authentifier;
 use Doctrine\ORM\EntityManagerInterface;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
+use LM\Authentifier\Model\IAuthenticationCallback;
 use LM\Common\Enum\Scalar;
-use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig_Environment;
 
-class PasswordUpdateCallback extends AbstractCallback
+class PasswordUpdateCallback implements IAuthenticationCallback
 {
     private $failureClosure;
 

@@ -84,7 +84,6 @@ class MemberAccount extends AbstractController
 
             $form->handleRequest($httpRequest);
             if ($form->isSubmitted() && $form->isValid()) {
-
                 return $decorator->createProcess(
                     $httpRequest->get('_route'),
                     $cs->getChallenges($this->getUser()->getUsername()),

@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace App\Callback\Authentifier;
 
-use App\Entity\Member;
 use App\Repository\MemberRepository;
 use App\Service\LoginForcer;
 use LM\Authentifier\Model\AuthenticationProcess;
 use LM\Authentifier\Model\AuthentifierResponse;
-use Psr\Container\ContainerInterface;
+use LM\Authentifier\Model\IAuthenticationCallback;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
 
-/**
- * @todo Make immutable?
- */
-class MemberAuthenticationCallback extends AbstractCallback
+class MemberAuthenticationCallback implements IAuthenticationCallback
 {
     private $failureClosure;
 

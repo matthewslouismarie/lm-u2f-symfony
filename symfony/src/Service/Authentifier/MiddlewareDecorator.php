@@ -69,10 +69,8 @@ class MiddlewareDecorator
             ->authProcessFactory
             ->createProcess(
                 $challengesArray,
-                [
-                    'username' => $username,
-                    'max_n_failed_attempts' => $maxNFailedAttempts,
-                ],
+                $maxNFailedAttempts,
+                $username,
                 $additionalData
             )
         ;

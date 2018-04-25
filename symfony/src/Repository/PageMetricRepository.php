@@ -38,7 +38,7 @@ class PageMetricRepository extends ServiceEntityRepository
                         'timeSpent' => $pageMetrics[$i + 1]->getMicrotime() - $pageMetrics[$i]->getMicrotime(),
                     ];
                 } elseif (!$pageMetrics[$i]->isRedirection()) {
-                     $timeSpentArray[] = [
+                    $timeSpentArray[] = [
                         'localPath' => $pageMetrics[$i]->getLocalPath(),
                         'pageTitle' => $pageMetrics[$i]->getPageTitle(),
                         'timeSpent' => $pageMetrics[$i + 1]->getMicrotime() - $pageMetrics[$i]->getMicrotime(),

@@ -12,7 +12,6 @@ use App\Service\AppIdReader;
 use LM\Authentifier\Configuration\IApplicationConfiguration;
 use LM\Authentifier\Model\IMember;
 use LM\Common\Enum\Scalar;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -76,11 +75,6 @@ class Configuration implements IApplicationConfiguration
         return $this->kernel->getProjectDir().'/vendor';
     }
 
-    public function getContainer(): PsrContainerInterface
-    {
-        return $this->container;
-    }
-
     public function getCustomTwigDir(): ?string
     {
         return null;
@@ -137,9 +131,5 @@ class Configuration implements IApplicationConfiguration
         } else {
             throw new UnexpectedValueException();
         }
-    }
-
-    public function save(): void
-    {
     }
 }

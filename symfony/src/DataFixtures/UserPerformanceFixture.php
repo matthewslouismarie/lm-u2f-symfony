@@ -17,7 +17,7 @@ class UserPerformanceFixture extends Fixture
 
     public function __construct(KernelInterface $kernel)
     {
-        $this->sql = file_get_contents($kernel->getProjectDir().'/sql/userstudymetrics.sql');
+        $this->sql = file_get_contents($kernel->getProjectDir().'/sql/sqltransformed.sql');
     }
 
     public function load(ObjectManager $manager)

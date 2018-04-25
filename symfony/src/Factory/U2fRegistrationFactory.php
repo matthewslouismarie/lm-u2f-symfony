@@ -7,7 +7,7 @@ namespace App\Factory;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use DateTimeImmutable;
-use LM\Authentifier\Model\IU2fRegistration;
+use LM\AuthAbstractor\Model\IU2fRegistration;
 
 class U2fRegistrationFactory
 {

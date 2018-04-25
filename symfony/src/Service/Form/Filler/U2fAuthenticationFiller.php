@@ -8,7 +8,7 @@ use App\Exception\NonexistentNodeException;
 use App\Service\Mocker\U2fAuthenticationMocker;
 use App\Service\SecureSession;
 use Firehed\U2F\SignRequest;
-use LM\Authentifier\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\AuthenticationProcess;
 use LM\Common\Model\ArrayObject;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;

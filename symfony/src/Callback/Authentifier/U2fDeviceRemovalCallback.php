@@ -6,9 +6,10 @@ namespace App\Callback\Authentifier;
 
 use App\Entity\U2fToken;
 use Doctrine\ORM\EntityManagerInterface;
-use LM\Authentifier\Model\AuthenticationProcess;
-use LM\Authentifier\Model\AuthentifierResponse;
-use LM\Authentifier\Model\IAuthenticationCallback;
+use LM\AuthAbstractor\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\AuthentifierResponse;
+use LM\AuthAbstractor\Model\IAuthenticationCallback;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
@@ -36,12 +37,12 @@ class U2fDeviceRemovalCallback implements IAuthenticationCallback
         $this->twig = $twig;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    public function handleFailedProcess(AuthenticationProcess $authProcess): ResponseInterface
     {
         return ($this->failureClosure)($authProcess);
     }
 
-    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): ResponseInterface
     {
         $u2fRegistration = $this
             ->manager
@@ -64,12 +65,9 @@ class U2fDeviceRemovalCallback implements IAuthenticationCallback
             ])
         ;
 
-        return new AuthentifierResponse(
-            $authProcess,
-            $this
-                ->psr7Factory
-                ->createResponse(new Response($httpResponse))
-        )
+        return $this
+            ->psr7Factory
+            ->createResponse(new Response($httpResponse))
         ;
     }
 

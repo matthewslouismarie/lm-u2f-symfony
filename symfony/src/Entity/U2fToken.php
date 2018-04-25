@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use LM\Authentifier\Model\IU2fRegistration;
+use LM\AuthAbstractor\Model\IU2fRegistration;
 
 /**
  * @ORM\Table(

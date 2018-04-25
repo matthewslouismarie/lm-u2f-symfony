@@ -11,7 +11,7 @@ use App\Form\UserConfirmationType;
 use App\Service\AppConfigManager;
 use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\ChallengeSpecification;
-use LM\Authentifier\Challenge\PasswordUpdateChallenge;
+use LM\AuthAbstractor\Challenge\PasswordUpdateChallenge;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;

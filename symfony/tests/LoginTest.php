@@ -10,7 +10,7 @@ use App\Enum\Setting;
 use App\Service\Form\Filler\CredentialAuthenticationFiller;
 use App\Service\Form\Filler\ExistingUsernameFiller;
 use App\Service\Form\Filler\U2fAuthenticationFiller;
-use LM\Authentifier\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\AuthenticationProcess;
 use LM\Common\Model\ArrayObject;
 
 class LoginTest extends TestCaseTemplate

@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Service\Authentifier;
 
 use App\Enum\Setting;
+use App\Repository\U2fTokenRepository;
 use App\Service\AppConfigManager;
 use App\Service\SecureSession;
-use LM\Authentifier\Controller\AuthenticationKernel;
-use LM\Authentifier\Challenge\CredentialChallenge;
-use LM\Authentifier\Challenge\ExistingUsernameChallenge;
-use LM\Authentifier\Challenge\U2fChallenge;
-use LM\Authentifier\Model\AuthenticationProcess;
-use LM\Authentifier\Factory\AuthenticationProcessFactory;
-use LM\Authentifier\Model\IAuthenticationCallback;
+use LM\AuthAbstractor\Controller\AuthenticationKernel;
+use LM\AuthAbstractor\Challenge\CredentialChallenge;
+use LM\AuthAbstractor\Challenge\ExistingUsernameChallenge;
+use LM\AuthAbstractor\Challenge\U2fChallenge;
+use LM\AuthAbstractor\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Factory\AuthenticationProcessFactory;
+use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -44,13 +45,15 @@ class MiddlewareDecorator
         Configuration $appConfig,
         AppConfigManager $config,
         RouterInterface $router,
-        SecureSession $secureSession
+        SecureSession $secureSession,
+        U2fTokenRepository $u2fTokenRepo
     ) {
         $this->authProcessFactory = $authProcessFactory;
         $this->appConfig = $appConfig;
         $this->config = $config;
         $this->router = $router;
         $this->secureSession = $secureSession;
+        $this->u2fTokenRepo = $u2fTokenRepo;
     }
 
     /**

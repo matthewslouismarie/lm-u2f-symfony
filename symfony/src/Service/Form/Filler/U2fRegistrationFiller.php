@@ -7,8 +7,8 @@ namespace App\Service\Form\Filler;
 use App\Exception\NonexistentNodeException;
 use App\Service\Mocker\U2fRegistrationMocker;
 use App\Service\SecureSession;
-use LM\Authentifier\Model\AuthenticationProcess;
-use LM\Authentifier\Model\U2fRegistrationRequest;
+use LM\AuthAbstractor\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\U2fRegistrationRequest;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 

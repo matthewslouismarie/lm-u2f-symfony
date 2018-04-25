@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\Member;
-use LM\Authentifier\Model\IMember;
+use LM\AuthAbstractor\Model\IMember;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class MemberFactory

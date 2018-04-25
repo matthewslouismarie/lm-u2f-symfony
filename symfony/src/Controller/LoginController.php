@@ -18,12 +18,13 @@ use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use LM\Authentifier\Challenge\CredentialChallenge;
-use LM\Authentifier\Challenge\ExistingUsernameChallenge;
-use LM\Authentifier\Challenge\U2fChallenge;
-use LM\Authentifier\Implementation\Callback;
-use LM\Authentifier\Model\AuthenticationProcess ;
-use LM\Authentifier\Model\AuthentifierResponse;
+use LM\AuthAbstractor\Challenge\CredentialChallenge;
+use LM\AuthAbstractor\Challenge\ExistingUsernameChallenge;
+use LM\AuthAbstractor\Challenge\U2fChallenge;
+use LM\AuthAbstractor\Implementation\Callback;
+use LM\AuthAbstractor\Model\AuthenticationProcess ;
+use LM\AuthAbstractor\Model\AuthentifierResponse;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
 
@@ -83,7 +84,7 @@ class LoginController extends AbstractController
                 $sid,
                 new Callback(
                     $failure->getClosure(),
-                    function (AuthenticationProcess $authProcess) use ($loginForcer, $manager, $psr7Factory, $twig): AuthentifierResponse {
+                    function (AuthenticationProcess $authProcess) use ($loginForcer, $manager, $psr7Factory, $twig): ResponseInterface {
                         $loginForcer->logUserIn(new Request(), $manager
                             ->getRepository(Member::class)
                             ->findOneBy([
@@ -98,10 +99,8 @@ class LoginController extends AbstractController
                             ])
                         ;
 
-                        return new AuthentifierResponse(
-                            $authProcess,
-                            $psr7Factory->createResponse(new Response($httpResponse))
-                        )
+                        return $psr7Factory
+                            ->createResponse(new Response($httpResponse))
                         ;
                     }
                 )

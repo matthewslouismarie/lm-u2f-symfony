@@ -7,7 +7,7 @@ namespace App\Controller;
 use App\Callback\Authentifier\U2fDeviceRegistrationCallback;
 use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\ChallengeSpecification;
-use LM\Authentifier\Challenge\U2fRegistrationChallenge;
+use LM\AuthAbstractor\Challenge\U2fRegistrationChallenge;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;

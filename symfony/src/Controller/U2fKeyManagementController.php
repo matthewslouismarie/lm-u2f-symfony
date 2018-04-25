@@ -14,7 +14,7 @@ use App\Service\Authentifier\MiddlewareDecorator;
 use App\Service\ChallengeSpecification;
 use App\Service\SecureSession;
 use Doctrine\ORM\EntityManagerInterface;
-use LM\Authentifier\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\AuthenticationProcess;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

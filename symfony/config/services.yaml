@@ -26,8 +26,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    LM\Authentifier\Factory\:
-        resource: '../vendor/matthewslouismarie/auth-abstractor/src/LM/Authentifier/Factory/*'
+    LM\AuthAbstractor\Factory\:
+        resource: '../vendor/matthewslouismarie/auth-abstractor/src/LM/AuthAbstractor/Factory/*'
         tags: ['authentifiers.factory']
 
     App\Service\SecureSession:

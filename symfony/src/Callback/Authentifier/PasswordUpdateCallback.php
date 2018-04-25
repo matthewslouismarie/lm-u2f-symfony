@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Callback\Authentifier;
 
 use Doctrine\ORM\EntityManagerInterface;
-use LM\Authentifier\Model\AuthenticationProcess;
-use LM\Authentifier\Model\AuthentifierResponse;
-use LM\Authentifier\Model\IAuthenticationCallback;
+use LM\AuthAbstractor\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\AuthentifierResponse;
+use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use LM\Common\Enum\Scalar;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -39,7 +40,7 @@ class PasswordUpdateCallback implements IAuthenticationCallback
         $this->twig = $twig;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    public function handleFailedProcess(AuthenticationProcess $authProcess): ResponseInterface
     {
         return ($this->failureClosure)($authProcess);
     }
@@ -50,7 +51,7 @@ class PasswordUpdateCallback implements IAuthenticationCallback
      * in, the attacker will then be able to achieve the process changing the
      * victim's password.
      */
-    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): AuthentifierResponse
+    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): ResponseInterface
     {
         $hashOfNewPassword = $authProcess
             ->getTypedMap()
@@ -79,12 +80,9 @@ class PasswordUpdateCallback implements IAuthenticationCallback
             ])
         ;
 
-        return new AuthentifierResponse(
-            $authProcess,
-            $this
-                ->psr7Factory
-                ->createResponse(new Response($httpResponse))
-        )
+        return $this
+            ->psr7Factory
+            ->createResponse(new Response($httpResponse))
         ;
     }
 }

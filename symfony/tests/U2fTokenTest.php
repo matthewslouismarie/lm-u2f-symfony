@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests;
 
 use App\Factory\U2fRegistrationFactory;
-use LM\Authentifier\Implementation\U2fRegistration;
+use LM\AuthAbstractor\Implementation\U2fRegistration;
 
 class U2fTokenTest extends TestCaseTemplate
 {

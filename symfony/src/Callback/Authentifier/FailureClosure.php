@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Callback\Authentifier;
 
 use Closure;
-use LM\Authentifier\Model\AuthenticationProcess;
-use LM\Authentifier\Model\AuthentifierResponse;
+use LM\AuthAbstractor\Model\AuthenticationProcess;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
@@ -27,7 +27,7 @@ class FailureClosure
     {
         $twig = $this->twig;
 
-        return function (AuthenticationProcess $authProcess) use ($twig) : AuthentifierResponse {
+        return function (AuthenticationProcess $authProcess) use ($twig) : ResponseInterface {
             $html = $twig
                 ->render('messages/error.html.twig', [
                     'pageTitle' => 'Unsuccessful identity verification',
@@ -35,11 +35,9 @@ class FailureClosure
                 ])
             ;
 
-            return new AuthentifierResponse(
-                $authProcess,
-                (new DiactorosFactory())->createResponse(new Response($html))
-            );
-        }
-        ;
+            return (new DiactorosFactory())
+                ->createResponse(new Response($html))
+            ;
+        };
     }
 }

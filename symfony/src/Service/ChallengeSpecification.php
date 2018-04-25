@@ -6,9 +6,9 @@ namespace App\Service;
 
 use App\Enum\SecurityStrategy;
 use App\Enum\Setting;
-use LM\Authentifier\Challenge\CredentialChallenge;
-use LM\Authentifier\Challenge\PasswordChallenge;
-use LM\Authentifier\Challenge\U2fChallenge;
+use LM\AuthAbstractor\Challenge\CredentialChallenge;
+use LM\AuthAbstractor\Challenge\PasswordChallenge;
+use LM\AuthAbstractor\Challenge\U2fChallenge;
 use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use UnexpectedValueException;

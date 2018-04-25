@@ -1212,7 +1212,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthewslouismarie/auth-abstractor.git",
-                "reference": "9b3a149421e761008bfdce6925cf5a3798b1f79c"
+                "reference": "515460e0e3ecb917c153dbc65e91c099e6f66dca"
             },
             "require": {
                 "firehed/u2f": "dev-master",
@@ -1232,6 +1232,7 @@
                 "twig/twig": "^2.0"
             },
             "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.11",
                 "phpunit/phpunit": "^7"
             },
             "type": "library",
@@ -1257,7 +1258,7 @@
                 "middleware",
                 "password"
             ],
-            "time": "2018-04-19T14:24:59+00:00"
+            "time": "2018-04-25T22:37:51+00:00"
         },
         {
             "name": "monolog/monolog",

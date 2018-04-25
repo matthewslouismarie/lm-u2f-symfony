@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
-use LM\Authentifier\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\AuthenticationProcess;
 use LM\Common\DataStructure\TypedMap;
 use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;

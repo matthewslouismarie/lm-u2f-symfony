@@ -7,7 +7,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Serializable;
 use Symfony\Component\Security\Core\User\UserInterface;
-use LM\Authentifier\Model\IMember;
+use LM\AuthAbstractor\Model\IMember;
 
 /**
  * @todo Make immutable.

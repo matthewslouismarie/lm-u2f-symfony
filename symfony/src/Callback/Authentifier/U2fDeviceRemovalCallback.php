@@ -7,7 +7,6 @@ namespace App\Callback\Authentifier;
 use App\Entity\U2fToken;
 use Doctrine\ORM\EntityManagerInterface;
 use LM\AuthAbstractor\Model\AuthenticationProcess;
-use LM\AuthAbstractor\Model\AuthentifierResponse;
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;

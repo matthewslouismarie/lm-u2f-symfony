@@ -23,7 +23,6 @@ use LM\AuthAbstractor\Challenge\ExistingUsernameChallenge;
 use LM\AuthAbstractor\Challenge\U2fChallenge;
 use LM\AuthAbstractor\Implementation\Callback;
 use LM\AuthAbstractor\Model\AuthenticationProcess ;
-use LM\AuthAbstractor\Model\AuthentifierResponse;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;

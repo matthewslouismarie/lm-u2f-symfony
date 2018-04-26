@@ -6,7 +6,6 @@ namespace App\Callback\Authentifier;
 
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use LM\AuthAbstractor\Model\AuthenticationProcess;
-use LM\AuthAbstractor\Model\AuthentifierResponse;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;

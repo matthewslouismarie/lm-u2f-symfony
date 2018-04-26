@@ -6,7 +6,6 @@ namespace App\Callback\Authentifier;
 
 use Doctrine\ORM\EntityManagerInterface;
 use LM\AuthAbstractor\Model\AuthenticationProcess;
-use LM\AuthAbstractor\Model\AuthentifierResponse;
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use LM\Common\Enum\Scalar;
 use Psr\Http\Message\ResponseInterface;

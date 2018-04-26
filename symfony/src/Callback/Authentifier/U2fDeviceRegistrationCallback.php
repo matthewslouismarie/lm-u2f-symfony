@@ -9,7 +9,6 @@ use App\Factory\U2fRegistrationFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use LM\AuthAbstractor\Enum\Persistence\Operation;
 use LM\AuthAbstractor\Model\AuthenticationProcess;
-use LM\AuthAbstractor\Model\AuthentifierResponse;
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use LM\AuthAbstractor\Model\IU2fRegistration;
 use Psr\Http\Message\ResponseInterface;

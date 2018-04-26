@@ -1212,7 +1212,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthewslouismarie/auth-abstractor.git",
-                "reference": "515460e0e3ecb917c153dbc65e91c099e6f66dca"
+                "reference": "4bb90aaa8c6eb014283bc0ddd12d3d3f78175d0b"
             },
             "require": {
                 "firehed/u2f": "dev-master",
@@ -1258,7 +1258,7 @@
                 "middleware",
                 "password"
             ],
-            "time": "2018-04-25T22:37:51+00:00"
+            "time": "2018-04-26T12:38:22+00:00"
         },
         {
             "name": "monolog/monolog",

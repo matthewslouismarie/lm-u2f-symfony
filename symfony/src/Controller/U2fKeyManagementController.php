@@ -47,6 +47,7 @@ class U2fKeyManagementController extends AbstractController
      * @Route(
      *  "/authenticated/confirm-u2f-device-removal/{u2fKeySlug}",
      *  name="confirm_u2f_key_reset")
+     * @todo security Should find by slug and username.
      */
     public function confirmU2fDeviceRemoval(
         string $u2fKeySlug,
@@ -71,6 +72,9 @@ class U2fKeyManagementController extends AbstractController
                 $this->getUser()->getUsername(),
                 3,
                 [
+                    'used_u2f_key_public_keys' => [
+                        $u2fRegistration->getPublicKey(),
+                    ],
                     'c_u2fRegistration' => $u2fRegistration,
                 ]
             );

@@ -43,6 +43,7 @@ class AppFixture extends Fixture
             'BPXPn5wJaS5cnRfe45NYPv/1foHyRIPMFn4ABhzu8jXbnuGbZXHrDS3gmwP1OywFqADOYsQMg14GbQk1+RDBhHQ=',
             'just a name'
         );
+        $manager->persist($u2fToken);
 
         $secondU2fToken = new U2fToken(
             2,
@@ -54,6 +55,7 @@ class AppFixture extends Fixture
             'BHtymOcrzKCY8vA561NpcLLLE2y4zJnQsR+6j5RKLq8l4BYP8OX/qT4bcC7K13qTirOLUPMrG4oIrHen00MECzc=',
             'another name'
         );
+        $manager->persist($secondU2fToken);
 
         $thirdU2fToken = new U2fToken(
             3,
@@ -65,10 +67,8 @@ class AppFixture extends Fixture
             'BA6x1v95g/o2/Fgm8edsVmK8J2OwGIcFhQdHQT4ASsNLfrVwUrHzEE6gHHOu8IuCQ9q0IZ6Zc9k5/T3ABIV5mEU=',
             'a name, again'
         );
-
-        $manager->persist($u2fToken);
-        $manager->persist($secondU2fToken);
         $manager->persist($thirdU2fToken);
+
         $manager->flush();
     }
 }

@@ -36,19 +36,24 @@ class MiddlewareDecorator
 
     private $config;
 
+    private $authKernel;
+
     private $router;
 
     private $secureSession;
 
     public function __construct(
-        AuthenticationProcessFactory $authProcessFactory,
         Configuration $appConfig,
         AppConfigManager $config,
         RouterInterface $router,
         SecureSession $secureSession,
         U2fTokenRepository $u2fTokenRepo
     ) {
-        $this->authProcessFactory = $authProcessFactory;
+        $this->authKernel = new AuthenticationKernel($appConfig);
+        $this->authProcessFactory = $this
+            ->authKernel
+            ->getAuthenticationProcessFactory()
+        ;
         $this->appConfig = $appConfig;
         $this->config = $config;
         $this->router = $router;
@@ -98,12 +103,11 @@ class MiddlewareDecorator
         string $sid,
         IAuthenticationCallback $callback
     ) {
-        $authKernel = new AuthenticationKernel($this->appConfig);
         $diactorosFactory = new DiactorosFactory();
         $httpFoundationFactory = new HttpFoundationFactory();
         $psrHttpRequest = $diactorosFactory->createRequest($httpRequest);
         $authProcess = $this->secureSession->getAndRemoveObject($sid, AuthenticationProcess::class);
-        $authentifierResponse = $authKernel->processHttpRequest($psrHttpRequest, $authProcess, $callback);
+        $authentifierResponse = $this->authKernel->processHttpRequest($psrHttpRequest, $authProcess, $callback);
         $this->secureSession->setObject($sid, $authentifierResponse->getProcess(), AuthenticationProcess::class);
 
         return $httpFoundationFactory->createResponse($authentifierResponse->getHttpResponse());

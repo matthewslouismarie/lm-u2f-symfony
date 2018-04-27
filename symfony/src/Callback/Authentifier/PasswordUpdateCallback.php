@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Callback\Authentifier;
 
 use Doctrine\ORM\EntityManagerInterface;
-use LM\AuthAbstractor\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\IAuthenticationProcess;
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use LM\Common\Enum\Scalar;
 use Psr\Http\Message\ResponseInterface;
@@ -32,14 +32,14 @@ class PasswordUpdateCallback implements IAuthenticationCallback
         TokenStorageInterface $tokenStorage,
         Twig_Environment $twig
     ) {
-        $this->failureClosure = $failureClosure;
+        $this->failureClosure = $failureClosure->getClosure();
         $this->manager = $manager;
         $this->psr7Factory = new DiactorosFactory();
         $this->tokenStorage = $tokenStorage;
         $this->twig = $twig;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleFailedProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         return ($this->failureClosure)($authProcess);
     }
@@ -50,7 +50,7 @@ class PasswordUpdateCallback implements IAuthenticationCallback
      * in, the attacker will then be able to achieve the process changing the
      * victim's password.
      */
-    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleSuccessfulProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         $hashOfNewPassword = $authProcess
             ->getTypedMap()

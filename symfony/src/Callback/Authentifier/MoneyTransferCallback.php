@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Callback\Authentifier;
 
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
-use LM\AuthAbstractor\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\IAuthenticationProcess;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,17 +23,17 @@ class MoneyTransferCallback implements IAuthenticationCallback
         FailureClosure $failureClosure,
         Twig_Environment $twig
     ) {
-        $this->failureClosure = $failureClosure;
+        $this->failureClosure = $failureClosure->getClosure();
         $this->psr7Factory = new DiactorosFactory();
         $this->twig = $twig;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleFailedProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         return ($this->failureClosure)($authProcess);
     }
 
-    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleSuccessfulProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         $httpResponse = $this
             ->twig

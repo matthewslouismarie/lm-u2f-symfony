@@ -8,7 +8,7 @@ use App\Entity\Member;
 use App\Factory\U2fRegistrationFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use LM\AuthAbstractor\Enum\Persistence\Operation;
-use LM\AuthAbstractor\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\IAuthenticationProcess;
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use LM\AuthAbstractor\Model\IU2fRegistration;
 use Psr\Http\Message\ResponseInterface;
@@ -36,19 +36,19 @@ class U2fDeviceRegistrationCallback implements IAuthenticationCallback
         Twig_Environment $twig,
         U2fRegistrationFactory $u2fRegistrationFactory
     ) {
-        $this->failureClosure = $failureClosure;
+        $this->failureClosure = $failureClosure->getClosure();
         $this->manager = $manager;
         $this->psr7Factory = new DiactorosFactory();
         $this->twig = $twig;
         $this->u2fRegistrationFactory = $u2fRegistrationFactory;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleFailedProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         return ($this->failureClosure)($authProcess);
     }
 
-    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleSuccessfulProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         $this
             ->manager

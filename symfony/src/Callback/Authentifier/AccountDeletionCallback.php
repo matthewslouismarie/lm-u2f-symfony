@@ -7,7 +7,7 @@ namespace App\Callback\Authentifier;
 use App\Entity\Member;
 use App\Entity\U2fToken;
 use Doctrine\ORM\EntityManagerInterface;
-use LM\AuthAbstractor\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\IAuthenticationProcess;
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -39,7 +39,7 @@ class AccountDeletionCallback implements IAuthenticationCallback
         TokenStorageInterface $tokenStorage,
         Twig_Environment $twig
     ) {
-        $this->failureClosure = $failureClosure;
+        $this->failureClosure = $failureClosure->getClosure();
         $this->manager = $manager;
         $this->psr7Factory = new DiactorosFactory();
         $this->session = $session;
@@ -47,12 +47,12 @@ class AccountDeletionCallback implements IAuthenticationCallback
         $this->twig = $twig;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleFailedProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         return ($this->failureClosure)($authProcess);
     }
 
-    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleSuccessfulProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         $u2fTokens = $this
             ->manager

@@ -6,7 +6,7 @@ namespace App\Callback\Authentifier;
 
 use App\Repository\MemberRepository;
 use App\Service\LoginForcer;
-use LM\AuthAbstractor\Model\AuthenticationProcess;
+use LM\AuthAbstractor\Model\IAuthenticationProcess;
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -32,19 +32,19 @@ class MemberAuthenticationCallback implements IAuthenticationCallback
         MemberRepository $memberRepository,
         Twig_Environment $twig
     ) {
-        $this->failureClosure = $failureClosure;
+        $this->failureClosure = $failureClosure->getClosure();
         $this->loginForcer = $loginForcer;
         $this->memberRepository = $memberRepository;
         $this->psr7Factory = new DiactorosFactory();
         $this->twig = $twig;
     }
 
-    public function handleFailedProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleFailedProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         return ($this->failureClosure)($authProcess);
     }
 
-    public function handleSuccessfulProcess(AuthenticationProcess $authProcess): ResponseInterface
+    public function handleSuccessfulProcess(IAuthenticationProcess $authProcess): ResponseInterface
     {
         $this
             ->loginForcer

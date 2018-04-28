@@ -1,6 +1,6 @@
 # security-comparator
 
-[![Build Status](https://travis-ci.com/matthewslouismarie/security-comparator.svg?token=ZVBwfXqKFH8rFj3NGf55&branch=master)](https://travis-ci.com/matthewslouismarie/security-comparator)
+[![Build Status](https://travis-ci.org/matthewslouismarie/security-comparator.svg?branch=master)](https://travis-ci.org/matthewslouismarie/security-comparator)
 
 A website demonstrating the use of U2F authentication with Symfony 4.
 

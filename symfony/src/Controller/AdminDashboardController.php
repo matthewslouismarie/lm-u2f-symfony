@@ -10,6 +10,7 @@ use App\Form\PwdConfigType;
 use App\Form\SecurityStrategyType;
 use App\Enum\Setting;
 use App\Form\U2fConfigType;
+use App\Service\UserErrorFinder;
 use App\Form\UserStudyConfigType;
 use App\FormModel\ConfigImportSubmission;
 use App\FormModel\PwdConfigSubmission;
@@ -226,7 +227,8 @@ class AdminDashboardController extends AbstractController
     public function metrics(
         string $participantId,
         AppConfigManager $config,
-        PageMetricRepository $repository
+        PageMetricRepository $repository,
+        UserErrorFinder $userErrorFinder
     ) {
         $metrics = $repository->getArray($participantId);
         $participantIds = $repository->getParticipantIdsExcept($participantId);
@@ -235,6 +237,9 @@ class AdminDashboardController extends AbstractController
             'metrics' => $metrics,
             'participantId' => $participantId,
             'participantIds' => $participantIds,
+            'nErrors' => $userErrorFinder->getNErrors(array_map(function (array $item) {
+                return $item['localPath'];
+            }, $metrics)),
         ]);
     }
 

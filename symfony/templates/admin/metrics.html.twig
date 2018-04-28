@@ -12,6 +12,7 @@
   <li><a download href="{{ path('admin_metrics_csv', {pid: participantId, incRedirectsStr: 'no-redirects'}) }}">Download the CSV file without redirections</a></li>
 </ul>
 {%- endif -%}
+<p>The participant made {{ nErrors }} error(s).</p>
 <div class="table-container">
   <table class="standard-table">
     <thead class="thead">

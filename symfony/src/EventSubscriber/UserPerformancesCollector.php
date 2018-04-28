@@ -84,7 +84,7 @@ class UserPerformancesCollector implements EventSubscriberInterface
         $uri = $event->getRequest()->getPathInfo();
         $crawler = new Crawler();
         $crawler->addHTMLContent($event->getResponse()->getContent());
-        $titleNode = $crawler->filterXPath('//html/head');
+        $titleNode = $crawler->filterXPath('//html/head/title');
         $pageTitle = 0 !== $titleNode->count() ? $titleNode->text() : null;
         if ($this->isRequestMonitored($event)) {
             $pageMetric = new PageMetric(

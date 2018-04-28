@@ -13,7 +13,6 @@ use LM\AuthAbstractor\Challenge\CredentialChallenge;
 use LM\AuthAbstractor\Challenge\ExistingUsernameChallenge;
 use LM\AuthAbstractor\Challenge\U2fChallenge;
 use LM\AuthAbstractor\Model\AuthenticationProcess;
-use LM\AuthAbstractor\Factory\AuthenticationProcessFactory;
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
 use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;

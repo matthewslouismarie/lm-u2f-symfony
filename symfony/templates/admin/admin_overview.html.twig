@@ -5,19 +5,19 @@
 {% block body %}
 <ul>
     <li>
-        <a href="{{ path('admin_registration' ) }}">Registration</a>
+        <a href="{{ path('admin_registration' ) }}">U2F Settings</a>
     </li>
     <li>
         <a href="{{ path('admin_security_strategy') }}">Security Strategy</a>
     </li>
     <li>
-        <a href="{{ path('admin_password') }}">Password complexity settings</a>
+        <a href="{{ path('admin_password') }}">Password Settings</a>
     </li>
     <li>
-        <a href="{{ path('admin_user_study') }}">User study settings</a>
+        <a href="{{ path('admin_user_study') }}">User Study</a>
     </li>
     <li>
-        <a href="{{ path('admin_metrics', {"participantId": participantId}) }}">See metrics</a>
+        <a href="{{ path('admin_metrics', {"participantId": participantId}) }}">Participant Metrics</a>
     </li>
     <li>
         <a download href="{{ path('admin_export') }}">Export settings</a>

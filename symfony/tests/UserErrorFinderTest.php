@@ -6,7 +6,6 @@ namespace App\Tests;
 
 use App\Service\UserErrorFinder;
 use App\Enum\Setting;
-use LM\Common\Enum\Scalar;
 use App\Enum\SecurityStrategy;
 
 class UserErrorFinderTest extends TestCaseTemplate
@@ -132,7 +131,7 @@ class UserErrorFinderTest extends TestCaseTemplate
         $this->assertFalse($userErrorFinder->isError(
             '/authenticated/transfer-money/eueeu',
             [
-                '/authenticated/transfer-money',            
+                '/authenticated/transfer-money',
             ]
         ));
         $this->assertTrue($userErrorFinder->isError(

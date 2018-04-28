@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Enum\Setting;
@@ -17,7 +19,7 @@ class UserErrorFinder
             Scalar::_STR
         );
         $nU2fRegistrations = $config->getSetting(
-            Setting::N_U2F_KEYS_LOGIN, 
+            Setting::N_U2F_KEYS_LOGIN,
             Scalar::_INT
         );
         $nTransferMoney = SecurityStrategy::U2F === $securityStrategy ? $nU2fRegistrations + 2 : 2;
@@ -26,7 +28,7 @@ class UserErrorFinder
             '/\/not-authenticated\/login\/pwd\/[a-z0-9]+/' => 2,
             '/\/not-authenticated\/register\/(?!u2f-key)[a-z0-9]+/' => 2,
             '/\/not-authenticated\/register\/u2f-key\/[a-z0-9]+/' => 2,
-            '/\/authenticated\/transfer-money\/[a-z0-9]+/' => $nTransferMoney, 
+            '/\/authenticated\/transfer-money\/[a-z0-9]+/' => $nTransferMoney,
         ];
     }
 

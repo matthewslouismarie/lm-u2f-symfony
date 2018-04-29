@@ -9,6 +9,7 @@ use InvalidArgumentException;
 /**
  * @todo pwd: can be different accross website, or not. We'll assume they're
  * not that different.
+ * @todo Add test.
  */
 final class PwdChallengeDefinition implements IChallengeDefinition
 {
@@ -82,5 +83,16 @@ final class PwdChallengeDefinition implements IChallengeDefinition
     public function getType(): string
     {
         return 'pwd';
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'type' => $this->getType(),
+            'min_length' => $this->minLength,
+            'numbers' => $this->numbers,
+            'special_chars' => $this->specialChars,
+            'uppercase' => $this->uppercase,
+        ];
     }
 }

@@ -71,7 +71,7 @@ class ChallengeSpecificationType extends AbstractType
                     new NotNull(),
                     new Type('bool'),
                 ],
-                'required' => false,
+                'required' => true,
             ])
             ->add(Setting::SEC_MEDM_U2F_N, IntegerType::class, [
                 'constraints' => [

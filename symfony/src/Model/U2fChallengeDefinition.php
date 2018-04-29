@@ -6,6 +6,7 @@ namespace App\Model;
 
 /**
  * @todo u2f: reproducible: depends on the key.
+ * @todo Unit test.
  */
 final class U2fChallengeDefinition implements IChallengeDefinition
 {
@@ -42,5 +43,12 @@ final class U2fChallengeDefinition implements IChallengeDefinition
     public function getType(): string
     {
         return 'u2f';
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'type' => $this->getType(),
+        ];
     }
 }

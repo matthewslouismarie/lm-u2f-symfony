@@ -35,6 +35,25 @@ class SecurityScoreCalculator
     }
 
     /**
+     * @todo Unit test.
+     */
+    public function isValidSecurityStrategyFormat(array $securityStrategy): bool
+    {
+        foreach ($securityStrategy as $process) {
+            if (!is_array($process)) {
+                return false;
+            }
+            foreach ($process as $challenge) {
+                if (false === $challenge instanceof IChallengeDefinition) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @param array $process The authentication process.
      * @param float $currentScore The current score so far.
      * @param int|null $nFactors The number of factors in the authentication

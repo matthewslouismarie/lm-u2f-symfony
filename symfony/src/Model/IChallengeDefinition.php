@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use JsonSerializable;
+
 /**
  * Represents a challenge type (e.g. the password challenge type, the U2F
  * challenge type, the mobile authentication challenge type, etc.) in order
  * to calculate a security score.
  */
-interface IChallengeDefinition
+interface IChallengeDefinition extends JsonSerializable
 {
     /**
      * @return float Depicts how hard it is to get access to the authentifier.

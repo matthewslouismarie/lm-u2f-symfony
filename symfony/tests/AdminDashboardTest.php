@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use App\Model\U2fChallengeDefinition;
+use App\Model\PwdChallengeDefinition;
 use App\Enum\SecurityStrategy;
 use App\Enum\Setting;
 use App\Service\Form\Filler\ChallengeSpecificationFiller;
+use App\Service\Form\Filler\JsonSecurityStrategyFiller;
 use App\Service\Form\Filler\PasswordConfigFiller;
 use App\Service\Form\Filler\U2fConfigFiller;
 use App\Service\Form\Filler\UserStudyConfigFiller;
@@ -238,5 +241,49 @@ class AdminDashboardTest extends TestCaseTemplate
             )
             ;
         }
+    }
+
+    public function testSecurityScore()
+    {
+        $this->login();
+        $this->doGet('/admin/security-score');
+        $this->assertSame(200, $this->getHttpStatusCode());
+        $this->submit(
+            $this
+            ->get(JsonSecurityStrategyFiller::class)
+            ->fillForm($this->getCrawler(), 'eueiue')
+        );
+        $this->assertContains('The submitted value is not a valid JSON string.', $this->getResponseContent());
+
+        $this->submit(
+            $this
+            ->get(JsonSecurityStrategyFiller::class)
+            ->fillForm(
+                $this->getCrawler(),
+                json_encode([
+                    'eueuieaeiu',
+                    [
+                        new PwdChallengeDefinition(5, true, true, true),
+                    ],
+                ])
+            )
+        );
+        $this->assertContains(
+            'The submitted value is not a valid security strategy specification.',
+            $this->getResponseContent()
+        );
+        $this->submit(
+            $this
+            ->get(JsonSecurityStrategyFiller::class)
+            ->fillForm(
+                $this->getCrawler(),
+                json_encode([
+                    [
+                        new PwdChallengeDefinition(5, true, true, true),
+                    ],
+                ])
+            )
+        );
+        $this->debugResponse();
     }
 }

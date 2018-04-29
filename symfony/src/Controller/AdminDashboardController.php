@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\SecurityScoreCalculator;
+use App\Service\SecurityStrategyUnserializer;
+use App\Form\JsonSecurityStrategyType;
 use App\Form\ChallengeSpecificationType;
 use App\Form\ConfigImportType;
 use App\Form\PwdConfigType;
@@ -302,5 +305,33 @@ class AdminDashboardController extends AbstractController
         return $this->render('admin/challenge_specification.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route(
+     *  "/admin/security-score",
+     *  name="admin_security_score")
+     */
+    public function doGetSecurityScorePanel(
+        Request $httpRequest,
+        SecurityScoreCalculator $calculator,
+        SecurityStrategyUnserializer $unserializer
+    ) {
+        $form = $this->createForm(JsonSecurityStrategyType::class);
+        $securityScore = null;
+        
+        $form->handleRequest($httpRequest);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $securityStrategy = $unserializer->unserialize(json_decode($form['json']->getData()));
+            $securityScore = $calculator->calculate($securityStrategy);
+        }
+
+        return $this->render(
+            'admin/security_score.html.twig',
+            [
+                'form' => $form->createView(),
+                'securityScore' => $securityScore,
+            ]
+        );
     }
 }

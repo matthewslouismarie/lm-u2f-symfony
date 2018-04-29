@@ -4,62 +4,26 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use App\Model\U2fChallengeDefinition;
+use App\Model\PwdChallengeDefinition;
 use App\Service\SecurityScoreCalculator;
 use InvalidArgumentException;
 
 class SecurityScoreTest extends TestCaseTemplate
 {
-    const CPWD_PROCESS = [
-        [
-            'id' => 'pwd',
-            'min_length' => 8,
-            'special_chars' => true,
-            'numbers' => true,
-            'uppercase' => true,
-        ],
-    ];
-
-    const SPWD_CHALLENGE =  [
-        'id' => 'pwd',
-        'min_length' => 0,
-        'special_chars' => false,
-        'numbers' => false,
-        'uppercase' => false,
-    ];
-
-    const SPWD_PROCESS = [
-        self::SPWD_CHALLENGE,
-    ];
-
-    const SPWDU2F_PROCESS = [
-        [
-            'id' => 'pwd',
-            'min_length' => 0,
-            'special_chars' => false,
-            'numbers' => false,
-            'uppercase' => false,
-        ],
-        [
-            'id' => 'u2f',
-        ],
-    ];
-
-    const U2F_CHALLENGE =  [
-        'id' => 'u2f',
-    ];
-
-    const U2F_PROCESS = [
-        self::U2F_CHALLENGE
-    ];
-
     public function testCpwdVsSpwdU2f()
     {
         $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
         $cpwdScore = $securityScoreCalculator->calculate([
-            self::CPWD_PROCESS,
+            [
+                new PwdChallengeDefinition(8, true, true, true),
+            ],
         ]);
         $spwdU2fScore = $securityScoreCalculator->calculate([
-            self::SPWDU2F_PROCESS,
+            [
+                new U2fChallengeDefinition(),
+                new PwdChallengeDefinition(0, false, false, false),
+            ],
         ]);
         $this->assertTrue($spwdU2fScore > $cpwdScore);
     }
@@ -72,7 +36,7 @@ class SecurityScoreTest extends TestCaseTemplate
             [
                 [
                     'id' => 'unexistingchallenge',
-                ]
+                ],
             ],
         ]);
     }
@@ -81,10 +45,14 @@ class SecurityScoreTest extends TestCaseTemplate
     {
         $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
         $spwdScore = $securityScoreCalculator->calculate([
-            self::SPWD_PROCESS,
+            [
+                new PwdChallengeDefinition(0, false, false, false),
+            ],
         ]);
         $cpwdScore = $securityScoreCalculator->calculate([
-            self::CPWD_PROCESS,
+            [
+                new PwdChallengeDefinition(8, true, true, true),
+            ],
         ]);
         $this->assertTrue($cpwdScore > $spwdScore);
     }
@@ -93,14 +61,22 @@ class SecurityScoreTest extends TestCaseTemplate
     {
         $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
         $spwdScore = $securityScoreCalculator->calculate([
-            self::SPWD_PROCESS,
+            [
+                new PwdChallengeDefinition(0, false, false, false),
+            ],
         ]);
         $cpwdScore = $securityScoreCalculator->calculate([
-            self::CPWD_PROCESS,
+            [
+                new PwdChallengeDefinition(8, true, true, true),
+            ],
         ]);
         $cspwdScore = $securityScoreCalculator->calculate([
-            self::SPWD_PROCESS,
-            self::CPWD_PROCESS,
+            [
+                new PwdChallengeDefinition(0, false, false, false),
+            ],
+            [
+                new PwdChallengeDefinition(8, true, true, true),
+            ],
         ]);
         $this->assertTrue(intval($spwdScore) === intval($cspwdScore));
     }
@@ -108,49 +84,23 @@ class SecurityScoreTest extends TestCaseTemplate
     public function testFactorAmplifier()
     {
         $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
-        $spwdU2fProcessScore = $securityScoreCalculator->calculateProcessScore(
-            self::SPWDU2F_PROCESS
-        );
+        $spwdU2fProcessScore = $securityScoreCalculator->calculateProcessScore([
+            new PwdChallengeDefinition(0, false, false, false),
+            new U2fChallengeDefinition(),
+        ]);
         $spwdScore = $securityScoreCalculator->calculateChallengeScore(
-            self::SPWD_CHALLENGE
+            new PwdChallengeDefinition(0, false, false, false)
         );
         $u2fScore = $securityScoreCalculator->calculateChallengeScore(
-            self::U2F_CHALLENGE
+            new U2fChallengeDefinition()
         );
         $this->assertTrue($spwdU2fProcessScore > $spwdScore + $u2fScore);
     }
 
-    public function testDuplicateChallenges()
-    {
-    }
-
     public function testNegativePwdMinLength()
     {
-        $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
         $this->expectException(InvalidArgumentException::class);
-        $securityScoreCalculator->calculate([
-            [
-                'id' => 'pwd',
-                'min_length' => -1,
-                'special_chars' => true,
-                'numbers' => true,
-                'uppercase' => true,
-            ],
-        ]);
-    }
-
-    public function testMissingParameters()
-    {
-        $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
-        $this->expectException(InvalidArgumentException::class);
-        $securityScoreCalculator->calculate([
-            [
-                'id' => 'pwd',
-                'min_length' => 0,
-                'uppercase' => true,
-                'numbers' => true,
-            ],
-        ]);
+        new PwdChallengeDefinition(-1, false, false, false);
     }
 
     public function testNFactors()
@@ -158,35 +108,31 @@ class SecurityScoreTest extends TestCaseTemplate
         $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
         $this->assertSame(
             2,
-            intval($securityScoreCalculator->getNFactors(self::SPWDU2F_PROCESS))
-        );
-        $this->assertSame(
-            1,
-            intval($securityScoreCalculator->getNFactors(self::SPWD_PROCESS))
-        );
-        $this->assertTrue(
-            $securityScoreCalculator->getNFactors([
-                self::U2F_CHALLENGE,
-                self::U2F_CHALLENGE,
-            ]) >
-            $securityScoreCalculator->getNFactors(self::SPWD_PROCESS)
+            intval($securityScoreCalculator->getNFactors([
+                new PwdChallengeDefinition(0, false, false, false),
+                new U2fChallengeDefinition(),
+            ]))
         );
         $this->assertSame(
             1,
             intval($securityScoreCalculator->getNFactors([
-                [
-                    'id' => 'pwd',
-                    'min_length' => 0,
-                    'special_chars' => false,
-                    'numbers' => false,
-                    'uppercase' => false,
-                ],
-                [
-                    'id' => 'pwd',
-                    'min_length' => 8,
-                    'special_chars' => true,
-                    'numbers' => true,
-                ],
+                new PwdChallengeDefinition(0, false, false, false),
+            ]))
+        );
+        $this->assertTrue(
+            $securityScoreCalculator->getNFactors([
+                new U2fChallengeDefinition(),
+                new U2fChallengeDefinition(),
+            ]) >
+            $securityScoreCalculator->getNFactors([
+                new PwdChallengeDefinition(0, false, false, false),
+            ])
+        );
+        $this->assertSame(
+            1,
+            intval($securityScoreCalculator->getNFactors([
+                new PwdChallengeDefinition(0, false, false, false),
+                new PwdChallengeDefinition(8, true, true, true),
             ]))
         );
         $this->assertSame(
@@ -195,23 +141,13 @@ class SecurityScoreTest extends TestCaseTemplate
         );
     }
 
-    public function testNFactorsInvalidProcess()
-    {
-        $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
-        $this->expectException(InvalidArgumentException::class);
-        $securityScoreCalculator->getNFactors([
-            [
-                'min_length' => 5,
-            ]
-        ]);
-    }
-
     public function testDuplicateChallengeFactor()
     {
-        $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
+        $u2fChallengeDef = new U2fChallengeDefinition();
+        $pwdChallengeDef = new PwdChallengeDefinition(0, false, false, false);
         $this->assertTrue(
-            $securityScoreCalculator->getDuplicateChallengeFactor('u2f') >
-            $securityScoreCalculator->getDuplicateChallengeFactor('pwd')
+            $u2fChallengeDef->getDuplicationFactor() >
+            $pwdChallengeDef->getDuplicationFactor()
         );
     }
 }

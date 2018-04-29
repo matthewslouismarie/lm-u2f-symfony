@@ -47,14 +47,16 @@ class TmpController extends AbstractController
 
         $authProcess = null;
         if (!isset($_SESSION['auth_process']) || null === $_SESSION['auth_process']) {
-            $authProcess = (new AuthenticationProcessFactory())->createProcess(
-                [
-                    CredentialChallenge::class, // class that is part of auth-abstractor
-                    // U2fChallenge::class, // class that is part of auth-abstractor
-                ],
-                3,
-                null,
-                []
+            $authProcess = $kernel
+                ->getAuthenticationProcessFactory()
+                ->createProcess(
+                    [
+                        CredentialChallenge::class, // class that is part of auth-abstractor
+                        // U2fChallenge::class, // class that is part of auth-abstractor
+                    ],
+                    3,
+                    null,
+                    []
             );
         } else {
             $authProcess = $_SESSION['auth_process'];

@@ -30,7 +30,6 @@ class SecurityScoreCalculator
         foreach ($securityStrategy as $process) {
             $scores[] =  $this->calculateProcessScore($process, 0);
         }
-
         return min($scores);
     }
 
@@ -89,13 +88,15 @@ class SecurityScoreCalculator
      */
     public function calculateChallengeScore(IChallengeDefinition $challenge): float
     {
-        return
+        $challengeScore =
             $challenge->getAccessResistance() * self::ACCESS_RESISTANCE_MAX +
             $challenge->getGuessResistance() * self::GUESS_RESISTANCE_MAX +
             $challenge->getPhishingResistance() * self::PHISHING_RESISTANCE_MAX +
             $challenge->getReproducibilityResistance() * self::REPRODUCIBILITY_RESISTANCE_MAX +
             $challenge->getServerLeakResistance() * self::SERVER_LEAK_RESISTANCE_MAX
         ;
+
+        return $challengeScore;
     }
 
     /**

@@ -4,6 +4,10 @@
 
 {%- block body -%}
 {%- include "admin/_back_button.html.twig" -%}
+{%- if isCurrentConfig -%}
+<p>You are currently viewing the score of the security strategy of the website, but you can enter a custom one below.</p>
+<p>It will only be used to determine a security score and won't affect your settings.</p>
+{%- endif -%}
 <p>The security score is: {{ securityScore }}.</p>
 {{ form(form) }}
 {%- endblock -%}

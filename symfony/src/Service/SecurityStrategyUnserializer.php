@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Model\IChallengeDefinition;
 use App\Model\U2fChallengeDefinition;
 use App\Model\PwdChallengeDefinition;
-use App\Service\AppConfigManager;
 use App\Enum\Setting;
-use App\Enum\SecurityStrategy;
 use LM\Common\Enum\Scalar;
 use stdClass;
 

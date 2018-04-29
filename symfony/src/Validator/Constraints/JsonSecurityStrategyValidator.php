@@ -47,7 +47,6 @@ class JsonSecurityStrategyValidator extends ConstraintValidator
                 $inputStr
             );
         }
-
     }
 
     private function addError(string $message, string $input): void

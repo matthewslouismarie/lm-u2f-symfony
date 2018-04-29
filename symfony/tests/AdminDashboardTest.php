@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
-use App\Model\U2fChallengeDefinition;
 use App\Model\PwdChallengeDefinition;
 use App\Enum\SecurityStrategy;
 use App\Enum\Setting;
@@ -284,6 +283,5 @@ class AdminDashboardTest extends TestCaseTemplate
                 ])
             )
         );
-        $this->debugResponse();
     }
 }

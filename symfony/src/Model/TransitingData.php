@@ -45,7 +45,6 @@ class TransitingData
         if (get_class($this->value) === $class) {
             return $this->value;
         } else {
-            echo "\n Expected: ".get_class($this->value).", but got: ".$class."\n";
             throw new UnexpectedValueException();
         }
     }

@@ -15,7 +15,6 @@ use LM\AuthAbstractor\Controller\AuthenticationKernel;
 use LM\AuthAbstractor\Implementation\ApplicationConfiguration;
 use LM\AuthAbstractor\Challenge\CredentialChallenge;
 use LM\AuthAbstractor\Challenge\U2fChallenge;
-use LM\AuthAbstractor\Factory\AuthenticationProcessFactory;
 use LM\AuthAbstractor\Implementation\Callback;
 use LM\AuthAbstractor\Model\IMember;
 
@@ -81,7 +80,7 @@ class TmpController extends AbstractController
         );
 
         // store new auth_process in session
-        $_SESSION['auth_process'] = $response->getProcess();
+        $_SESSION['auth_process'] = $response->getAuthenticationProcess();
 
         // display http response to user
         return $response->getHttpResponse();

@@ -107,7 +107,7 @@ class MiddlewareDecorator
         $psrHttpRequest = $diactorosFactory->createRequest($httpRequest);
         $authProcess = $this->secureSession->getAndRemoveObject($sid, AuthenticationProcess::class);
         $authentifierResponse = $this->authKernel->processHttpRequest($psrHttpRequest, $authProcess, $callback);
-        $this->secureSession->setObject($sid, $authentifierResponse->getProcess(), AuthenticationProcess::class);
+        $this->secureSession->setObject($sid, $authentifierResponse->getAuthenticationProcess(), AuthenticationProcess::class);
 
         return $httpFoundationFactory->createResponse($authentifierResponse->getHttpResponse());
     }

@@ -22,7 +22,7 @@ class UserErrorFinder
             Setting::N_U2F_KEYS_LOGIN,
             Scalar::_INT
         );
-        $nTransferMoney = SecurityStrategy::U2F === $securityStrategy ? $nU2fRegistrations + 2 : 2;
+        $nTransferMoney = SecurityStrategy::U2F === $securityStrategy ? $nU2fRegistrations + 1 : 2;
         $this->rules = [
             '/\/not-authenticated\/login\/u2f\/[a-z0-9]+/' => $nU2fRegistrations + 1,
             '/\/not-authenticated\/login\/pwd\/[a-z0-9]+/' => 2,

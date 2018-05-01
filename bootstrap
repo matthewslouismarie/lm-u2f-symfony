@@ -1,0 +1,8 @@
+#!/bin/sh
+
+sudo docker-compose up -d --build
+sudo docker exec security_comparator_apache composer install
+sudo docker exec security_comparator_apache npm install
+sudo docker exec security_comparator_apache bin/console doctrine:database:create
+sudo docker exec security_comparator_apache bin/console doctrine:schema:create
+sudo docker exec security_comparator_apache bin/console doctrine:fixtures:load

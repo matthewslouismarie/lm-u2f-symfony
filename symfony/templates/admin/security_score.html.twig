@@ -9,12 +9,18 @@
 <p>It will only be used to determine a security score and won't affect your settings.</p>
 {%- endif -%}
 {%- if securityLevel == 'low' -%}
-<img alt="The security strategy is vulnerable." src="https://img.shields.io/badge/security-vulnerable-red.svg">
+<p>
+  <img alt="The security strategy is vulnerable." src="https://img.shields.io/badge/security-vulnerable-red.svg">
+</p>
 {%- elseif securityLevel == 'medium' -%}
-<img alt="The security strategy is medium." src="https://img.shields.io/badge/security-medium-orange.svg">
+<p>
+  <img alt="The security strategy is medium." src="https://img.shields.io/badge/security-medium-orange.svg">
+</p>
 {%- elseif securityLevel == 'high' -%}
-<img alt="The security strategy is high." src="https://img.shields.io/badge/security-high-green.svg">
+<p>
+  <img alt="The security strategy is high." src="https://img.shields.io/badge/security-high-green.svg">
+</p>
 {%- endif -%}
-<p>The security score is: {{ securityScore }}.</p>
+The security score is: {{ securityScore }}.</p>
 {{ form(form) }}
 {%- endblock -%}

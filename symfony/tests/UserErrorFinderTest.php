@@ -242,4 +242,22 @@ class UserErrorFinderTest extends TestCaseTemplate
             ])
         );
     }
+
+    public function testListPwd()
+    {
+        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $this
+            ->getAppConfigManager()
+            ->set(Setting::ALLOW_PWD_LOGIN, true)
+        ;
+        $this->assertSame(
+            2,
+            $userErrorFinder->getNErrors([
+                '/not-authenticated/login/pwd/34b2dd9180db75457e865e4ef14e4364',
+                '/not-authenticated/login/pwd/34b2dd9180db75457e865e4ef14e4364',
+                '/not-authenticated/login/pwd/34b2dd9180db75457e865e4ef14e4364',
+                '/not-authenticated/login/pwd/34b2dd9180db75457e865e4ef14e4364',
+            ])
+        );
+    }
 }

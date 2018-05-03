@@ -331,10 +331,19 @@ class AdminDashboardController extends AbstractController
             $securityScore = $calculator->calculate($securityStrategy);
         }
 
+        if ($securityScore > 5.0) {
+            $securityLevel = 'high';
+        } elseif ($securityScore > 0.38) {
+            $securityLevel = 'medium';
+        } else {
+            $securityLevel = 'low';
+        }
+
         return $this->render(
             'admin/security_score.html.twig',
             [
                 'form' => $form->createView(),
+                'securityLevel' => $securityLevel,
                 'securityScore' => $securityScore,
                 'isCurrentConfig' => !$form->isSubmitted() || !$form->isValid(),
             ]

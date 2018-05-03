@@ -8,6 +8,13 @@
 <p>You are currently viewing the score of the security strategy of the website, but you can enter a custom one below.</p>
 <p>It will only be used to determine a security score and won't affect your settings.</p>
 {%- endif -%}
+{%- if securityLevel == 'low' -%}
+<img alt="The security strategy is vulnerable." src="https://img.shields.io/badge/security-vulnerable-red.svg">
+{%- elseif securityLevel == 'medium' -%}
+<img alt="The security strategy is medium." src="https://img.shields.io/badge/security-medium-orange.svg">
+{%- elseif securityLevel == 'high' -%}
+<img alt="The security strategy is high." src="https://img.shields.io/badge/security-high-green.svg">
+{%- endif -%}
 <p>The security score is: {{ securityScore }}.</p>
 {{ form(form) }}
 {%- endblock -%}

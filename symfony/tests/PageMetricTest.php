@@ -44,7 +44,7 @@ class PageMetricTest extends TestCaseTemplate
             ->set(Setting::PARTICIPANT_ID, 'P55', Scalar::_STR)
         ;
         $this->doGet('/');
-        $this->doGet('/not-authenticated/registration');
+        $this->doGet('/not-authenticated/account-creation');
         $this->followRedirect();
         $pageMetrics = $this
             ->manager

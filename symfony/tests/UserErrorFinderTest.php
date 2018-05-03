@@ -58,13 +58,13 @@ class UserErrorFinderTest extends TestCaseTemplate
             ]
         ));
         $this->assertFalse($userErrorFinder->isError(
-            '/not-authenticated/register/u2f-key/a',
+            '/not-authenticated/account-creation/a',
             []
         ));
         $this->assertFalse($userErrorFinder->isError(
-            '/not-authenticated/register/u2f-key/a',
+            '/not-authenticated/account-creation/a',
             [
-                '/not-authenticated/register/a',
+                '/not-authenticated/account-creation/a',
             ]
         ));
         $this->assertFalse($userErrorFinder->isError(
@@ -113,15 +113,8 @@ class UserErrorFinderTest extends TestCaseTemplate
             '/not-authenticated/login/pwd/a',
             []
         ));
-        $this->assertTrue($userErrorFinder->isError(
-            '/not-authenticated/register/a',
-            [
-                '/not-authenticated/register/a',
-                '/not-authenticated/register/a',
-            ]
-        ));
         $this->assertFalse($userErrorFinder->isError(
-            '/not-authenticated/register/a',
+            '/not-authenticated/account-creation/a',
             []
         ));
         $this->assertFalse($userErrorFinder->isError(
@@ -141,13 +134,100 @@ class UserErrorFinderTest extends TestCaseTemplate
                 '/authenticated/transfer-money/euieiu',
             ]
         ));
+    }
+
+    public function testAccountCreationNoU2fDevices()
+    {
+        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $this
+            ->getAppConfigManager()
+            ->set(Setting::N_U2F_KEYS_REG, 0)
+        ;
+        $this->assertFalse($userErrorFinder->isError(
+            '/not-authenticated/account-creation/a',
+            [
+            ]
+        ));
+        $this->assertFalse($userErrorFinder->isError(
+            '/not-authenticated/account-creation/a',
+            [
+                '/not-authenticated/account-creation/a',
+            ]
+        ));
+        $this->assertTrue($userErrorFinder->isError(
+            '/not-authenticated/account-creation/a',
+            [
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
+            ]
+        ));
+    }
+
+    public function testAccountCreationOneU2fDevice()
+    {
+        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $this
+            ->getAppConfigManager()
+            ->set(Setting::N_U2F_KEYS_REG, 1)
+        ;
+        $this->assertFalse($userErrorFinder->isError(
+            '/not-authenticated/account-creation/a',
+            [
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
+            ]
+        ));
+        $this->assertTrue($userErrorFinder->isError(
+            '/not-authenticated/account-creation/a',
+            [
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
+            ]
+        ));
+    }
+
+    public function testAccountCreationTwoU2fDevices()
+    {
+        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $this
+            ->getAppConfigManager()
+            ->set(Setting::N_U2F_KEYS_REG, 2)
+        ;
+        $this->assertFalse($userErrorFinder->isError(
+            '/not-authenticated/account-creation/a',
+            [
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
+            ]
+        ));
+        $this->assertTrue($userErrorFinder->isError(
+            '/not-authenticated/account-creation/a',
+            [
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
+            ]
+        ));
+    }
+
+    public function testList()
+    {
+        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $this
+            ->getAppConfigManager()
+            ->set(Setting::ALLOW_PWD_LOGIN, true)
+            ->set(Setting::SECURITY_STRATEGY, SecurityStrategy::PWD)
+        ;
         $this->assertSame(
             5,
             $userErrorFinder->getNErrors([
                 '/',
-                '/not-authenticated/register',
-                '/not-authenticated/register/a',
-                '/not-authenticated/register/a',
+                '/not-authenticated/account-creation',
+                '/not-authenticated/account-creation/a',
+                '/not-authenticated/account-creation/a',
                 '/not-authenticated/login/pwd',
                 '/not-authenticated/login/pwd/a',
                 '/not-authenticated/login/pwd/a',

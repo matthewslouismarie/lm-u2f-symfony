@@ -3,9 +3,7 @@
 $filePath = __DIR__.'/sql.sql';
 
 define('REGEXES', [
-    'reg_start' => '/\'\/not-authenticated\/registration\/start\'/',
-    // 'reg_post_cred' => '/\'\/not-authenticated\/register\/.+\'/', // (if the one after is u2f-key)
-    'reg_post_u2f' => '/\'\/not-authenticated\/register\/u2f-key\/.+\/\'/', // (if the one after is not /not-authenticated/register/u2f-key/{sid})
+    'reg_start' => '/\'\/not-authenticated\/account-creation\/start\'/',
     'choose_login' => '/\'\/not-authenticated\/choose-authenticate\'/',
     'login_u2f' => '/\'\/not-authenticated\/login\/u2f\'/',
     'login_pwd' => '/\'\/not-authenticated\/login\/pwd\'/',

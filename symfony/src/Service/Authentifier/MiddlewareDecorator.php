@@ -63,6 +63,7 @@ class MiddlewareDecorator
     /**
      * @challenges is temp
      * @todo Should additionalData be stored within the authentication process?
+     * @todo Should accept an array instead.
      */
     public function createProcess(
         string $routeName,

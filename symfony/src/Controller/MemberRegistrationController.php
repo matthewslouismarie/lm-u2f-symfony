@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Callback\Authentifier\AccountCreationCallback;
 use UnexpectedValueException;
 
 class MemberRegistrationController extends AbstractController
@@ -311,5 +312,51 @@ class MemberRegistrationController extends AbstractController
         } catch (UnexpectedValueException $e) {
             return $this->render("messages/unspecified_error.html.twig");
         }
+    }
+
+    /**
+     * @todo Service for route name?
+     * @todo ArrayObject should acccept a type checker?
+     * @Route(
+     *  "/not-authenticated/account-creation/{sid}",
+     *  name="account_creation")
+     */
+    public function createAccount(
+        ?string $sid = null,
+        AccountCreationCallback $callback,
+        AppConfigManager $config,
+        MiddlewareDecorator $middleware,
+        Request $httpRequest
+    ) {
+        if (null === $sid) {
+            return $middleware->createProcess(
+                $httpRequest->get('_route'),
+                $this->getChallenges($config)
+            );
+        }
+        return $middleware->updateProcess($httpRequest, $sid, $callback);
+    }
+
+    /**
+     * @return string[] An array of challenge class names.
+     */
+    private function getChallenges(AppConfigManager $config): ArrayObject
+    {
+        $u2fRegChallenges = [];
+        $nChallenges = $config->getSetting(Setting::N_U2F_KEYS_REG, Scalar::_INT);
+        for ($i = 0; $i < $nChallenges; ++$i) {
+            $u2fRegChallenges[] = U2fRegistrationChallenge::class;
+        }
+        $challenges = array_merge(
+            [
+                CredentialRegistrationChallenge::class,
+            ],
+            $u2fRegChallenges
+        );
+
+        return new ArrayObject(
+            $challenges,
+            Scalar::_STR
+        );
     }
 }

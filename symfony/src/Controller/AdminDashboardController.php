@@ -318,7 +318,6 @@ class AdminDashboardController extends AbstractController
         SecurityStrategyUnserializer $unserializer
     ) {
         $defaultSecStrat = $unserializer->fromAppConfig();
-        $securityScore = $calculator->calculate($defaultSecStrat);
 
         $form = $this->createForm(JsonSecurityStrategyType::class, [
             'json' => json_encode($defaultSecStrat),
@@ -329,7 +328,9 @@ class AdminDashboardController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $securityStrategy = $unserializer->unserialize(json_decode($form['json']->getData()));
             $securityScore = $calculator->calculate($securityStrategy);
-        }
+        } else {
+            $securityScore = $calculator->calculate($defaultSecStrat);
+        }            
 
         if ($securityScore > 5.0) {
             $securityLevel = 'high';

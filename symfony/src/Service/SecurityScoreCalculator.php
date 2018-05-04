@@ -62,7 +62,7 @@ class SecurityScoreCalculator
     public function calculateProcessScore(
         array $process,
         float $currentScore = 0.0,
-        ?int $nFactors = null
+        ?float $nFactors = null
     ): float {
         if (true === empty($process)) {
             return $currentScore;
@@ -78,7 +78,8 @@ class SecurityScoreCalculator
 
         return $this->calculateProcessScore(
             $process,
-            $currentScore + $nFactors * $this->calculateChallengeScore($challenge)
+            $currentScore + $nFactors * $this->calculateChallengeScore($challenge),
+            $nFactors
         );
     }
 

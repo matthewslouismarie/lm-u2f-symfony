@@ -4,39 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Callback\Authentifier\RegistrationCallback;
-use App\DataStructure\TransitingDataManager;
 use App\Enum\Setting;
-use App\Factory\MemberFactory;
-use App\Form\CredentialRegistrationType;
-use App\Form\NewU2fRegistrationType;
-use App\FormModel\CredentialRegistrationSubmission;
-use App\FormModel\NewU2fRegistrationSubmission;
-use App\Model\TransitingData;
 use App\Service\AppConfigManager;
 use App\Service\Authentifier\MiddlewareDecorator;
-use App\Service\SecureSession;
-use App\Service\U2fRegistrationManager;
-use App\Service\U2fService;
-use DateTimeImmutable;
-use Doctrine\Common\Persistence\ObjectManager;
-use Firehed\U2F\ClientErrorException;
-use Firehed\U2F\RegisterRequest;
-use Firehed\U2F\RegisterResponse;
-use Firehed\U2F\Registration;
 use LM\AuthAbstractor\Challenge\CredentialRegistrationChallenge;
 use LM\AuthAbstractor\Challenge\U2fRegistrationChallenge;
 use LM\Common\Enum\Scalar;
 use LM\Common\Model\ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Callback\Authentifier\AccountCreationCallback;
-use UnexpectedValueException;
 
 class AccountCreationController extends AbstractController
 {

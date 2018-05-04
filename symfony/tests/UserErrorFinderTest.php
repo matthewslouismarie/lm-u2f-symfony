@@ -138,7 +138,7 @@ class UserErrorFinderTest extends TestCaseTemplate
 
     public function testAccountCreationNoU2fDevices()
     {
-        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $userErrorFinder = $this->get(UserErrorFinder::class);
         $this
             ->getAppConfigManager()
             ->set(Setting::N_U2F_KEYS_REG, 0)
@@ -165,7 +165,7 @@ class UserErrorFinderTest extends TestCaseTemplate
 
     public function testAccountCreationOneU2fDevice()
     {
-        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $userErrorFinder = $this->get(UserErrorFinder::class);
         $this
             ->getAppConfigManager()
             ->set(Setting::N_U2F_KEYS_REG, 1)
@@ -189,7 +189,7 @@ class UserErrorFinderTest extends TestCaseTemplate
 
     public function testAccountCreationTwoU2fDevices()
     {
-        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $userErrorFinder = $this->get(UserErrorFinder::class);
         $this
             ->getAppConfigManager()
             ->set(Setting::N_U2F_KEYS_REG, 2)
@@ -215,7 +215,7 @@ class UserErrorFinderTest extends TestCaseTemplate
 
     public function testList()
     {
-        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $userErrorFinder = $this->get(UserErrorFinder::class);
         $this
             ->getAppConfigManager()
             ->set(Setting::ALLOW_PWD_LOGIN, true)
@@ -245,7 +245,7 @@ class UserErrorFinderTest extends TestCaseTemplate
 
     public function testListPwd()
     {
-        $userErrorFinder = $this->get(UserErrorFinder::class);        
+        $userErrorFinder = $this->get(UserErrorFinder::class);
         $this
             ->getAppConfigManager()
             ->set(Setting::ALLOW_PWD_LOGIN, true)

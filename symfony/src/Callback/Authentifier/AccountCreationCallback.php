@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Callback\Authentifier;
 
 use LM\AuthAbstractor\Model\IAuthenticationCallback;
@@ -54,8 +56,8 @@ class AccountCreationCallback implements IAuthenticationCallback
             ->render(
                 'messages/success.html.twig',
                 [
-                'pageTitle' => 'Account created successfully',
-                'message' => 'Your account was successfully created.',
+                    'pageTitle' => 'Account created successfully',
+                    'message' => 'Your account was successfully created.',
                 ]
             )
         ;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
 use App\Tests\TestCaseTemplate;
@@ -52,7 +54,8 @@ class AccountCreationTest extends TestCaseTemplate
         $this->assertSame(302, $this->getHttpStatusCode());
         $this->followRedirect();
         $this->assertSame(200, $this->getHttpStatusCode());
-        $this->submit($this
+        $this->submit(
+            $this
             ->get(CredentialRegistrationFiller::class)
             ->fillForm(
                 $this->getCrawler(),
@@ -62,7 +65,8 @@ class AccountCreationTest extends TestCaseTemplate
             )
         );
         for ($i = 0; $i < $nU2fDevices; ++$i) {
-            $this->submit($this
+            $this->submit(
+                $this
                 ->get(U2fRegistrationFiller::class)
                 ->fillForm($this->getCrawler(), $this->getUriLastPart())
             );

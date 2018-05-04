@@ -332,7 +332,7 @@ class AdminDashboardController extends AbstractController
             $securityScore = $calculator->calculate($securityStrategy);
         } else {
             $securityScore = $calculator->calculate($defaultSecStrat);
-        }            
+        }
 
         if ($securityScore > 5.0) {
             $securityLevel = 'high';

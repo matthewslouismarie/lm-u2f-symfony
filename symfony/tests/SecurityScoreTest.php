@@ -161,7 +161,7 @@ class SecurityScoreTest extends TestCaseTemplate
             $securityScoreCalculator->calculate([
                 [
                     $pwdChallengeDef,
-                ]
+                ],
             ])
         );
     }

@@ -32,7 +32,7 @@ final class U2fChallengeDefinition implements IChallengeDefinition
 
     public function getReproducibilityResistance(): float
     {
-        return 0.5;
+        return 0.8;
     }
 
     public function getServerLeakResistance(): float

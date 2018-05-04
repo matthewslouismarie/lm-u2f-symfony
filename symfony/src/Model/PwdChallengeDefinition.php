@@ -55,7 +55,7 @@ final class PwdChallengeDefinition implements IChallengeDefinition
         $factorSpecialChars = $this->specialChars ? 0.1 : 0;
         $factorNumbers = $this->numbers ? 0.1 : 0;
         $factorUppercase = $this->uppercase ? 0.1 : 0;
-        $factor = ($factorSpecialChars + $factorNumbers + $factorUppercase) / self::ONLINE_FACTOR;
+        $factor = (0.1 + $factorSpecialChars + $factorNumbers + $factorUppercase) / self::ONLINE_FACTOR;
 
         return (-1/(sqrt($factor * $this->minLength) + 1) + 1);
     }

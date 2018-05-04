@@ -150,4 +150,19 @@ class SecurityScoreTest extends TestCaseTemplate
             $pwdChallengeDef->getDuplicationFactor()
         );
     }
+
+    public function testSimplePassword()
+    {
+        $securityScoreCalculator = $this->get(SecurityScoreCalculator::class);
+        
+        $pwdChallengeDef = new PwdChallengeDefinition(6, false, false, false);
+        $this->assertGreaterThan(
+            0,
+            $securityScoreCalculator->calculate([
+                [
+                    $pwdChallengeDef,
+                ]
+            ])
+        );
+    }
 }

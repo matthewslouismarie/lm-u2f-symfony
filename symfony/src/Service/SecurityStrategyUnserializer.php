@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Model\IChallengeDefinition;
 use App\Model\U2fChallengeDefinition;
 use App\Model\PwdChallengeDefinition;
+use App\Model\SmsChallengeDefinition;
 use App\Enum\Setting;
 use LM\Common\Enum\Scalar;
 use stdClass;
@@ -44,6 +45,9 @@ final class SecurityStrategyUnserializer
                                     $serChallenge->special_chars,
                                     $serChallenge->uppercase
                                 );
+
+                            case 'sms':
+                                return new SmsChallengeDefinition();
 
                             default:
                                 throw new UnexpectedValueException();

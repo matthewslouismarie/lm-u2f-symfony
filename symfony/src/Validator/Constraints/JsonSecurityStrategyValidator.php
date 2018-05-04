@@ -35,7 +35,7 @@ class JsonSecurityStrategyValidator extends ConstraintValidator
         }
 
         try {
-            $this->unserializer->unserialize($inputArray);
+            $this->unserializer->fromArray($inputArray);
         } catch (TypeError $e) {
             $this->addError(
                 'The submitted value is not a valid security strategy specification.',

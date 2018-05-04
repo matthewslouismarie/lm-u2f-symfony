@@ -326,7 +326,9 @@ class AdminDashboardController extends AbstractController
         
         $form->handleRequest($httpRequest);
         if ($form->isSubmitted() && $form->isValid()) {
-            $securityStrategy = $unserializer->unserialize(json_decode($form['json']->getData()));
+            $securityStrategy = $unserializer->fromArray(
+                json_decode($form['json']->getData())
+            );
             $securityScore = $calculator->calculate($securityStrategy);
         } else {
             $securityScore = $calculator->calculate($defaultSecStrat);

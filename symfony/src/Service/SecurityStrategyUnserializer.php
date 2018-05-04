@@ -28,7 +28,7 @@ final class SecurityStrategyUnserializer
     /**
      * @todo Unit test.
      */
-    public function unserialize(array $inputArray): array
+    public function fromArray(array $inputArray): array
     {
         return array_map(
             function (array $process): array {
